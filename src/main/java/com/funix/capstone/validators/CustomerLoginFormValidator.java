@@ -1,6 +1,6 @@
 package com.funix.capstone.validators;
 
-import com.funix.capstone.exception.BadInputException;
+import com.funix.capstone.exception.input.BadInputException;
 import com.funix.capstone.model.form.AbstractUIForm;
 import com.funix.capstone.model.form.LoginForm;
 

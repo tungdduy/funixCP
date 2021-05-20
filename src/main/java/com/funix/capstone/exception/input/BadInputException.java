@@ -1,8 +1,7 @@
-package com.funix.capstone.exception;
+package com.funix.capstone.exception.input;
 
-public class BadInputException extends Exception{
+public class BadInputException extends InputException{
     public BadInputException() {
-        super();
     }
 
     public BadInputException(String message) {
@@ -11,9 +10,5 @@ public class BadInputException extends Exception{
 
     public BadInputException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public BadInputException(Throwable cause) {
-        super(cause);
     }
 }
