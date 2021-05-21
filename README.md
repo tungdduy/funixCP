@@ -4,9 +4,9 @@
 
 * Đối với các file .html, có thể xem nội dung đã được render bằng cách thêm https://htmlpreview.github.io? vào trước đường dẫn.
 
-# Bảng phân chia công việc làm tài liệu
-Bảng sau đây dành riêng cho theo dõi công việc liên quan tới tài liệu báo cáo.
-Giai đoạn coding sẽ tạo branch riêng cho từng thành viên.
+# Bảng theo dõi tiến độ tài liệu
+* Bảng sau đây dành riêng cho theo dõi công việc liên quan tới tài liệu báo cáo.
+* Giai đoạn coding sẽ tạo branch riêng cho từng thành viên.
 
 ### Tùng
 Tên công việc | Thuộc báo cáo | Dự Kiến | Thực Tế | Github Link
