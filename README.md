@@ -1,1 +1,1 @@
-# funixCP
+# Đồ án tốt nghiệp Funix
