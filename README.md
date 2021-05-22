@@ -22,4 +22,4 @@ Tên công việc | Thuộc báo cáo | Dự Kiến | Thực Tế | Github Link
 ### Giáp
 Tên công việc | Thuộc báo cáo | Dự Kiến | Thực Tế | Github Link
 ------------  | ------------- |-------- | ------- | -----------
-vẽ usecase    | 3.5           | 25/05/2021  |     |[đây](https://github.com/tungdduy/funixCP/tree/main/Documents/working/Giap/usecases_and_flow_charts)
+vẽ usecase    | 3.5           | 25/05/2021  |     |[đây](https://htmlpreview.github.io/?https://github.com/tungdduy/funixCP/blob/main/Documents/working/Giap/usecases_and_flow_charts/uc_flow.html)
