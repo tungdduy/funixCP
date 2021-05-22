@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="535.4167px" preserveAspectRatio="none" style="width:685px;height:535px;" version="1.1" viewBox="0 0 685 535" width="685.4167px" zoomAndPan="magnify"><defs><filter height="300%" id="ff5vzv558xlgz" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="4.166666666666667"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="8.333333333333334" dy="8.333333333333334" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><ellipse cx="179.1667" cy="104.366" fill="#000000" filter="url(#ff5vzv558xlgz)" rx="20.8333" ry="20.8333" style="stroke:none;stroke-width:2.0833333333333335;"/><rect fill="#FEFECE" filter="url(#ff5vzv558xlgz)" height="73.112" rx="26.0417" ry="26.0417" style="stroke:#A80036;stroke-width:3.125;" width="270.8333" x="43.75" y="166.866"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="229.1667" x="64.5833" y="213.6515">goto trip history view</text><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="31.25" x2="31.25" y1="25.9481" y2="500.9806"/><rect fill="#FEFECE" filter="url(#ff5vzv558xlgz)" height="136.0026" rx="26.0417" ry="26.0417" style="stroke:#A80036;stroke-width:3.125;" width="277.0833" x="347.9167" y="281.6447"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="235.4167" x="368.75" y="328.4302">show booked history</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="164.5833" x="368.75" y="359.8755">of current user</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="135.4167" x="368.75" y="391.3208">split by tabs</text><ellipse cx="486.4583" cy="480.1473" fill="#FFFFFF" filter="url(#ff5vzv558xlgz)" rx="20.8333" ry="20.8333" style="stroke:#000000;stroke-width:3.125;"/><line style="stroke:#000000;stroke-width:5.208333333333334;" x1="473.5684" x2="499.3483" y1="467.2573" y2="493.0373"/><line style="stroke:#000000;stroke-width:5.208333333333334;" x1="499.3483" x2="473.5684" y1="467.2573" y2="493.0373"/><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="335.4167" x2="335.4167" y1="25.9481" y2="500.9806"/><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="645.8333" x2="645.8333" y1="25.9481" y2="500.9806"/><line style="stroke:#A80036;stroke-width:3.125;" x1="179.1667" x2="179.1667" y1="125.1994" y2="166.866"/><polygon fill="#A80036" points="170.8333,146.0327,179.1667,166.866,187.5,146.0327,179.1667,154.366" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><line style="stroke:#A80036;stroke-width:3.125;" x1="486.4583" x2="486.4583" y1="417.6473" y2="459.314"/><polygon fill="#A80036" points="478.125,438.4806,486.4583,459.314,494.7917,438.4806,486.4583,446.814" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><line style="stroke:#A80036;stroke-width:3.125;" x1="179.1667" x2="179.1667" y1="239.978" y2="250.3947"/><line style="stroke:#A80036;stroke-width:3.125;" x1="179.1667" x2="486.4583" y1="250.3947" y2="250.3947"/><line style="stroke:#A80036;stroke-width:3.125;" x1="486.4583" x2="486.4583" y1="250.3947" y2="281.6447"/><polygon fill="#A80036" points="478.125,260.8114,486.4583,281.6447,494.7917,260.8114,486.4583,269.1447" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><text fill="#000000" font-family="sans-serif" font-size="37.5" lengthAdjust="spacing" textLength="79.1667" x="143.75" y="64.8763">User</text><text fill="#000000" font-family="sans-serif" font-size="37.5" lengthAdjust="spacing" textLength="122.9167" x="429.1667" y="64.8763">System</text><!--MD5=[bacf3eb174fdce008144e03942da764e]
+@startuml
+skinparam dpi 200
+
+
+|User|
+start
+:goto trip history view;
+|System|
+:show booked history
+of current user
+split by tabs;
+end
+@enduml
+
+PlantUML version 1.2021.2(Sun Mar 07 18:10:27 ICT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: Eclipse OpenJ9 VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

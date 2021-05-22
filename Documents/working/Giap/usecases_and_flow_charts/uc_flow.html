@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- saved from url=(0127)file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
-<title>I. Use Cases</title>
-<link rel="stylesheet" href="./uc_flow_files/css">
+<meta name="generator" content="Asciidoctor 2.0.8.dev">
+<title>Đồ án tốt nghiệp Funix</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 /* Uncomment @import statement to use as custom stylesheet */
@@ -47,7 +47,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*::before,*::after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
 html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;word-wrap:anywhere;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
@@ -62,8 +62,10 @@ img{-ms-interpolation-mode:bicubic}
 img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.stretch{width:100%}
 .subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
-div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
 a{color:#2156a5;text-decoration:underline;line-height:inherit}
 a:hover,a:focus{color:#1d4b8f}
 a img{border:0}
@@ -94,28 +96,28 @@ dl dd{margin-bottom:1.25em}
 abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
 abbr{text-transform:none}
 blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite::before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
 blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
 @media screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
 h1{font-size:2.75em}
 h2{font-size:2.3125em}
 h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
 h4{font-size:1.4375em}}
-table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede;word-wrap:normal}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
 table thead,table tfoot{background:#f7f8f7}
 table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt{background:#f8f8f7}
-table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{line-height:1.6}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
-.center{margin-left:auto;margin-right:auto}
-.stretch{width:100%}
 .clearfix::before,.clearfix::after,.float-group::before,.float-group::after{content:" ";display:table}
 .clearfix::after,.float-group::after{clear:both}
-:not(pre).nobreak{word-wrap:normal}
-:not(pre).nowrap{white-space:nowrap}
-:not(pre).pre-wrap{white-space:pre-wrap}
-:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+:not(pre):not([class^=L])>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+:not(pre)>code.nobreak{word-wrap:normal}
+:not(pre)>code.nowrap{white-space:nowrap}
 pre{color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;line-height:1.45;text-rendering:optimizeSpeed}
 pre code,pre pre{color:inherit;font-size:inherit;line-height:inherit}
 pre>code{display:block}
@@ -180,7 +182,7 @@ body.toc2.toc-right{padding-left:0;padding-right:20em}}
 #content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
 #content #toc>:first-child{margin-top:0}
 #content #toc>:last-child{margin-bottom:0}
-#footer{max-width:none;background:rgba(0,0,0,.8);padding:1.25em}
+#footer{max-width:100%;background:rgba(0,0,0,.8);padding:1.25em}
 #footer-text{color:rgba(255,255,255,.8);line-height:1.44}
 #content{margin-bottom:.625em}
 .sect1{padding-bottom:.625em}
@@ -203,7 +205,7 @@ table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font
 .admonitionblock>table td.icon{text-align:center;width:80px}
 .admonitionblock>table td.icon img{max-width:none}
 .admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
-.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6);word-wrap:anywhere}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #dddddf;color:rgba(0,0,0,.6)}
 .admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
 .exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
 .exampleblock>.content>:first-child{margin-top:0}
@@ -213,7 +215,7 @@ table.tableblock #preamble>.sectionbody>[class="paragraph"]:first-of-type p{font
 .sidebarblock>:last-child{margin-bottom:0}
 .sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
 .exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
-.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;overflow-x:auto;padding:1em;font-size:.8125em}
+.literalblock pre,.listingblock>.content>pre{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;overflow-x:auto;padding:1em;font-size:.8125em}
 @media screen and (min-width:768px){.literalblock pre,.listingblock>.content>pre{font-size:.90625em}}
 @media screen and (min-width:1280px){.literalblock pre,.listingblock>.content>pre{font-size:1em}}
 .literalblock pre,.listingblock>.content>pre:not(.highlight),.listingblock>.content>pre[class="highlight"],.listingblock>.content>pre[class^="highlight "]{background:#f7f7f8}
@@ -238,7 +240,7 @@ table.linenotable td.linenos{border-right:1px solid currentColor;opacity:.35;pad
 pre.pygments .lineno{border-right:1px solid currentColor;opacity:.35;display:inline-block;margin-right:.75em}
 pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock{margin:0 1em 1.25em 1.5em;display:table}
-.quoteblock:not(.excerpt)>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
 .quoteblock blockquote,.quoteblock p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
 .quoteblock blockquote{margin:0;padding:0;border:0}
 .quoteblock blockquote::before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
@@ -255,24 +257,24 @@ pre.pygments .lineno::before{content:"";margin-right:-.125em}
 .quoteblock.abstract blockquote,.quoteblock.abstract p,.quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{line-height:1.6;word-spacing:0}
 .quoteblock.abstract{margin:0 1em 1.25em;display:block}
 .quoteblock.abstract>.title{margin:0 0 .375em;font-size:1.15em;text-align:center}
-.quoteblock.excerpt>blockquote,.quoteblock .quoteblock{padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
-.quoteblock.excerpt,.quoteblock .quoteblock{margin-left:0}
+.quoteblock.excerpt,.quoteblock .quoteblock{margin:0 0 1.25em;padding:0 0 .25em 1em;border-left:.25em solid #dddddf}
 .quoteblock.excerpt blockquote,.quoteblock.excerpt p,.quoteblock .quoteblock blockquote,.quoteblock .quoteblock p{color:inherit;font-size:1.0625rem}
-.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;font-size:.85rem;text-align:left;margin-right:0}
+.quoteblock.excerpt .attribution,.quoteblock .quoteblock .attribution{color:inherit;text-align:left;margin-right:0}
+table.tableblock{max-width:100%;border-collapse:separate}
 p.tableblock:last-child{margin-bottom:0}
-td.tableblock>.content{margin-bottom:1.25em;word-wrap:anywhere}
 td.tableblock>.content>:last-child{margin-bottom:-1.25em}
+td.tableblock>.content>:last-child.sidebarblock{margin-bottom:0}
 table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
-table.grid-all>*>tr>*{border-width:1px}
-table.grid-cols>*>tr>*{border-width:0 1px}
-table.grid-rows>*>tr>*{border-width:1px 0}
+table.grid-all>thead>tr>.tableblock,table.grid-all>tbody>tr>.tableblock{border-width:0 1px 1px 0}
+table.grid-all>tfoot>tr>.tableblock{border-width:1px 1px 0 0}
+table.grid-cols>*>tr>.tableblock{border-width:0 1px 0 0}
+table.grid-rows>thead>tr>.tableblock,table.grid-rows>tbody>tr>.tableblock{border-width:0 0 1px}
+table.grid-rows>tfoot>tr>.tableblock{border-width:1px 0 0}
+table.grid-all>*>tr>.tableblock:last-child,table.grid-cols>*>tr>.tableblock:last-child{border-right-width:0}
+table.grid-all>tbody>tr:last-child>.tableblock,table.grid-all>thead:last-child>tr>.tableblock,table.grid-rows>tbody>tr:last-child>.tableblock,table.grid-rows>thead:last-child>tr>.tableblock{border-bottom-width:0}
 table.frame-all{border-width:1px}
-table.frame-ends{border-width:1px 0}
 table.frame-sides{border-width:0 1px}
-table.frame-none>colgroup+*>:first-child>*,table.frame-sides>colgroup+*>:first-child>*{border-top-width:0}
-table.frame-none>:last-child>:last-child>*,table.frame-sides>:last-child>:last-child>*{border-bottom-width:0}
-table.frame-none>*>tr>:first-child,table.frame-ends>*>tr>:first-child{border-left-width:0}
-table.frame-none>*>tr>:last-child,table.frame-ends>*>tr>:last-child{border-right-width:0}
+table.frame-topbot,table.frame-ends{border-width:1px 0}
 table.stripes-all tr,table.stripes-odd tr:nth-of-type(odd),table.stripes-even tr:nth-of-type(even),table.stripes-hover tr:hover{background:#f8f8f7}
 th.halign-left,td.halign-left{text-align:left}
 th.halign-right,td.halign-right{text-align:right}
@@ -281,7 +283,7 @@ th.valign-top,td.valign-top{vertical-align:top}
 th.valign-bottom,td.valign-bottom{vertical-align:bottom}
 th.valign-middle,td.valign-middle{vertical-align:middle}
 table thead th,table tfoot th{font-weight:bold}
-tbody tr th{background:#f7f8f7}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
 tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
 p.tableblock>code:only-child{background:none;padding:0}
 p.tableblock{font-size:1em}
@@ -310,7 +312,6 @@ ol.lowergreek{list-style-type:lower-greek}
 .hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
 td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
 td.hdlist1{font-weight:bold;padding-bottom:1.25em}
-td.hdlist2{word-wrap:anywhere}
 .literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
 .colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
 .colist td:not([class]):first-child img{max-width:none}
@@ -383,7 +384,7 @@ a span.icon>.fa{cursor:inherit}
 .admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
 .admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
 .admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
-.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:50%;border-radius:50%;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value]{display:inline-block;color:#fff!important;background:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
 .conum[data-value] *{color:#fff!important}
 .conum[data-value]+b{display:none}
 .conum[data-value]::after{content:attr(data-value)}
@@ -410,7 +411,6 @@ thead{display:table-header-group}
 svg{max-width:100%}
 p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
 h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
-#header,#content,#footnotes,#footer{max-width:none}
 #toc,.sidebarblock,.exampleblock>.content{background:none!important}
 #toc{border-bottom:1px solid #dddddf!important;padding-bottom:0!important}
 body.book #header{text-align:center}
@@ -434,60 +434,52 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
-<link rel="stylesheet" href="./uc_flow_files/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
+<h1>Đồ án tốt nghiệp Funix</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_i_use_cases">I. Use Cases</a>
+<li><a href="#truei-use-cases">I. Use Cases</a>
 <ul class="sectlevel2">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_guess">Guess</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_user">User</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_system_admin">System Admin</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_buss_admin">Buss Admin</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_buss_caller_staff">Buss, Caller Staff</a></li>
+<li><a href="#truekhách-vãng-lai">Khách vãng lai</a></li>
+<li><a href="#truethành-viên">Thành viên</a></li>
+<li><a href="#truequản-trị-hệ-thống-nhà-xe">Quản trị Hệ thống &amp; Nhà xe</a></li>
+<li><a href="#truenhân-viên-xe-và-nhân-viên-tổng-đài">Nhân viên xe và nhân viên tổng đài</a></li>
 </ul>
 </li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_ii_flow_charts">II. Flow charts</a>
+<li><a href="#trueii-flow-charts">II. Flow charts</a>
 <ul class="sectlevel2">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_1_find_trip">1. find trip</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_2_book_trip">2. book trip</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_3_log_out">3. log out</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_4_log_in">4. log in</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_5_register_account">5. register account</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_6_find_password">6. Find password</a>
-<ul class="sectlevel3">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_6_a_select_find_password_method">6.A. Select find password method</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_6_b_1_find_password_by_phone_message">6.B.1. Find password by phone message</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_6_b_2_find_password_by_email">6.B.2. Find password by email</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_6_c_do_change_password">6.C. Do Change Password</a></li>
-</ul>
-</li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_7_view_trips_history">7. View Trips History</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_8_show_scheduled_trips">8. Show Scheduled Trips</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_9_cancel_trip">9. Cancel trip</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_10_update_trip">10. Update trip</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_11_manage_buss_admin">11. Manage Buss Admin</a>
-<ul class="sectlevel3">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_11_a_list_of_buss_admins">11.A. List of Buss Admins</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_11_b_add_buss_admin">11.B. Add Buss Admin</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_11_c_delete_buss_admin">11.C. Delete Buss Admin</a></li>
-</ul>
-</li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_12_manage_buss_type">12. Manage Buss Type</a>
-<ul class="sectlevel3">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_12_a_list_of_buss_types">12.A. List of Buss Types</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_12_b_add_buss_type">12.B. Add Buss Type</a></li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_12_c_delete_buss_type">12.C. Delete Buss Type</a></li>
-</ul>
-</li>
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_13_manage_busses">13. Manage Busses</a>
-<ul class="sectlevel3">
-<li><a href="file:///C:/Users/ADMINI~1/AppData/Local/Temp/asciidoctor-editor-temp/project_allin1486507953/2140944247_preview_ansciitest.html#_13_a_list_of_busses">13.A. List of Busses</a></li>
-</ul>
-</li>
+<li><a href="#true1-tìm-chuyến-đi">1. Tìm chuyến đi</a></li>
+<li><a href="#true2-đặt-chỗ">2. Đặt chỗ</a></li>
+<li><a href="#true3-đăng-xuất">3. Đăng xuất</a></li>
+<li><a href="#true4-đăng-nhập">4. Đăng nhập</a></li>
+<li><a href="#true5-đăng-ký-tài-khoản">5. Đăng ký tài khoản</a></li>
+<li><a href="#true6-lấy-lại-mật-khẩu">6. Lấy lại mật khẩu</a></li>
+<li><a href="#true7-view-trips-history">7. View Trips History</a></li>
+<li><a href="#true8-show-scheduled-trips">8. Show Scheduled Trips</a></li>
+<li><a href="#true9-cancel-trip">9. Cancel trip</a></li>
+<li><a href="#true10-update-trip">10. Update trip</a></li>
+<li><a href="#true11-manage-buss-organization">11. Manage Buss Organization</a></li>
+<li><a href="#true11-e-unlock-buss-organization">11.E. Unlock Buss Organization</a></li>
+<li><a href="#true12-manage-buss-type">12. Manage Buss Type</a></li>
+<li><a href="#true13-manage-buss">13. Manage Buss</a></li>
+<li><a href="#true13-d-lock-busses">13.D. Lock Busses</a></li>
+<li><a href="#true13-e-unlock-busses">13.E. Unlock Busses</a></li>
+<li><a href="#true14-manage-caller-staff">14. Manage Caller Staff</a></li>
+<li><a href="#true15-manage-buss-staff">15. Manage Buss Staff</a></li>
+<li><a href="#true16-manage-buss-stop">16. Manage Buss Stop</a></li>
+<li><a href="#true17-manage-path">17. Manage Path</a></li>
+<li><a href="#true18-manage-trip">18. Manage Trip</a></li>
+<li><a href="#true19-manage-buss-trip">19. Manage Buss Trip</a></li>
+<li><a href="#true20-list-of-pending-trips">20. List of Pending Trips</a></li>
+<li><a href="#true21-cancel-seat">21. Cancel Seat</a></li>
+<li><a href="#true22-assign-seat">22. Assign Seat</a></li>
+<li><a href="#true23-payment-confirm">23. Payment Confirm</a></li>
+<li><a href="#true24-lock-seat">24. Lock Seat</a></li>
+<li><a href="#true25-unlock-seat">25. Unlock Seat</a></li>
 </ul>
 </li>
 </ul>
@@ -495,233 +487,574 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_i_use_cases">I. Use Cases</h2>
+<h2 id="truei-use-cases"><a class="anchor" href="#truei-use-cases"></a>I. Use Cases</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_guess">Guess</h3>
+<h3 id="truekhách-vãng-lai"><a class="anchor" href="#truekhách-vãng-lai"></a>Khách vãng lai</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Khách vãng lai</strong> là người vào web và chưa đăng ký tài khoản.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/guess_usecases.svg" alt="guess usecases" width="269" height="186">
+<img src="guest_usecases.svg" alt="guest usecases">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_user">User</h3>
+<h3 id="truethành-viên"><a class="anchor" href="#truethành-viên"></a>Thành viên</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Thành viên</strong> là một người dùng điển hình đã đăng ký tài khoản.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Tất cả tính năng của người dùng có tài khoản<br>
+đều yêu cầu <strong>đã đăng nhập vào hệ thống</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/user_usecases.svg" alt="user usecases" width="254" height="405">
+<img src="user_usecases.svg" alt="user usecases">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_system_admin">System Admin</h3>
+<h3 id="truequản-trị-hệ-thống-nhà-xe"><a class="anchor" href="#truequản-trị-hệ-thống-nhà-xe"></a>Quản trị Hệ thống &amp; Nhà xe</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Quản trị hệ thống</strong> là chúng ta, tiếp nhận các nhà xe.</p>
+</div>
+<div class="paragraph">
+<p>để đơn giản hóa chức năng<br>
+khi <em>xem-tạo-xóa</em> 1 nhà xe sẽ<br>
+đồng thời tác động lên <strong>Quản trị nhà xe</strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Quản trị nhà xe</strong> là quản lý của một nhà xe nào đó.<br>
+Cùng 1 nhà xe có thể có <strong>nhiều hơn 1 quản lý</strong>.<br>
+<br>
+Tuy nhiên trong phiên bản của đồ án,<br>
+chỉ cho phép <strong>1 nhà xe có tối đa 1 quản lý</strong><br>
+để tránh việc xung đột hoặc chồng chéo quyền hạn.<br>
+<br>
+Khi đi vào hoạt động, tùy theo nhu cầu từng khách hàng,<br>
+có thể khái quát lại và triển khai những tính năng phân quyền chi tiết hơn.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/sys_admin_usecases.svg" alt="sys admin usecases" width="330" height="294">
+<img src="sys_admin_usecases.svg" alt="sys admin usecases">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_buss_admin">Buss Admin</h3>
+<h3 id="truenhân-viên-xe-và-nhân-viên-tổng-đài"><a class="anchor" href="#truenhân-viên-xe-và-nhân-viên-tổng-đài"></a>Nhân viên xe và nhân viên tổng đài</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Nhân viên xe</strong> là các nhân viên quản lý trực tiếp 1 xe nào đó.<br>
+Vì tình hình thực tế trên xe có thể thay đổi thất thường,<br>
+Nên những người này có quyền hạn cao nhất đối với xe họ quản lý.<br>
+Thể hiện ở quyền <strong>khóa/mở</strong> 1 ghế nào đó trên xe.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Nhân viên tổng đài</strong> có thể xếp vé cho nhiều xe khác nhau<br>
+trong nhà xe mà nhân viên đó phụ trách.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/Buss_admin_cases.svg" alt="Buss admin cases" width="608" height="286">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_buss_caller_staff">Buss, Caller Staff</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/Buss_cases.svg" alt="Buss cases" width="557" height="317">
+<img src="Buss_cases.svg" alt="Buss cases">
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ii_flow_charts">II. Flow charts</h2>
+<h2 id="trueii-flow-charts"><a class="anchor" href="#trueii-flow-charts"></a>II. Flow charts</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_1_find_trip">1. find trip</h3>
+<h3 id="true1-tìm-chuyến-đi"><a class="anchor" href="#true1-tìm-chuyến-đi"></a>1. Tìm chuyến đi</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/find_trip.svg" alt="find trip" width="666" height="407">
+<img src="find_trip.svg" alt="find trip">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_book_trip">2. book trip</h3>
+<h3 id="true2-đặt-chỗ"><a class="anchor" href="#true2-đặt-chỗ"></a>2. Đặt chỗ</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/book_trip.svg" alt="book trip" width="798" height="1229">
+<img src="book_trip.svg" alt="book trip">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_log_out">3. log out</h3>
+<h3 id="true3-đăng-xuất"><a class="anchor" href="#true3-đăng-xuất"></a>3. Đăng xuất</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/log_out.svg" alt="log out" width="338" height="282">
+<img src="log_out.svg" alt="log out">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_log_in">4. log in</h3>
+<h3 id="true4-đăng-nhập"><a class="anchor" href="#true4-đăng-nhập"></a>4. Đăng nhập</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/log_in.svg" alt="log in" width="485" height="522">
+<img src="log_in.svg" alt="log in">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_5_register_account">5. register account</h3>
+<h3 id="true5-đăng-ký-tài-khoản"><a class="anchor" href="#true5-đăng-ký-tài-khoản"></a>5. Đăng ký tài khoản</h3>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Tài khoản trôi</div>
+<div class="paragraph">
+<p>Khi khách đặt xe trực tiếp với tổng đài hoặc lái xe,<br>
+Khách chỉ cung cấp số điện thoại,<br>
+Nhà xe cũng không cần hỏi tên,<br>
+đây là hoạt động thực tế đang diễn ra.<br>
+Chúng ta <strong>không nên phá vỡ luồng đi này</strong>.<br></p>
+</div>
+<div class="paragraph">
+<p>Trong dự án này,<br>
+khi nhà xe đặt chỗ cho khách theo số điện thoại<br>
+Hệ thống sẽ tìm tài khoản theo số điện thoại đó,<br>
+Hoặc tạo 1 tài khoản trôi chỉ gồm duy nhất số điện thoại.<br></p>
+</div>
+<div class="paragraph">
+<p>Khi khách hàng nào đó tạo mới tài khoản,<br>
+Nếu nhập vào số điện thoại thuộc <strong>tài khoản trôi</strong>,<br>
+Thì các thông tin đăng ký sẽ được gán cho tài khoản này.<br></p>
+</div>
+<div class="paragraph">
+<p>Như vậy chỉ bằng số điện thoại,<br>
+Khách sẽ thấy luôn được lịch sử đi xe của mình,<br>
+Dù mới lần đầu đăng ký.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/register.svg" alt="register" width="399" height="458">
+<img src="register.svg" alt="register">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_6_find_password">6. Find password</h3>
+<h3 id="true6-lấy-lại-mật-khẩu"><a class="anchor" href="#true6-lấy-lại-mật-khẩu"></a>6. Lấy lại mật khẩu</h3>
 <div class="sect3">
-<h4 id="_6_a_select_find_password_method">6.A. Select find password method</h4>
+<h4 id="true6-a-chọn-cách-thức-lấy-mật-khẩu"><a class="anchor" href="#true6-a-chọn-cách-thức-lấy-mật-khẩu"></a>6.A. Chọn cách thức lấy mật khẩu</h4>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/find_password.svg" alt="find password" width="590" height="261">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_6_b_1_find_password_by_phone_message">6.B.1. Find password by phone message</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/find_password_by_phone.svg" alt="find password by phone" width="810" height="849">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_6_b_2_find_password_by_email">6.B.2. Find password by email</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/find_password_by_email.svg" alt="find password by email" width="1051" height="577">
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_6_c_do_change_password">6.C. Do Change Password</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/find_password_do_change_password_flow.svg" alt="find password do change password flow" width="455" height="378">
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_7_view_trips_history">7. View Trips History</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/View_Trip_History.svg" alt="View Trip History" width="329" height="257">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_8_show_scheduled_trips">8. Show Scheduled Trips</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/show_scheduled_trip.svg" alt="show scheduled trip" width="518" height="326">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_9_cancel_trip">9. Cancel trip</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/cancel_trip.svg" alt="cancel trip" width="508" height="491">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_10_update_trip">10. Update trip</h3>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/update_trip.svg" alt="update trip" width="784" height="871">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_11_manage_buss_admin">11. Manage Buss Admin</h3>
-<div class="sect3">
-<h4 id="_11_a_list_of_buss_admins">11.A. List of Buss Admins</h4>
-<div class="imageblock">
-<div class="content">
-<img src="./uc_flow_files/list_buss_admins.svg" alt="list buss admins" width="456" height="237">
+<img src="find_password.svg" alt="find password">
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_11_b_add_buss_admin">11.B. Add Buss Admin</h4>
+<h4 id="true6-b-1-lấy-mật-khẩu-qua-sms"><a class="anchor" href="#true6-b-1-lấy-mật-khẩu-qua-sms"></a>6.B.1. Lấy mật khẩu qua SMS</h4>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/add_buss_admin.svg" alt="add buss admin" width="547" height="477">
+<img src="find_password_by_phone.svg" alt="find password by phone">
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_11_c_delete_buss_admin">11.C. Delete Buss Admin</h4>
+<h4 id="true6-b-2-lấy-mật-khẩu-qua-email"><a class="anchor" href="#true6-b-2-lấy-mật-khẩu-qua-email"></a>6.B.2. Lấy mật khẩu qua email</h4>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/delete_buss_admin.svg" alt="delete buss admin" width="663" height="431">
+<img src="find_password_by_email.svg" alt="find password by email">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true6-c-do-change-password"><a class="anchor" href="#true6-c-do-change-password"></a>6.C. Do Change Password</h4>
+<div class="imageblock">
+<div class="content">
+<img src="find_password_do_change_password_flow.svg" alt="find password do change password flow">
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_12_manage_buss_type">12. Manage Buss Type</h3>
-<div class="sect3">
-<h4 id="_12_a_list_of_buss_types">12.A. List of Buss Types</h4>
+<h3 id="true7-view-trips-history"><a class="anchor" href="#true7-view-trips-history"></a>7. View Trips History</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/list_buss_types.svg" alt="list buss types" width="438" height="237">
+<img src="View_Trip_History.svg" alt="View Trip History">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true8-show-scheduled-trips"><a class="anchor" href="#true8-show-scheduled-trips"></a>8. Show Scheduled Trips</h3>
+<div class="imageblock">
+<div class="content">
+<img src="show_scheduled_trip.svg" alt="show scheduled trip">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true9-cancel-trip"><a class="anchor" href="#true9-cancel-trip"></a>9. Cancel trip</h3>
+<div class="imageblock">
+<div class="content">
+<img src="cancel_trip.svg" alt="cancel trip">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true10-update-trip"><a class="anchor" href="#true10-update-trip"></a>10. Update trip</h3>
+<div class="imageblock">
+<div class="content">
+<img src="update_trip.svg" alt="update trip">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true11-manage-buss-organization"><a class="anchor" href="#true11-manage-buss-organization"></a>11. Manage Buss Organization</h3>
+<div class="sect3">
+<h4 id="true11-a-list-of-buss-organizations"><a class="anchor" href="#true11-a-list-of-buss-organizations"></a>11.A. List of Buss Organizations</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_buss_org.svg" alt="list buss org">
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_12_b_add_buss_type">12.B. Add Buss Type</h4>
+<h4 id="true11-b-add-buss-organization"><a class="anchor" href="#true11-b-add-buss-organization"></a>11.B. Add Buss Organization</h4>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/add_buss_type.svg" alt="add buss type" width="621" height="817">
+<img src="add_buss_org.svg" alt="add buss org">
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_12_c_delete_buss_type">12.C. Delete Buss Type</h4>
+<h4 id="true11-c-delete-buss-organization"><a class="anchor" href="#true11-c-delete-buss-organization"></a>11.C. Delete Buss Organization</h4>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/delete_buss_type.svg" alt="delete buss type" width="654" height="431">
+<img src="delete_buss_org.svg" alt="delete buss org">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true11-d-lock-buss-organization"><a class="anchor" href="#true11-d-lock-buss-organization"></a>11.D. Lock Buss Organization</h4>
+<div class="imageblock">
+<div class="content">
+<img src="lock_buss_orgs.svg" alt="lock buss orgs">
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_13_manage_busses">13. Manage Busses</h3>
-<div class="sect3">
-<h4 id="_13_a_list_of_busses">13.A. List of Busses</h4>
+<h3 id="true11-e-unlock-buss-organization"><a class="anchor" href="#true11-e-unlock-buss-organization"></a>11.E. Unlock Buss Organization</h3>
 <div class="imageblock">
 <div class="content">
-<img src="./uc_flow_files/delete_buss_type.svg" alt="delete buss type" width="654" height="431">
+<img src="unlock_buss_org.svg" alt="unlock buss org">
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="true12-manage-buss-type"><a class="anchor" href="#true12-manage-buss-type"></a>12. Manage Buss Type</h3>
+<div class="sect3">
+<h4 id="true12-a-list-of-buss-types"><a class="anchor" href="#true12-a-list-of-buss-types"></a>12.A. List of Buss Types</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_buss_types.svg" alt="list buss types">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true12-b-add-buss-type"><a class="anchor" href="#true12-b-add-buss-type"></a>12.B. Add Buss Type</h4>
+<div class="imageblock">
+<div class="content">
+<img src="add_buss_type.svg" alt="add buss type">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true12-c-delete-buss-type"><a class="anchor" href="#true12-c-delete-buss-type"></a>12.C. Delete Buss Type</h4>
+<div class="imageblock">
+<div class="content">
+<img src="delete_buss_type.svg" alt="delete buss type">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true13-manage-buss"><a class="anchor" href="#true13-manage-buss"></a>13. Manage Buss</h3>
+<div class="sect3">
+<h4 id="true13-a-list-of-busses"><a class="anchor" href="#true13-a-list-of-busses"></a>13.A. List of Busses</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_of_busses.svg" alt="list of busses">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true13-b-add-buss"><a class="anchor" href="#true13-b-add-buss"></a>13.B. Add Buss</h4>
+<div class="imageblock">
+<div class="content">
+<img src="add_buss.svg" alt="add buss">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true13-c-delete-buss"><a class="anchor" href="#true13-c-delete-buss"></a>13.C. Delete Buss</h4>
+<div class="imageblock">
+<div class="content">
+<img src="delete_buss.svg" alt="delete buss">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true13-d-lock-busses"><a class="anchor" href="#true13-d-lock-busses"></a>13.D. Lock Busses</h3>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+use lock/unlock busses function <br>
+when want to lock the buss in some days in future.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="lock_buss.svg" alt="lock buss">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true13-e-unlock-busses"><a class="anchor" href="#true13-e-unlock-busses"></a>13.E. Unlock Busses</h3>
+<div class="imageblock">
+<div class="content">
+<img src="unlock_busses.svg" alt="unlock busses">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="true14-manage-caller-staff"><a class="anchor" href="#true14-manage-caller-staff"></a>14. Manage Caller Staff</h3>
+<div class="sect3">
+<h4 id="true14-a-list-of-caller-staffs"><a class="anchor" href="#true14-a-list-of-caller-staffs"></a>14.A. List of Caller Staffs</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_of_busses.svg" alt="list of busses">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true14-b-add-caller-staff"><a class="anchor" href="#true14-b-add-caller-staff"></a>14.B. Add Caller Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true14-c-delete-caller-staff"><a class="anchor" href="#true14-c-delete-caller-staff"></a>14.C. Delete Caller Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true14-d-lock-caller-staff"><a class="anchor" href="#true14-d-lock-caller-staff"></a>14.D. Lock Caller Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true14-e-unlock-caller-staff"><a class="anchor" href="#true14-e-unlock-caller-staff"></a>14.E. Unlock Caller Staff</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true15-manage-buss-staff"><a class="anchor" href="#true15-manage-buss-staff"></a>15. Manage Buss Staff</h3>
+<div class="sect3">
+<h4 id="true15-a-list-of-buss-staffs"><a class="anchor" href="#true15-a-list-of-buss-staffs"></a>15.A. List of Buss Staffs</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true15-b-add-buss-staff"><a class="anchor" href="#true15-b-add-buss-staff"></a>15.B. Add Buss Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true15-c-delete-buss-staff"><a class="anchor" href="#true15-c-delete-buss-staff"></a>15.C. Delete Buss Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true15-d-lock-buss-staff"><a class="anchor" href="#true15-d-lock-buss-staff"></a>15.D. Lock Buss Staff</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true15-e-unlock-buss-staff"><a class="anchor" href="#true15-e-unlock-buss-staff"></a>15.E. Unlock Buss Staff</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true16-manage-buss-stop"><a class="anchor" href="#true16-manage-buss-stop"></a>16. Manage Buss Stop</h3>
+<div class="sect3">
+<h4 id="true16-a-list-of-buss-stops"><a class="anchor" href="#true16-a-list-of-buss-stops"></a>16.A. List of Buss Stops</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true16-b-add-buss-stop"><a class="anchor" href="#true16-b-add-buss-stop"></a>16.B. Add Buss Stop</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true16-c-delete-buss-stop"><a class="anchor" href="#true16-c-delete-buss-stop"></a>16.C. Delete Buss Stop</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true17-manage-path"><a class="anchor" href="#true17-manage-path"></a>17. Manage Path</h3>
+<div class="sect3">
+<h4 id="true17-a-list-of-paths"><a class="anchor" href="#true17-a-list-of-paths"></a>17.A. List of Paths</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true17-b-add-path"><a class="anchor" href="#true17-b-add-path"></a>17.B. Add Path</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true17-c-delete-path"><a class="anchor" href="#true17-c-delete-path"></a>17.C. Delete Path</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true18-manage-trip"><a class="anchor" href="#true18-manage-trip"></a>18. Manage Trip</h3>
+<div class="sect3">
+<h4 id="true18-1-list-of-trips"><a class="anchor" href="#true18-1-list-of-trips"></a>18.1. List of Trips</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true18-2-add-trip"><a class="anchor" href="#true18-2-add-trip"></a>18.2. Add Trip</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true18-3-delete-trip"><a class="anchor" href="#true18-3-delete-trip"></a>18.3. Delete Trip</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true19-manage-buss-trip"><a class="anchor" href="#true19-manage-buss-trip"></a>19. Manage Buss Trip</h3>
+<div class="sect3">
+<h4 id="true19-1-list-of-buss-trip"><a class="anchor" href="#true19-1-list-of-buss-trip"></a>19.1. List of Buss Trip</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true19-2-add-buss-trip"><a class="anchor" href="#true19-2-add-buss-trip"></a>19.2. Add Buss Trip</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true19-3-update-buss-trip"><a class="anchor" href="#true19-3-update-buss-trip"></a>19.3. Update Buss Trip</h4>
+
+</div>
+<div class="sect3">
+<h4 id="true19-4-delete-buss-trip"><a class="anchor" href="#true19-4-delete-buss-trip"></a>19.4. Delete Buss Trip</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="true20-list-of-pending-trips"><a class="anchor" href="#true20-list-of-pending-trips"></a>20. List of Pending Trips</h3>
+
+</div>
+<div class="sect2">
+<h3 id="true21-cancel-seat"><a class="anchor" href="#true21-cancel-seat"></a>21. Cancel Seat</h3>
+
+</div>
+<div class="sect2">
+<h3 id="true22-assign-seat"><a class="anchor" href="#true22-assign-seat"></a>22. Assign Seat</h3>
+
+</div>
+<div class="sect2">
+<h3 id="true23-payment-confirm"><a class="anchor" href="#true23-payment-confirm"></a>23. Payment Confirm</h3>
+
+</div>
+<div class="sect2">
+<h3 id="true24-lock-seat"><a class="anchor" href="#true24-lock-seat"></a>24. Lock Seat</h3>
+
+</div>
+<div class="sect2">
+<h3 id="true25-unlock-seat"><a class="anchor" href="#true25-unlock-seat"></a>25. Unlock Seat</h3>
+
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-21 17:12:37 +0700
+Last updated 2021-05-22 20:43:50 +0700
 </div>
 </div>
-
-
-</body></html>
+</body>
+</html>

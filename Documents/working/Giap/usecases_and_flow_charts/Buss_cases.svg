@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="263px" preserveAspectRatio="none" style="width:385px;height:263px;" version="1.1" viewBox="0 0 385 263" width="385px" zoomAndPan="magnify"><defs><filter height="300%" id="f1r9wr4wz0q5h" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[8e9b2d9d80e066cced8e5d90e9bdea61]
+entity c--><ellipse cx="68.5" cy="79" fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" rx="16" ry="16" style="stroke:#A80036;stroke-width:1.5;"/><path d="M68.5,99 C72.5,99 75.5,99 79.5,95 C87.5,95 95.5,103 95.5,111 L95.5,115 C95.5,119 91.5,123 87.5,123 L49.5,123 C45.5,123 41.5,119 41.5,115 L41.5,111 C41.5,103 49.5,95 57.5,95 C61.5,99 64.5,99 68.5,99 " fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125" x="6" y="139.0332">Nhân viên Tổng Đài</text><!--MD5=[5d12e840fb55afd9ed7b3559a638e8f7]
+entity b--><ellipse cx="68.5" cy="195" fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" rx="16" ry="16" style="stroke:#A80036;stroke-width:1.5;"/><path d="M68.5,215 C72.5,215 75.5,215 79.5,211 C87.5,211 95.5,219 95.5,227 L95.5,231 C95.5,235 91.5,239 87.5,239 L49.5,239 C45.5,239 41.5,235 41.5,231 L41.5,227 C41.5,219 49.5,211 57.5,211 C61.5,215 64.5,215 68.5,215 " fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="81" x="28" y="255.0332">Nhân viên xe</text><ellipse cx="282.2904" cy="217.9034" fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" rx="51.7904" ry="27.9034" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="253.7904" y="212.8272">Khóa/mở</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="26" x="269.2904" y="230.4366">Chỗ</text><ellipse cx="282.4325" cy="33.9034" fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" rx="65.9325" ry="27.9034" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="77" x="243.9325" y="28.8272">hủy-tạo-sửa</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52" x="256.4325" y="46.4366">Đặt Chỗ</text><ellipse cx="282.2628" cy="118.1526" fill="#FEFECE" filter="url(#f1r9wr4wz0q5h)" rx="91.2628" ry="20.6526" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141" x="211.7628" y="121.8811">Xác nhận Thanh Toán</text><!--MD5=[e59047798e7883395807b82794a479ab]
+link b to Khóa/mở\nChỗ--><path d="M109.38,218 C141.96,218 188.42,218 224.86,218 " fill="none" id="b-to-Khóa/mở\nChỗ" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="230.16,218,221.16,214,225.16,218,221.16,222,230.16,218" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[a92d1cc94e3e7ae2a45f0892b0c4d4f9]
+link c to hủy-tạo-sửa\nĐặt Chỗ--><path d="M131.1,82.24 C160.57,72.79 195.63,61.54 224.48,52.29 " fill="none" id="c-to-hủy-tạo-sửa\nĐặt Chỗ" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="229.43,50.7,219.6387,49.6365,224.6684,52.2254,222.0794,57.2551,229.43,50.7" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[946674cc8ecb813c69fc2bd0c71673d8]
+link c to Xác nhận Thanh Toán--><path d="M131.1,106.65 C149.59,108.04 170.27,109.61 190.24,111.11 " fill="none" id="c-to-Xác nhận Thanh Toán" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="195.3,111.49,186.622,106.8324,190.3138,111.1185,186.0277,114.8103,195.3,111.49" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[5cfd5ce9a506cfb0d5c9cbe770b357be]
+reverse link c to b--><path d="M68.5,162.59 C68.5,167.47 68.5,172.34 68.5,177.22 " fill="none" id="c-backto-b" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="none" points="61.5,162.55,68.5,142.55,75.5,162.55,61.5,162.55" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[788d2ba3047377d31a71aaf7dbd74571]
+@startuml
+
+left to right direction
+skinparam actorStyle awesome
+:Nhân viên Tổng Đài: as c
+:Nhân viên xe: as b
+
+b - -> (Khóa/mở\nChỗ)
+c - -> (hủy-tạo-sửa\nĐặt Chỗ)
+c - -> (Xác nhận Thanh Toán)
+b -left-|> c
+
+@enduml
+
+PlantUML version 1.2021.2(Sun Mar 07 18:10:27 ICT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: Eclipse OpenJ9 VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
