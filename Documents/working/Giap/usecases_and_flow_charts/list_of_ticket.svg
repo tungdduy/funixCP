@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="829.1667px" preserveAspectRatio="none" style="width:689px;height:829px;" version="1.1" viewBox="0 0 689 829" width="689.5833px" zoomAndPan="magnify"><defs><filter height="300%" id="f1luixbpuiqjmy" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="4.166666666666667"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="8.333333333333334" dy="8.333333333333334" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><ellipse cx="160.4167" cy="104.366" fill="#000000" filter="url(#f1luixbpuiqjmy)" rx="20.8333" ry="20.8333" style="stroke:none;stroke-width:2.0833333333333335;"/><rect fill="#FEFECE" filter="url(#f1luixbpuiqjmy)" height="104.5573" rx="26.0417" ry="26.0417" style="stroke:#A80036;stroke-width:3.125;" width="204.1667" x="58.3333" y="166.866"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="150" x="79.1667" y="213.6515">Mở màn hình</text><text fill="#000000" font-family="sans-serif" font-size="25" font-weight="bold" lengthAdjust="spacing" textLength="162.5" x="79.1667" y="245.0968">Danh sách Vé</text><rect fill="#FEFECE" filter="url(#f1luixbpuiqjmy)" height="104.5573" rx="26.0417" ry="26.0417" style="stroke:#A80036;stroke-width:3.125;" width="233.3333" x="43.75" y="313.09"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="191.6667" x="64.5833" y="359.8755">Chọn Chuyến Xe</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="152.0833" x="64.5833" y="391.3208">muốn xem vé</text><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="31.25" x2="31.25" y1="25.9481" y2="804.4312"/><rect fill="#FEFECE" filter="url(#f1luixbpuiqjmy)" height="198.8932" rx="26.0417" ry="26.0417" style="stroke:#A80036;stroke-width:3.125;" width="318.75" x="310.4167" y="459.314"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="87.5" x="331.25" y="506.0994">Hiển thị</text><text fill="#000000" font-family="sans-serif" font-size="25" font-weight="bold" lengthAdjust="spacing" textLength="108.3333" x="331.25" y="537.5448">Sơ đồ Xe</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="25" x="445.8333" y="537.5448">và</text><text fill="#000000" font-family="sans-serif" font-size="25" font-weight="bold" lengthAdjust="spacing" textLength="162.5" x="331.25" y="568.9901">tình trạng ghế</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="277.0833" x="331.25" y="600.4354">theo Chuyến Xe đã chọn</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="156.25" x="331.25" y="631.8807">thời gian thực</text><polygon fill="#90EE90" filter="url(#f1luixbpuiqjmy)" points="369.7917,699.8739,569.7917,699.8739,590.625,752.1525,569.7917,804.4312,369.7917,804.4312" style="stroke:#A80036;stroke-width:3.125;"/><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="158.3333" x="390.625" y="746.6593">Sẵn sàng cho</text><text fill="#000000" font-family="sans-serif" font-size="25" lengthAdjust="spacing" textLength="150" x="390.625" y="778.1047">flow tiếp theo</text><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="297.9167" x2="297.9167" y1="25.9481" y2="804.4312"/><line style="stroke:#000000;stroke-width:4.166666666666667;" x1="650" x2="650" y1="25.9481" y2="804.4312"/><line style="stroke:#A80036;stroke-width:3.125;" x1="160.4167" x2="160.4167" y1="125.1994" y2="166.866"/><polygon fill="#A80036" points="152.0833,146.0327,160.4167,166.866,168.75,146.0327,160.4167,154.366" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><line style="stroke:#A80036;stroke-width:3.125;" x1="160.4167" x2="160.4167" y1="271.4233" y2="313.09"/><polygon fill="#A80036" points="152.0833,292.2567,160.4167,313.09,168.75,292.2567,160.4167,300.59" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><line style="stroke:#A80036;stroke-width:3.125;" x1="469.7917" x2="469.7917" y1="658.2072" y2="699.8739"/><polygon fill="#A80036" points="461.4583,679.0405,469.7917,699.8739,478.125,679.0405,469.7917,687.3739" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><line style="stroke:#A80036;stroke-width:3.125;" x1="160.4167" x2="160.4167" y1="417.6473" y2="428.064"/><line style="stroke:#A80036;stroke-width:3.125;" x1="160.4167" x2="469.7917" y1="428.064" y2="428.064"/><line style="stroke:#A80036;stroke-width:3.125;" x1="469.7917" x2="469.7917" y1="428.064" y2="459.314"/><polygon fill="#A80036" points="461.4583,438.4806,469.7917,459.314,478.125,438.4806,469.7917,446.814" style="stroke:#A80036;stroke-width:2.0833333333333335;"/><text fill="#000000" font-family="sans-serif" font-size="37.5" lengthAdjust="spacing" textLength="172.9167" x="83.3333" y="64.8763">Nhân Viên</text><text fill="#000000" font-family="sans-serif" font-size="37.5" lengthAdjust="spacing" textLength="166.6667" x="395.8333" y="64.8763">Hệ Thống</text><!--MD5=[64522e27124ee3e5b8b43ffb1f7dc4fe]
+@startuml
+skinparam dpi 200
+
+|Staff| Nhân Viên
+	start
+
+	:Mở màn hình
+	<b>Danh sách Vé</b>;
+
+	:Chọn Chuyến Xe
+	muốn xem vé;
+
+|System| Hệ Thống
+
+	:Hiển thị
+	<b>Sơ đồ Xe</b> và
+	<b>tình trạng ghế</b>
+	theo Chuyến Xe đã chọn
+	thời gian thực;
+
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+@enduml
+
+PlantUML version 1.2021.2(Sun Mar 07 18:10:27 ICT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: Eclipse OpenJ9 VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.8.dev">
-<title>Đồ án tốt nghiệp Funix</title>
+<title>Hệ thống quản lý nhà xe</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,7 +438,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Đồ án tốt nghiệp Funix</h1>
+<h1>Hệ thống quản lý nhà xe</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -515,44 +515,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#true12-e-mở-khóa-nhân-viên-xe">12.E. Mở Khóa Nhân Viên Xe</a></li>
 </ul>
 </li>
-<li><a href="#true13-quản-lý-điểm-dừng">13. Quản lý Điểm Dừng</a>
+<li><a href="#true13-quản-lý-chuyến-xe">13. Quản lý Chuyến Xe</a>
 <ul class="sectlevel3">
-<li><a href="#true13-a-danh-sách-điểm-dừng">13.A. Danh sách Điểm Dừng</a></li>
-<li><a href="#true13-b-thêm-điểm-dừng">13.B. Thêm Điểm Dừng</a></li>
-<li><a href="#true13-c-xóa-điểm-dừng">13.C. Xóa Điểm Dừng</a></li>
+<li><a href="#true13-a-danh-sách-chuyến-xe">13.A. Danh sách Chuyến Xe</a></li>
+<li><a href="#true13-b-thêm-chuyến-xe">13.B. Thêm Chuyến Xe</a></li>
+<li><a href="#true13-c-sửa-chuyến-xe">13.C. Sửa Chuyến Xe</a></li>
+<li><a href="#true13-d-xóa-chuyến-xe">13.D. Xóa Chuyến Xe</a></li>
 </ul>
 </li>
-<li><a href="#true14-quản-lý-đường-đi">14. Quản lý Đường Đi</a>
+<li><a href="#true14-quản-lý-điểm-dừng">14. Quản lý Điểm Dừng</a>
 <ul class="sectlevel3">
-<li><a href="#true14-a-danh-sách-đường-đi">14.A. Danh sách Đường Đi</a></li>
-<li><a href="#true14-b-thêm-đường-đi">14.B. Thêm Đường Đi</a></li>
-<li><a href="#true14-c-xóa-đường-đi">14.C. Xóa Đường Đi</a></li>
-<li><a href="#true14-d-tạo-đường-đi-mới-từ-đường-đi-đang-chọn">14.D. Tạo Đường Đi mới từ Đường Đi đang chọn.</a></li>
+<li><a href="#true14-a-danh-sách-điểm-dừng">14.A. Danh sách Điểm Dừng</a></li>
+<li><a href="#true14-b-thêm-điểm-dừng">14.B. Thêm Điểm Dừng</a></li>
+<li><a href="#true14-c-xóa-điểm-dừng">14.C. Xóa Điểm Dừng</a></li>
+<li><a href="#true14-d-gán-điểm-dừng-vào-chuyến-xe">14.D. Gán Điểm Dừng vào Chuyến Xe</a></li>
+<li><a href="#true14-e-gỡ-điểm-dừng-khỏi-chuyến-xe">14.E. Gỡ Điểm Dừng khỏi Chuyến Xe</a></li>
 </ul>
 </li>
-<li><a href="#true15-quản-lý-hành-trình">15. Quản lý Hành Trình</a>
+<li><a href="#true15-quản-lý-vé">15. Quản lý Vé</a>
 <ul class="sectlevel3">
-<li><a href="#true15-a-danh-sách-hành-trình">15.A. Danh sách Hành Trình</a></li>
-<li><a href="#true15-b-thêm-hành-trình">15.B. Thêm Hành Trình</a></li>
-<li><a href="#true15-c-xóa-hành-trình">15.C. Xóa Hành Trình</a></li>
-</ul>
-</li>
-<li><a href="#true16-quản-lý-chuyến-xe">16. Quản lý Chuyến Xe</a>
-<ul class="sectlevel3">
-<li><a href="#true16-a-danh-sách-chuyến-xe">16.A. Danh sách Chuyến Xe</a></li>
-<li><a href="#true16-b-thêm-chuyến-xe">16.B. Thêm Chuyến Xe</a></li>
-<li><a href="#true16-c-sửa-chuyến-xe">16.C. Sửa Chuyến Xe</a></li>
-<li><a href="#true16-d-xóa-chuyến-xe">16.D. Xóa Chuyến Xe</a></li>
-</ul>
-</li>
-<li><a href="#true17-quản-lý-xe-chạy">17. Quản lý Xe Chạy</a>
-<ul class="sectlevel3">
-<li><a href="#true17-a-danh-sách-chuyến-xe-đặt-trước">17.A. Danh sách Chuyến Xe đặt trước</a></li>
-<li><a href="#true17-b-thêm-ghế-đặt-trước">17.B. Thêm Ghế đặt trước</a></li>
-<li><a href="#true17-c-sửa-ghế-đặt-trước">17.C. Sửa Ghế đặt trước</a></li>
-<li><a href="#true17-d-khóa-ghế">17.D. Khóa Ghế</a></li>
-<li><a href="#true17-e-mở-khóa-ghế">17.E. Mở khóa Ghế</a></li>
-<li><a href="#true17-f-xác-nhận-thanh-toán">17.F. Xác nhận Thanh Toán</a></li>
+<li><a href="#true15-a-danh-sách-vé">15.A. Danh sách Vé</a></li>
+<li><a href="#true15-b-thêm-vé">15.B. Thêm Vé</a></li>
+<li><a href="#true15-c-sửa-vé">15.C. Sửa Vé</a></li>
+<li><a href="#true15-d-hủy-vé">15.D. Hủy Vé</a></li>
+<li><a href="#true15-d-xác-nhận-thanh-toán">15.D. Xác nhận Thanh Toán</a></li>
 </ul>
 </li>
 </ul>
@@ -682,7 +668,7 @@ có thể khái quát lại và triển khai những tính năng phân quyền c
 </td>
 <td class="content">
 <div class="paragraph">
-<p><strong>Nhân Viên Xe</strong> là các nhân viên quản lý trực tiếp 1 xe nào đó.<br>
+<p><strong>Nhân Viên Xe</strong> là các Nhân Viên quản lý trực tiếp 1 xe nào đó.<br>
 Vì tình hình thực tế trên xe có thể thay đổi thất thường,<br>
 Nên những người này có quyền hạn cao nhất đối với xe họ quản lý.<br>
 Thể hiện ở quyền <strong>khóa/mở</strong> 1 ghế nào đó trên xe.</p>
@@ -700,7 +686,7 @@ Thể hiện ở quyền <strong>khóa/mở</strong> 1 ghế nào đó trên xe.
 <td class="content">
 <div class="paragraph">
 <p><strong>Nhân Viên Tổng Đài</strong> có thể xếp vé cho nhiều xe khác nhau<br>
-trong nhà xe mà nhân viên đó phụ trách.</p>
+trong nhà xe mà Nhân Viên đó phụ trách.</p>
 </div>
 </td>
 </tr>
@@ -752,7 +738,7 @@ trong nhà xe mà nhân viên đó phụ trách.</p>
 <td class="content">
 <div class="title">Tài khoản trôi</div>
 <div class="paragraph">
-<p>Khi khách đặt xe trực tiếp với tổng đài hoặc lái xe,<br>
+<p>Khi khách đặt xe trực tiếp với Tổng Đài hoặc lái xe,<br>
 Khách chỉ cung cấp số điện thoại,<br>
 Nhà xe cũng không cần hỏi tên,<br>
 đây là hoạt động thực tế đang diễn ra.<br>
@@ -1006,137 +992,199 @@ khỏi kết quả tìm kiếm hành trình!</p>
 </div>
 <div class="sect3">
 <h4 id="true11-b-thêm-nhân-viên-tổng-đài"><a class="anchor" href="#true11-b-thêm-nhân-viên-tổng-đài"></a>11.B. Thêm Nhân Viên Tổng Đài</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="add_caller_staff.svg" alt="add caller staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true11-c-xóa-nhân-viên-tổng-đài"><a class="anchor" href="#true11-c-xóa-nhân-viên-tổng-đài"></a>11.C. Xóa Nhân Viên Tổng Đài</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="delete_caller_staff.svg" alt="delete caller staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true11-d-khóa-nhân-viên-tổng-đài"><a class="anchor" href="#true11-d-khóa-nhân-viên-tổng-đài"></a>11.D. Khóa Nhân Viên Tổng Đài</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="lock_caller_staff.svg" alt="lock caller staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true11-e-mở-khóa-nhân-viên-tổng-đài"><a class="anchor" href="#true11-e-mở-khóa-nhân-viên-tổng-đài"></a>11.E. Mở khóa Nhân Viên Tổng Đài</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="unlock_caller_staffs.svg" alt="unlock caller staffs">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="true12-quản-lý-nhân-viên-xe"><a class="anchor" href="#true12-quản-lý-nhân-viên-xe"></a>12. Quản lý Nhân Viên Xe</h3>
 <div class="sect3">
 <h4 id="true12-a-danh-sách-nhân-viên-xe"><a class="anchor" href="#true12-a-danh-sách-nhân-viên-xe"></a>12.A. Danh sách Nhân Viên Xe</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="list_of_buss_staffs.svg" alt="list of buss staffs">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true12-b-thêm-nhân-viên-xe"><a class="anchor" href="#true12-b-thêm-nhân-viên-xe"></a>12.B. Thêm Nhân Viên Xe</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="add_buss_staff.svg" alt="add buss staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true12-c-xóa-nhân-viên-xe"><a class="anchor" href="#true12-c-xóa-nhân-viên-xe"></a>12.C. Xóa Nhân Viên Xe</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="delete_buss_staff.svg" alt="delete buss staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true12-d-khóa-nhân-viên-xe"><a class="anchor" href="#true12-d-khóa-nhân-viên-xe"></a>12.D. Khóa Nhân Viên Xe</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="lock_buss_staff.svg" alt="lock buss staff">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="true12-e-mở-khóa-nhân-viên-xe"><a class="anchor" href="#true12-e-mở-khóa-nhân-viên-xe"></a>12.E. Mở Khóa Nhân Viên Xe</h4>
-
+<div class="imageblock">
+<div class="content">
+<img src="unlock_buss_staffs.svg" alt="unlock buss staffs">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true13-quản-lý-điểm-dừng"><a class="anchor" href="#true13-quản-lý-điểm-dừng"></a>13. Quản lý Điểm Dừng</h3>
+<h3 id="true13-quản-lý-chuyến-xe"><a class="anchor" href="#true13-quản-lý-chuyến-xe"></a>13. Quản lý Chuyến Xe</h3>
 <div class="sect3">
-<h4 id="true13-a-danh-sách-điểm-dừng"><a class="anchor" href="#true13-a-danh-sách-điểm-dừng"></a>13.A. Danh sách Điểm Dừng</h4>
-
+<h4 id="true13-a-danh-sách-chuyến-xe"><a class="anchor" href="#true13-a-danh-sách-chuyến-xe"></a>13.A. Danh sách Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_of_buss_trip.svg" alt="list of buss trip">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true13-b-thêm-điểm-dừng"><a class="anchor" href="#true13-b-thêm-điểm-dừng"></a>13.B. Thêm Điểm Dừng</h4>
-
+<h4 id="true13-b-thêm-chuyến-xe"><a class="anchor" href="#true13-b-thêm-chuyến-xe"></a>13.B. Thêm Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="add_buss_trip.svg" alt="add buss trip">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true13-c-xóa-điểm-dừng"><a class="anchor" href="#true13-c-xóa-điểm-dừng"></a>13.C. Xóa Điểm Dừng</h4>
-
+<h4 id="true13-c-sửa-chuyến-xe"><a class="anchor" href="#true13-c-sửa-chuyến-xe"></a>13.C. Sửa Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="edit_buss_trip.svg" alt="edit buss trip">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true13-d-xóa-chuyến-xe"><a class="anchor" href="#true13-d-xóa-chuyến-xe"></a>13.D. Xóa Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="delete_buss_trip.svg" alt="delete buss trip">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true14-quản-lý-đường-đi"><a class="anchor" href="#true14-quản-lý-đường-đi"></a>14. Quản lý Đường Đi</h3>
+<h3 id="true14-quản-lý-điểm-dừng"><a class="anchor" href="#true14-quản-lý-điểm-dừng"></a>14. Quản lý Điểm Dừng</h3>
 <div class="sect3">
-<h4 id="true14-a-danh-sách-đường-đi"><a class="anchor" href="#true14-a-danh-sách-đường-đi"></a>14.A. Danh sách Đường Đi</h4>
-
+<h4 id="true14-a-danh-sách-điểm-dừng"><a class="anchor" href="#true14-a-danh-sách-điểm-dừng"></a>14.A. Danh sách Điểm Dừng</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_of_buss_stop.svg" alt="list of buss stop">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true14-b-thêm-đường-đi"><a class="anchor" href="#true14-b-thêm-đường-đi"></a>14.B. Thêm Đường Đi</h4>
-
+<h4 id="true14-b-thêm-điểm-dừng"><a class="anchor" href="#true14-b-thêm-điểm-dừng"></a>14.B. Thêm Điểm Dừng</h4>
+<div class="imageblock">
+<div class="content">
+<img src="add_buss_stop.svg" alt="add buss stop">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true14-c-xóa-đường-đi"><a class="anchor" href="#true14-c-xóa-đường-đi"></a>14.C. Xóa Đường Đi</h4>
-
+<h4 id="true14-c-xóa-điểm-dừng"><a class="anchor" href="#true14-c-xóa-điểm-dừng"></a>14.C. Xóa Điểm Dừng</h4>
+<div class="imageblock">
+<div class="content">
+<img src="delete_buss_stop.svg" alt="delete buss stop">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true14-d-tạo-đường-đi-mới-từ-đường-đi-đang-chọn"><a class="anchor" href="#true14-d-tạo-đường-đi-mới-từ-đường-đi-đang-chọn"></a>14.D. Tạo Đường Đi mới từ Đường Đi đang chọn.</h4>
-
+<h4 id="true14-d-gán-điểm-dừng-vào-chuyến-xe"><a class="anchor" href="#true14-d-gán-điểm-dừng-vào-chuyến-xe"></a>14.D. Gán Điểm Dừng vào Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="assign_buss_stop_to_trip.svg" alt="assign buss stop to trip">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="true14-e-gỡ-điểm-dừng-khỏi-chuyến-xe"><a class="anchor" href="#true14-e-gỡ-điểm-dừng-khỏi-chuyến-xe"></a>14.E. Gỡ Điểm Dừng khỏi Chuyến Xe</h4>
+<div class="imageblock">
+<div class="content">
+<img src="assign_buss_stop_to_trip.svg" alt="assign buss stop to trip">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="true15-quản-lý-hành-trình"><a class="anchor" href="#true15-quản-lý-hành-trình"></a>15. Quản lý Hành Trình</h3>
+<h3 id="true15-quản-lý-vé"><a class="anchor" href="#true15-quản-lý-vé"></a>15. Quản lý Vé</h3>
 <div class="sect3">
-<h4 id="true15-a-danh-sách-hành-trình"><a class="anchor" href="#true15-a-danh-sách-hành-trình"></a>15.A. Danh sách Hành Trình</h4>
-
-</div>
-<div class="sect3">
-<h4 id="true15-b-thêm-hành-trình"><a class="anchor" href="#true15-b-thêm-hành-trình"></a>15.B. Thêm Hành Trình</h4>
-
-</div>
-<div class="sect3">
-<h4 id="true15-c-xóa-hành-trình"><a class="anchor" href="#true15-c-xóa-hành-trình"></a>15.C. Xóa Hành Trình</h4>
-
+<h4 id="true15-a-danh-sách-vé"><a class="anchor" href="#true15-a-danh-sách-vé"></a>15.A. Danh sách Vé</h4>
+<div class="imageblock">
+<div class="content">
+<img src="list_of_ticket.svg" alt="list of ticket">
 </div>
 </div>
-<div class="sect2">
-<h3 id="true16-quản-lý-chuyến-xe"><a class="anchor" href="#true16-quản-lý-chuyến-xe"></a>16. Quản lý Chuyến Xe</h3>
-<div class="sect3">
-<h4 id="true16-a-danh-sách-chuyến-xe"><a class="anchor" href="#true16-a-danh-sách-chuyến-xe"></a>16.A. Danh sách Chuyến Xe</h4>
-
 </div>
 <div class="sect3">
-<h4 id="true16-b-thêm-chuyến-xe"><a class="anchor" href="#true16-b-thêm-chuyến-xe"></a>16.B. Thêm Chuyến Xe</h4>
-
+<h4 id="true15-b-thêm-vé"><a class="anchor" href="#true15-b-thêm-vé"></a>15.B. Thêm Vé</h4>
+<div class="imageblock">
+<div class="content">
+<img src="add_ticket.svg" alt="add ticket">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true16-c-sửa-chuyến-xe"><a class="anchor" href="#true16-c-sửa-chuyến-xe"></a>16.C. Sửa Chuyến Xe</h4>
-
+<h4 id="true15-c-sửa-vé"><a class="anchor" href="#true15-c-sửa-vé"></a>15.C. Sửa Vé</h4>
+<div class="imageblock">
+<div class="content">
+<img src="edit_ticket.svg" alt="edit ticket">
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="true16-d-xóa-chuyến-xe"><a class="anchor" href="#true16-d-xóa-chuyến-xe"></a>16.D. Xóa Chuyến Xe</h4>
-
+<h4 id="true15-d-hủy-vé"><a class="anchor" href="#true15-d-hủy-vé"></a>15.D. Hủy Vé</h4>
+<div class="imageblock">
+<div class="content">
+<img src="cancel_seat.svg" alt="cancel seat">
 </div>
 </div>
-<div class="sect2">
-<h3 id="true17-quản-lý-xe-chạy"><a class="anchor" href="#true17-quản-lý-xe-chạy"></a>17. Quản lý Xe Chạy</h3>
-<div class="sect3">
-<h4 id="true17-a-danh-sách-chuyến-xe-đặt-trước"><a class="anchor" href="#true17-a-danh-sách-chuyến-xe-đặt-trước"></a>17.A. Danh sách Chuyến Xe đặt trước</h4>
-
 </div>
 <div class="sect3">
-<h4 id="true17-b-thêm-ghế-đặt-trước"><a class="anchor" href="#true17-b-thêm-ghế-đặt-trước"></a>17.B. Thêm Ghế đặt trước</h4>
-
+<h4 id="true15-d-xác-nhận-thanh-toán"><a class="anchor" href="#true15-d-xác-nhận-thanh-toán"></a>15.D. Xác nhận Thanh Toán</h4>
+<div class="imageblock">
+<div class="content">
+<img src="payment_confirm.svg" alt="payment confirm">
 </div>
-<div class="sect3">
-<h4 id="true17-c-sửa-ghế-đặt-trước"><a class="anchor" href="#true17-c-sửa-ghế-đặt-trước"></a>17.C. Sửa Ghế đặt trước</h4>
-
 </div>
-<div class="sect3">
-<h4 id="true17-d-khóa-ghế"><a class="anchor" href="#true17-d-khóa-ghế"></a>17.D. Khóa Ghế</h4>
-
-</div>
-<div class="sect3">
-<h4 id="true17-e-mở-khóa-ghế"><a class="anchor" href="#true17-e-mở-khóa-ghế"></a>17.E. Mở khóa Ghế</h4>
-
-</div>
-<div class="sect3">
-<h4 id="true17-f-xác-nhận-thanh-toán"><a class="anchor" href="#true17-f-xác-nhận-thanh-toán"></a>17.F. Xác nhận Thanh Toán</h4>
-
 </div>
 </div>
 </div>
@@ -1144,7 +1192,7 @@ khỏi kết quả tìm kiếm hành trình!</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-05-25 07:18:30 +0700
+Last updated 2021-05-28 09:06:11 +0700
 </div>
 </div>
 </body>
