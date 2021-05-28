@@ -36,7 +36,7 @@ Tất cả tính năng của người dùng có tài khoản +
 đều yêu cầu *đã đăng nhập vào Hệ Thống*
 ====
 
-[plantuml, User_usecases, svg]     
+[plantuml, user_usecases, svg]     
 ....
 left to right direction
 skinparam actorStyle awesome 
