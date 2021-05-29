@@ -1,0 +1,163 @@
+= CSDL Hệ thống quản lý nhà xe
+:experimental:
+:source-highlighter:
+:toc: left
+
+[plantuml, classes, svg]    
+....
+left to right direction
+
+class User {
+	user_id
+	full_name
+	email
+	phone
+	password
+}
+
+
+package company.setup {
+	class Company {
+		company_id
+		company_name
+		company_desc
+		is_lock
+	}
+	
+	
+	class Company_Staff {
+		company_id
+		user_id
+		staff_role
+		is_lock
+	}
+}
+
+package buss.operation {
+	class Buss {
+		buss_id
+		company_id
+		buss_type_id
+		buss_name
+		is_lock
+	}
+	
+	class Buss_Staff {
+		user_id
+		buss_id
+		is_lock
+	}
+}
+
+
+package buss.config {
+	class Buss_Type {
+		buss_type_id
+		name
+		description
+	}
+	
+	class Seat {
+		seat_id
+		buss_type_id
+		name
+	}
+}
+
+package position {
+	class Stop_Location {
+		stop_id
+		location_id
+		buss_stop_desc
+	}
+
+	class Location #pink {
+		location_id
+		location_name
+		location_parent
+	}
+}
+
+package trip.setup {
+	class Trip_Buss {
+		trip_buss_id
+		buss_id
+		launch_time
+		start_location
+		end_location
+		effective_date_from
+		price
+		sunday
+		monday
+		tuesday
+		wednesday
+		thursday
+		friday
+		saturday
+	}
+	
+	class Trip_Stop {
+		trip_buss_id
+		stop_id
+	}
+}
+
+package trip.operation {
+	class Trip {
+		trip_id
+		trip_buss_id
+		price
+		status
+		start_time
+		start_location
+		end_location
+	}
+	
+	class Trip_User {
+		trip_id
+		user_id
+		total_price
+		status
+		confirmed_by
+		confirmed_date
+	}
+	
+	class Trip_Seat {
+		trip_id
+		user_id
+		seat_id
+	}
+}
+
+
+
+Trip_Seat::trip_id --> Trip::trip_id
+Trip_Seat::user_id --> User::user_id
+Trip_Seat::seat_id --> Seat::seat_id
+
+Trip_User::user_id --> User::user_id
+Trip_User::trip_id --> Trip::trip_id
+
+Seat::buss_type_id --> Buss_Type::buss_type_id
+
+Trip::start_location --> Stop_Location::stop_id
+Trip::end_location --> Stop_Location::stop_id
+
+Company_Staff::user_id --> User::user_id
+Company_Staff::company_id --> Company::company_id
+
+Buss::company_id --> Company::company_id
+Buss::buss_type_id --> Buss_Type::buss_type_id
+
+Buss_Staff::user_id --> User::user_id
+Buss_Staff::buss_id --> Buss::buss_id
+
+Trip_Buss::buss_id --> Buss::buss_id
+Stop_Location::location_id --> Location::location_id
+
+Trip_Stop::trip_buss_id --> Trip_Buss::trip_buss_id
+Trip_Stop::stop_id --> Stop_Location::stop_id
+
+
+
+....
