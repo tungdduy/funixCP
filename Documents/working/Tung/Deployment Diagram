@@ -1,0 +1,35 @@
+@startuml
+node endUser as "Computer" <<device>>
+
+cloud GoogleCloudComputing <<FSBServer>>{
+  frame  WebServer{
+    artifact nginx
+  }
+
+  frame CDN{
+    storage image_cdn as "Images"
+  }
+
+  frame Application{
+    artifact fsb.jar
+  }
+
+  frame DB{ 
+    artifact MySQL
+  }
+
+}
+
+cloud Firebase{
+    artifact CloudMessaging as "Cloud Messaging"
+}
+
+endUser --> WebServer   
+
+WebServer   -> CDN
+WebServer   --> Application
+
+Application --> DB
+Application -ri-> Firebase
+Application --> CDN
+@enduml
