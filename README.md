@@ -11,7 +11,7 @@
 ### Tùng
 Tên công việc | Thuộc báo cáo | Dự Kiến | Thực Tế | Github Link
 ------------  | ------------- |-------- | ------- | -----------
-Deployment Diagram |  | 30/05/2021     | 30/05/2021 | [link] (https://raw.githubusercontent.com/tungdduy/funixCP/main/Documents/working/Tung/Deployment%20Diagram)
+Deployment Diagram |  | 30/05/2021     | 30/05/2021 | [link](https://raw.githubusercontent.com/tungdduy/funixCP/main/Documents/working/Tung/Deployment%20Diagram)
 
 
 ### Minh
