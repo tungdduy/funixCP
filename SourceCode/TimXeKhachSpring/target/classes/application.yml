@@ -1,0 +1,41 @@
+xekhach:
+  security:
+    allowedHeaders: ["Origin", "Access-Control-Allow-Origin", "Content-Type",
+                     "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
+                     "Access-Control-Request-Method", "Access-Control-Request-Headers"]
+    exposedHeaders: ["Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization",
+                     "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"]
+    allowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    jwtSecret: "D!1qYZk3S1d9@cbFnE$E*$pGB$QS3rC"
+    tokenPrefix: "Bearer "
+    tokenHeader: "Jwt-Token"
+    expirationTime: 432000000 # 5 days in milliseconds
+    authorities: "authorities"
+    httpMethodOption: "OPTIONS"
+    publicUrls: ["/user/login", "/user/list", "/user/register", "/user/**"]
+    maximumNumberOfLoginAttempts: 5
+    jwtIssuer: "TimXeKhach"
+    jwtAudience: "TimXeKhachAdministration"
+    allowedOrigins: ["http://localhost:4200"]
+
+
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/timxekhach
+    password: p@iGoec414100
+    username: root
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
