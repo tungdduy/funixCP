@@ -56,6 +56,6 @@ public class AccountService {
            updateUser.setId(id);
            userRepository.save(updateUser);
            return XeResponseUtils.success();
-        }).orElseGet(USER_NOT_FOUND::getErrorResponse);
+        }).orElseGet(UNDEFINED_ERROR::getErrorResponse);
     }
 }

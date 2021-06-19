@@ -1,43 +1,28 @@
 package net.timxekhach.utility.pojo;
 
 import lombok.Getter;
-import lombok.NonNull;
 import net.timxekhach.operation.response.ErrorCode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Map;
 
 @Getter
 public class Message {
-    String messageCode;
-    List<Param> params = new ArrayList<>();
+    String code;
+    Map<String, String> params = new HashMap<>();
 
     public Message(ErrorCode errorCode, String... paramValues) {
-        this.messageCode = errorCode.name();
-        if(paramValues != null) {
-            for(int i = 0; i < paramValues.length; i++) {
-                String paramName = "UNDEFINED";
-                if(errorCode.getParamNames() != null && errorCode.getParamNames().length > i) {
-                    paramName = errorCode.getParamNames()[i];
-                }
-                Param param = new Param(paramName, paramValues[i]);
-                params.add(param);
+        this.code = errorCode.name();
+        String[] paramNames = errorCode.getParamNames();
+        if(errorCode.getParamNames() != null && paramValues != null) {
+            int paramSize = Math.min(paramNames.length, paramValues.length);
+            for(int i = 0; i < paramSize; i++) {
+                params.put(paramNames[i], paramValues[i]);
             }
         }
     }
 
-
-
-    @Getter
-    private class Param {
-        Param(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
-        private String name;
-        private String value;
-    }
 }
 
