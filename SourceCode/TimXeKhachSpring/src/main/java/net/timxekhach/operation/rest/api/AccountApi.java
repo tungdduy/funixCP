@@ -5,6 +5,8 @@ import net.timxekhach.operation.rest.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = {"/user"})
 public class AccountApi {
@@ -16,7 +18,7 @@ public class AccountApi {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user)  {
+    public ResponseEntity<User> register(@RequestBody @Valid User user)  {
         return accountService.register(user);
     }
 

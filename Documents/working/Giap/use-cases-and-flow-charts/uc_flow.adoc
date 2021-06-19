@@ -1,0 +1,2199 @@
+= Hệ thống quản lý nhà xe
+:experimental:
+:source-highlighter:
+:toc: left
+:toclevels: 4
+
+== I. Use Cases
+
+=== Khách Vãng Lai
+[NOTE]
+====
+*Khách Vãng Lai* là người vào web và chưa đăng ký tài khoản. 
+====
+
+[plantuml, images/guest_usecases, svg]     
+....
+left to right direction
+skinparam actorStyle Hollow 
+:Khách Vãng Lai: as g
+g --> (Tìm chuyến đi)
+g --> (Đăng ký tài khoản)
+g --> (Lấy lại mật khẩu)
+g --> (Đăng nhập)
+....
+
+
+=== Thành Viên
+[NOTE]
+====
+*Thành Viên* là một người dùng điển hình đã đăng ký tài khoản.
+====
+
+[IMPORTANT]
+====
+Tất cả tính năng của người dùng có tài khoản +
+đều yêu cầu *đã đăng nhập vào Hệ Thống*
+====
+
+[plantuml, images/user_usecases, svg]     
+....
+left to right direction
+skinparam actorStyle awesome 
+:Thành Viên: as u
+
+package "Chuyến Đi Của Tôi" {
+	(Hủy chuyến) as cancel_trip
+	(Sửa chuyến) as edit_trip
+	(Đặt chuyến) as reserve_trip
+	(Lịch sử đặt chuyến) as trip_history
+}
+
+(edit_trip) .> (reserve_trip) : include
+(cancel_trip) .> (reserve_trip) : include
+u -up-> reserve_trip
+u --> trip_history
+
+
+package "Tài Khoản Của Tôi" {
+	usecase "Đăng xuất" as log_out
+	usecase "Đổi Mật Khẩu" as change_password
+	usecase "Xem thông tin tài khoản" as view_acc_info
+	usecase "Sửa thông tin tài khoản" as update_acc_info
+}
+u --> log_out
+u --> change_password
+u --> view_acc_info
+u --> update_acc_info 
+
+....
+
+=== Quản Trị Hệ Thống & Quản Trị Nhà Xe
+[NOTE]
+====
+*Quản Trị Hệ Thống* là chúng ta, tiếp nhận các nhà xe.
+
+để đơn giản hóa chức năng +
+khi _xem-tạo-xóa_ 1 nhà xe sẽ +
+đồng thời tác động lên *Quản Trị Nhà Xe*
+====
+
+
+[NOTE]
+====
+*Quản Trị Nhà Xe* là quản lý của một nhà xe nào đó. +
+Cùng 1 nhà xe có thể có *nhiều hơn 1 quản lý*. +
+ +
+Tuy nhiên trong phiên bản của đồ án, +
+chỉ cho phép *1 nhà xe có tối đa 1 quản lý* +
+để tránh việc xung đột hoặc chồng chéo quyền hạn. +
+ +
+Khi đi vào hoạt động, tùy theo nhu cầu từng khách hàng, +
+có thể khái quát lại và triển khai những tính năng phân quyền chi tiết hơn.
+====
+
+
+[plantuml, images/sys_admin_usecases, svg]     
+....
+left to right direction
+skinparam actorStyle awesome 
+
+:Quản Trị Hệ Thống: as sa
+:Quản Trị Nhà Xe: as ba
+
+package "Quản Trị Hệ Thống" {
+	(Xem-Tạo-Xóa-Khóa-Mở\nNhà Xe) as (buss_operation)
+	(Xem-Tạo-Xóa\nLoại Xe) as (buss_type)
+} 
+
+package "Quản lý Xe" {
+	(Xem-Tạo-Xóa-Sửa\nChuyến Xe) as (buss_trip)
+	(Xem-Tạo-Xóa-Khóa-Mở\nXe) as (buss)
+}
+
+package "Quản lý Điểm Dừng" {
+	(Xem-Tạo-Xóa\nĐiểm Dừng) as (buss_stop)
+	(Gán/Gỡ Điểm Dừng\nvới Chuyến Xe) as (buss_stop_trip)
+}
+
+package "Quản lý Nhân Viên" {
+	(Xem-Tạo-Xóa-Khóa-Mở\nNhân Viên Xe) as (buss_staff)
+	(Xem-Tạo-Xóa-Khóa-Mở\nNhân Viên Tổng Đài) as (caller_staff)
+}
+
+sa --> (buss_type)
+sa --> (buss_operation)
+
+ba -left-> (buss)
+ba -up-> (caller_staff)
+ba -down-> (buss_stop)
+
+
+
+(buss) .> (buss_type) : include
+(buss_trip) .> (buss) : include
+(buss_staff) .> (buss) : include
+(buss_stop_trip) .> (buss_trip) : include
+(buss_stop_trip) .> (buss_stop) : include
+
+....
+
+
+=== Nhân Viên Xe và Nhân Viên Tổng Đài
+
+[NOTE]
+====
+*Nhân Viên Xe* là các Nhân Viên quản lý trực tiếp 1 xe nào đó. +
+Vì tình hình thực tế trên xe có thể thay đổi thất thường, +
+Nên những người này có quyền hạn cao nhất đối với xe họ quản lý. +
+Thể hiện ở quyền *khóa/mở* 1 ghế nào đó trên xe.
+====
+
+[NOTE]
+====
+*Nhân Viên Tổng Đài* có thể xếp vé cho nhiều xe khác nhau +
+trong nhà xe mà Nhân Viên đó phụ trách.
+====
+
+[plantuml, images/Buss_cases, svg]     
+....
+
+left to right direction
+skinparam actorStyle awesome
+:Nhân Viên Tổng Đài: as c
+:Nhân Viên Xe: as b
+
+package "Quản lý Vé" {
+	c --> (Danh sách Vé)
+	c --> (Thêm Vé)
+	c --> (Sửa Vé)
+	c --> (Hủy Vé)
+	b --> (Xác nhận thanh toán)
+}
+
+b -left-|> c
+ 
+....
+
+
+== II. Flow charts
+
+=== 1. Tìm chuyến đi
+[plantuml, images/find_trip, svg]
+....
+|User| Khách Vãng Lai
+	start
+	:Mở trang chủ 
+	của Hệ Thống;
+	fork
+		:Chọn 
+		<b>Điểm xuất phát</b>;
+	fork again
+		:Chọn 
+		<b>Điểm dừng</b>;
+	fork again
+		:Chọn 
+		<b>Giờ khởi hành</b>;
+	end merge
+		:Click nút 
+		<b>Tìm ngay!</b>;
+
+|System| Hệ Thống
+
+	:Hiển thị kết quả;
+	
+	#lightgreen:Sẵn sàng cho 
+	flow tiếp theo>
+....
+
+
+=== 2. Đặt chỗ 
+
+[plantuml, images/book_trip, svg]
+....
+
+|User| Khách Vãng Lai
+	start
+	
+|System| Hệ Thống
+
+	#lightgreen:Từ kết quả ở 
+	<b>Tìm chuyến đi</b> >
+	
+	if (Tìm thấy chuyến nào không?) then (có)
+		|User|
+			:Click vào 
+			<b>chuyến đi muốn đặt</b>;
+	else (không)
+	
+		|System|
+			:Hiển thị 
+			<b>Không tìm thấy chuyến nào!</b>;
+			
+			end
+	endif
+
+|System|
+	:Chuyển tới màn hình 
+	<b>Đặt chỗ</b>;
+	
+|User|
+	fork
+		repeat :Click vào\n<b>ghế muốn đặt/hủy</b>;
+			repeat while (Hài lòng rồi chứ?) is (Không)
+		->Ok;
+|System|
+	fork again
+		:Hiển thị 
+		- <b>Tổng tiền</b>
+		- <b>Ghế trống</b> 
+		- <b>Ghế đang đặt</b>
+		- <b>Ghế bị khóa</b>
+		thời gian thực;
+		
+	end fork
+	
+	if (lựa chọn hợp lệ?) then (có)
+		
+		:Mở nút 
+		<b>Đặt ngay!</b>;
+		
+	else (không)
+		
+		:Khóa và Làm mờ nút 
+		<b>Đặt ngay!</b>;
+		end
+	endif
+
+|User|
+	:Click nút 
+	<b>Đặt ngay!</b>;
+	
+|System|
+
+	if (Đã đăng nhập?) then (Đúng)
+		
+	else (sai)
+		
+		#lightgreen:Chuyển tới màn hình 
+		<b>Đăng nhập</b> >
+		
+		if (Đăng nhập\n<b>thành công</b>?) then (Sai)
+			end
+		else (Đúng)
+		
+		endif
+			
+	endif
+
+	:Lưu thông tin
+	<b>vào CSDL</b>;
+	
+	fork
+		:Gửi tin thành công 
+		<b>qua Email</b>;
+	fork again
+		:Hiển thị thông báo 
+		<b>Đặt chỗ thành công!</b>;
+	end fork
+	
+	stop
+....
+
+=== 3. Đăng nhập
+[plantuml, images/log_in, svg]
+....
+|Guest| Khách Vãng Lai
+	start
+	
+	:Mở màn hình 
+	<b>Đăng nhập</b>;
+	
+	repeat :Nhập thông tin đăng nhập;
+	
+		:Enter hoặc click nút 
+		<b>Đăng nhập</b>;
+	
+|System| Hệ Thống
+		repeat while (Thông tin hợp lệ?) is (Không)
+	->Đúng;
+	
+	:Lưu thông tin liên quan
+	vào session hiện tại;
+	
+	if (Đăng nhập từ\nflow dở dang?) then (có)
+		:Tiếp tục flow đó;
+		
+	else (không)
+		:Chuyển tới màn hình 
+		<b>Quản trị tài khoản</b>;
+		
+	endif
+	
+	stop
+....
+
+=== 4. Đăng ký tài khoản
+
+.Tài khoản trôi
+[IMPORTANT]
+====
+Khi khách đặt xe trực tiếp với Tổng Đài hoặc lái xe, +
+Khách chỉ cung cấp số điện thoại, +
+Nhà xe cũng không cần hỏi tên, +
+đây là hoạt động thực tế đang diễn ra. +
+Chúng ta *không nên phá vỡ luồng đi này*. +
+
+Trong dự án này, +
+khi nhà xe đặt chỗ cho khách theo số điện thoại +
+Hệ Thống sẽ tìm tài khoản theo số điện thoại đó, +
+Hoặc tạo 1 tài khoản trôi chỉ gồm duy nhất số điện thoại. +
+
+Khi khách hàng nào đó tạo mới tài khoản, +
+Nếu nhập vào số điện thoại thuộc *tài khoản trôi*, +
+Thì các thông tin đăng ký sẽ được gán cho tài khoản này. +
+
+Như vậy chỉ bằng số điện thoại, +
+Khách sẽ thấy luôn được lịch sử đi xe của mình, +
+Dù mới lần đầu đăng ký.
+
+====
+
+[plantuml, images/register, svg]
+....
+|User| Khách Vãng Lai
+	start
+	
+	:Mở màn hình 
+	<b>Đăng ký</b>;
+	
+	repeat :Nhập\n<b>Họ và Tên</b>,\n<b>Số điện thoại</b>,\n<b>Email</b>,\n<b>Mật khẩu</b>,\n<b>Nhập lại mật khẩu</b>;
+	
+		:Click nút <b>Đăng ký</b>;
+	
+|System| Hệ Thống
+		repeat while (Thông tin hợp lệ?) is (Không)
+	->Có;
+		
+	if (Số điện thoại của\n<b>tài khoản trôi</b>?) is (Đúng) then
+		
+		:Gán thông tin đăng ký 
+		vào tài khoản đó;
+		
+	else (Sai)
+	
+		:Tạo mới bản ghi 
+		vào CSDL;
+		
+	endif
+	
+	:Chuyển tới màn hình 
+	<b>Đăng nhập</b>;
+	
+	stop
+....
+
+=== 5. Lấy lại mật khẩu
+
+[plantuml, images/find_password, svg]
+....
+|User| Khách Vãng Lai
+	start
+	
+	:Mở màn hình 
+	<b>Lấy lại mật khẩu</b>;
+	
+	:Nhập 
+	<b>Email</b>;
+	
+	:Click nút 
+	<b>Xác nhận</b>;
+	
+|System| Hệ Thống
+
+	if (Email tồn tại?) is (Không) then
+		
+		:Hiển thị 
+		<b>Email không tồn tại!</b>;
+		
+		end
+	else (có)
+		fork
+			:Gửi link đổi mật khẩu
+			tới email đã nhập;
+		fork again
+			:Hiển thị 
+			<b>Mở email để tiếp tục đổi mật khẩu!</b>;
+			
+		end merge
+		
+		|User|
+			:Click link 
+			<b>Đổi mật khẩu</b> 
+			nhận được trong email;
+	endif
+
+|System|
+	
+	#lightgreen:Hiện màn hình
+	<b>Đổi mật khẩu</b> >
+|User|
+	
+	repeat :Nhập mật khẩu \n<b>2 lần</b>;
+		:Click nút <b>Đổi mật khẩu</b>;
+
+|System| Hệ Thống
+		repeat while (Mật khẩu khớp?) is (Không)
+	->Có;
+	
+	:Hiển thị
+	<b>Đổi mật khẩu thành công!</b>
+	và nút 
+	<b>Click để đăng nhập</b> ;
+	
+	stop
+....
+
+
+=== 6. Tài khoản của tôi
+
+==== 6.A. Đăng xuất
+
+[plantuml, images/log_out, svg]
+....
+|User| Thành Viên
+	start
+	
+	:Click nút 
+	<b>Đăng xuất</b>;
+	
+|System| Hệ Thống
+
+	:Xóa toàn bộ 
+	<b>phiên đăng nhập</b>;
+	
+	:Chuyển tới màn hình 
+	<b>Đăng nhập</b>;
+	
+	stop
+....
+
+==== 6.B. Đổi mật khẩu
+
+[plantuml, images/change_password, svg]
+....
+|User| Thành Viên
+
+	start
+	
+	:Mở màn hình 
+	<b>Đổi mật khẩu</b>;
+	
+	repeat :Nhập\n- <b>Mật khẩu cũ</b>,\n- 2 lần <b>Mật khẩu mới</b>;
+	
+		:Click nút
+		<b>Đồng ý</b>;
+	
+|System| Hệ Thống
+		repeat while (Hợp lệ?) is (Không)
+	->Có;
+	
+	:Hiển thị 
+	<b>Đổi mật khẩu thành công!</b>;
+	
+	stop
+....
+
+==== 6.C. Xem thông tin tài khoản
+
+[plantuml, images/view_my_info, svg]
+....
+|User| Thành Viên
+
+	start
+	
+	:Mở màn hình 
+	<b>Thông tin tài khoản</b>;
+	
+|System| Hệ Thống
+
+	:Hiển thị 
+	- <b>Họ tên</b>
+	- <b>Số điện thoại</b>
+	- <b>Địa chỉ Email</b>;
+	
+	#lightgreen:Sẵn sàng cho
+	<b>flow tiếp theo</b> >
+....
+
+==== 6.D. Sửa thông tin tài khoản
+
+[plantuml, images/change_my_acc_info, svg]
+....
+|User| Thành Viên
+	
+	#lightgreen:Từ màn hình 
+	<b>Thông tin tài khoản</b>;
+	
+	:Click nút
+	<b>Sửa</b>;
+	
+|System| Hệ Thống
+
+	:Hiển thị các input
+	- <b>Họ tên</b>
+	- <b>Số điện thoại</b>
+	- <b>Địa chỉ Email</b>;
+
+|User| 
+	repeat:Sửa thông tin theo ý muốn;
+	
+		:Click nút
+		<b>Đồng ý</b>;
+
+|System|
+		repeat while (Thông tin hợp lệ?) is (Sai)
+	->Đúng;
+	
+	:Hiện tin nhắn
+	<b>Cập nhật thành công!</b>;
+	
+	stop
+	
+....
+
+=== 7. Chuyến đi của tôi
+
+==== 7.A. Lịch sử đặt chuyến
+
+[plantuml, images/View_Trip_History, svg]
+....
+
+|User| Thành Viên
+
+	start
+	
+	:Mở màn hình 
+	<b>Lịch sử đặt chuyến</b>;
+	
+|System| Hệ Thống
+
+	:Hiển thị 
+	<b>Lịch sử đặt chuyến</b> 
+	của Thành Viên này,
+	chia theo tab: 
+	<b>- Chờ khởi hành</b> <i>(Mặc định)</i>
+	<b>- Đã hủy </b>
+	<b>- Đã khởi hành</b>;
+
+	#lightgreen:Sẵn sàng cho 
+	flow tiếp theo>
+
+end
+
+....
+
+==== 7.B. Hủy chuyến
+
+[plantuml, images/cancel_trip, svg]
+....
+
+|User| Thành Viên
+	start
+|System| Hệ Thống
+	
+	#lightgreen:Từ màn hình 
+	<b>Lịch sử đặt chuyến</b> >
+	
+|User| Thành Viên
+
+	:Chọn các chuyến 
+	muốn hủy bỏ;
+	
+	:Click nút 
+	<b>Hủy</b>;
+	
+|System|
+	:Bật pop-up xác nhận;
+|User|
+
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Hủy các 
+			<b>chuyến được chọn</b>;
+			
+		 	:Hiển thị tin nhắn
+		 	<b>Hủy chuyến thành công</b>;
+	endif
+	
+	stop
+....
+
+
+==== 7.C. Sửa chuyến đã đặt
+
+[plantuml, images/update_trip, svg]
+....
+
+|User| Thành Viên
+	start
+|System| Hệ Thống
+	
+	#lightgreen:Từ màn hình 
+	<b>Lịch sử đặt chuyến</b> >
+	
+|User|
+	:Click vào 
+	<b>số hiệu chuyến</b> muốn sửa;
+
+|System|
+	:Chuyến tới màn hình 
+	<b>Sửa chuyến</b>;
+	
+	fork
+|User|
+	repeat :Click vào chỗ ngồi\nmuốn <b>Đặt/Hủy</b>;
+		repeat while (Đồng ý với lựa chọn này?) is (Không)
+	->Có;
+|System|
+	fork again
+		:Hiển thị 
+		<b> - Tổng tiền</b>,
+		<b> - Ghế trống</b> 
+		<b> - Ghế đang đặt</b>
+		thời gian thực;
+|System|
+
+	end fork
+	
+	if (Lựa chọn hợp lệ?) then (Có)
+		:Mở nút 
+		<b>Cập nhật</b>;
+		
+	else (không)
+		:Tắt và làm mờ nút 
+		<b>Cập nhật</b>;
+		
+		end
+	endif
+|User|
+	:Click nút 
+	<b>Cập nhật</b>;
+	
+|System|
+	:Lưu thông tin vào CSDL;
+	
+	:Gửi Email xác thực 
+	đến khách hàng;
+	
+	:Hiện tin nhắn
+	<b>Sửa chuyến thành công!</b>;
+	stop
+....
+
+
+=== 8. Quản lý Nhà Xe
+
+==== 8.A. Danh sách Nhà Xe
+
+[plantuml, images/list_buss_org, svg]
+....
+|Sys Admin| Quản Trị Hệ thống
+	start
+	:Mở màn hình 
+	<b>Quản lý Nhà Xe</b>;
+
+|System| Hệ Thống
+	:Hiển thị tất cả 
+	<b>Nhà Xe</b> theo tab:
+	- <b>Đang hoạt động</b> <i>(Mặc định)</i> 
+	- <b>Đang khóa</b>;
+	
+	#lightgreen:Sẵn sàng cho 
+	flow tiếp theo>
+....
+
+
+==== 8.B. Thêm Nhà Xe
+
+[plantuml, images/add_buss_org, svg]
+....
+|Sys Admin| Quản Trị Hệ Thống
+
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhà Xe</b> >
+	
+	:Click nút 
+	<b>Thêm Nhà Xe</b>;
+
+|System| Hệ Thống
+	:Chuyển tới màn hình
+	<b>Tạo nhà Xe</b>;
+
+|Sys Admin|
+	repeat :Nhập\n- <b>Tên nhà xe <color:red>*</color></b>\n- <b>Quản trị nhà xe <color:red>*</color></b>\n- <b>Mô tả</b>\n- <b>Ảnh đại diện</b>;
+	
+		:Click nút 
+		<b>Đồng ý</b>;
+
+|System|
+		repeat while (<b>Tên Nhà Xe</b> hợp lệ + khả dụng,\n<b>Người được chọn</b> chưa là Quản Lý Nhà Xe) is (<b>Sai</b>\nHiện thông báo lỗi)
+	->Đúng;
+	:Thêm <b>Nhà Xe</b> 
+	vào CSDL;
+	
+	:Chuyển tới màn hình 
+	<b>Danh sách Nhà Xe</b>;
+	
+	stop
+....
+
+
+
+==== 8.C. Xóa Nhà Xe
+
+IMPORTANT: Nhà xe chỉ được xóa khi chưa có chuyến đi nào được thực hiện trong hệ thống.
+
+[plantuml, images/delete_buss_org, svg]
+
+....
+|Sys Admin| Quản Trị Hệ Thống
+	
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhà Xe</b> >
+	
+	:Chọn các nhà xe muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút 
+	<b>Xóa</b>;
+	
+|System| Hệ Thống
+	if (Các nhà xe đều \n<b>chưa chạy chuyến nào</b>?) then (Đúng)
+		:Xóa tất cả 
+		nhà xe được chọn 
+		và thông tin liên quan;
+		
+		:Hiển thị tin 
+		<b>Xóa thành công!</b>;
+		
+	else (Sai)
+		:Hiển thị thông báo lỗi,
+		liệt kê 
+		- <b>tên nhà xe</b>
+		- <b>các chuyến đã chạy</b>;
+		
+	endif
+	
+	stop
+....
+
+==== 8.D. Khóa Nhà Xe
+
+[plantuml, images/lock_buss_orgs, svg]
+
+....
+|Sys Admin| Quản Trị Hệ Thống
+	
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhà Xe</b> >
+	
+	:Chọn <b>Các nhà xe muốn khóa</b>
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút 
+	<b>Khóa</b>;
+	
+|System| Hệ Thống
+	:Khóa tất cả 
+	<b>Nhà Xe</b> được chọn;
+	
+	:Cập nhật lại 
+	danh sách hiển thị;
+	
+	:Hiển thị tin nhắn 
+	<b>Đã khóa thành công</b>;
+	
+	stop
+....
+
+==== 8.E. Mở khóa Nhà Xe
+
+[plantuml, images/unlock_buss_org, svg]
+
+.... 
+|Sys Admin| Quản Trị Hệ Thống
+
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhà Xe</b> >
+	
+	:Click vào tab 
+	<b>Đang khóa</b>;
+	
+|System| Hệ Thống
+	if (Có nhà xe nào đang khóa không?) is (Có) then
+		|Sys Admin|
+			:Chọn <b>Các nhà xe muốn mở khóa</b>
+			ở cột <b>Checkbox</b> 
+			phía cuối cùng;
+		
+	else (Không) 
+		|System|
+		end	
+	endif
+
+|Sys Admin|
+	:Click nút 
+	<b>Mở khóa</b>;
+
+|System|
+	
+	:Mở khóa tất cả 
+	<b>Nhà xe được chọn</b>;
+	
+	:Cập nhật lại 
+	danh sách hiển thị;
+	
+	:Hiển thị tin nhắn 
+	<b>Mở khóa thành công</b>;
+
+	stop
+....
+
+=== 9. Quản lý Loại Xe
+
+
+==== 9.A. Danh sách Loại Xe
+
+
+[plantuml, images/list_buss_types, svg]
+....
+|Sys Admin| Quản Trị Hệ Thống
+	start
+	:Mở màn hình 
+	<b>Danh sách Loại Xe</b>;
+
+|System| Hệ thống
+	:Hiển thị tất cả
+	<b>Loại Xe</b>;
+	
+	#lightgreen:Sẵn sàng cho 
+	flow tiếp theo>
+....
+
+
+
+
+==== 9.B. Thêm Loại Xe
+
+
+[plantuml, images/add_buss_type, svg]
+....
+|Sys Admin| Quản Trị Hệ Thống
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Loại Xe</b> >
+	
+	:Click nút 
+	<b>Thêm loại xe</b>;
+
+|System| Hệ thống
+	:Chuyển tới màn hình
+	<b>Thêm Loại Xe</b>;
+
+|Sys Admin|
+	:Nhập
+	<b>- Tên Loại Xe</b> 
+	<b>- Mô tả</b>
+	<b>- Số lượng ghế</b> 
+	<b>- File sơ đồ xe</b>
+	<b>- Ảnh đại diện</b>;
+
+	:Click nút 
+	<b>Tiếp theo</b>;
+
+|System|
+	:Chuyển tới màn hình 
+	<b>Thiết lập ghế</b>;
+	
+	:Tạo input 
+	- Nhập tên
+	- Nhập mô tả
+	cho	<b>số lượng ghế</b>
+	đã nhập bước trước;
+
+|Sys Admin|
+	
+	:Nhập 
+	<b>- Tên Ghế</b>
+	<b>- Mô tả</b> <i>(Không bắt buộc)</i>
+	cho mỗi ghế;
+	
+	:Click nút 
+	<b>Đồng ý</b>;
+
+
+|System|
+
+	if (Thông tin hợp lệ?) then (Đúng)
+	
+		:Lưu loại xe mới 
+		vào CSDL;
+		
+	else (Sai)
+		:Hiển thị thông báo lỗi
+		tương ứng;
+		end
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Loại Xe</b>;
+	
+	stop
+....
+
+
+
+==== 9.C. Xóa Loại Xe
+
+
+[plantuml, images/delete_buss_type, svg]
+
+....
+|Sys Admin| Quản Trị Hệ Thống
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Loại Xe</b> >
+	
+	:Chọn Loại Xe muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút <b>Xóa</b>;
+	
+|System| Hệ Thống
+
+	if (Hệ thống không có xe nào\nthuộc những loại này?) then (Đúng)
+		:Xóa tất cả 
+		<b>Loại Xe</b> được chọn;
+		
+		:Hiện tin nhắn
+		<b>Xóa thành công!</b>;
+		
+	else (Sai)
+		:Hiển thị danh sách
+		xe thuộc loại này
+		và báo lỗi;
+		
+	endif
+	
+	stop
+....
+
+
+
+
+=== 10. Quản lý Xe
+
+==== 10.A. Danh sách Xe
+
+
+[plantuml, images/list_of_busses, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	start
+	:Mở màn hình 
+	<b>Danh sách Xe</b>;
+
+|System| Hệ Thống
+	:Hiển thị tất cả xe
+	của nhà xe này;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+
+==== 10.B. Thêm Xe
+
+[plantuml, images/add_buss, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Xe</b> >
+	
+	:Click nút 
+	<b>Thêm Xe</b>;
+
+|System| Hệ thống
+
+	:Chuyển tới màn hình\n<b>Thêm Xe</b>;
+|Buss Admin|
+	repeat :Nhập\n- <b>Tên Xe <color:red>*</color></b>\n- <b>Mô tả</b>\n- <b>Ảnh đại diện</b>\n- <b>Kiểu Xe <color:red>*</color></b>;
+			
+		
+		
+		:Click nút
+		<b>Đồng Ý</b>;
+
+|System|
+		repeat while (Thông tin hợp lệ?) is (<b>Không</b>\nHiện thông báo lỗi)
+	->Có;
+	:Thêm xe vào CSDL;
+		
+	:Chuyển tới màn hình
+	<b>Danh sách Xe</b>;
+	
+	stop
+....
+
+
+==== 10.C. Xóa Xe
+
+
+[plantuml, images/delete_buss, svg]
+
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen: Từ màn hình
+	<b>Danh sách Xe</b> >
+
+	:Chọn các Xe muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Xóa</b>;
+|System| Hệ thống
+	if (Chưa Xe nào\nđược đặt chuyến?) then (Đúng)
+		
+		:Xóa các xe
+		được chọn;
+		
+		:Hiện tin nhắn
+		<b>Đã xóa thành công!</b>;
+		
+	else (Sai)
+		:Hiện tin nhắn lỗi
+		và danh sách chuyến tìm được!;
+	endif
+	
+	stop
+....
+
+
+==== 10.D. Khóa Xe
+
+[TIP] 
+====
+Khóa xe sẽ gỡ xe này  +
+khỏi kết quả tìm kiếm hành trình!
+====
+
+[plantuml, images/lock_buss, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Xe</b> >
+	
+	fork
+		:Chọn các Xe muốn xóa
+		ở cột <b>Checkbox</b> 
+		phía cuối cùng;
+	fork again
+		:Nhập  
+		<b>- Ngày bắt đầu khóa</b> <color:red>*</color>
+		<b>- Ngày kết thúc khóa</b> (để trống = vô thời hạn)
+		<b>- Lý do</b>;
+	end merge
+	
+	:Click nút
+	<b>Khóa</b>;
+|System| Hệ thống
+
+	if (Có bất cứ khách nào đang đặt?) then (Đúng)
+		
+		:Hiện yes/no pop-up
+		<b>Có Xe đang được đặt</b>,
+		<b>Bạn vẫn muốn khóa chứ?</b>;
+		
+		|Buss Admin|
+		if (Click hoặc chọn) is (Khác) then
+			|System|
+			:Tắt pop-up;
+			end
+		else (nút <b>Đồng ý</b>)
+			|System|
+				:Khóa chuyến đặt trước
+				<b>của các xe này</b>;
+				
+				:Gửi email cho các
+				<b>Khách hàng liên quan</b>;
+		endif
+	else (Sai)
+	endif
+	
+	|System|
+		:Khóa các
+		<b>Xe được chọn</b>;
+		
+	 	:Hiển thị tin nhắn
+	 	<b>Khóa thành công!</b>;
+	 	
+	 	:Cập nhật lại 
+	 	<b>Danh sách hiển thị</b>;
+	
+	stop
+....
+
+==== 10.E. Mở khóa Xe
+
+[plantuml, images/unlock_busses, svg]
+
+.... 
+|Sys Admin| Quản Trị Hệ Thống
+
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Xe</b> >
+	
+	:Click vào tab 
+	<b>Đang khóa</b>;
+	
+|System| Hệ Thống
+	if (Có Xe nào đang bị khóa không?) is (Có) then
+		|Sys Admin|
+			:Chọn <b>Các Xe muốn mở khóa</b>
+			ở cột <b>Checkbox</b> 
+			phía cuối cùng;
+		
+	else (Không) 
+		|System|
+		end	
+	endif
+
+|Sys Admin|
+	:Click nút 
+	<b>Mở khóa</b>;
+
+|System|
+	
+	:Mở khóa tất cả 
+	<b>Nhà xe được chọn</b>;
+	
+	if (Có vé đặt xe nào đang bị khóa?) then (Có)
+		:Mở khóa 
+		<b>Các vé này</b>;
+		
+		:Gửi mail thông báo khách
+		xác nhận lại việc đặt chuyến
+		trong 1 giờ tới!;
+		
+	else (Không)
+	endif
+	
+	
+	:Cập nhật lại 
+	danh sách hiển thị;
+	
+	:Hiển thị tin nhắn 
+	<b>Mở khóa thành công</b>;
+
+	stop
+....
+
+=== 11. Quản lý Nhân Viên Tổng Đài
+
+==== 11.A. Danh sách Nhân Viên Tổng Đài
+
+[plantuml, images/list_of_caller_staffs, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	start
+	
+	:Mở màn hình
+	<b>Danh sách Nhân Viên Tổng Đài</b>;
+
+|System|
+
+	:Hiển thị 
+	<b>Các Nhân Viên Tổng Đài</b> 
+	của nhà xe này thành 2 tab:
+	<b>- Đang hoạt động</b> <i>(Mặc định)</i>
+	<b>- Đang khóa</b>;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+==== 11.B. Thêm Nhân Viên Tổng Đài
+
+[plantuml, images/add_caller_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Tổng Đài</b> >
+	
+	:Click nút 
+	<b>Thêm Nhân Viên</b>;
+
+|System| Hệ thống
+	:Chuyển tới màn hình
+	<b>Thêm Nhân Viên Tổng Đài</b>;
+	
+
+|Buss Admin|
+	:Chọn 1 người dùng
+	từ danh sách hiển thị;
+
+	:Click nút 
+	<b>Đồng ý</b>;
+
+|System|
+
+	if (Người này chưa là\nNhân Viên Tổng Đài của nhà xe này?) then (Đúng)
+	
+		:Thêm người dùng này
+		thành Nhân Viên Tổng Đài;
+		
+		:Cập nhật lại
+		danh sách hiển thị;
+		
+	else (Sai)
+		:Hiển thị tin nhắn
+		<b>Người bạn chọn</b>
+		<b>đang là Nhân Viên Tổng Đài rồi!</b>;
+		end
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Tổng Đài</b>;
+	
+	stop
+....
+
+==== 11.C. Xóa Nhân Viên Tổng Đài
+
+[plantuml, images/delete_caller_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Tổng Đài</b> >
+	
+	:Click vào tab
+	<b>- Đang hoạt động</b>
+	hoặc <b> - Đang khóa</b>
+	để tìm nhân viên muốn xóa;
+	
+	:Chọn các Nhân Viên muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Xóa</b>;
+
+|System| Hệ thống
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn xóa</b>
+	<b>Nhân Viên Tổng Đài này chứ?</b>;
+	
+
+|Buss Admin|
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Xóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Tổng Đài</b>;
+	
+	stop
+....
+
+==== 11.D. Khóa Nhân Viên Tổng Đài
+ 
+
+[plantuml, images/lock_caller_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Tổng Đài</b> >
+	
+	:Chọn các Nhân Viên muốn khóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Khóa</b>;
+
+|System| Hệ thống
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn khóa chứ?</b>;
+	
+
+|Buss Admin|
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Khóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Tổng Đài</b>;
+	
+	stop
+....
+
+==== 11.E. Mở khóa Nhân Viên Tổng Đài
+
+
+[plantuml, images/unlock_caller_staffs, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Tổng Đài</b> >
+	
+	:Click vào tab 
+	<b>Đang khóa</b>;
+
+|System| Hệ thống
+	if (Có Nhân Viên Tổng Đài nào\nđang bị khóa không?) is (Có) then
+		|Buss Admin|
+			:Chọn <b>Các Nhân Viên muốn mở khóa</b>
+			ở cột <b>Checkbox</b> 
+			phía cuối cùng;
+	else (Không) 
+		|System|
+		end	
+	endif
+	
+
+|Buss Admin|
+	:Click nút 
+	<b>Mở khóa</b>;
+	
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn mở khóa chứ?</b>;
+	
+	
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Mở khóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Tổng Đài</b>;
+	
+	stop
+....
+
+=== 12. Quản lý Nhân Viên Xe
+
+==== 12.A. Danh sách Nhân Viên Xe
+
+
+[plantuml, images/list_of_buss_staffs, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	start
+	
+	:Mở màn hình
+	<b>Danh sách Nhân Viên Xe</b>;
+
+|System|
+
+	:Hiển thị 
+	<b>Các Nhân Viên Xe</b> 
+	của nhà xe này thành 2 tab:
+	<b>- Đang hoạt động</b> <i>(Mặc định)</i>
+	<b>- Đang khóa</b>;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+==== 12.B. Thêm Nhân Viên Xe
+
+[plantuml, images/add_buss_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Tổng Đài</b> >
+	
+	:Click nút 
+	<b>Thêm Nhân Viên Xe</b>;
+
+|System| Hệ thống
+	:Chuyển tới màn hình
+	<b>Thêm Nhân Viên Xe</b>;
+	
+
+|Buss Admin|
+	:Chọn 1 người dùng
+	từ danh sách hiển thị;
+	
+	:Chọn Xe 
+	của nhà xe;
+
+	:Click nút 
+	<b>Đồng ý</b>;
+
+|System|
+
+	if (Người này chưa là\nNhân Viên Xe của Xe này?) then (Đúng)
+	
+		:Thêm người dùng này
+		thành Nhân Viên Xe
+		của Xe được chọn;
+		
+		:Cập nhật lại
+		danh sách hiển thị;
+		
+	else (Sai)
+		:Hiển thị tin nhắn
+		<b>Người bạn chọn</b>
+		<b>đang là Nhân Viên Xe của Xe này rồi!</b>;
+		end
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Xe</b>;
+	
+	stop
+....
+
+==== 12.C. Xóa Nhân Viên Xe
+
+[plantuml, images/delete_buss_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Xe</b> >
+	
+	:Click vào tab
+	<b>- Đang hoạt động</b>
+	hoặc <b> - Đang khóa</b>
+	để tìm nhân viên muốn xóa;
+	
+	:Chọn các Nhân Viên muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Xóa</b>;
+
+|System| Hệ thống
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn xóa</b>
+	<b>Nhân Viên Xe này chứ?</b>;
+	
+
+|Buss Admin|
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Xóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Xe</b>;
+	
+	stop
+....
+
+==== 12.D. Khóa Nhân Viên Xe
+
+
+[plantuml, images/lock_buss_staff, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Xe</b> >
+	
+	:Chọn các Nhân Viên muốn khóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Khóa</b>;
+
+|System| Hệ thống
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn khóa chứ?</b>;
+	
+
+|Buss Admin|
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Khóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Xe</b>;
+	
+	stop
+....
+
+
+==== 12.E. Mở Khóa Nhân Viên Xe
+
+
+[plantuml, images/unlock_buss_staffs, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình 
+	<b>Danh sách Nhân Viên Xe</b> >
+	
+	:Click vào tab 
+	<b>Đang khóa</b>;
+
+|System| Hệ thống
+	if (Có Nhân Viên Xe nào\nđang bị khóa không?) is (Có) then
+		|Buss Admin|
+			:Chọn <b>Các Nhân Viên muốn mở khóa</b>
+			ở cột <b>Checkbox</b> 
+			phía cuối cùng;
+	else (Không) 
+		|System|
+		end	
+	endif
+	
+
+|Buss Admin|
+	:Click nút 
+	<b>Mở khóa</b>;
+	
+	:Hiện yes/no pop-up
+	<b>Bạn chắc chắn muốn mở khóa chứ?</b>;
+	
+	
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Mở khóa các Nhân Viên
+			được chọn;
+			
+			:Cập nhật lại
+			<b>Danh sách hiển thị</b>;
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Nhân Viên Xe</b>;
+	
+	stop
+....
+
+=== 13. Quản lý Chuyến Xe
+
+==== 13.A. Danh sách Chuyến Xe
+
+[plantuml, images/list_of_buss_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	start
+	
+	:Mở màn hình
+	<b>Danh sách Chuyến Xe</b>;
+
+|System|
+
+	:Hiển thị 
+	<b>Các Chuyến Xe</b> 
+	của nhà xe này thành 2 tab:
+	<b>- Đang hoạt động</b> <i>(Mặc định)</i>
+	<b>- Tạm dừng</b>;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+==== 13.B. Thêm Chuyến Xe
+
+[plantuml, images/add_buss_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình
+	<b>Danh sách Chuyến Xe</b> >
+
+	:Click nút 
+	<b>Thêm Chuyến Xe mới</b>;
+	
+|System| Hệ thống
+	:Chuyển tới màn hình
+	<b>Thêm Chuyến Xe</b>;
+	
+|Buss Admin|
+	fork
+		:Chọn Xe;
+		
+	fork again
+		:Nhập
+		- <b>Giờ khởi hành</b>
+		- <b>Điểm khởi hành</b>
+		- <b>Điểm đến</b>
+		- <b>Ngày bắt đầu</b>;
+	fork again
+	
+		:Chọn ngày chạy	trong tuần
+		(Thứ 2 đến Chủ Nhật);
+		
+	end fork
+
+	:Click nút 
+	<b>Đồng ý</b>;
+
+|System|
+
+	if (Xe này\nKhông bị chồng chéo lịch chạy?) then (Đúng)
+	
+		:Thêm Chuyến Xe này
+		vào hệ thống với trạng thái
+		<b>Đang hoạt động</b>;
+		
+		:Cập nhật lại
+		Danh sách hiển thị;
+		
+	else (Sai)
+		:Hiển thị tin nhắn
+		<b>Xe này bị trùng với lịch chạy đã xếp,</b>
+		<b>vui lòng kiểm tra lại!</b>;
+		end
+	endif
+	
+	:Chuyển tới màn hình
+	<b>Danh sách Chuyến Xe</b>;
+	
+	stop
+	
+....
+
+==== 13.C. Sửa Chuyến Xe
+
+[plantuml, images/edit_buss_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình
+	<b>Danh sách Chuyến Xe</b> >
+
+	:Click vào
+	<b>Chuyến Xe muốn sửa</b>;
+	
+|System| Hệ Thống
+	:Chuyển tới màn hình
+	<b>Sửa Chuyến Xe</b>;
+	
+|Buss Admin|
+	:Sửa ngày chạy;
+
+|System|
+	if (Có vé nào phải hủy không?) is (Có) then
+		:Hiện yes/no pop-up
+		<b>Đã có khách đặt chuyến</b>
+		+ Danh sách khách đặt
+		<b>Bạn vẫn muốn sửa chứ?</b>;
+		
+		|Buss Admin|
+		if (Click hoặc Chọn) is (Khác) then
+			|System|
+				:Tắt pop-up;
+				end	
+		else (Đồng ý)
+			|System|
+				
+				:Gửi email thông báo khách 
+				<b>Chuyến của bạn đã bị hủy!</b>;
+					
+				:Tắt pop-up;		
+		endif
+	else (Không)
+	endif
+	
+	:Cập nhật thông tin;
+	
+	:Trở về màn hình
+	<b>Danh sách Chuyến Xe</b>;
+	
+	stop
+....
+		
+
+==== 13.D. Xóa Chuyến Xe
+
+[plantuml, images/delete_buss_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	#lightgreen:Từ màn hình
+	<b>Danh sách Chuyến Xe</b> >
+
+	:Chọn các Chuyến Xe muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Xóa</b>;
+	
+|System| Hệ thống
+	if (Chưa Chuyến Xe nào\ncó khách đang chờ?) then (Sai)
+	
+		:Hiện yes/no pop-up:
+		<b>Đã có khách đặt chuyến</b>
+		+ Danh sách khách đặt
+		<b>Bạn vẫn muốn xóa chứ?</b>;
+		
+		|Buss Admin|
+		if (Click hoặc Chọn) is (Khác) then
+			|System|
+				:Tắt pop-up;	
+				end	
+		else (Đồng ý)
+			|System|
+				
+				:Xóa các chuyến tương ứng;
+				
+				:Gửi email thông báo khách 
+				<b>Chuyến của bạn đã bị hủy!</b>;
+					
+				:Tắt pop-up;		
+		endif
+	else (Đúng)
+		
+	endif
+	
+|System|
+	:Xóa các Chuyến Xe
+	được chọn;
+	
+	:Hiện tin nhắn
+	<b>Đã xóa thành công!</b>;
+	
+	:Cập nhật lại
+	<b>Danh sách hiển thị</b>;
+	
+	stop
+....
+
+=== 14. Quản lý Điểm Dừng
+
+==== 14.A. Danh sách Điểm Dừng
+
+
+[plantuml, images/list_of_buss_stop, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+	start
+	:Mở màn hình 
+	<b>Danh sách Điểm Dừng</b>;
+
+|System| Hệ Thống
+	:Hiển thị tất cả Điểm Dừng
+	của nhà xe này;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+==== 14.B. Thêm Điểm Dừng
+
+[plantuml, images/add_buss_stop, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Điểm Dừng</b> >
+	
+	:Click nút 
+	<b>Thêm Điểm Dừng</b>;
+
+|System| Hệ thống
+
+	:Chuyển tới màn hình
+	<b>Thêm Điểm Dừng</b>;
+	
+|Buss Admin|
+	:Nhập
+	- <b>Tên Điểm Dừng</b>
+	- <b>Đơn vị hành chính</b>
+	- <b>Mô tả</b>;
+	
+	:Click nút
+	<b>Đồng Ý</b>;
+
+|System|
+	
+	:Thêm Điểm Dừng
+	vào CSDL;
+		
+	:Trở về màn hình
+	<b>Danh sách Điểm Dừng</b>;
+	
+	stop
+....
+
+==== 14.C. Xóa Điểm Dừng
+
+[plantuml, images/delete_buss_stop, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Điểm Dừng</b> >
+	
+	:Chọn các Điểm Dừng muốn xóa
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Xóa</b>;
+
+|System| Hệ thống
+
+	:Hiện yes/no pop-up
+	<b>Điểm dừng này sẽ bị xóa khỏi mọi chuyến xe</b>,
+	<b>Bạn vẫn muốn xhóa chứ?</b>;
+	
+
+|Buss Admin|
+	if (Click hoặc chọn) is (Khác) then
+		|System|
+		:Tắt pop-up;
+		end
+	else (nút <b>Đồng ý</b>)
+		|System|
+			:Gỡ các Điểm Dừng 
+			khỏi các chuyến (nếu có);
+			
+			:Xóa các Điểm Dừng 
+			khỏi hệ thống;
+	endif
+	
+	:Cập nhật lại
+	<b>Danh sách Điểm Dừng</b>;
+	
+	stop
+....
+
+==== 14.D. Gán Điểm Dừng vào Chuyến Xe
+
+[plantuml, images/assign_buss_stop_to_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Điểm Dừng</b> >
+	
+	:Chọn các Điểm Dừng muốn gán
+	ở cột <b>Checkbox</b> 
+	phía cuối cùng;
+	
+	:Click nút
+	<b>Thêm vào Chuyến Xe</b>;
+	
+|System| Hệ Thống
+	:Chuyển tới màn hình
+	<b>Chọn Chuyến Xe cho Điểm Dừng</b>;
+	
+|Buss Admin|
+	:Chọn các Chuyến Xe
+	từ danh sách hệ thống tìm được;
+	
+	:Click nút
+	<b>Đồng Ý</b>;
+
+|System|
+
+	:Gán điểm dừng 
+	cho các Chuyến Xe được chọn;
+	
+	:Trở về màn hình
+	<b>Danh sách Điểm Dừng</b>;
+	
+	stop
+....
+
+==== 14.E. Gỡ Điểm Dừng khỏi Chuyến Xe
+
+
+[plantuml, images/remove_buss_stop_to_trip, svg]
+....
+|Buss Admin| Quản Trị Nhà Xe
+
+	#lightgreen:Từ màn hình
+	<b>Danh sách Điểm Dừng</b> >
+	
+	:Duyệt tìm điểm dừng
+	muốn gỡ;
+	
+	:Click nút
+	<b>Gỡ khỏi Chuyến Xe</b>
+	tại điểm dừng tương ứng;
+	
+|System| Hệ Thống
+	:Hiện danh sách
+	<b>Các Chuyến Xe có điểm dừng này</b>;
+	
+|Buss Admin|
+	:Chọn các Chuyến Xe
+	muốn gỡ bỏ;
+	
+	:Click nút
+	<b>Đồng Ý</b>;
+
+|System|
+
+	:Gỡ điểm dừng 
+	khỏi các Chuyến Xe được chọn;
+	
+	:Trở về màn hình
+	<b>Danh sách Điểm Dừng</b>;
+	
+	stop
+....
+
+=== 15. Quản lý Vé
+
+==== 15.A. Danh sách Vé
+
+
+[plantuml, images/list_of_ticket, svg]
+....
+|Staff| Nhân Viên
+	start
+	
+	:Mở màn hình
+	<b>Danh sách Vé</b>;
+	
+	:Chọn Chuyến Xe
+	muốn xem vé;
+
+|System| Hệ Thống
+
+	:Hiển thị 
+	<b>Sơ đồ Xe</b> và 
+	<b>tình trạng ghế</b>
+	theo Chuyến Xe đã chọn
+	thời gian thực;
+	
+	#lightgreen:Sẵn sàng cho
+	flow tiếp theo>
+....
+
+==== 15.B. Thêm Vé
+
+[plantuml, images/add_ticket, svg]
+....
+|Staff| Nhân Viên
+	#lightgreen:Từ flow
+	<b>Danh sách Vé</b> >
+	
+	:Chọn ghế 
+	muốn thêm vé;
+	
+	
+	:Click nút
+	<b>Thêm Vé</b>;
+
+|System| Hệ Thống
+	
+	:Mở màn hình
+	<b>Thêm vé</b>;
+	
+|Staff|
+
+	:Nhập <b>Số điện thoại</b>
+	hoặc <b>chọn 1 người dùng trong hệ thống</b>;
+	
+	
+	:Click nút
+	<b>Đồng ý</b>;
+	
+|System|
+
+	:Thêm vé vào 
+	cơ sở dữ liệu;
+	
+	:Trở về màn hình
+	<b>Danh sách Vé</b>;
+	
+	stop
+....
+
+==== 15.C. Sửa Vé
+
+[plantuml, images/edit_ticket, svg]
+....
+|Staff| Nhân Viên
+
+	#lightgreen:Từ flow
+	<b>Danh sách Vé</b> >
+	
+	:Nhập
+	- <b>Số điện thoại</b>
+	hoặc <b>Email</b>
+	của khách muốn sửa vé;
+	
+	:Click nút
+	<b>Tìm</b>;
+
+|System| Hệ Thống
+
+	if (Tìm thấy Vé) is (Không) then
+		:Hiện thông báo
+		<b>Không tìm thấy Vé nào!</b>;
+		
+		end;
+	else (Có)
+	endif
+	
+	:Hiện thông tin Vé và
+	làm nổi bật các Ghế của Vé;
+	
+|Staff|
+
+	:Chọn các Ghế
+	muốn Thêm/Bớt cho Vé;
+	
+	
+	:Click nút
+	<b>Đồng ý</b>;
+	
+|System|
+
+	:Cập nhật thông tin
+	vào CSDL;
+	
+	:Hiện thông báo
+	<b>Cập nhật thành công!</b>;
+	
+	stop
+....
+
+==== 15.D. Hủy Vé
+
+[plantuml, images/cancel_seat, svg]
+....
+|Staff| Nhân Viên
+
+	#lightgreen:Từ flow
+	<b>Danh sách Vé</b> >
+	
+	:Nhập
+	- <b>Số điện thoại</b>
+	hoặc <b>Email</b>
+	của khách muốn sửa vé;
+	
+	:Click nút
+	<b>Tìm</b>;
+
+|System| Hệ Thống
+
+	if (Tìm thấy Vé) is (Không) then
+		:Hiện thông báo
+		<b>Không tìm thấy Vé nào!</b>;
+		
+		end;
+	else (Có)
+	endif
+	
+	:Hiện thông tin Vé và
+	làm nổi bật các Ghế của Vé;
+	
+|Staff|
+
+	:Click nút
+	<b>Hủy Vé</b>;
+	
+|System|
+
+	:Hủy vé và
+	cập nhật các hiển thị;
+	
+	:Hiện thông báo
+	<b>Hủy vé thành công!</b>;
+	
+	stop
+....
+
+==== 15.D. Xác nhận Thanh Toán
+
+[plantuml, images/payment_confirm, svg]
+....
+|Staff| Nhân Viên
+
+	#lightgreen:Từ flow
+	<b>Danh sách Vé</b> >
+	
+	:Chọn Ghế muốn
+	xác nhận thanh toán;
+	
+	:Click nút
+	<b>Thanh Toán</b>
+	hoặc
+	<b>Hủy Thanh Toán</b>;
+
+|System| Hệ Thống
+
+	:Hiện pop-up
+	<b>Bạn chắc chắn chứ</b>;
+	
+|Staff|
+
+	if (Click hoặc Chọn) then (Đồng ý)
+		|System|
+			:Cập nhật trạng thái thanh toán;
+			
+	else (Khác)
+	endif
+	
+|System|
+
+	:Tắt pop-up;
+	
+	stop
+
+....

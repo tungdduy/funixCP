@@ -26,7 +26,7 @@ public class XeStringUtils extends StringUtils {
         return join(values, COLON);
     }
 
-    public static String expressToString(Object o) {
+    public static String expressListToString(Object o) {
         if(o == null) {
             return EMPTY_STRING;
         }
@@ -44,6 +44,8 @@ public class XeStringUtils extends StringUtils {
                 .collect(Collectors.toList());
        return joinByComma(toList);
     }
+
+
 
     public static String joinByComma(List<String> values) {
         return join(values, COMMA);

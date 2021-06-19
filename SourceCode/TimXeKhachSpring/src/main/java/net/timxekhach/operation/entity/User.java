@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static net.timxekhach.operation.response.MessageCode.*;
 import static net.timxekhach.utility.XeStringUtils.PHONE_REGEX;
 
 @Entity
@@ -34,19 +33,19 @@ public class User implements Serializable {
     private Long id;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 4, max=30, message= VALIDATOR_INVALID_SIZE)
-    @NotBlank(message = VALIDATOR_BLANK)
+    @Size(min = 4, max=30)
+    @NotBlank()
     private String password;
 
-    @NotBlank(message = VALIDATOR_BLANK)
-    @Email(message = VALIDATOR_INVALID_FORMAT)
+    @NotBlank
+    @Email
     private String email;
 
-    @NotBlank(message = VALIDATOR_BLANK)
-    @Size(min = 4, max=30, message= VALIDATOR_INVALID_SIZE)
+    @NotBlank
+    @Size(min = 4, max=30)
     private String username;
 
-    @Pattern(regexp = PHONE_REGEX, message = VALIDATOR_INVALID_FORMAT)
+    @Pattern(regexp = PHONE_REGEX)
     private String phoneNumber;
 
     @Getter(AccessLevel.NONE)

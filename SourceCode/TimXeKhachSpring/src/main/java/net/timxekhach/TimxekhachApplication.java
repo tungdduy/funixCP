@@ -25,6 +25,7 @@ public class TimxekhachApplication {
 
     @Bean
     public CorsFilter corsFilter() {
+        System.out.println("chac phai viet cai gi do");
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);

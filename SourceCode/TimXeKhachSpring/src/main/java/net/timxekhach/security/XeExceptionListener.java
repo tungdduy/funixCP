@@ -7,24 +7,28 @@ import net.timxekhach.utility.pojo.XeHttpResponse;
 import net.timxekhach.utility.pojo.XeRuntimeException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.validation.ConstraintViolationException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Component
 public class XeExceptionListener {
 
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final XeExceptionHandler xeExceptionHandler;
     private final List<Message> storageMessages = new ArrayList<>();
 
-    public XeExceptionListener(ApplicationEventPublisher applicationEventPublisher) {
+    public XeExceptionListener(ApplicationEventPublisher applicationEventPublisher, XeExceptionHandler xeExceptionHandler) {
         this.applicationEventPublisher = applicationEventPublisher;
+        this.xeExceptionHandler = xeExceptionHandler;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
@@ -70,21 +74,19 @@ public class XeExceptionListener {
     }
 
     @SuppressWarnings("unchecked")
-    private ResponseEntity<XeHttpResponse> findAndInvokeHandleMethod(Throwable exception){
-        for (Method method : XeExceptionHandler.class.getDeclaredMethods()) {
-            if(method.getParameterCount() == 1) {
-                Class<?> clazz = method.getParameterTypes()[0];
-                if(clazz.isInstance(exception)
-                        && method.getName().equalsIgnoreCase(clazz.getSimpleName())){
-                    try {
-                        method.setAccessible(true);
-                        return (ResponseEntity<XeHttpResponse>) method.invoke(XeExceptionHandler.class, clazz.cast(exception));
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
+    private ResponseEntity<XeHttpResponse> findAndInvokeHandleMethod(Throwable exception) {
+        String simpleClassName = exception.getClass().getSimpleName();
+        for (Method method : XeExceptionHandler.class.getDeclaredMethods())
+            if(method.getParameterCount() == 1
+                    && method.getParameterTypes()[0] == exception.getClass()
+                    && method.getName().equalsIgnoreCase(simpleClassName) ){
+                try {
+                    method.setAccessible(true);
+                    return (ResponseEntity<XeHttpResponse>) method.invoke(xeExceptionHandler,  exception);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
-        }
         return null;
     }
 

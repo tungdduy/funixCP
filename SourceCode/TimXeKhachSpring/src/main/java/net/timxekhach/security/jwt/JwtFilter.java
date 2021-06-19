@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Bean
     public AccessDeniedHandler deniedHandler(){
-        return (httpServletRequest, response, e) -> ErrorCode.ACCESS_DENIED.processResponse(response, HttpStatus.FORBIDDEN);
+        return (httpServletRequest, response, e) -> ErrorCode.ACCESS_DENIED.generateResponse(response, HttpStatus.FORBIDDEN);
     }
 
     @Bean
@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
         return new Http403ForbiddenEntryPoint() {
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-                ErrorCode.DO_NOT_HAVE_PERMISSION.processResponse(response, HttpStatus.UNAUTHORIZED);
+                ErrorCode.DO_NOT_HAVE_PERMISSION.generateResponse(response, HttpStatus.UNAUTHORIZED);
             }
         };
     }

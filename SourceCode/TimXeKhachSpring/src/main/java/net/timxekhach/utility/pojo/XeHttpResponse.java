@@ -18,7 +18,7 @@ public class XeHttpResponse {
     private final HttpStatus status;
     private final int statusCode;
 
-    public XeHttpResponse(String reason, HttpStatus status, List<Message> messages){
+    public XeHttpResponse(HttpStatus status, String reason, List<Message> messages){
         this.timeStamp = new Date();
         this.reason = reason;
         this.status = status;

@@ -27,13 +27,13 @@ public class XeResponseUtils {
     }
 
     public static ResponseEntity<XeHttpResponse> of(HttpStatus status, String reason, List<Message> messages) {
-        XeHttpResponse response = new XeHttpResponse(reason, status, messages);
+        XeHttpResponse response = new XeHttpResponse(status, reason, messages);
         return new ResponseEntity<>(response, status);
     }
 
     public static <E extends Exception> ResponseEntity<XeHttpResponse> error(E e, List<Message> messages){
         List<Message> totalMessages = XeBeanUtils.exceptionListener.mergeAndClearStorageMessages(messages);
-        return XeResponseUtils.of(HttpStatus.BAD_REQUEST, e.getMessage(), totalMessages);
+        return XeResponseUtils.of(HttpStatus.BAD_REQUEST, e.getClass().getSimpleName(), totalMessages);
     }
 
     public static ResponseEntity<XeHttpResponse> error(Exception exception) {
@@ -44,7 +44,7 @@ public class XeResponseUtils {
         return error(exception, messages);
     }
 
-    public static ResponseEntity<XeHttpResponse> of(HttpStatus badRequest, ErrorCode errorCode) {
-        return of(badRequest, errorCode.name(), new ArrayList<>());
+    public static ResponseEntity<XeHttpResponse> of(HttpStatus status, ErrorCode errorCode) {
+        return of(status, errorCode.name(), new ArrayList<>());
     }
 }

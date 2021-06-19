@@ -44,6 +44,7 @@ public class AccountService {
     public ResponseEntity<User> register(User user) {
         ErrorCode.USERNAME_EXISTED.cumulativeIf(userRepository.existsByUsername(user.getUsername()));
         ErrorCode.EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
+
         user.encodePassword(bCryptPasswordEncoder);
         userRepository.save(user);
         return XeResponseUtils.success(user);
@@ -54,6 +55,6 @@ public class AccountService {
            updateUser.setId(id);
            userRepository.save(updateUser);
            return XeResponseUtils.success();
-        }).orElseGet(ErrorCode.USER_NOT_FOUND::errorResponseContent);
+        }).orElseGet(ErrorCode.USER_NOT_FOUND::getErrorResponse);
     }
 }
