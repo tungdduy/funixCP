@@ -33,7 +33,6 @@ public class User implements Serializable {
     private Long id;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min = 4, max=30)
     @NotBlank()
     private String password;
 

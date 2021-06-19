@@ -2,7 +2,6 @@ package net.timxekhach.operation.rest.service;
 
 import net.timxekhach.operation.entity.User;
 import net.timxekhach.operation.repository.UserRepository;
-import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.jwt.JwtTokenProvider;
 import net.timxekhach.utility.XeResponseUtils;
 import org.springframework.http.HttpHeaders;
@@ -12,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static net.timxekhach.operation.response.ErrorCode.*;
 
 @Service
 @Transactional
@@ -42,8 +43,8 @@ public class AccountService {
     }
 
     public ResponseEntity<User> register(User user) {
-        ErrorCode.USERNAME_EXISTED.cumulativeIf(userRepository.existsByUsername(user.getUsername()));
-        ErrorCode.EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
+        USERNAME_EXISTED.cumulativeIf(userRepository.existsByUsername(user.getUsername()));
+        EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
 
         user.encodePassword(bCryptPasswordEncoder);
         userRepository.save(user);
@@ -55,6 +56,6 @@ public class AccountService {
            updateUser.setId(id);
            userRepository.save(updateUser);
            return XeResponseUtils.success();
-        }).orElseGet(ErrorCode.USER_NOT_FOUND::getErrorResponse);
+        }).orElseGet(USER_NOT_FOUND::getErrorResponse);
     }
 }
