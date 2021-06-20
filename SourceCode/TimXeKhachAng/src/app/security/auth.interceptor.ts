@@ -7,7 +7,8 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {AuthService} from "./auth.service";
-import {ApiUrl, AppUrl} from "../static/url";
+import {ApiUrl} from "../static/url";
+import {AppEnum} from "../static/app.enum";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -23,6 +24,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   private handle(request: HttpRequest<any>): HttpRequest<any> {
     const token = this.authService.loadThenGetToken();
-    return request.clone({setHeaders: {Authorization: `Bearer ${token}`}});
+    return request.clone({setHeaders: {Authorization: `${AppEnum.tokenPrefix}${token}` }});
   }
 }

@@ -1,11 +1,15 @@
-import { Injectable } from '@angular/core';
-import {Router} from "@angular/router";
+import {Compiler, Injectable, Injector, NgModuleFactoryLoader, Type} from '@angular/core';
+import {ChildrenOutletContexts, Router, Routes, UrlSerializer} from "@angular/router";
+import {Location} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
-export class XeRouter extends Router {
+export class XeRouter {
+  constructor(private router: Router) {
+  }
+
   public navigateNow(url: string): void {
-    super.navigateByUrl(url).then(()=> {});
+    this.router.navigateByUrl(url).then(r => {});
   }
 }

@@ -54,7 +54,7 @@ const customNotifierOption: NotifierOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class Notifier {
+export class XeNotifierService {
   private type = {
     DEFAULT: "DEFAULT",
     SUCCESS: "SUCCESS",
@@ -88,6 +88,9 @@ export class Notifier {
 
   private reponseToString(response: XeReponse): string {
     const msgFinder: string[] = [];
+    if(response.reason == null) {
+      return "";
+    }
     response.messages!.forEach((message) => {
       let msgString = this.messageToString(message.code, message.params);
       if(msgString.length > 0) {

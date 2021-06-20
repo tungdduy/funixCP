@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import { Observable } from 'rxjs';
+import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
 import {AuthService} from "./auth.service";
-import {Notifier} from "../service/notifier";
+import {XeNotifierService} from "../service/xe-notifier.service.module";
 import {AppUrl} from "../static/url";
 import {AppMessages} from "../static/app-messages";
 import {XeRouter} from "../service/xe-router";
@@ -24,7 +23,7 @@ export class AuthGuard implements CanActivate {
 
   constructor(private authService: AuthService,
               private router: XeRouter,
-              private notifier: Notifier) {
+              private notifier: XeNotifierService) {
   }
 
 }

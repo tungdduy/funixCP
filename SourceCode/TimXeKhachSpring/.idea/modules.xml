@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../TimXeKhachAng/TimXeKhachAng.iml" filepath="$PROJECT_DIR$/../TimXeKhachAng/TimXeKhachAng.iml" />
+      <module fileurl="file://D:/themes/ngx-admin/ngx-admin/ngx-admin.iml" filepath="D:/themes/ngx-admin/ngx-admin/ngx-admin.iml" />
       <module fileurl="file://$PROJECT_DIR$/timxekhach.iml" filepath="$PROJECT_DIR$/timxekhach.iml" />
     </modules>
   </component>

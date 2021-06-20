@@ -4,7 +4,7 @@ import {User} from "../../../static/entity/user";
 import {Subscription} from "rxjs";
 import {AppUrl} from "../../../static/url";
 import {AppMessages} from "../../../static/app-messages";
-import {Notifier} from "../../../service/notifier";
+import {XeNotifierService} from "../../../service/xe-notifier.service.module";
 import {XeReponse} from "../../../static/model/xe-response";
 import {XeRouter} from "../../../service/xe-router";
 
@@ -18,12 +18,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public showLoading: boolean = false;
 
-  constructor(private authenticationService: AuthService,
+  constructor(private authService: AuthService,
               private xeRouter: XeRouter,
-              private notifier: Notifier) {}
+              private notifier: XeNotifierService) {}
 
   ngOnInit(): void {
-    if(this.authenticationService.isUserLoggedIn()) {
+    if(this.authService.isUserLoggedIn()) {
       this.xeRouter.navigateNow(AppUrl.DEFAULT_URL_AFTER_LOGIN);
     }
   }
@@ -31,7 +31,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   public onRegister(user: User): void {
     this.showLoading = true;
     this.subscriptions.push(
-      this.authenticationService.register(user).subscribe(
+      this.authService.register(user).subscribe(
         (response: User) => {
           this.showLoading = false;
           this.notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.username));

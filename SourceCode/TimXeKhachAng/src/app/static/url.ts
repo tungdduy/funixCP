@@ -5,7 +5,7 @@ export const AppUrl = {
   LOGOUT : "logout",
   REGISTER : "register",
   EMPTY: "",
-  DEFAULT_URL_AFTER_LOGIN : "/user/management",
+  DEFAULT_URL_AFTER_LOGIN : "user/management",
 }
 
 export const ApiUrl = {

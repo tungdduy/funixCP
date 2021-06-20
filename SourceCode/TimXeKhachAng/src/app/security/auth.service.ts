@@ -3,18 +3,19 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../static/entity/user";
 import { JwtHelperService } from "@auth0/angular-jwt";
-import {constant} from "../static/constant";
 import {ApiUrl} from "../static/url";
+import {StorageService} from "../service/storage.service";
+import {AppEnum} from "../static/app.enum";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private _jwtHelper = new JwtHelperService();
-  private _token!: string | null;
+  private _token: string | null | undefined;
   private _currentUsername!: string | null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private storage: StorageService) { }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
     return this.http.post<User>(ApiUrl.LOGIN, user, {observe: 'response'});
@@ -24,21 +25,8 @@ export class AuthService {
     return this.http.post<User>(ApiUrl.REGISTER, user);
   }
 
-  public loadToken(): void {
-    this._token = localStorage.getItem(constant.TOKEN);
-  }
-
-  public saveToken(token: string): void {
-    this._token = token;
-    localStorage.setItem(constant.TOKEN, token);
-  }
-
-  public addUserToLocalCache(user: User | null): void {
-    localStorage.setItem(constant.USER, JSON.stringify(user));
-  }
-
   isUserLoggedIn() {
-    this.loadToken();
+    this._token = this.storage.token;
     if(this._token != null && this._token !== '') {
       if(this._jwtHelper.decodeToken(this._token).sub != null || '') {
         if(!this._jwtHelper.isTokenExpired(this._token)) {
@@ -58,13 +46,20 @@ export class AuthService {
   private logOut() {
     this._token = null;
     this._currentUsername = null;
-    localStorage.removeItem(constant.USER);
-    localStorage.removeItem(constant.TOKEN);
-    localStorage.removeItem(constant.USERS);
+    this.storage.user = null;
+    this.storage.users = null;
+    this.storage.token = null;
   }
 
   public loadThenGetToken() {
-    this.loadToken();
+    this._token = this.storage.token;
     return this._token;
+  }
+
+  saveResponse(response: HttpResponse<User>) {
+    const token = response.headers.get(AppEnum.tokenHeader);
+    this._token = token;
+    this.storage.token = token;
+    this.storage.user = response.body;
   }
 }
