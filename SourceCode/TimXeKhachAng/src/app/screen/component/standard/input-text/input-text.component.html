@@ -1,0 +1,14 @@
+<div class="input-group mb-3">
+  <div class="input-group-append" *ngIf="icon != null">
+    <span class="input-group-text"><i class="fas fa-{{icon}}"></i></span>
+  </div>
+  <input class="form-control"
+         name="{{name}}"
+         ngModel
+         #name="ngModel"
+         placeholder="{{placeholder}}"
+         required
+         type="{{type}}">
+</div>
+<span class="help-block" style="color:#98009c;"
+      *ngIf="name.invalid && name.touched">{{error}}</span>
