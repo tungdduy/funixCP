@@ -13,7 +13,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolationException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ public class XeExceptionListener {
         this.xeExceptionHandler = xeExceptionHandler;
     }
 
+    @SuppressWarnings("unused")
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleBeforeCommit(XeExceptionListener event) {
         if(!this.storageMessages.isEmpty()){
@@ -47,14 +47,10 @@ public class XeExceptionListener {
         return lastMessages;
     }
 
-    private boolean pushedTransactionEvent = false;
 
     public void addErrorToEvent(Message message){
         this.storageMessages.add(message);
-        if(!this.pushedTransactionEvent) {
-            applicationEventPublisher.publishEvent(this);
-            this.pushedTransactionEvent = true;
-        }
+        applicationEventPublisher.publishEvent(this);
     }
 
     private ResponseEntity<XeHttpResponse> findAnyFeasibleResponse(Throwable ex) {

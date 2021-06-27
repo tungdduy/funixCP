@@ -12,7 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static net.timxekhach.operation.response.ErrorCode.*;
+import static net.timxekhach.operation.response.ErrorCode.EMAIL_EXISTED;
+import static net.timxekhach.operation.response.ErrorCode.UNDEFINED_ERROR;
 
 @Service
 @Transactional
@@ -36,16 +37,13 @@ public class AccountService {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        User loginUser = userRepository.findByUsername(username);
+        User loginUser = userRepository.findFirstByUsernameOrEmail(username, username);
         HttpHeaders jwtHeader = jwtTokenProvider.getJwtHeader(loginUser);
-
         return XeResponseUtils.successWithHeaders(loginUser, jwtHeader);
     }
 
     public ResponseEntity<User> register(User user) {
-        USERNAME_EXISTED.cumulativeIf(userRepository.existsByUsername(user.getUsername()));
         EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
-
         user.encodePassword(bCryptPasswordEncoder);
         userRepository.save(user);
         return XeResponseUtils.success(user);

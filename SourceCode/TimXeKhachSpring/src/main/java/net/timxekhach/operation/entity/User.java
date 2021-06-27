@@ -40,8 +40,6 @@ public class User implements Serializable {
     @Email
     private String email;
 
-    @NotBlank
-    @Size(min = 4, max=30)
     private String username;
 
     @Pattern(regexp = PHONE_REGEX)
@@ -78,5 +76,9 @@ public class User implements Serializable {
 
     public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.password = bCryptPasswordEncoder.encode(this.password);
+    }
+
+    public String getPossibleLoginName() {
+        return this.username != null ? username : email;
     }
 }

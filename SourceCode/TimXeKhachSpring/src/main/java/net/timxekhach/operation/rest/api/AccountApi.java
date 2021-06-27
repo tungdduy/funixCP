@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = {"/user"})
@@ -23,8 +24,9 @@ public class AccountApi {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestParam String username,
-                                      @RequestParam String password) {
+    public ResponseEntity<User> login(@RequestBody Map<String, String> loginInfo) {
+        String username = loginInfo.get("username");
+        String password = loginInfo.get("password");
         return accountService.login(username, password);
     }
 

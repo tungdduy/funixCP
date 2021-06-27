@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,7 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findFirstByUsernameOrEmail(username, username);
         if(user == null) {
             ErrorCode.NO_USER_FOUND_BY_USERNAME.throwNow(username);
         }
@@ -32,6 +34,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private void validateLoginAttempt(User user) {
-        user.setNonLocked(!loginAttemptService.hasExceededMaxAttempts(user.getUsername()));
+        user.setNonLocked(!loginAttemptService.hasExceededMaxAttempts(user.getPossibleLoginName()));
     }
 }

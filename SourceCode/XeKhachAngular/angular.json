@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ngx-admin-demo": {
+    "xe-khach-net": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -88,18 +88,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ngx-admin-demo:build"
+            "browserTarget": "xe-khach-net:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ngx-admin-demo:build:production"
+              "browserTarget": "xe-khach-net:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-admin-demo:build"
+            "browserTarget": "xe-khach-net:build"
           }
         },
         "test": {
@@ -156,7 +156,7 @@
         }
       }
     },
-    "ngx-admin-demo-e2e": {
+    "xe-khach-net-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
@@ -165,7 +165,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "ngx-admin-demo:serve"
+            "devServerTarget": "xe-khach-net:serve"
           }
         },
         "lint": {
@@ -180,14 +180,14 @@
       }
     }
   },
-  "defaultProject": "ngx-admin-demo",
+  "defaultProject": "xe-khach-net",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "ngx",
+      "prefix": "xe",
       "style": "scss"
     },
     "@schematics/angular:directive": {
-      "prefix": "ngx"
+      "prefix": "xe"
     }
   }
 }

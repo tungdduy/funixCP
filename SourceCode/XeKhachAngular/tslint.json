@@ -6,13 +6,6 @@
     "deprecation": {
       "severity": "warning"
     },
-    "trailing-comma": [
-      true,
-      {
-        "multiline": "always",
-        "singleline": "never"
-      }
-    ],
     "arrow-return-shorthand": true,
     "callable-types": true,
     "class-name": true,
@@ -70,10 +63,6 @@
       "check-whitespace"
     ],
     "prefer-const": true,
-    "quotemark": [
-      true,
-      "single"
-    ],
     "radix": true,
     "semicolon": [
       true,
@@ -108,13 +97,15 @@
       true,
       "attribute",
       "ngx",
-      "camelCase"
+      "camelCase",
+      "xe"
     ],
     "component-selector": [
       true,
       "element",
       "ngx",
-      "kebab-case"
+      "kebab-case",
+      "xe"
     ],
     "ban": [
       true,

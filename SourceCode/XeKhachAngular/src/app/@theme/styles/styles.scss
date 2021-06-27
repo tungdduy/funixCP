@@ -38,3 +38,7 @@
   @include nb-overrides();
   @include material-overrides();
 };
+
+nb-toastr-container {
+  white-space: pre-line;
+}

@@ -1,0 +1,6 @@
+<div class="form-inline d-block {{cbxHide? 'text-center' : 'text-right'}}">
+  <div class="form-group float-left pt-2 {{cbxHide? 'd-none' : ''}}">
+    <nb-checkbox [(checked)]="cbxValue" (change)="emitCbxValue()">{{cbxText}}</nb-checkbox>
+  </div>
+  <button [type]="btnType" nbButton status="info">{{btnText}}</button>
+</div>
