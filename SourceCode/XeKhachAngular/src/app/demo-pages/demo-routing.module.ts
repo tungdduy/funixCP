@@ -5,7 +5,6 @@ import {DemoComponent} from './demo.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {ECommerceComponent} from './e-commerce/e-commerce.component';
 import {NotFoundComponent} from './miscellaneous/not-found/not-found.component';
-import {AuthGuard} from "../_core/security/auth.guard";
 
 const routes: Routes = [{
   path: '', component: DemoComponent,

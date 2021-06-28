@@ -2,7 +2,6 @@
 
 * Lộ trình triển khai [xem tại đây!](https://docs.google.com/document/d/e/2PACX-1vTA-_X0syWMzsYMxA9L-8euIXqw7MJXZ6jJicpN6AYUUHivKDBKOgrZT_fQUWgW7g/pub)
 
-* Đối với các file .html, có thể xem nội dung đã được render bằng cách thêm https://htmlpreview.github.io? vào trước đường dẫn.
 
 # Bảng theo dõi tiến độ tài liệu
 * Bảng sau đây dành riêng cho theo dõi công việc liên quan tới tài liệu báo cáo.

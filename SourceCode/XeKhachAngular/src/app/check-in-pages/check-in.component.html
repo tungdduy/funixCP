@@ -6,9 +6,9 @@
         <router-outlet></router-outlet>
         <hr/>
         <div class="d-flex justify-content-between">
-          <a routerLink="../auth/login" routerLinkActive="d-none">Đăng nhập</a>
-          <a routerLink="../auth/forgot-password" routerLinkActive="d-none">Quên mật khẩu?</a>
-          <a routerLink="../auth/register" routerLinkActive="d-none">Đăng ký</a>
+          <a [routerLink]="shortUrl.LOGIN" routerLinkActive="d-none">{{label.LOGIN}}</a>
+          <a [routerLink]="shortUrl.FORGOT_PASSWORD" routerLinkActive="d-none">{{label.FORGOT_PASSWORD}}?</a>
+          <a [routerLink]="shortUrl.REGISTER" routerLinkActive="d-none">{{label.REGISTER}}</a>
         </div>
       </nb-card-body>
     </nb-card>

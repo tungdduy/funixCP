@@ -1,6 +1,6 @@
 export const StringUtil = {
   isBlank(value: string | null | undefined) {
-    return value === null || value == undefined || value.toString().trim().length === 0;
+    return value === null || value === undefined || value.toString().trim().length === 0;
   },
 
   isNotBlank(value: string | null | undefined) {
@@ -14,4 +14,5 @@ export const StringUtil = {
   blankOrNotEqual(value1: any, value2: any) {
     return !this.equalAndNotBlank(value1, value2);
   }
-}
+};
+

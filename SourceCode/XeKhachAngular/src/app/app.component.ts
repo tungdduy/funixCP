@@ -4,8 +4,9 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 import {Component, OnInit} from '@angular/core';
-import {AnalyticsService} from './@core/utils/analytics.service';
-import {SeoService} from './@core/utils/seo.service';
+import {AnalyticsService} from './@core/utils';
+import {SeoService} from './@core/utils';
+import {UrlUtil} from "./_core/static/utils/url.util";
 
 @Component({
   selector: 'ngx-app',
@@ -16,8 +17,10 @@ export class AppComponent implements OnInit {
   constructor(private analytics: AnalyticsService, private seoService: SeoService) {
   }
 
+
   ngOnInit(): void {
-    this.analytics.trackPageViews();
-    this.seoService.trackCanonicalChanges();
+    // this.analytics.trackPageViews();
+    // this.seoService.trackCanonicalChanges();
+    UrlUtil.startBuildUrl();
   }
 }

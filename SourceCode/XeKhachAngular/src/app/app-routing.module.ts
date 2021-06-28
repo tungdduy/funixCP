@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 
 export const routes: Routes = [
   {path: 'admin', loadChildren: () => import('./demo-pages/demo.module').then(m => m.DemoModule)},
-  {path: 'auth', loadChildren: () => import('./check-in-pages/check-in.module').then(m => m.CheckInModule)},
+  {path: 'auth', loadChildren: () => import('./check-in-pages/check-in.module').then(m => m['CheckInModule'])},
   {path: 'demo', loadChildren: () => import('./demo-pages/demo.module').then(m => m.DemoModule)},
 
   {path: '', redirectTo: 'auth', pathMatch: 'full' },

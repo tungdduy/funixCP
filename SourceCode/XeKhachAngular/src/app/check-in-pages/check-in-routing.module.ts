@@ -4,20 +4,22 @@ import {CheckInComponent} from "./check-in.component";
 import {LoginComponent} from "./login/login.component";
 import {RegisterComponent} from "./register/register.component";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
-import {AuthGuard} from "../_core/security/auth.guard";
+import {UrlUtil} from "../_core/static/utils/url.util";
 
 const routes: Routes = [{
   path: '', component: CheckInComponent,
-  children: [
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent},
-    {path: 'forgot-password', component: ForgotPasswordComponent},
-    {path: '', redirectTo: 'login', pathMatch: 'full'},
-  ]
+  children: UrlUtil.buildShortPath([
+    LoginComponent,
+    RegisterComponent,
+    ForgotPasswordComponent
+  ])
 }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class CheckInRoutingModule { }
+export class CheckInRoutingModule {
+}
+
+

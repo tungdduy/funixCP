@@ -1,4 +1,4 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {XeNotifierService} from "../../_core/service/xe-notifier.service";
 import {RegisterModel} from "../../_core/static/model/register.model";
 import {XeForm} from "../../_core/abstract/xe-form.abstract";
@@ -6,10 +6,11 @@ import {XeInputComponent} from "../../@theme/components/xe-input/xe-input.compon
 import {XeRouter} from "../../_core/service/xe-router";
 import {AuthService} from "../../_core/security/auth.service";
 import {Subscription} from "rxjs";
-import {AppUrl} from "../../_core/static/url";
 import {User} from "../../_core/static/model/user";
 import {AppMessages} from "../../_core/static/app-messages";
 import {HttpErrorResponse} from "@angular/common/http";
+import {XeUrl} from "../../_core/static/url.declare";
+import {XeLabel} from "../../_core/static/xe-label";
 
 
 @Component({
@@ -17,10 +18,11 @@ import {HttpErrorResponse} from "@angular/common/http";
   styles: [],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent extends XeForm implements  OnInit {
+export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
 
   @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
   getFormControls = () => this.formControls;
+  label = XeLabel;
 
   private subscriptions: Subscription[] = [];
   public showLoading: boolean = false;
@@ -32,8 +34,8 @@ export class RegisterComponent extends XeForm implements  OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.isUserLoggedIn()) {
-      // this.xeRouter.navigateNow(AppUrl.DEFAULT_URL_AFTER_LOGIN);
+    if (this.authService.isUserLoggedIn()) {
+      this.xeRouter.navigateNow(XeUrl.full.app.DEFAULT_URL_AFTER_LOGIN);
     }
   }
 
@@ -44,14 +46,14 @@ export class RegisterComponent extends XeForm implements  OnInit {
         (response: User) => {
           this.showLoading = false;
           this.notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.username));
-          this.xeRouter.navigateNow(AppUrl.LOGIN);
+          this.xeRouter.navigateNow(XeUrl.full.app.ACCOUNT.LOGIN);
         },
         (error: HttpErrorResponse) => {
           this.notifier.httpErrorResponse(error);
           this.showLoading = false;
         }
       )
-    )
+    );
   }
 
   ngOnDestroy(): void {

@@ -3,11 +3,11 @@ import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../static/model/user";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {ApiUrl} from "../static/url";
 import {StorageService} from "../service/storage.service";
 import {AppEnum} from "../static/app.enum";
 import {RegisterModel} from "../static/model/register.model";
-import {StringUtil} from "../static/xe-string.util";
+import {StringUtil} from "../static/utils/xe-string.util";
+import {XeUrl} from "../static/url.declare";
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +21,15 @@ export class AuthService {
     return AuthService._authorities;
   }
 
-  constructor(private http: HttpClient, private storage: StorageService) { }
+  constructor(private http: HttpClient, private storage: StorageService) {
+  }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
-    return this.http.post<User>(ApiUrl.LOGIN, user, {observe: 'response'});
+    return this.http.post<User>(XeUrl.full.api.USER.LOGIN, user, {observe: 'response'});
   }
 
   public register(user: RegisterModel): Observable<User> {
-    return this.http.post<User>(ApiUrl.REGISTER, user);
+    return this.http.post<User>(XeUrl.full.api.USER.REGISTER, user);
   }
 
   isUserLoggedIn(): boolean {
@@ -39,7 +40,7 @@ export class AuthService {
   }
 
   private isExpired(): boolean {
-    if(AuthService._jwtHelper.isTokenExpired(AuthService._token)){
+    if (AuthService._jwtHelper.isTokenExpired(AuthService._token)) {
       this.logOut();
       return true;
     }
@@ -48,9 +49,9 @@ export class AuthService {
 
   private decodeToken(token: string): boolean {
 
-    if(StringUtil.isBlank(token)) return false;
+    if (StringUtil.isBlank(token)) return false;
 
-    let tokenContent = AuthService._jwtHelper.decodeToken(token);
+    const tokenContent = AuthService._jwtHelper.decodeToken(token);
     if (StringUtil.isNotBlank(tokenContent?.sub)) {
       if (!AuthService._jwtHelper.isTokenExpired(token)) {
         AuthService._token = token;

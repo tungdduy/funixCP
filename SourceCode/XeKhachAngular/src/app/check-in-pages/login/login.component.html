@@ -1,7 +1,7 @@
 
 <form (submit)="onSubmit()">
-  <xe-input name="username" minLength="3" label="Email | Tên đăng nhập"></xe-input>
-  <xe-input name="password" minLength="3" label="Mật khẩu" type="password"></xe-input>
-  <xe-center-btn btnText="Đăng nhập"></xe-center-btn>
+  <xe-input name="username" minLength="3" [label]="label.USERNAME_PLACE_HOLDER"></xe-input>
+  <xe-input name="password" minLength="3" [label]="label.PASSWORD" type="password"></xe-input>
+  <xe-center-btn [btnText]="label.LOGIN"></xe-center-btn>
 </form>
 

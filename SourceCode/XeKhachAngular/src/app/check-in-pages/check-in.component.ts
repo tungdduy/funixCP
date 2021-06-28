@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
-import {NbThemeService} from "@nebular/theme";
+import {XeUrl} from "../_core/static/url.declare";
+import {XeLabel} from "../_core/static/xe-label";
 
 @Component({
   selector: 'xe-auth',
@@ -7,7 +8,8 @@ import {NbThemeService} from "@nebular/theme";
   templateUrl: './check-in.component.html'
 })
 export class CheckInComponent {
-  private title;
-  constructor(themeService: NbThemeService) {
+  shortUrl = XeUrl.short.app.ACCOUNT;
+  label = XeLabel;
+  constructor() {
   }
 }

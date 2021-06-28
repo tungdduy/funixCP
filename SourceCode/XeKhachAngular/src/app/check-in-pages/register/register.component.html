@@ -1,11 +1,11 @@
 
 
 <form (submit)="onSubmit()">
-  <xe-input label="Họ và tên" name="fullName" minLength="3" maxLength="30" ></xe-input>
-  <xe-input label="Email" type="email"></xe-input>
-  <xe-input label="Mật khẩu" type="password" #matkhau></xe-input>
-  <xe-input label="Nhập lại mật khẩu" type="password" [matching]="matkhau"></xe-input>
-  <xe-center-btn btnText="Đăng ký" [disabled]="showLoading"></xe-center-btn>
+  <xe-input [label]="label.FULL_NAME" name="fullName" minLength="3" maxLength="30" ></xe-input>
+  <xe-input [label]="label.EMAIL" type="email"></xe-input>
+  <xe-input [label]="label.PASSWORD" type="password" #password></xe-input>
+  <xe-input [label]="label.RE_PASSWORD" type="password" [matching]="password"></xe-input>
+  <xe-center-btn [btnText]="label.REGISTER" [disabled]="showLoading"></xe-center-btn>
 </form>
 
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChildren} from '@angular/core';
 import {XeNotifierService} from "../../_core/service/xe-notifier.service";
 import {XeForm} from "../../_core/abstract/xe-form.abstract";
 import {XeInputComponent} from "../../@theme/components/xe-input/xe-input.component";
@@ -7,17 +7,19 @@ import {XeRouter} from "../../_core/service/xe-router";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../_core/static/model/user";
-import {AppUrl} from "../../_core/static/url";
+import {XeUrl} from "../../_core/static/url.declare";
+import {XeLabel} from "../../_core/static/xe-label";
 
 @Component({
   selector: 'xe-login',
   styles: [],
   templateUrl: 'login.component.html',
 })
-export class LoginComponent extends XeForm implements OnInit {
+export class LoginComponent extends XeForm implements OnInit, OnDestroy {
 
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
+  label = XeLabel;
 
   @ViewChildren(XeInputComponent) formControls;
   getFormControls = () => this.formControls;
@@ -28,8 +30,8 @@ export class LoginComponent extends XeForm implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.authService.isUserLoggedIn()){
-      this.router.navigateNow(AppUrl.DEFAULT_URL_AFTER_LOGIN);
+    if (this.authService.isUserLoggedIn()) {
+      this.router.navigateNow(XeUrl.full.app.DEFAULT_URL_AFTER_LOGIN);
     }
   }
 
@@ -40,7 +42,7 @@ export class LoginComponent extends XeForm implements OnInit {
         (response: HttpResponse<User>) => {
           this.authService.saveResponse(response);
           this.showLoading = false;
-          this.router.navigateNow(AppUrl.DEFAULT_URL_AFTER_LOGIN);
+          this.router.navigateNow(XeUrl.full.app.DEFAULT_URL_AFTER_LOGIN);
         },
         (error: HttpErrorResponse) => {
           this.notifier.httpErrorResponse(error);

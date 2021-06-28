@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {AuthService} from "./auth.service";
-import {ApiUrl} from "../static/url";
 import {AppEnum} from "../static/app.enum";
+import {UrlUtil} from "../static/utils/url.util";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -14,8 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(this.needHandle(request) ? this.handle(request) : request);
   }
 
-  private needHandle = (request: HttpRequest<any> ) =>
-    !(request.url.includes(ApiUrl.LOGIN) || request.url.includes(ApiUrl.REGISTER))
+  private needHandle = (request: HttpRequest<any> ) => !UrlUtil.isPublicApi(request.url);
 
   private handle(request: HttpRequest<any>): HttpRequest<any> {
     const token = this.authService.loadThenGetToken();

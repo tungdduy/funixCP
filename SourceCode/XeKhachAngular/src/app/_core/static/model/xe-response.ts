@@ -1,6 +1,6 @@
 import {Message} from "./message";
 
-export interface XeReponse {
+export interface XeResponse {
   timeStamp: string;
   status: string;
   statusCode: bigint;
