@@ -4,9 +4,11 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 import {Component, OnInit} from '@angular/core';
-import {AnalyticsService} from './@core/utils';
-import {SeoService} from './@core/utils';
-import {UrlUtil} from "./_core/static/utils/url.util";
+import {AnalyticsService, SeoService} from './@core/utils';
+
+import {ApiUrlBuilder} from "./framework/url/api.url.builder";
+import {UrlConfig} from "./framework/url/url.config";
+import {Url} from "./business/url.declare";
 
 @Component({
   selector: 'ngx-app',
@@ -19,8 +21,10 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // this.analytics.trackPageViews();
+    this.analytics.trackPageViews();
     // this.seoService.trackCanonicalChanges();
-    UrlUtil.startBuildUrl();
+    UrlConfig.buildUrlConfig(UrlConfig.root(Url.APP_HOST), Url.app);
+    UrlConfig.buildUrlConfig(UrlConfig.root(Url.API_HOST), Url.api);
+    ApiUrlBuilder.start();
   }
 }

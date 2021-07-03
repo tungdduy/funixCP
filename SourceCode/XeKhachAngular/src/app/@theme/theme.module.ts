@@ -19,20 +19,19 @@ import {
 import {NbEvaIconsModule} from '@nebular/eva-icons';
 import {NbSecurityModule} from '@nebular/security';
 
-import {FooterComponent, HeaderComponent, SearchInputComponent, TinyMCEComponent,} from './components';
-import {CapitalizePipe, NumberWithCommasPipe, PluralPipe, RoundPipe, TimingPipe,} from './pipes';
-import {OneColumnLayoutComponent, ThreeColumnsLayoutComponent, TwoColumnsLayoutComponent,} from './layouts';
+import {FooterComponent, HeaderComponent, SearchInputComponent, TinyMCEComponent, } from './components';
+import {CapitalizePipe, NumberWithCommasPipe, PluralPipe, RoundPipe, TimingPipe, } from './pipes';
+import {OneColumnLayoutComponent, ThreeColumnsLayoutComponent, TwoColumnsLayoutComponent, } from './layouts';
 import {DEFAULT_THEME} from './styles/theme.default';
 import {COSMIC_THEME} from './styles/theme.cosmic';
 import {CORPORATE_THEME} from './styles/theme.corporate';
 import {DARK_THEME} from './styles/theme.dark';
 import {MATERIAL_LIGHT_THEME} from './styles/material/theme.material-light';
 import {MATERIAL_DARK_THEME} from './styles/material/theme.material-dark';
-import {XeInputComponent} from './components/xe-input/xe-input.component';
-import {XeBtnWithCheckboxComponent} from './components/xe-btn-with-checkbox/xe-btn-with-checkbox.component';
-import {XeCenterBtnComponent} from './components/xe-center-btn/xe-center-btn.component';
+import {XeInputComponent} from '../framework/components/xe-input/xe-input.component';
+import {XeBtnWithCheckboxComponent} from '../framework/components/xe-btn-with-checkbox/xe-btn-with-checkbox.component';
+import {XeCenterBtnComponent} from '../framework/components/xe-center-btn/xe-center-btn.component';
 import {FormsModule} from "@angular/forms";
-import {TestComponent} from './components/test/test.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -66,31 +65,29 @@ const PIPES = [
 ];
 
 @NgModule({
-    imports: [
-        CommonModule,
-        MatRippleModule,
-        ...NB_MODULES,
-        NbInputModule,
-        NbCheckboxModule,
-        FormsModule
-    ],
-    exports: [
-        CommonModule,
-        MatRippleModule,
-        ...PIPES,
-        ...COMPONENTS,
-        XeInputComponent,
-        XeBtnWithCheckboxComponent,
-        XeCenterBtnComponent,
-        TestComponent,
-    ],
+  imports: [
+    CommonModule,
+    MatRippleModule,
+    ...NB_MODULES,
+    NbInputModule,
+    NbCheckboxModule,
+    FormsModule
+  ],
+  exports: [
+    CommonModule,
+    MatRippleModule,
+    ...PIPES,
+    ...COMPONENTS,
+    XeInputComponent,
+    XeBtnWithCheckboxComponent,
+    XeCenterBtnComponent,
+  ],
   declarations: [
     ...COMPONENTS,
     ...PIPES,
     XeInputComponent,
     XeBtnWithCheckboxComponent,
     XeCenterBtnComponent,
-    TestComponent,
   ],
 })
 export class ThemeModule {
@@ -102,7 +99,7 @@ export class ThemeModule {
           {
             name: 'default',
           },
-          [ DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME, MATERIAL_LIGHT_THEME, MATERIAL_DARK_THEME ],
+          [DEFAULT_THEME, COSMIC_THEME, CORPORATE_THEME, DARK_THEME, MATERIAL_LIGHT_THEME, MATERIAL_DARK_THEME],
         ).providers,
       ],
     };

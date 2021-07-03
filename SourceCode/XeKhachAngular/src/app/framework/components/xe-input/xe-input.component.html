@@ -1,0 +1,15 @@
+<form>
+  <div class="form-group">
+    <span *ngIf="isShowLabel()" class="text-info">{{label}}</span>
+    <input
+      [(ngModel)]="value"
+      [disabled]="disabled"
+      [type]="type"
+      (change)="validate()"
+      [id]="getId()"
+      nbInput fullWidth
+      [name]="getName()"
+      [placeholder]="label"
+    ><span *ngIf="errorMessage" class="text-danger">{{errorMessage}}</span>
+  </div>
+</form>
