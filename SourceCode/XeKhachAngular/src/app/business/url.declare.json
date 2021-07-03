@@ -1,0 +1,23 @@
+{
+  "api": {
+    "USER": {
+      "__self": ["public"],
+      "LOGOUT": ["public"],
+      "LOGIN": ["public"],
+      "REGISTER": [],
+      "FORGOT_PASSWORD": []
+    }
+  },
+  "app": {
+    "CHECK_IN": {
+      "__self": [ROLE_ADMIN, USER_READ, USER_WRITE],
+      "REGISTER": [],
+      "LOGIN": [],
+      "FORGOT_PASSWORD": []
+    },
+    "ADMIN": {
+      "__self": [],
+      "BUSS_STAFF": []
+    }
+  }
+}

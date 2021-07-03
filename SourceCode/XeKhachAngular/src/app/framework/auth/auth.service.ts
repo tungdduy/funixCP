@@ -11,7 +11,7 @@ import {config} from "../config";
 import {Role} from "./role.model";
 import {XeRole} from "../../business/xe.role";
 import {Authority} from "../../business/auth.enum";
-import {Url} from "../../business/url.declare";
+import {Url} from "../url/url.declare";
 
 @Injectable({
   providedIn: 'root'

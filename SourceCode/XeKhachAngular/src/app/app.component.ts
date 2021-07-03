@@ -8,7 +8,7 @@ import {AnalyticsService, SeoService} from './@core/utils';
 
 import {ApiUrlBuilder} from "./framework/url/api.url.builder";
 import {UrlConfig} from "./framework/url/url.config";
-import {Url} from "./business/url.declare";
+import {Url} from "./framework/url/url.declare";
 
 @Component({
   selector: 'ngx-app',

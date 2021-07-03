@@ -3,11 +3,11 @@ import {RouterModule} from "@angular/router";
 import {LoginComponent} from "./login/login.component";
 import {RegisterComponent} from "./register/register.component";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
-import {Url} from "../../url.declare";
+import {Url} from "../../../framework/url/url.declare";
 import {NotFoundComponent} from "../demo-pages/miscellaneous/not-found/not-found.component";
 import {CheckInComponent} from "./check-in.component";
 
-const routes = Url.app.AUTH.__self.buildConfig();
+const routes = Url.app.CHECK_IN.__self.buildConfig();
 const routes2 = [
   {path: '', component: CheckInComponent,
   children: [
@@ -21,7 +21,7 @@ const routes2 = [
 
 
 @NgModule({
-  imports: [RouterModule.forChild(routes2)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
 export class CheckInRoutingModule {

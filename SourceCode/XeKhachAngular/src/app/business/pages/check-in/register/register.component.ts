@@ -10,7 +10,7 @@ import {User} from "../../../model/user";
 import {AppMessages} from "../../../i18n/app-messages";
 import {HttpErrorResponse} from "@angular/common/http";
 import {XeLabel} from "../../../i18n/xe-label";
-import {Url} from "../../../url.declare";
+import {Url} from "../../../../framework/url/url.declare";
 
 
 @Component({
@@ -46,7 +46,7 @@ export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
         (response: User) => {
           this.showLoading = false;
           this.notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.username));
-          this.xeRouter.navigateNow(Url.app.AUTH.LOGIN.full);
+          this.xeRouter.navigateNow(Url.app.CHECK_IN.LOGIN.full);
         },
         (error: HttpErrorResponse) => {
           this.notifier.httpErrorResponse(error);

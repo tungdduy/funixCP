@@ -3,7 +3,9 @@ import {ObjectUtil} from "../util/object.util";
 import {Role} from "../auth/role.model";
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {StorageUtil} from "../util/storage.util";
-import {StringUtil} from "app/framework/util/string.util";
+import {Type} from "@angular/core";
+import {NotFoundComponent} from "../../business/pages/demo-pages/miscellaneous/not-found/not-found.component";
+import {StringUtil} from "../util/string.util";
 
 
 export class UrlConfig {
@@ -34,14 +36,6 @@ export class UrlConfig {
       this.__noHost = this.full.substring(this.__root.__short.length + 1);
     }
     return this.__noHost;
-  }
-
-  private importPath(endString: string): string {
-    return `app/business/pages/check-in/${this.__short}/${this.__short}.${endString}`;
-  }
-
-  private importName(endString: string): string {
-    return StringUtil.urlToCapitalLizeEachWord(`${this.__short}-${endString}`);
   }
 
   static buildUrlConfig = (parent: UrlConfig, urls: {}) => {
@@ -83,13 +77,52 @@ export class UrlConfig {
     return this;
   }
 
+  private getPath = () => {
+    const rootImportPagesPath = '../../business/pages/';
+    let p = this.__parent;
+    let root = "";
+    while (!!p) {
+      if (!!p.__parent) {
+        root = `${p.__short}/${root}`;
+      }
+      p = p.__parent;
+    }
+    // return `.`;
+    return `${rootImportPagesPath}${root}${this.__short}`.toString();
+    // return '../../business/pages/check-in/check-in.component';
+  }
+
+  private uurl = '../../business/pages/check-in/check-in.component';
+
+
+  private importComponent() {
+    // import(this.uurl).then(c => this.setComponent(c[this.componentName]));
+    // import(this.uurl).then(c => this.setComponent(c[this.componentName]));
+    // import(this.getComponentPath()).then(c => this.setComponent(c[this.componentName]));
+  }
+
+  private importModule() {
+    return import(this.getModulePath()).then(m => m[this.moduleName]);
+  }
+
+  private getComponentPath() {
+    return '../../business/pages/check-in/check-in.component';
+    // return `${this.getPath()}/${this.__short}.component`;
+  }
+
+  private getModulePath() {
+    return `${this.getPath()}/${this.__short}.module`;
+  }
+
+  private isModule() {
+      return this.__children.length > 0;
+  }
+
   public buildConfig() {
     const userAuthorities: Authority[] = StorageUtil.getAuthorities();
-    import(`app/business/pages/${this.__short}/${this.__short}.component`)
-      .then(c => this.setComponent(c[this.componentName]));
-    const parentComponent = this._components[this.componentName];
+    this.importComponent();
     const routes = {
-      path: '', component:  parentComponent
+      path: '', component:  this._component
     };
     const children = [];
     this.__children.forEach(_child => {
@@ -100,9 +133,7 @@ export class UrlConfig {
       children.push({path: '', redirectTo: children[0].path, pathMatch: 'full'});
     }
 
-    // if (!!notFoundComponent) {
-    //   children.push({path: '**', component: notFoundComponent});
-    // }
+    children.push({path: '**', component: NotFoundComponent});
 
     routes['children'] = children;
     return [routes];
@@ -120,28 +151,28 @@ export class UrlConfig {
     });
   }
 
-  private _components: any = {};
+  private _component: Type<any>;
 
   get componentName(): string {
     return StringUtil.urlToCapitalLizeEachWord(`${this.__short}-component`);
   }
 
+  get moduleName(): string {
+    return StringUtil.urlToCapitalLizeEachWord(`${this.__short}-module`);
+  }
+
   private setComponent(type: any) {
-    this._components[this.componentName] = type[this.componentName];
+    this._component = type;
 }
 
   private buildPath = (userAuthorities: Authority[]): {} => {
     const path = {path: this.__short};
-    if (this.__children.length > 0) { // have children? so this is module.
-      path['loadChildren'] = () => import(this.importPath('module'))
-        .then(m => m[this.importName('module')]);
+    if (this.isModule()) {
+      path['loadChildren'] = this.importModule();
     } else {
-      this._components[this.componentName] = import(this.importPath('component'))
-        .then(m => this.setComponent(m));
-      let count = 0;
-      while (!path['component'] && count++ < 10) {
-        path['component'] = this._components[this.componentName];
-      }
+      this.importComponent();
+      path['component'] = this._component;
+
       if (this.__authorities.length > 0) {
         path['canActivate'] = [
           (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) =>
@@ -155,3 +186,4 @@ export class UrlConfig {
   }
 
 }
+

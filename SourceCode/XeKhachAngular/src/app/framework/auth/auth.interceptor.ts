@@ -3,7 +3,6 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 import {AuthService} from "./auth.service";
 import {AuthConfig} from "./auth.config";
-import {AppUrlBuilder} from "../url/app.url.builder";
 import {Api} from "../url/api.url";
 
 

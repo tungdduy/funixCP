@@ -8,7 +8,7 @@ import {Subscription} from "rxjs";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../../model/user";
 import {XeLabel} from "../../../i18n/xe-label";
-import {Url} from "../../../url.declare";
+import {Url} from "../../../../framework/url/url.declare";
 
 @Component({
   selector: 'xe-login',

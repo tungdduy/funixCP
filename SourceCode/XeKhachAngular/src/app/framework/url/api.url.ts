@@ -1,4 +1,4 @@
-import {Url} from "../../business/url.declare";
+import {Url} from "./url.declare";
 export const Api = {
   url: Object.assign({}, Url.api),
   HOST: Url.API_HOST,
