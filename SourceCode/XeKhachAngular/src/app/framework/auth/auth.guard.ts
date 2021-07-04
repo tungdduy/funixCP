@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
 import {AuthService} from "./auth.service";
-import {AppMessages} from "../../business/i18n/app-messages";
 import {XeRouter} from "../../business/service/xe-router";
 import {XeNotifierService} from "../notify/xe.notifier.service";
 import {Url} from "../url/url.declare";
+import {AppMessages} from "../../business/i18n";
 
 @Injectable({
   providedIn: 'root'

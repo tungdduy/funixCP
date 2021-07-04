@@ -1,4 +1,4 @@
-export const XeLabel = {
+export const Label_vi = {
   LOGIN: "Đăng nhập",
   REGISTER: "Đăng ký",
   FORGOT_PASSWORD: "Quên mật khẩu",

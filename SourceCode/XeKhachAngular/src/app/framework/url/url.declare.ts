@@ -38,6 +38,9 @@ export const Url = {
       BUSS_STAFF: config()
     },
   },
+  opp: {
+    CHECK_IN: config().auths([r.USER])
+  }
   // ****@@@****
   // END OF IMPORT SECTION ==============
 

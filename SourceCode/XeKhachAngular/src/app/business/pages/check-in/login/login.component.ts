@@ -7,8 +7,8 @@ import {XeRouter} from "../../../service/xe-router";
 import {Subscription} from "rxjs";
 import {HttpErrorResponse, HttpResponse} from "@angular/common/http";
 import {User} from "../../../model/user";
-import {XeLabel} from "../../../i18n/xe-label";
 import {Url} from "../../../../framework/url/url.declare";
+import {XeLabel} from "../../../i18n";
 
 @Component({
   selector: 'xe-login',

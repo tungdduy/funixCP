@@ -7,9 +7,8 @@ import {XeRouter} from "../../../service/xe-router";
 import {AuthService} from "../../../../framework/auth/auth.service";
 import {Subscription} from "rxjs";
 import {User} from "../../../model/user";
-import {AppMessages} from "../../../i18n/app-messages";
+import {AppMessages, XeLabel} from "../../../i18n";
 import {HttpErrorResponse} from "@angular/common/http";
-import {XeLabel} from "../../../i18n/xe-label";
 import {Url} from "../../../../framework/url/url.declare";
 
 

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {XeLabel} from "../../i18n/xe-label";
 import {Url} from "../../../framework/url/url.declare";
+import {XeLabel} from "../../i18n";
 
 @Component({
   selector: 'xe-auth',

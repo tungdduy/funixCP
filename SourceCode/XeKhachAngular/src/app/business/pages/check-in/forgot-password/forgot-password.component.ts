@@ -2,7 +2,7 @@ import {Component, ViewChildren} from '@angular/core';
 import {XeForm} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
 import {XeNotifierService} from "../../../../framework/notify/xe.notifier.service";
-import {XeLabel} from "../../../i18n/xe-label";
+import {XeLabel} from "../../../i18n";
 
 @Component({
   selector: 'xe-forgot-password',
