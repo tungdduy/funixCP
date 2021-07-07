@@ -3,8 +3,8 @@ package net.timxekhach.operation.response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.timxekhach.utility.XeBeanUtils;
 import net.timxekhach.utility.XeResponseUtils;
-import net.timxekhach.utility.pojo.Message;
-import net.timxekhach.utility.pojo.XeRuntimeException;
+import net.timxekhach.utility.model.Message;
+import net.timxekhach.utility.model.XeRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

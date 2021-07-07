@@ -2,7 +2,7 @@ package net.timxekhach.security.jwt;
 
 
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.security.SecurityResource;
+import net.timxekhach.security.model.SecurityResource;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

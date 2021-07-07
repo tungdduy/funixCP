@@ -16,7 +16,7 @@ public class XeStringUtils extends StringUtils {
     public static final String PHONE_REGEX = "(03|05|07|08|09)+\\d{8,10}";
 
     public static List<String> splitByComma(String value) {
-        XeStringUtils.splitByCharacterType("asd");
+        XeStringUtils.splitByCharacterType(COMMA);
         return Optional.of(
                 Arrays.asList(XeStringUtils.split(value, XeStringUtils.COMMA)))
                 .orElse(new ArrayList<>());
@@ -49,5 +49,19 @@ public class XeStringUtils extends StringUtils {
 
     public static String joinByComma(List<String> values) {
         return join(values, COMMA);
+    }
+
+    public static String removeLastChar(String string, int i) {
+        return string.substring(0, string.length() - i);
+    }
+
+    /**
+     * @param cssCase like: css-case-with-hyphen
+     * @return CapitalizeEachWord
+     */
+    public static String cssCaseToCapitalizeEachWord(String cssCase){
+        return Arrays.stream(cssCase.split("-"))
+                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+                .collect(Collectors.joining());
     }
 }

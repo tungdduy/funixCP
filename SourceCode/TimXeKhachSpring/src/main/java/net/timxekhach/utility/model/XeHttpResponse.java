@@ -1,4 +1,4 @@
-package net.timxekhach.utility.pojo;
+package net.timxekhach.utility.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

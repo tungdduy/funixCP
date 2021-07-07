@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.generator.url.RoleEnum;
+import net.timxekhach.security.constant.RoleEnum;
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

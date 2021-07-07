@@ -3,9 +3,9 @@ package net.timxekhach.operation.response;
 
 import net.timxekhach.utility.XeReflectionUtils;
 import net.timxekhach.utility.XeResponseUtils;
-import net.timxekhach.utility.pojo.Message;
-import net.timxekhach.utility.pojo.XeHttpResponse;
-import net.timxekhach.utility.pojo.XeRuntimeException;
+import net.timxekhach.utility.model.Message;
+import net.timxekhach.utility.model.XeHttpResponse;
+import net.timxekhach.utility.model.XeRuntimeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;

@@ -42,11 +42,11 @@ public class AccountService {
         return XeResponseUtils.successWithHeaders(loginUser, jwtHeader);
     }
 
-    public ResponseEntity<User> register(User user) {
+    public User register(User user) {
         EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
         user.encodePassword(bCryptPasswordEncoder);
         userRepository.save(user);
-        return XeResponseUtils.success(user);
+        return user;
     }
 
     public ResponseEntity<Void> updateUser(User updateUser, Long id) {

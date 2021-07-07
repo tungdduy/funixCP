@@ -1,9 +1,9 @@
 package net.timxekhach.utility;
 
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.utility.pojo.Message;
-import net.timxekhach.utility.pojo.XeHttpResponse;
-import net.timxekhach.utility.pojo.XeRuntimeException;
+import net.timxekhach.utility.model.Message;
+import net.timxekhach.utility.model.XeHttpResponse;
+import net.timxekhach.utility.model.XeRuntimeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package net.timxekhach.security;
+package net.timxekhach.security.model;
 
 
 import lombok.Getter;

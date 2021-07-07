@@ -1,4 +1,4 @@
-package net.timxekhach.security;
+package net.timxekhach.security.user;
 
 import net.timxekhach.operation.entity.User;
 import org.springframework.security.core.GrantedAuthority;

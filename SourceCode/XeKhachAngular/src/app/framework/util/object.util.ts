@@ -9,6 +9,4 @@ export class ObjectUtil {
   static isFunction(obj: any) {
     return typeof obj === 'function';
   }
-
-
 }

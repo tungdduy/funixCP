@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {ObjectUtil} from "../../util/object.util";
-import {AppMessages} from "../../../business/i18n/app-messages";
 import {RegexUtil} from "../../util/regex.util";
+import {AppMessages} from "../../../business/i18n";
 
 @Component({
   selector: 'xe-input',

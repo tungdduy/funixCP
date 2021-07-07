@@ -1,11 +1,9 @@
-package net.timxekhach.utility.pojo;
+package net.timxekhach.utility.model;
 
 import lombok.Getter;
 import net.timxekhach.operation.response.ErrorCode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter

@@ -8,5 +8,4 @@ export const AppMessages_vi = {
   EMAIL_NOT_VALID: "Email không hợp lệ!",
   FIELD_NOT_MATCH: (fieldName) => `${fieldName} không khớp`,
   INVALID_FIELD: (fieldName) => `${fieldName} không hợp lệ`,
-
 };

@@ -10,39 +10,47 @@ const r = XeRole;
 const a = Authority;
 
 export const Url = {
+  publicApi: [],
   API_HOST: environment.apiHost,
   APP_HOST: environment.appHost,
+  getPublicApi: (apiUrls: UrlConfig[]) => {
+    apiUrls.forEach(apiUrl => {
+      if (apiUrl instanceof UrlConfig) {
+        if (apiUrl.isPublic()) {
+          Url.publicApi.push(apiUrl.full);
+        }
+      } else {
+        Url.getPublicApi(Object.values(apiUrl));
+      }
+    });
+  },
+  isPublicApi: (url: string) => {
+    if (Url.publicApi.length === 0) {
+      Url.getPublicApi(Object.values(Url.api));
+    }
+    return Url.publicApi.includes(url);
+  },
   DEFAULT_URL_AFTER_LOGIN: (): string => {
     return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
   },
-  // START of IMPORT SECTION ========
-  // ****@@@****
   api: {
-    USER: {
-      __self: config(),
-      LOGOUT: config(),
-      LOGIN: config(),
-      REGISTER: config(),
-      FORGOT_PASSWORD: config(),
-    }
+    USER: config().public(),
+    ADMIN: config(),
+    CALLER_STAFF: config(),
+    BUSS_STAFF: config(),
   },
   app: {
     CHECK_IN: {
-      __self: config().auths([r.USER, a.CALLER_STAFF_WRITE]),
-      REGISTER: config(),
+      __self: config(),
       LOGIN: config(),
-      FORGOT_PASSWORD: config(),
+      REGISTER: config(),
+      FORGOT_PASSWORD: config().auths([r.ROLE_BUSS_ADMIN, a.ADMIN_READ]),
     },
     ADMIN: {
       __self: config(),
-      BUSS_STAFF: config()
+      BUSS_STAFF: config(),
     },
   },
-  opp: {
-    CHECK_IN: config().auths([r.USER])
-  }
-  // ****@@@****
-  // END OF IMPORT SECTION ==============
 
 };
 

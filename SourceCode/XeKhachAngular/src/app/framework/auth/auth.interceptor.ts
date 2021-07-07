@@ -3,7 +3,7 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 import {AuthService} from "./auth.service";
 import {AuthConfig} from "./auth.config";
-import {Api} from "../url/api.url";
+import {Url} from "../url/url.declare";
 
 
 @Injectable()
@@ -16,7 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(this.needHandle(request) ? this.handle(request) : request);
   }
 
-  private needHandle = (request: HttpRequest<any>) => !Api.isPublicUrl(request.url);
+  private needHandle = (request: HttpRequest<any>) => !Url.isPublicApi(request.url);
 
   private handle(request: HttpRequest<any>): HttpRequest<any> {
     const token = this.authService.token;

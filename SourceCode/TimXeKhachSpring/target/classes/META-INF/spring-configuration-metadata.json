@@ -2,85 +2,85 @@
   "groups": [
     {
       "name": "xekhach.security",
-      "type": "net.timxekhach.security.SecurityResource",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "type": "net.timxekhach.security.model.SecurityResource",
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     }
   ],
   "properties": [
     {
       "name": "xekhach.security.allowed-headers",
       "type": "java.util.List<java.lang.String>",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.allowed-methods",
       "type": "java.util.List<java.lang.String>",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.allowed-origins",
       "type": "java.util.List<java.lang.String>",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.authorities",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.expiration-time",
       "type": "java.lang.Long",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.exposed-headers",
       "type": "java.util.List<java.lang.String>",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.http-method-option",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.jwt-audience",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.jwt-issuer",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.jwt-secret",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.maximum-number-of-login-attempts",
       "type": "java.lang.Integer",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.public-urls",
       "type": "java.lang.String[]",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.token-header",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.token-prefix",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.user-folder",
       "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.SecurityResource"
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     }
   ],
   "hints": []

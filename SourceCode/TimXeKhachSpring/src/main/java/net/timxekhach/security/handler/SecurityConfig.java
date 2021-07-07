@@ -1,6 +1,8 @@
-package net.timxekhach.security;
+package net.timxekhach.security.handler;
 
 import net.timxekhach.security.jwt.JwtFilter;
+import net.timxekhach.security.model.SecurityResource;
+import net.timxekhach.security.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +15,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
 
     private final JwtFilter jwtFilter;
     private final UserDetailsServiceImpl userDetailsService;
@@ -54,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticationEntryPoint(jwtFilter.forbiddenEntryPoint())
             .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 
     @Bean
@@ -62,4 +65,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(securityResource.getAllowedOrigins());
+        corsConfiguration.setAllowedHeaders(securityResource.getAllowedHeaders());
+        corsConfiguration.setExposedHeaders(securityResource.getExposedHeaders());
+        corsConfiguration.setAllowedMethods(securityResource.getAllowedMethods());
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return new org.springframework.web.filter.CorsFilter(urlBasedCorsConfigurationSource);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 }

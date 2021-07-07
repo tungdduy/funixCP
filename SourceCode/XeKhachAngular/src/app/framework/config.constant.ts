@@ -1,4 +1,4 @@
-export const config = {
+export const configConstant = {
   USER : "user",
   USERS : "users",
   TOKEN : "token",

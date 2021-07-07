@@ -35,6 +35,6 @@ export class StorageUtil {
     if (authString !== null) {
       return JSON.parse(authString);
     }
-    return null;
+    return [];
   }
 }

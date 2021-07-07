@@ -1,10 +1,10 @@
-package net.timxekhach.security;
+package net.timxekhach.security.handler;
 
 import net.timxekhach.operation.response.XeExceptionHandler;
 import net.timxekhach.utility.XeResponseUtils;
-import net.timxekhach.utility.pojo.Message;
-import net.timxekhach.utility.pojo.XeHttpResponse;
-import net.timxekhach.utility.pojo.XeRuntimeException;
+import net.timxekhach.utility.model.Message;
+import net.timxekhach.utility.model.XeHttpResponse;
+import net.timxekhach.utility.model.XeRuntimeException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

@@ -16,26 +16,17 @@ import {XeLabel} from "../../../i18n";
   templateUrl: 'login.component.html',
 })
 export class LoginComponent extends XeForm implements OnInit, OnDestroy {
-
   public showLoading: boolean;
   private subscriptions: Subscription[] = [];
   label = XeLabel;
-
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
   @ViewChildren(XeInputComponent) formControls;
   getFormControls = () => this.formControls;
-  constructor(private authService: AuthService,
-              private notifier: XeNotifierService,
-              private router: XeRouter) {
-    super();
-  }
-
-  ngOnInit(): void {
-    if (this.authService.isUserLoggedIn()) {
-      this.router.navigateNow(Url.DEFAULT_URL_AFTER_LOGIN());
-    }
-  }
 
   doSubmitAfterBasicValidate(model: any): void {
+    // **************** DO_SUBMIT *******************
     this.showLoading = true;
     this.subscriptions.push(
       this.authService.login(model).subscribe(
@@ -50,9 +41,18 @@ export class LoginComponent extends XeForm implements OnInit, OnDestroy {
         }
       )
     );
+    // **************** DO_SUBMIT *******************
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+  ngOnInit(): void {
+    if (this.authService.isUserLoggedIn()) {
+      this.router.navigateNow(Url.DEFAULT_URL_AFTER_LOGIN());
+    }
+  }
+
+  constructor(private authService: AuthService,
+              private notifier: XeNotifierService,
+              private router: XeRouter) {
+    super();
   }
 }

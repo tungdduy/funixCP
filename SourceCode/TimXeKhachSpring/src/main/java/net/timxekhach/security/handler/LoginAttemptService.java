@@ -1,8 +1,10 @@
-package net.timxekhach.security;
+package net.timxekhach.security.handler;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.timxekhach.security.model.SecurityResource;
+import net.timxekhach.security.user.UserDetailsImpl;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

@@ -1,6 +1,6 @@
 package net.timxekhach.utility;
 
-import net.timxekhach.security.XeExceptionListener;
+import net.timxekhach.security.handler.XeExceptionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

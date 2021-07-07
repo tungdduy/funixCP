@@ -7,11 +7,11 @@ import {StorageUtil} from "../util/storage.util";
 import {AuthConfig} from "./auth.config";
 import {RegisterModel} from "../../business/model/register.model";
 import {StringUtil} from "../util/string.util";
-import {config} from "../config";
-import {Role} from "./role.model";
+import {Role} from "../model/role.model";
 import {XeRole} from "../../business/xe.role";
 import {Authority} from "../../business/auth.enum";
 import {Url} from "../url/url.declare";
+import {configConstant} from "../config.constant";
 
 @Injectable({
   providedIn: 'root'
@@ -34,15 +34,15 @@ export class AuthService {
   }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
-    return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});
+    return this.http.post<User>(Url.api.USER.full, user, {observe: 'response'});
   }
 
   public register(user: RegisterModel): Observable<User> {
-    return this.http.post<User>(Url.api.USER.REGISTER.full, user);
+    return this.http.post<User>(Url.api.USER.full, user);
   }
 
   isUserLoggedIn(): boolean {
-    const token = StorageUtil.getString(config.TOKEN);
+    const token = StorageUtil.getString(configConstant.TOKEN);
     if (StringUtil.blankOrNotEqual(AuthService._token, token)) {
       return this.decodeAndSaveToken(token);
     }
@@ -117,20 +117,20 @@ export class AuthService {
   }
 
   get repoUser() {
-    return StorageUtil.getString(config.USER);
+    return StorageUtil.getString(configConstant.USER);
   }
 
   setRepoUser(user: User) {
-    StorageUtil.setItem(config.USER, user);
+    StorageUtil.setItem(configConstant.USER, user);
   }
 
   get repoToken() {
-    return StorageUtil.getString(config.TOKEN);
+    return StorageUtil.getString(configConstant.TOKEN);
   }
 
   setRepoToken(token: any) {
     AuthService._token = token;
-    StorageUtil.setItem(config.TOKEN, token);
+    StorageUtil.setItem(configConstant.TOKEN, token);
   }
 
 

@@ -1,11 +1,9 @@
 import {Injectable} from '@angular/core';
 import {NbComponentStatus, NbGlobalPhysicalPosition, NbToastrService} from "@nebular/theme";
 import {XeResponseModel} from "./xe.response.model";
-import {AppMessages} from "../../business/i18n/app-messages";
-import {ApiMessages} from "../../business/i18n/api-messages";
 import {HttpErrorResponse} from "@angular/common/http";
-import {config} from "../config";
 import {ObjectUtil} from "../util/object.util";
+import {ApiMessages, AppMessages} from "../../business/i18n";
 
 @Injectable({
   providedIn: 'root'

@@ -2,6 +2,7 @@ package net.timxekhach.operation.rest.api;
 
 import net.timxekhach.operation.entity.User;
 import net.timxekhach.operation.rest.service.AccountService;
+import net.timxekhach.utility.XeResponseUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class AccountApi {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody @Valid User user)  {
-        return accountService.register(user);
+        return XeResponseUtils.success(accountService.register(user));
     }
 
     @PostMapping("/login")

@@ -1,4 +1,4 @@
-package net.timxekhach.generator.url;
+package net.timxekhach.security.constant;
 
 public enum AuthEnum {
     USER_READ, USER_WRITE,
