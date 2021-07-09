@@ -1,6 +1,6 @@
 import {environment} from "../../../environments/environment";
-import {Authority} from "../../business/auth.enum";
-import {XeRole} from "../../business/xe.role";
+import {Authority} from "../../business/constant/auth.enum";
+import {XeRole} from "../../business/constant/xe.role";
 import {UrlConfig} from "./url.config";
 
 export const config = () => {
@@ -10,7 +10,7 @@ const r = XeRole;
 const a = Authority;
 
 export const Url = {
-  publicApi: [],
+  publicApi : [],
   API_HOST: environment.apiHost,
   APP_HOST: environment.appHost,
   getPublicApi: (apiUrls: UrlConfig[]) => {
@@ -25,7 +25,8 @@ export const Url = {
     });
   },
   isPublicApi: (url: string) => {
-    if (Url.publicApi.length === 0) {
+    if (!Url.publicApi) {
+      Url.publicApi = [];
       Url.getPublicApi(Object.values(Url.api));
     }
     return Url.publicApi.includes(url);
@@ -34,7 +35,7 @@ export const Url = {
     return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
   },
   api: {
-    USER: config().public(),
+    USER: config(),
     ADMIN: config(),
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),

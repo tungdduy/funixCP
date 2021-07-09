@@ -6,7 +6,7 @@ import net.timxekhach.utility.XeResponseUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.validation.*;
 import java.util.Map;
 
 @RestController
@@ -14,14 +14,8 @@ import java.util.Map;
 public class AccountApi {
 
     private final AccountService accountService;
-
     public AccountApi(AccountService accountService) {
         this.accountService = accountService;
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody @Valid User user)  {
-        return XeResponseUtils.success(accountService.register(user));
     }
 
     @PostMapping("/login")
@@ -32,8 +26,26 @@ public class AccountApi {
     }
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@RequestBody User updateUser, @PathVariable("id") Long id) {
-        return accountService.updateUser(updateUser, id);
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody @Valid User user)  {
+        return XeResponseUtils.success(accountService.register(user));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateUser(
+            @RequestBody User updateUser,
+            @PathVariable("id") Long id) {
+
+        accountService.updateUser(updateUser, id);
+        return XeResponseUtils.success();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+        accountService.deleteUser(id);
+        return XeResponseUtils.success();
+    }
+    //==========================================
+    // _______ START_IMPORT_METHOD __________ //
+    //==========================================
 }

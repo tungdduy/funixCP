@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot} from "@angular/router";
+import {RouterModule} from "@angular/router";
 import {Url} from "../../../framework/url/url.declare";
 import {RouterBuilder} from '../../../framework/url/router.builder';
 

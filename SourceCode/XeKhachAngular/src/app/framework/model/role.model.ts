@@ -1,4 +1,4 @@
-import {Authority} from "../../business/auth.enum";
+import {Authority} from "../../business/constant/auth.enum";
 
 export class Role {
   roles: Role[] = [];

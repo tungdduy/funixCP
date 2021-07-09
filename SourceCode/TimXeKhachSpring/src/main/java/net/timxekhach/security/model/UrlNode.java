@@ -1,18 +1,21 @@
 package net.timxekhach.security.model;
 
 import lombok.Getter;
+import lombok.Setter;
+import net.timxekhach.generator.url.UrlNodeBuilder;
 import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
-import net.timxekhach.security.handler.UrlBuilder;
-import net.timxekhach.utility.XeStringUtils;
+import net.timxekhach.security.handler.UrlArchitect;
+import net.timxekhach.security.model.UrlTypeEnum.UrlTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class UrlNode {
+    @Setter
+    private UrlTypeEnum urlType;
     private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();
     private Boolean isPublic;
@@ -27,19 +30,19 @@ public class UrlNode {
 
     public UrlNode child(String url) {
         UrlNode child = new UrlNode(url);
-        child.updateAncestorsForChild(this);
+        child.addParent(this);
         return child;
     }
 
-    private void updateAncestorsForChild(UrlNode parent) {
+    private void addParent(UrlNode parent) {
         parent.children.add(this);
         this.ancestors = new ArrayList<>(parent.ancestors);
         this.ancestors.add(parent);
     }
 
-    private void updateAncestorsForSibling(UrlNode sibling) {
-        sibling.getParent().children.add(this);
-        this.ancestors = sibling.ancestors;
+    private void addSibling(UrlNode sibling) {
+        this.getParent().children.add(sibling);
+        sibling.ancestors = this.ancestors;
     }
 
     public ApiMethod method(String name) {
@@ -49,13 +52,13 @@ public class UrlNode {
     public UrlNode sibling(String url) {
         if(!this.ancestors.isEmpty()) {
             UrlNode sibling = new UrlNode(url);
-            sibling.updateAncestorsForSibling(this);
+            this.addSibling(sibling);
             return sibling;
         }
         return null;
     }
 
-    private UrlNode getParent(){
+    public UrlNode getParent(){
         return this.ancestors.isEmpty() ? null : this.ancestors.get(this.ancestors.size() - 1);
     }
 
@@ -63,39 +66,9 @@ public class UrlNode {
         return this.getParent().sibling(url);
     }
 
-    public String getCapitalizedName() {
-        return XeStringUtils.cssCaseToCapitalizeEachWord(this.url);
-    }
-    public String getKey(){
-        return this.buildUpperCaseUrl();
-    }
-    public String getComponentName() {
-        return XeStringUtils.cssCaseToCapitalizeEachWord(this.url + "-component");
-    }
-    public String getModuleName() {
-        return XeStringUtils.cssCaseToCapitalizeEachWord(this.url + "-module");
-    }
-
-    public String buildKeyChain() {
-        String ancestorsChain = this.getAncestors().stream()
-                .map(UrlNode::buildUpperCaseUrl)
-                .collect(Collectors.joining("."));
-        return ancestorsChain.isEmpty() ? this.buildUpperCaseUrl() : ancestorsChain + "." + this.buildUpperCaseUrl();
-    }
-
-    public String buildUrlChain() {
-        String ancestorsChain = this.getAncestors().stream()
-                .map(UrlNode::getUrl)
-                .collect(Collectors.joining("."));
-        return ancestorsChain.isEmpty() ? this.getUrl() : ancestorsChain + "/" + this.getUrl();
-    }
-
-    public String buildUpperCaseUrl(){
-        return this.url.replaceAll("-", "_").toUpperCase();
-    }
 
     public UrlNode create(String url) {
-        return UrlBuilder.start(url);
+        return UrlArchitect.start(url);
     }
 
     public UrlNode auths(AuthEnum... auths) {
@@ -107,9 +80,16 @@ public class UrlNode {
         this.roles = Arrays.asList(roles);
         return this;
     }
-
     UrlNode PUBLIC() {
         this.isPublic = true;
         return this;
+    }
+
+    private UrlNodeBuilder builder;
+    public UrlNodeBuilder getBuilder() {
+        if(this.builder == null) {
+            this.builder = new UrlNodeBuilder(this);
+        }
+        return this.builder;
     }
 }

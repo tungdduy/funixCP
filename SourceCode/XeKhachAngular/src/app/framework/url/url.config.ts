@@ -1,7 +1,6 @@
-import {Authority} from "../../business/auth.enum";
+import {Authority} from "../../business/constant/auth.enum";
 import {ObjectUtil} from "../util/object.util";
 import {Role} from "../model/role.model";
-import {renderConstantPool} from "@angular/compiler-cli/ngcc/src/rendering/renderer";
 
 
 export class UrlConfig {

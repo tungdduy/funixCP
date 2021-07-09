@@ -10,10 +10,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class XeStringUtils extends StringUtils {
-    public static final String COMMA = ",";
-    public static final String COLON = ":";
-    public static final String EMPTY_STRING = "";
-    public static final String PHONE_REGEX = "(03|05|07|08|09)+\\d{8,10}";
+    public static final String COMMA = ",",
+            COLON = ":",
+            DOT = ":",
+            EMPTY_STRING = "",
+            PHONE_REGEX = "(03|05|07|08|09)+\\d{8,10}",
+            NONE_ALPHA_REGEX = "[^a-zA-Z]+";
+
 
     public static List<String> splitByComma(String value) {
         XeStringUtils.splitByCharacterType(COMMA);
@@ -45,8 +48,6 @@ public class XeStringUtils extends StringUtils {
        return joinByComma(toList);
     }
 
-
-
     public static String joinByComma(List<String> values) {
         return join(values, COMMA);
     }
@@ -55,13 +56,49 @@ public class XeStringUtils extends StringUtils {
         return string.substring(0, string.length() - i);
     }
 
-    /**
-     * @param cssCase like: css-case-with-hyphen
-     * @return CapitalizeEachWord
-     */
-    public static String cssCaseToCapitalizeEachWord(String cssCase){
-        return Arrays.stream(cssCase.split("-"))
-                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
-                .collect(Collectors.joining());
+    public static String joinByDot(String... values) {
+        return join(values, DOT);
     }
+
+    public static String joinByDot(List<String> values) {
+        return join(values, DOT);
+    }
+
+    public static String toLowercaseCharsOnly(String value) {
+        return value == null
+                ? ""
+                : value.trim()
+                    .replaceAll(NONE_ALPHA_REGEX, "")
+                    .toLowerCase();
+    }
+
+    /**
+     * @param value like path-of-url
+     * @return PATH_OF_URL
+     */
+    public static String toKey(String value) {
+        return value == null ? "" : value.trim().toUpperCase().replaceAll(NONE_ALPHA_REGEX, "_");
+    }
+
+    public static String toCapitalizeEachWord(String value) {
+        return value == null ? "" : Arrays.stream(value.trim().split(NONE_ALPHA_REGEX)).map(s -> s.substring(0,1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
+    }
+
+    public static String toCamel(String value) {
+        String capitalize = toCapitalizeEachWord(value);
+        if(capitalize.length() > 0) {
+            return capitalize.substring(0, 1).toLowerCase() + capitalize.substring(1);
+        }
+        return "";
+    }
+
+    public static String trimToEmpty(String value) {
+        return value == null ? null: value.trim();
+    }
+
+    public static String capitalizeEachWordToLowerDotChain(String CapitalizeNameLikeThis) {
+        String[] words = CapitalizeNameLikeThis.split("(?=\\p{Upper})");
+        return Arrays.stream(words).map(String::toLowerCase).collect(Collectors.joining("."));
+    }
+
 }

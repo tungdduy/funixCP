@@ -39,3 +39,5 @@ spring:
   web:
     resources:
       add-mappings: false
+  freemarker:
+    enabled: true

@@ -49,11 +49,14 @@ public class AccountService {
         return user;
     }
 
-    public ResponseEntity<Void> updateUser(User updateUser, Long id) {
-        return userRepository.findById(id).map(user -> {
-           updateUser.setId(id);
-           userRepository.save(updateUser);
-           return XeResponseUtils.success();
-        }).orElseGet(UNDEFINED_ERROR::getErrorResponse);
+    public void updateUser(User updateUser, Long id) {
+        if (!userRepository.findById(id).isPresent()) {
+            UNDEFINED_ERROR.throwNow();
+        }
+        updateUser.setId(id);
+        userRepository.save(updateUser);
+    }
+
+    public void deleteUser(Long id) {
     }
 }

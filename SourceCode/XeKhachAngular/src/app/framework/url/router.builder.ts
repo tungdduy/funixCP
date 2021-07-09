@@ -1,4 +1,4 @@
-import {Authority} from "../../business/auth.enum";
+import {Authority} from "../../business/constant/auth.enum";
 import {StorageUtil} from "../util/storage.util";
 import {NotFoundComponent} from "../../business/pages/demo-pages/miscellaneous/not-found/not-found.component";
 import {UrlConfig} from "./url.config";

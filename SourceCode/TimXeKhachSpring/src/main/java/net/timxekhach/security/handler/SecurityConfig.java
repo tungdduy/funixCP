@@ -50,7 +50,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy((SessionCreationPolicy.STATELESS))
             .and()
                 .authorizeRequests()
-                .antMatchers(securityResource.getPublicUrls()).permitAll()
+                .antMatchers(securityResource.getPublicUrls()).hasAnyAuthority()
+                // ------ START OF IMPORT ROLES ------------------
+
+                // ------ END OF IMPORT ROLES ------------------
                 .anyRequest().authenticated()
             .and()
                 .exceptionHandling()

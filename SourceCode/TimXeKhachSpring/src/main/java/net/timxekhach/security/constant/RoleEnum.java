@@ -1,8 +1,6 @@
 package net.timxekhach.security.constant;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static net.timxekhach.security.constant.AuthEnum.*;
 
@@ -30,12 +28,17 @@ public enum RoleEnum {
         this.authList = Arrays.asList(auths);
     }
 
-    public List<RoleEnum> getRoles() {
-        return this.roleList;
+    public List<AuthEnum> getAllAuthorities() {
+        Set<AuthEnum> auths = new HashSet<>(this.authList);
+        fetchAuths(this.roleList, auths);
+        return new ArrayList<>(auths);
     }
 
-    public List<AuthEnum> getAuths() {
-        return this.authList;
+    private void fetchAuths(List<RoleEnum> roleList, Set<AuthEnum> auths){
+        roleList.forEach(role -> {
+            auths.addAll(role.authList);
+            fetchAuths(role.roleList, auths);
+        });
     }
 
 }

@@ -8,8 +8,8 @@ import {AuthConfig} from "./auth.config";
 import {RegisterModel} from "../../business/model/register.model";
 import {StringUtil} from "../util/string.util";
 import {Role} from "../model/role.model";
-import {XeRole} from "../../business/xe.role";
-import {Authority} from "../../business/auth.enum";
+import {XeRole} from "../../business/constant/xe.role";
+import {Authority} from "../../business/constant/auth.enum";
 import {Url} from "../url/url.declare";
 import {configConstant} from "../config.constant";
 

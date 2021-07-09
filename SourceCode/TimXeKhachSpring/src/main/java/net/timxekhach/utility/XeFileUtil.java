@@ -1,5 +1,6 @@
 package net.timxekhach.utility;
 
+import org.aspectj.util.FileUtil;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
@@ -9,31 +10,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class XeFileUtil extends FileSystemUtils {
 
-    public static void readByLine(File file, Consumer<String> consumer)  {
+    public static <E> E readByLine(File file, Function<String, E> function)  {
         try(Scanner myReader = new Scanner(file);){
             while (myReader.hasNextLine()){
-                consumer.accept(myReader.nextLine());
+                return function.apply(myReader.nextLine());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return null;
     }
 
     public static void readByLine(String filePath, Consumer<String> consumer) {
-        readByLine(new File(filePath), consumer);
+        readByLine(new File(filePath), s -> {consumer.accept(s); return null;});
     }
 
-    public static List<String> readAllLines(String filePath) {
+    public static <E> E readByLine(String filePath, Function<String, E> function) {
+        return readByLine(new File(filePath), function);
+    }
+
+    public static String readAsString(String filePath) {
         File file = new File(filePath);
         try {
-            return Files.readAllLines(file.toPath());
+            return FileUtil.readAsString(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ArrayList<>();
+        return "";
     }
 
     public static void createFile(String path) {
