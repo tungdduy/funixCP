@@ -1,6 +1,6 @@
 package net.timxekhach.utility;
 
-public class XeAppUtils {
+public class XeAppUtil {
 
     public static final String
             APP_ROOT = "SourceCode/XeKhachAngular/src/app/",

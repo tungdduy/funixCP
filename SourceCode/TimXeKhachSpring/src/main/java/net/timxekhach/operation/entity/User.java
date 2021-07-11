@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,10 +15,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static net.timxekhach.utility.XeStringUtils.PHONE_REGEX;

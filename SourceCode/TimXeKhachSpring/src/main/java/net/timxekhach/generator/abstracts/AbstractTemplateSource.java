@@ -3,18 +3,17 @@ package net.timxekhach.generator.abstracts;
 import lombok.Getter;
 import net.timxekhach.security.model.UrlNode;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 
 @Getter
 public abstract class AbstractTemplateSource {
     protected File renderFile;
-    protected AbstractTemplateSource(){
-        renderFile = new File(buildRenderFilePath());
-        this.init();
+    public File getRenderFile() {
+        if(this.renderFile == null && buildRenderFilePath() != null) {
+            this.renderFile = new File(buildRenderFilePath());
+        }
+        return this.renderFile;
     }
-    protected AbstractTemplateSource(UrlNode urlNode){
-        this();
-    }
-    protected void init() {};
-    protected abstract String buildRenderFilePath();
+    public abstract String buildRenderFilePath();
 }

@@ -1,22 +1,22 @@
 package net.timxekhach.operation.rest.api;
 
+import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.entity.User;
 import net.timxekhach.operation.rest.service.AccountService;
-import net.timxekhach.utility.XeResponseUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.*;
+import javax.validation.Valid;
 import java.util.Map;
 
+import static net.timxekhach.utility.XeResponseUtils.success;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = {"/user"})
 public class AccountApi {
 
     private final AccountService accountService;
-    public AccountApi(AccountService accountService) {
-        this.accountService = accountService;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody Map<String, String> loginInfo) {
@@ -28,7 +28,7 @@ public class AccountApi {
 
     @PostMapping("/register")
     public ResponseEntity<User> register(@RequestBody @Valid User user)  {
-        return XeResponseUtils.success(accountService.register(user));
+        return success(accountService.register(user));
     }
 
     @PutMapping("/{id}")
@@ -37,13 +37,13 @@ public class AccountApi {
             @PathVariable("id") Long id) {
 
         accountService.updateUser(updateUser, id);
-        return XeResponseUtils.success();
+        return success();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         accountService.deleteUser(id);
-        return XeResponseUtils.success();
+        return success();
     }
     //==========================================
     // _______ START_IMPORT_METHOD __________ //

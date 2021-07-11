@@ -1,52 +1,29 @@
 package net.timxekhach.generator.renderers;
 
-import lombok.Getter;
 import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractTemplateSource;
-import net.timxekhach.security.model.UrlNode;
+import net.timxekhach.generator.sources.ModuleTsSource;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static net.timxekhach.utility.XeAppUtils.PAGES_DIR;
-
-public class ModuleTsFtl<E extends AbstractTemplateSource> extends AbstractAppUrlTemplateBuilder<E> {
+public class ModuleTsFtl extends AbstractAppUrlTemplateBuilder<ModuleTsSource> {
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected E visitUrlNode(UrlNode urlNode) {
-        return (E) new AbstractTemplateSource(urlNode) {
-
-            //______________ Must be used in template
-            @Getter
-            private final List<Component> components = new ArrayList<>();
-            @Getter
-            private String capitalizeName;
-            //____________________________________
-
-            @Override
-            protected String buildRenderFilePath() {
-                return PAGES_DIR + urlNode.getBuilder().buildUrlChain() + "/" + urlNode.getUrl() + ".module.ts";
-            }
-
-            @Override
-            protected void init() {
-                this.capitalizeName = urlNode.getBuilder().buildCapitalizeName();
-                urlNode.getChildren().forEach(child -> this.components.add(new Component(child)));
-            }
-        };
+    protected boolean isOverrideExistingFile() {
+        return true;
     }
 
-    @Getter
-    public static class Component {
-        private final String componentName;
-        private final String url;
-
-        public Component(UrlNode node) {
-            this.componentName = node.getBuilder().buildComponentName();
-            this.url = node.getUrl();
-        }
+    @Override
+    protected boolean fetchModuleOnly() {
+        return true;
     }
 
+    @Override
+    protected void handleSource(ModuleTsSource source) {
+        source.setCapitalizeName(source.getUrlNode().getBuilder().buildCapitalizeName());
+        source.setUrl(source.getUrlNode().getUrl());
+        source.getUrlNode()
+                .getChildren()
+                .stream()
+                .map(ModuleTsSource.Component::new)
+                .forEach(source.getChildren()::add);
+    }
 
 }

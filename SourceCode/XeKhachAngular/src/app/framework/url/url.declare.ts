@@ -34,6 +34,9 @@ export const Url = {
   DEFAULT_URL_AFTER_LOGIN: (): string => {
     return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
   },
+// ----------------------------------------------------------- //
+// ================= IMPORT TO END OF FILE =================== //
+// ----------------------------------------------------------- //
   api: {
     USER: config(),
     ADMIN: config(),
@@ -51,8 +54,7 @@ export const Url = {
       __self: config(),
       BUSS_STAFF: config(),
     },
-  },
-
+  }
 };
 
 

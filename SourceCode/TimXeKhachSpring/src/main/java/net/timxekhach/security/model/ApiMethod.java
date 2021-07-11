@@ -2,29 +2,25 @@ package net.timxekhach.security.model;
 
 
 import lombok.Getter;
-import net.timxekhach.generator.url.ApiMethodBuilder;
-import net.timxekhach.utility.XeAnnotationUtils;
-import net.timxekhach.utility.XeStringUtils;
+import net.timxekhach.generator.builders.ApiMethodBuilder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 public class ApiMethod {
     private final Map<String, Class<?>> parameters = new HashMap<>();
     private Class<?> returnType;
-    private final String name;
+    private final String url;
     private final UrlNode caller;
     private final Map<String, Class<?>> pathVars = new HashMap<>();
     private final RequestMethod requestMethod = RequestMethod.GET;
 
-    public ApiMethod(UrlNode caller, String name) {
+    public ApiMethod(UrlNode caller, String url) {
         this.caller = caller;
         caller.getMethods().add(this);
-        this.name = name;
+        this.url = url;
     }
     public ApiMethod param(String name, Class<?> paramType) {
         parameters.put(name, paramType);

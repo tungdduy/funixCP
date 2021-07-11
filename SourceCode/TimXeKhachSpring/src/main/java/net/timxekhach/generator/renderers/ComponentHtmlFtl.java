@@ -1,25 +1,16 @@
 package net.timxekhach.generator.renderers;
 
-import lombok.Getter;
 import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractTemplateSource;
-import net.timxekhach.security.model.UrlNode;
+import net.timxekhach.generator.sources.ComponentHtmlSource;
 
-import static net.timxekhach.utility.XeAppUtils.PAGES_DIR;
+public class ComponentHtmlFtl extends AbstractAppUrlTemplateBuilder<ComponentHtmlSource> {
+    @Override
+    protected void handleSource(ComponentHtmlSource source) {
+        source.setName(source.getUrlNode().getBuilder().buildCapitalizeName() + " worked!");
+    }
 
-public class ComponentHtmlFtl<E extends AbstractTemplateSource> extends AbstractAppUrlTemplateBuilder<E> {
-
-    @SuppressWarnings("unchecked")
-    protected E visitUrlNode(UrlNode urlNode) {
-
-        return (E) new AbstractTemplateSource(urlNode) {
-            @Getter
-            private final String name = urlNode.getBuilder().buildCapitalizeName();
-
-            @Override
-            protected String buildRenderFilePath() {
-                return PAGES_DIR + urlNode.getBuilder().buildUrlChain() + "/" + urlNode.getUrl() + ".component.html";
-            }
-        };
+    @Override
+    protected boolean isOverrideExistingFile() {
+        return false;
     }
 }
