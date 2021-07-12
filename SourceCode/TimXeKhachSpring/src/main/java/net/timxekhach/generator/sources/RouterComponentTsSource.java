@@ -2,7 +2,7 @@ package net.timxekhach.generator.sources;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateSource;
+import net.timxekhach.generator.abstracts.url.AbstractUrlTemplateSource;
 import net.timxekhach.security.model.UrlNode;
 
 import java.util.ArrayList;

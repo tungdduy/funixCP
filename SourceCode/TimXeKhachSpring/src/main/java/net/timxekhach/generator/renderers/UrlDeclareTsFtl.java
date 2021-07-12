@@ -1,9 +1,11 @@
 package net.timxekhach.generator.renderers;
 
 import net.timxekhach.generator.abstracts.AbstractTemplateBuilder;
+import net.timxekhach.generator.abstracts.AuthorizationConfig;
 import net.timxekhach.generator.sources.UrlDeclareTsSource;
 import net.timxekhach.security.handler.UrlArchitect;
 import net.timxekhach.security.model.UrlNode;
+import net.timxekhach.security.model.UrlTypeEnum;
 import net.timxekhach.utility.XeFileUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static net.timxekhach.security.handler.UrlArchitect.apiUrls;
 import static net.timxekhach.generator.sources.UrlDeclareTsSource.UrlModel;
+import static net.timxekhach.security.handler.UrlArchitect.appUrls;
 
 public class UrlDeclareTsFtl extends AbstractTemplateBuilder<UrlDeclareTsSource> {
     @Override
@@ -25,7 +28,7 @@ public class UrlDeclareTsFtl extends AbstractTemplateBuilder<UrlDeclareTsSource>
                 source.getRenderFile().getAbsolutePath()).split(source.getIMPORT_SEPARATOR())[0]);
 
         apiUrls.forEach(api -> buildRootModel(source.getApiUrls(), api));
-        UrlArchitect.appUrls.forEach(app -> buildRootModel(source.getAppUrls(), app));
+        appUrls.forEach(app -> buildRootModel(source.getAppUrls(), app));
     }
 
     void buildRootModel(List<UrlModel> models, UrlNode urlNode) {
@@ -39,7 +42,19 @@ public class UrlDeclareTsFtl extends AbstractTemplateBuilder<UrlDeclareTsSource>
         model.setConfig(buildConfig(urlNode));
         model.setKey(urlNode.getBuilder().buildKey());
         models.add(model);
+        processApiMethodUrl(model, urlNode);
         return model;
+    }
+
+    private static void processApiMethodUrl(UrlModel model, UrlNode urlNode) {
+        if (urlNode.getUrlType() == UrlTypeEnum.API) {
+           urlNode.getMethods().forEach(method -> {
+               UrlModel child = new UrlModel();
+               child.setConfig(buildConfig(method));
+               child.setKey(method.getBuilder().buildKey());
+               model.getChildren().add(child);
+           });
+        }
     }
 
     void buildChildModels(UrlNode parentNode, UrlModel parentModel) {
@@ -49,25 +64,25 @@ public class UrlDeclareTsFtl extends AbstractTemplateBuilder<UrlDeclareTsSource>
         });
     }
 
-    static String buildPublicConfig(UrlNode url) {
-        return url.getIsPublic() != null? ".public()" : "";
+    static String buildPublicConfig(AuthorizationConfig authConfig) {
+        return authConfig.getIsPublic() != null? ".public()" : "";
     }
 
-    static String buildConfig(UrlNode url) {
+    static String buildConfig(AuthorizationConfig authConfig) {
         return  "config()"
-                + buildPublicConfig(url)
-                + buildAuthsRolesConfig(url);
+                + buildPublicConfig(authConfig)
+                + buildAuthsRolesConfig(authConfig);
     }
 
     /**
      * @return string like .auths([r.ROLE_ADMIN, a.USER_READ])
      * must be consistent with the app config
      */
-    static String buildAuthsRolesConfig(UrlNode url) {
-        List<String> auths = url.getAuths().stream()
+    static String buildAuthsRolesConfig(AuthorizationConfig authConfig) {
+        List<String> auths = authConfig.getAuths().stream()
                 .map(a -> "a." + a.name())
                 .collect(Collectors.toList());
-        List<String> roles = url.getRoles().stream()
+        List<String> roles = authConfig.getRoles().stream()
                 .map(r -> "r." + r.name())
                 .collect(Collectors.toList());
         roles.addAll(auths);

@@ -5,9 +5,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import net.timxekhach.generator.abstracts.AbstractTemplateBuilder;
 import net.timxekhach.generator.abstracts.AbstractTemplateSource;
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.timxekhach.generator.abstracts.url.AbstractUrlTemplateBuilder;
 
 import java.io.File;
 import java.io.FileWriter;

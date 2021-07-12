@@ -1,6 +1,6 @@
 package net.timxekhach.generator.sources;
 
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateSource;
+import net.timxekhach.generator.abstracts.url.AbstractUrlTemplateSource;
 
 import static net.timxekhach.utility.XeAppUtil.PAGES_DIR;
 

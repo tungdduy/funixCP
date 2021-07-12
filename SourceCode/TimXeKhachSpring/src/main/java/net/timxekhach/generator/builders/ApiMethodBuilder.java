@@ -8,6 +8,7 @@ import java.util.*;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static net.timxekhach.utility.XeStringUtils.toCamel;
+import static net.timxekhach.utility.XeStringUtils.toKey;
 
 public class ApiMethodBuilder {
 
@@ -27,18 +28,17 @@ public class ApiMethodBuilder {
         this.apiMethodAnnotationBuilder = new ApiMethodAnnotationBuilder(apiMethod);
     }
 
-    public List<String> allImportClasses() {
-        Set<String> result = new HashSet<>(apiMethodAnnotationBuilder.allImportClasses());
-        apiMethod.getParameters().forEach((name, param) -> {
-            result.add(param.getName());
-        });
-        apiMethod.getPathVars().forEach((name, type) -> {
-            result.add(type.getName());
-        });
-        return new ArrayList<>(result);
+    public String buildKey() {
+        return toKey(this.apiMethod.getUrl());
     }
 
-    private String buildCamelName() {
+    public String buildUrlChain() {
+        return String.format("%s/%s",
+                apiMethod.getCaller().getBuilder().buildUrlChain(),
+                apiMethod.getUrl());
+    }
+
+    public String buildCamelName() {
         return toCamel(this.apiMethod.getUrl());
     }
 
@@ -72,7 +72,19 @@ public class ApiMethodBuilder {
         return join(", ", paramNames);
     }
 
+
     // ------------- start CONTROLLER building____________
+
+    public List<String> allControllerImportClasses() {
+        Set<String> result = new HashSet<>(apiMethodAnnotationBuilder.allImportClasses());
+        apiMethod.getParameters().forEach((name, param) -> {
+            result.add(param.getName());
+        });
+        apiMethod.getPathVars().forEach((name, type) -> {
+            result.add(type.getName());
+        });
+        return new ArrayList<>(result);
+    }
 
     public String buildControllerParams(){
         List<String> params = new ArrayList<>();
@@ -176,5 +188,17 @@ public class ApiMethodBuilder {
             params.add(pathVar);
         });
     }
+
+    public List<String> allServiceImportClasses() {
+        Set<String> result = new HashSet<>();
+        apiMethod.getParameters().forEach((name, param) -> {
+            result.add(param.getName());
+        });
+        apiMethod.getPathVars().forEach((name, type) -> {
+            result.add(type.getName());
+        });
+        return new ArrayList<>(result);
+    }
+
 
 }

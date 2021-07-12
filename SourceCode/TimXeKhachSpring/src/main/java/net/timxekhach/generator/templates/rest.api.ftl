@@ -2,7 +2,6 @@ package ${root.packagePath};
 ${root.importSeparator}
 ${root.importContent}
 ${root.importSeparator}
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path={"/${root.url}"})

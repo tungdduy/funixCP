@@ -2,24 +2,12 @@ package net.timxekhach.generator.sources;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateSource;
+import net.timxekhach.generator.abstracts.rest.AbstractRestSource;
 
 import static net.timxekhach.generator.GeneratorCenter.API_OPERATION_REST_SERVICE_ROOT;
-import static net.timxekhach.utility.XeStringUtils.buildSeparator;
 
 @Getter @Setter
-public class RestServiceSource extends AbstractUrlTemplateSource {
-
-    private final String
-            importSeparator = buildSeparator("IMPORT"),
-            bodySeparator = buildSeparator("BODY");
-
-    private String
-            packagePath,
-            importContent,
-            bodyContent,
-            capitalizeName
-    ;
+public class RestServiceSource extends AbstractRestSource {
 
     @Override
     public String buildRenderFilePath() {

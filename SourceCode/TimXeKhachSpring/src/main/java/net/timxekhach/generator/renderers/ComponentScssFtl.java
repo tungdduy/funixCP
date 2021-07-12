@@ -1,6 +1,6 @@
 package net.timxekhach.generator.renderers;
 
-import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
+import net.timxekhach.generator.abstracts.url.AbstractAppUrlTemplateBuilder;
 import net.timxekhach.generator.sources.ComponentScssSource;
 
 public class ComponentScssFtl extends AbstractAppUrlTemplateBuilder<ComponentScssSource> {

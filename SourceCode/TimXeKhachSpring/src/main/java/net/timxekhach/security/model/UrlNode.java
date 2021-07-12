@@ -1,6 +1,7 @@
 package net.timxekhach.security.model;
 
 import lombok.Getter;
+import net.timxekhach.generator.abstracts.AuthorizationConfig;
 import net.timxekhach.generator.builders.UrlNodeBuilder;
 import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public class UrlNode {
+public class UrlNode implements AuthorizationConfig {
     private final UrlTypeEnum urlType;
     private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();

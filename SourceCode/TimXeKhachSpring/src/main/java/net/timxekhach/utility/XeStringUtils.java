@@ -20,12 +20,21 @@ public class XeStringUtils extends StringUtils {
             PHONE_REGEX = "(03|05|07|08|09)+\\d{8,10}",
             NONE_ALPHA_REGEX = "[^a-zA-Z]+";
 
-    public static String fetchContentOrEmpty(String separator, String currentContent) {
+    public static String fetchSeparatorContent(String separator, String content) {
         try {
-            return currentContent.split(separator)[1];
+            return content.split(separator)[1];
         } catch (Exception ignored) {
         }
         return "";
+    }
+    public static String[] fetchSeparator(String separator, String content) {
+        try {
+            String[] result = content.split(separator);
+            if(result.length < 3) return null;
+            return result;
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
 
@@ -63,6 +72,7 @@ public class XeStringUtils extends StringUtils {
         return join(values, COMMA);
     }
 
+
     public static String removeLastChar(String string, int i) {
         return string.substring(0, string.length() - i);
     }
@@ -73,6 +83,25 @@ public class XeStringUtils extends StringUtils {
 
     public static String joinByDot(List<String> values) {
         return join(values, DOT);
+    }
+
+    private static String join(String[] strings, String joiner) {
+        if(strings == null) return "";
+        List<String> result = new ArrayList<>();
+        for (String string: strings) {
+            if (isNotBlank(string)) {
+                result.add(string);
+            }
+        }
+        return String.join(joiner, result);
+    }
+
+    public static String joinAsArguments(String... strings) {
+        return join(strings, ", ");
+    }
+
+    public static String join(List<String> strings, String joiner) {
+        return join(strings.toArray(new String[0]), joiner);
     }
 
     public static String toLowercaseCharsOnly(String value) {
@@ -116,7 +145,7 @@ public class XeStringUtils extends StringUtils {
     }
 
     public static String buildSeparator(String name) {
-        return String.format("\t// ____________________ ::%s_SEPARATOR:: ____________________ //", name);
+        return String.format("// ____________________ ::%s_SEPARATOR:: ____________________ //", name);
     }
 
     public static List<String> toImportFormat(List<String> importClasses) {
@@ -127,6 +156,10 @@ public class XeStringUtils extends StringUtils {
 
     public static List<String> toImportFormat(String... importClasses) {
         return toImportFormat(Arrays.asList(importClasses));
+    }
+
+    public static String wrapInQuote(String value) {
+        return String.format("\"%s\"", value);
     }
 
 }

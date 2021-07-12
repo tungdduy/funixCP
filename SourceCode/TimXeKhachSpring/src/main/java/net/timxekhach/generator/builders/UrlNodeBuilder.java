@@ -73,9 +73,9 @@ public class UrlNodeBuilder {
 
     public Class<?> findServiceClass() {
         try {
-            return Class.forName(buildServicePackagePath());
+            return Class.forName(buildFullServiceClassName());
         } catch (ClassNotFoundException e) {
-           logger.debug(String.format("service %s not found, will create new!", buildServicePackagePath()));
+           logger.debug(String.format("service %s not found, will create new!", buildFullServiceClassName()));
         }
         return null;
     }

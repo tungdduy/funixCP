@@ -1,5 +1,7 @@
-package net.timxekhach.generator.abstracts;
+package net.timxekhach.generator.abstracts.url;
 
+import net.timxekhach.generator.abstracts.AbstractTemplateBuilder;
+import net.timxekhach.generator.abstracts.AbstractTemplateSource;
 import net.timxekhach.generator.renderers.ApiMessagesTsFtl;
 import net.timxekhach.security.SecurityDeclare;
 import net.timxekhach.security.handler.UrlArchitect;
@@ -15,7 +17,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("all")
 public abstract class AbstractUrlTemplateBuilder<E extends AbstractUrlTemplateSource> extends AbstractTemplateBuilder<E> {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     protected boolean fetchModuleOnly() {return false;};
     protected abstract List<UrlTypeEnum> traverseUrlTypes();

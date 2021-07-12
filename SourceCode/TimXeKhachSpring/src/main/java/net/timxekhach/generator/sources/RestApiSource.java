@@ -2,25 +2,16 @@ package net.timxekhach.generator.sources;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateSource;
-import net.timxekhach.utility.XeStringUtils;
+import net.timxekhach.generator.abstracts.rest.AbstractRestSource;
 
 import static net.timxekhach.generator.GeneratorCenter.API_OPERATION_REST_API_ROOT;
 
 @Getter
 @Setter
-public class RestApiSource extends AbstractUrlTemplateSource {
-
-    private final String
-            importSeparator = XeStringUtils.buildSeparator("IMPORT"),
-            bodySeparator = XeStringUtils.buildSeparator("BODY");
+public class RestApiSource extends AbstractRestSource {
 
     private String
-            packagePath,
-            importContent,
-            bodyContent,
             url,
-            capitalizeName,
             camelName;
 
     @Override

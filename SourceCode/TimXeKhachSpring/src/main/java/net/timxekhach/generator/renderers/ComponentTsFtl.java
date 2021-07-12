@@ -1,6 +1,6 @@
 package net.timxekhach.generator.renderers;
 
-import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
+import net.timxekhach.generator.abstracts.url.AbstractAppUrlTemplateBuilder;
 import net.timxekhach.generator.sources.ComponentTsSource;
 import net.timxekhach.security.model.UrlNode;
 import net.timxekhach.utility.XeAppUtil;

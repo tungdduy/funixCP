@@ -1,4 +1,4 @@
-package net.timxekhach.generator.abstracts;
+package net.timxekhach.generator.abstracts.url;
 
 import net.timxekhach.security.model.UrlTypeEnum;
 

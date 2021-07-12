@@ -29,7 +29,7 @@ public class ApiMethodAnnotationBuilder {
             requestAnnotationType.put(RequestMethod.PUT, PutMapping.class);
         }
         return Optional.ofNullable(requestAnnotationType.get(requestMethod))
-                .orElse(RequestMapping.class);
+                .orElse(PostMapping.class);
     }
 
     public String buildFullString() {
