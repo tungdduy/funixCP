@@ -1,13 +1,17 @@
-package net.timxekhach.generator.url;
+package net.timxekhach.generator.builders;
 
 import net.timxekhach.security.model.UrlNode;
 import net.timxekhach.utility.XeStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UrlNodeBuilder {
+    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
     private final UrlNode urlNode;
 
     public UrlNodeBuilder(UrlNode urlNode) {
@@ -35,11 +39,11 @@ public class UrlNodeBuilder {
     }
 
     public String buildFullControllerClassName() {
-        return XeStringUtils.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName());
+        return XeStringUtils.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName() + "Api");
     }
 
     public String buildFullServiceClassName() {
-        return XeStringUtils.joinByDot(this.buildServicePackagePath(), this.buildCapitalizeName());
+        return XeStringUtils.joinByDot(this.buildServicePackagePath(), this.buildCapitalizeName() + "Service");
     }
 
     public String buildServicePackagePath() {
@@ -62,16 +66,16 @@ public class UrlNodeBuilder {
         try {
             return Class.forName(buildFullControllerClassName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.debug(String.format("Not found class for %s", this.buildFullControllerClassName()));
         }
         return null;
     }
 
     public Class<?> findServiceClass() {
         try {
-            return Class.forName(buildServicePackagePath());
+            return Class.forName(buildFullServiceClassName());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+           logger.debug(String.format("service %s not found, will create new!", buildFullServiceClassName()));
         }
         return null;
     }

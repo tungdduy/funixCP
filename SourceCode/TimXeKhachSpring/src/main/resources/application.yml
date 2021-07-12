@@ -41,3 +41,4 @@ spring:
       add-mappings: false
   freemarker:
     enabled: true
+

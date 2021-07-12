@@ -1,6 +1,6 @@
-${root.contentBeforeImport}
-<#lt>${root.IMPORT_SEPARATOR}
+${root.contentBeforeImport}<#lt>${root.IMPORT_SEPARATOR}
 <#assign count=4 step=2>
+  api: {
     <#macro tree urls>
         <#list urls as url>
             <#lt>${""?left_pad(count)}${url.key}: <#if url.children?size == 0>${url.config}<#else>{

@@ -1,14 +1,16 @@
 package net.timxekhach.generator.renderers;
 
-import lombok.Getter;
-import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractTemplateSource;
+import net.timxekhach.generator.abstracts.url.AbstractAppUrlTemplateBuilder;
+import net.timxekhach.generator.sources.RouterComponentTsSource;
 import net.timxekhach.security.model.UrlNode;
-import net.timxekhach.utility.XeAppUtils;
+import net.timxekhach.utility.XeAppUtil;
 
-import static net.timxekhach.utility.XeAppUtils.PAGES_DIR;
+public class RouterComponentTsFtl extends AbstractAppUrlTemplateBuilder<RouterComponentTsSource> {
 
-public class RouterComponentTsFtl<E extends AbstractTemplateSource> extends AbstractAppUrlTemplateBuilder<E> {
+    @Override
+    protected boolean isOverrideExistingFile() {
+        return true;
+    }
 
     @Override
     protected boolean fetchModuleOnly() {
@@ -16,27 +18,15 @@ public class RouterComponentTsFtl<E extends AbstractTemplateSource> extends Abst
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected E visitUrlNode(UrlNode urlNode) {
-        return (E) new AbstractTemplateSource(urlNode) {
-            //______________ Must be used in template
-            @Getter
-            private String pathToFramework, pathToI18n, url, capitalizeName;
-            //____________________________________
-
-            @Override
-            protected void init() {
-                int level = urlNode.getAncestors().size();
-                this.pathToFramework = XeAppUtils.getPathToFramework(level);
-                this.pathToI18n = XeAppUtils.getPathToI18n(level);
-                this.url = urlNode.getUrl();
-                this.capitalizeName = urlNode.getBuilder().buildCapitalizeName();
-            }
-
-            @Override
-            protected String buildRenderFilePath() {
-                return PAGES_DIR + urlNode.getBuilder().buildUrlChain() + "/" + this.url + ".component.ts";
-            }
-        };
+    protected void handleSource(RouterComponentTsSource source) {
+        UrlNode urlNode = source.getUrlNode();
+        int level = urlNode.getBuilder().getLevel();
+        source.setPathToFramework(XeAppUtil.getPathToFramework(level));
+        source.setPathToI18n(XeAppUtil.getPathToI18n(level));
+        source.setUrl(urlNode.getUrl());
+        source.setCapitalizeName(urlNode.getBuilder().buildCapitalizeName());
+        urlNode.getChildren().forEach(child -> {
+            source.getChildren().add(new RouterComponentTsSource.Children(child));
+        });
     }
 }

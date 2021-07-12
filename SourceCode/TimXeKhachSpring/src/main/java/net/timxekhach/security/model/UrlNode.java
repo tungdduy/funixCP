@@ -1,21 +1,19 @@
 package net.timxekhach.security.model;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.timxekhach.generator.url.UrlNodeBuilder;
+import net.timxekhach.generator.abstracts.AuthorizationConfig;
+import net.timxekhach.generator.builders.UrlNodeBuilder;
 import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
 import net.timxekhach.security.handler.UrlArchitect;
-import net.timxekhach.security.model.UrlTypeEnum.UrlTypeEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
-public class UrlNode {
-    @Setter
-    private UrlTypeEnum urlType;
+public class UrlNode implements AuthorizationConfig {
+    private final UrlTypeEnum urlType;
     private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();
     private Boolean isPublic;
@@ -25,6 +23,7 @@ public class UrlNode {
     List<UrlNode> ancestors = new ArrayList<>();
 
     public UrlNode(String url) {
+        this.urlType = UrlArchitect.buildingUrlType;
         this.url = url;
     }
 

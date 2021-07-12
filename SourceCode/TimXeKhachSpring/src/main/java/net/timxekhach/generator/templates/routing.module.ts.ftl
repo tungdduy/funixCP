@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule} from "@angular/router";
 import {Url} from "${root.pathToFramework}framework/url/url.declare";
-import {RouterBuilder} from "${root.pathToFramework}framework/url/root.builder";
+import {RouterBuilder} from "${root.pathToFramework}framework/url/router.builder";
 
 const routes = RouterBuilder.build(Url.app.${root.urlKeyChain});
 

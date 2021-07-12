@@ -8,6 +8,7 @@ const routes = RouterBuilder.build(Url.app.ADMIN);
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
+  providers: Url.app.ADMIN.__self.activateProviders
 })
 export class AdminRoutingModule {
   constructor() {}

@@ -2,7 +2,9 @@ package net.timxekhach.security.handler;
 
 import lombok.Getter;
 import net.timxekhach.security.model.UrlNode;
-import net.timxekhach.security.model.UrlTypeEnum.UrlTypeEnum;
+import net.timxekhach.security.model.UrlTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,28 +12,29 @@ import java.util.function.Consumer;
 
 @Getter
 public class UrlArchitect {
+    static Logger logger = LoggerFactory.getLogger(UrlArchitect.class);
+
     public static List<UrlNode> apiUrls = new ArrayList<>();
     public static List<UrlNode> appUrls = new ArrayList<>();
-    private static UrlTypeEnum currentType;
+    public static UrlTypeEnum buildingUrlType;
     static List<UrlNode> currentUrls;
 
     public static UrlNode startApi(String url) {
         currentUrls = UrlArchitect.apiUrls;
         currentUrls.clear();
-        currentType = UrlTypeEnum.API;
+        buildingUrlType = UrlTypeEnum.API;
         return start(url);
     }
 
     public static UrlNode startApp(String url) {
         currentUrls = UrlArchitect.appUrls;
         currentUrls.clear();
-        currentType = UrlTypeEnum.APP;
+        buildingUrlType = UrlTypeEnum.APP;
         return start(url);
     }
 
     public static UrlNode start(String url) {
         UrlNode urlNode = new UrlNode(url);
-        urlNode.setUrlType(currentType);
         UrlArchitect.currentUrls.add(urlNode);
         return urlNode;
     }
@@ -52,8 +55,9 @@ public class UrlArchitect {
         traverse(appUrls, consumer);
     }
 
-    private static void traverse(List<UrlNode> apiUrls, Consumer<UrlNode> consumer) {
-        apiUrls.forEach(url -> {
+    private static void traverse(List<UrlNode> urls, Consumer<UrlNode> consumer) {
+        urls.forEach(url -> {
+            logger.debug(String.format("traversing: %s", url.getBuilder().buildUrlChain()));
             consumer.accept(url);
             traverse(url.getChildren(), consumer);
         });

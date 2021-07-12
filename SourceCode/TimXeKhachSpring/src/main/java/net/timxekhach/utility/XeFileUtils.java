@@ -12,29 +12,26 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class XeFileUtil extends FileSystemUtils {
+public class XeFileUtils extends FileSystemUtils {
 
-    public static <E> E readByLine(File file, Function<String, E> function)  {
+    public static <E> void readByLine(File file, Function<String, E> function)  {
         try(Scanner myReader = new Scanner(file);){
             while (myReader.hasNextLine()){
-                return function.apply(myReader.nextLine());
+                function.apply(myReader.nextLine());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return null;
     }
 
     public static void readByLine(String filePath, Consumer<String> consumer) {
         readByLine(new File(filePath), s -> {consumer.accept(s); return null;});
     }
-
-    public static <E> E readByLine(String filePath, Function<String, E> function) {
-        return readByLine(new File(filePath), function);
-    }
-
     public static String readAsString(String filePath) {
         File file = new File(filePath);
+        if (!file.exists()) {
+            return "";
+        }
         try {
             return FileUtil.readAsString(file);
         } catch (Exception e) {

@@ -1,9 +1,12 @@
 package net.timxekhach.security.constant;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.*;
 
 import static net.timxekhach.security.constant.AuthEnum.*;
-
+@Getter
 public enum RoleEnum {
     ROLE_BUSS_ADMIN(ADMIN_READ, ADMIN_WRITE),
     ROLE_BUSS_STAFF(

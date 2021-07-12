@@ -1,25 +1,31 @@
-import {Component, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChildren} from '@angular/core';
 import {XeForm} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
-import {XeNotifierService} from "../../../../framework/notify/xe.notifier.service";
+import {Subscription} from "rxjs";
 import {XeLabel} from "../../../i18n";
 
 @Component({
   selector: 'xe-forgot-password',
   styles: [],
-  templateUrl: 'forgot-password.component.html'
+  templateUrl: 'forgot-password.component.html',
 })
-export class ForgotPasswordComponent extends XeForm {
-
+export class ForgotPasswordComponent extends XeForm implements OnInit, OnDestroy {
+  public showLoading: boolean;
+  private subscriptions: Subscription[] = [];
+  label = XeLabel;
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
   @ViewChildren(XeInputComponent) formControls;
   getFormControls = () => this.formControls;
-  label = XeLabel;
-
-  constructor(private notifier: XeNotifierService) {
-    super();
-  }
 
   doSubmitAfterBasicValidate(model: any): void {
-    this.notifier.success("valid to submit");
+  }
+
+  ngOnInit(): void {
+  }
+
+  constructor() {
+    super();
   }
 }

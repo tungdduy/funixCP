@@ -1,5 +1,6 @@
 package net.timxekhach.operation.rest.service;
 
+import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.entity.User;
 import net.timxekhach.operation.repository.UserRepository;
 import net.timxekhach.security.jwt.JwtTokenProvider;
@@ -17,20 +18,13 @@ import static net.timxekhach.operation.response.ErrorCode.UNDEFINED_ERROR;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class AccountService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    public AccountService(UserRepository userRepository, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userRepository = userRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
 
     public ResponseEntity<User> login(String username, String password) {
         authenticationManager.authenticate(

@@ -2,29 +2,30 @@ package net.timxekhach.security.model;
 
 
 import lombok.Getter;
-import net.timxekhach.generator.url.ApiMethodBuilder;
-import net.timxekhach.utility.XeAnnotationUtils;
-import net.timxekhach.utility.XeStringUtils;
+import net.timxekhach.generator.abstracts.AuthorizationConfig;
+import net.timxekhach.generator.builders.ApiMethodBuilder;
+import net.timxekhach.security.constant.AuthEnum;
+import net.timxekhach.security.constant.RoleEnum;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
-public class ApiMethod {
+public class ApiMethod implements AuthorizationConfig {
     private final Map<String, Class<?>> parameters = new HashMap<>();
     private Class<?> returnType;
-    private final String name;
+    private final String url;
     private final UrlNode caller;
     private final Map<String, Class<?>> pathVars = new HashMap<>();
     private final RequestMethod requestMethod = RequestMethod.GET;
+    private List<AuthEnum> auths = new ArrayList<>();
+    private List<RoleEnum> roles = new ArrayList<>();
+    private Boolean isPublic;
 
-    public ApiMethod(UrlNode caller, String name) {
+    public ApiMethod(UrlNode caller, String url) {
         this.caller = caller;
         caller.getMethods().add(this);
-        this.name = name;
+        this.url = url;
     }
     public ApiMethod param(String name, Class<?> paramType) {
         parameters.put(name, paramType);
@@ -53,5 +54,19 @@ public class ApiMethod {
             this.builder = new ApiMethodBuilder(this);
         }
         return this.builder;
+    }
+
+    public ApiMethod auths(AuthEnum... auths) {
+        this.auths = Arrays.asList(auths);
+        return this;
+    }
+
+    public ApiMethod roles(RoleEnum... roles) {
+        this.roles = Arrays.asList(roles);
+        return this;
+    }
+    ApiMethod PUBLIC() {
+        this.isPublic = true;
+        return this;
     }
 }

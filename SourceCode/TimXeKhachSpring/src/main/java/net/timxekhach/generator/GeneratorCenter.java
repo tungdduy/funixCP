@@ -4,9 +4,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import net.timxekhach.generator.abstracts.AbstractTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractUrlTemplateBuilder;
-import net.timxekhach.generator.renderers.ApiMessagesTsFtl;
-import net.timxekhach.utility.XeReflectionUtils;
+import net.timxekhach.generator.abstracts.AbstractTemplateSource;
+import net.timxekhach.generator.abstracts.url.AbstractUrlTemplateBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -24,10 +23,8 @@ public class GeneratorCenter {
             TEMPLATE_ROOT = GENERATOR_ROOT + "templates/";
 
     public static void main(String[] args) {
-        XeReflectionUtils.findExtendsClassesInPackage(AbstractTemplateBuilder.class, ApiMessagesTsFtl.class.getPackage().getName())
-                .forEach(System.out::println);
-        XeReflectionUtils.newInstancesOfAllChildren(AbstractUrlTemplateBuilder.class, ApiMessagesTsFtl.class.getPackage().getName())
-                .forEach(s -> System.out.println(s.toString()));
+        AbstractUrlTemplateBuilder.buildUrlFiles();
+        AbstractTemplateBuilder.buildAll();
     }
 
     private static Configuration config;
@@ -44,21 +41,22 @@ public class GeneratorCenter {
     }
 
 
-    public static void writeToNoneExistFileOnly(Map<String, Object> input, Template template, File file) {
+    public static <E extends AbstractTemplateSource> void writeToNoneExistFileOnly(Map<String, E> input, Template template, File file) {
         if (file.exists()) {
             return;
         }
         writeToFile(input, template, file);
     }
 
-    public static void writeToFile(Map<String, Object> input, Template template, File realFile)  {
-        if (realFile.getParentFile().mkdirs()){
-            try (Writer fileWriter = new FileWriter(realFile)){
-                template.process(input, fileWriter);
-            } catch (Exception ignored) {
-
-            }
+    public static <E extends AbstractTemplateSource> void writeToFile(Map<String, E> input, Template template, File realFile)  {
+        if(realFile == null) return;
+        realFile.getParentFile().mkdirs();
+        try (Writer fileWriter = new FileWriter(realFile)){
+            template.process(input, fileWriter);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
     }
 
     public static Template prepareTemplate(File templateFile) {

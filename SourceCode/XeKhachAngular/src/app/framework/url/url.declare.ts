@@ -13,7 +13,7 @@ export const Url = {
   publicApi : [],
   API_HOST: environment.apiHost,
   APP_HOST: environment.appHost,
-  getPublicApi: (apiUrls: UrlConfig[]) => {
+  getPublicApi: (apiUrls: any[]) => {
     apiUrls.forEach(apiUrl => {
       if (apiUrl instanceof UrlConfig) {
         if (apiUrl.isPublic()) {
@@ -34,9 +34,20 @@ export const Url = {
   DEFAULT_URL_AFTER_LOGIN: (): string => {
     return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
   },
+// ----------------------------------------------------------- //
+// ================= IMPORT TO END OF FILE =================== //
+// ----------------------------------------------------------- //
   api: {
-    USER: config(),
-    ADMIN: config(),
+    USER: {
+      __self: config().auths([r.ROLE_USER]),
+      LOGIN: config().auths([r.ROLE_BUSS_STAFF, a.ADMIN_READ, a.USER_READ]),
+      REGISTER: config(),
+      FORGOT_PASSWORD: config().auths([a.ADMIN_WRITE]),
+    },
+    ADMIN: {
+      __self: config(),
+      LIST: config(),
+    },
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
   },
@@ -51,8 +62,7 @@ export const Url = {
       __self: config(),
       BUSS_STAFF: config(),
     },
-  },
-
+  }
 };
 
 

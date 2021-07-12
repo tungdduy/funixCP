@@ -1,60 +1,53 @@
 package net.timxekhach.generator.renderers;
 
-import lombok.Getter;
-import net.timxekhach.generator.abstracts.AbstractAppUrlTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractTemplateSource;
-import net.timxekhach.generator.url.UrlNodeBuilder;
+import net.timxekhach.generator.abstracts.url.AbstractAppUrlTemplateBuilder;
+import net.timxekhach.generator.sources.UrlImportTsSource;
+import net.timxekhach.generator.builders.UrlNodeBuilder;
 import net.timxekhach.security.model.UrlNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static net.timxekhach.utility.XeAppUtils.FRAMEWORK_URL_DIR;
-import static net.timxekhach.utility.XeAppUtils.PAGES_DIR;
+public class UrlImportTsFtl extends AbstractAppUrlTemplateBuilder<UrlImportTsSource> {
 
-public class UrlImportTsFtl<E extends AbstractTemplateSource> extends AbstractAppUrlTemplateBuilder<E> {
+    Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     @Override
     protected boolean isOverrideExistingFile() {
         return true;
     }
 
+    @Override
+    public void prepareRenderFiles() {
+        UrlImportTsSource source = super.getRenderFiles().get(0);
+        source.setUrlImports(urlImportsMap.entrySet());
+        this.getRenderFiles().clear();
+        this.getRenderFiles().add(source);
+    }
+
     private final Map<String, String> urlImportsMap = new HashMap<>();
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected List<E> getRenderFiles() {
-        return Collections.singletonList((E) new AbstractTemplateSource() {
-
-            @Getter
-            private final Set<Map.Entry<String, String>> urlImports = urlImportsMap.entrySet();
-
-            @Override
-            protected void init() {
-            }
-
-            @Override
-            protected String buildRenderFilePath() {
-                return FRAMEWORK_URL_DIR + "url.import.ts";
-            }
-        });
-    }
-
-    @Override
-    protected E visitUrlNode(UrlNode urlNode) {
+    protected void handleSource(UrlImportTsSource source) {
+        logger.info(String.format("handle: %s", source.getUrlNode().getBuilder().buildUrlChain()));
+        UrlNode urlNode = source.getUrlNode();
         UrlNodeBuilder builder = urlNode.getBuilder();
         String key = builder.buildKeyChain() + "-component";
-        String value = "require('" + importPrefix(urlNode) + ".component')." + builder.buildComponentName();
+        String value = String.format("require('%s.component').%s",
+                prefixImport(urlNode),
+                builder.buildComponentName());
         urlImportsMap.put(key, value);
         if (urlNode.getChildren().size() > 0) {
             key = builder.buildKeyChain() + "-module";
-            value = "import('" + importPrefix(urlNode) + ".module').then(m => m." + builder.buildModuleName() + ")";
+            value = "import('" + prefixImport(urlNode) + ".module').then(m => m." + builder.buildModuleName() + ")";
             urlImportsMap.put(key, value);
         }
-        return null;
     }
 
-    private static String importPrefix(UrlNode url) {
-        return PAGES_DIR + url.getBuilder().buildUrlChain() + "/" + url.getUrl();
+    private static String prefixImport(UrlNode url) {
+        return "../../business/pages/" + url.getBuilder().buildUrlChain() + "/" + url.getUrl();
     }
 
 }

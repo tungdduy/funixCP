@@ -1,28 +1,52 @@
 package net.timxekhach.generator.renderers;
 
-import net.timxekhach.generator.abstracts.AbstractApiUrlTemplateBuilder;
-import net.timxekhach.generator.abstracts.AbstractTemplateSource;
+import lombok.RequiredArgsConstructor;
+import net.timxekhach.generator.abstracts.rest.AbstractRestBuilder;
+import net.timxekhach.generator.sources.RestServiceSource;
+import net.timxekhach.security.model.ApiMethod;
 import net.timxekhach.security.model.UrlNode;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
-public class RestServiceFtl <E extends AbstractTemplateSource> extends AbstractApiUrlTemplateBuilder<E> {
+import static java.lang.String.format;
+import static java.lang.String.join;
+import static java.util.stream.Collectors.joining;
+import static net.timxekhach.utility.XeStringUtils.toImportFormat;
 
+public class RestServiceFtl extends AbstractRestBuilder<RestServiceSource> {
     @Override
-    protected E visitUrlNode(UrlNode urlNode) {
-        return null;
+    protected Class<?> getBuilderClass(UrlNode urlNode) {
+        return urlNode.getBuilder().findServiceClass();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected List<E> prepareRenderFiles() {
-        return Collections.singletonList ((E) new AbstractTemplateSource() {
+    protected void secondHandleSource(RestServiceSource restServiceSource) {
 
-            @Override
-            protected String buildRenderFilePath() {
-                return null;
-            }
-        });
+    }
+
+    @Override
+    protected String buildPackagePath(UrlNode urlNode) {
+        return urlNode.getBuilder().buildServicePackagePath();
+    }
+
+    @Override
+    protected String initialImportContent(UrlNode urlNode) {
+        return join("\n", toImportFormat(
+                RequiredArgsConstructor.class.getName(),
+                Transactional.class.getName(),
+                Service.class.getName()
+        ));
+    }
+
+    @Override
+    protected String buildMethodString(ApiMethod method) {
+        return method.getBuilder().buildServiceString();
+    }
+
+    @Override
+    protected List<String> allImportClasses(ApiMethod method) {
+        return method.getBuilder().allServiceImportClasses();
     }
 }

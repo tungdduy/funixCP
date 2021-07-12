@@ -3,7 +3,7 @@ import {Url} from "../../../framework/url/url.declare";
 import {XeLabel} from "../../i18n";
 
 @Component({
-  selector: 'xe-auth',
+  selector: 'xe-check-in',
   styleUrls: ['./check-in.component.scss'],
   templateUrl: './check-in.component.html'
 })
@@ -12,7 +12,6 @@ export class CheckInComponent {
   REGISTER = Url.app.CHECK_IN.REGISTER.__short;
   FORGOT_PASSWORD = Url.app.CHECK_IN.FORGOT_PASSWORD.__short;
   label = XeLabel;
-  constructor() {
-  }
+  constructor() {}
 }
 
