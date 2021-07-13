@@ -56,7 +56,7 @@ export const Url = {
       __self: config(),
       LOGIN: config(),
       REGISTER: config(),
-      FORGOT_PASSWORD: config().auths([r.ROLE_BUSS_ADMIN, a.ADMIN_READ]),
+      FORGOT_PASSWORD: config(),
     },
     ADMIN: {
       __self: config(),

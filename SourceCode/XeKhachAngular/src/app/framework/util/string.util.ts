@@ -17,7 +17,7 @@ export const StringUtil = {
   capitalizeEachWord(strings: string[]) {
     strings.map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`).join("");
   },
-  urlToCapitalLizeEachWord(str: string) {
+  urlToCapitalizeEachWord(str: string) {
     return str.split("-")
       .map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`)
       .join("");
