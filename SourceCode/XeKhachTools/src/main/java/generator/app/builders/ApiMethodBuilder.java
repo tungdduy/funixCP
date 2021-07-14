@@ -2,6 +2,7 @@ package generator.app.builders;
 
 import com.sun.istack.internal.NotNull;
 import generator.urls.ApiMethod;
+import util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,8 +11,8 @@ import java.util.Set;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
-import static net.timxekhach.utility.XeStringUtils.toCamel;
-import static net.timxekhach.utility.XeStringUtils.toKey;
+import static util.StringUtil.toCamel;
+import static util.StringUtil.toKey;
 
 public class ApiMethodBuilder {
 

@@ -1,5 +1,6 @@
 export const ApiMessages_vi = {
   ACCESS_DENIED: "asdasd",
+  ASSIGN_1_TIME_ONLY: "",
   DO_NOT_HAVE_PERMISSION: "asdasdas",
   EMAIL_EXISTED: "asdasdsadsads",
   NO_USER_FOUND_BY_USERNAME: (param) => `${param.username}`,

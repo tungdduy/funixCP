@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.timxekhach.utility.XeFileUtils.readAsString;
-import static net.timxekhach.utility.XeStringUtils.fetchSeparator;
+import static util.StringUtil.fetchSeparator;
 
 public class SecurityConfigFtl extends AbstractApiUrlTemplateRender<SecurityConfigModel> {
 

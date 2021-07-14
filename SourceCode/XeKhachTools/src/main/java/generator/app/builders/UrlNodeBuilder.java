@@ -1,7 +1,7 @@
 package generator.app.builders;
 
 import generator.urls.UrlNode;
-import net.timxekhach.utility.XeStringUtils;
+import util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +19,15 @@ public class UrlNodeBuilder {
     }
 
     public String buildCapitalizeName() {
-        return XeStringUtils.toCapitalizeEachWord(this.urlNode.getUrl());
+        return StringUtil.toCapitalizeEachWord(this.urlNode.getUrl());
     }
 
     public String buildCamelName() {
-        return XeStringUtils.toCamel(this.urlNode.getUrl());
+        return StringUtil.toCamel(this.urlNode.getUrl());
     }
 
     public String buildLowercaseCharsOnly() {
-        return XeStringUtils.toLowercaseCharsOnly(this.urlNode.getUrl());
+        return StringUtil.toLowercaseCharsOnly(this.urlNode.getUrl());
     }
 
     public String buildControllerPackagePath() {
@@ -39,11 +39,11 @@ public class UrlNodeBuilder {
     }
 
     public String buildFullControllerClassName() {
-        return XeStringUtils.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName() + "Api");
+        return StringUtil.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName() + "Api");
     }
 
     public String buildFullServiceClassName() {
-        return XeStringUtils.joinByDot(this.buildServicePackagePath(), this.buildCapitalizeName() + "Service");
+        return StringUtil.joinByDot(this.buildServicePackagePath(), this.buildCapitalizeName() + "Service");
     }
 
     public String buildServicePackagePath() {
@@ -57,7 +57,7 @@ public class UrlNodeBuilder {
         });
         String packagePath = "net.timxekhach.operation.rest." + prefix;
         if(!ancestorChain.isEmpty()) {
-            packagePath += "." + XeStringUtils.joinByDot(ancestorChain);
+            packagePath += "." + StringUtil.joinByDot(ancestorChain);
         }
         return packagePath;
     }
@@ -81,19 +81,19 @@ public class UrlNodeBuilder {
     }
 
     public String buildKey(){
-        return XeStringUtils.toKey(this.urlNode.getUrl());
+        return StringUtil.toKey(this.urlNode.getUrl());
     }
     public String buildComponentName() {
-        return XeStringUtils.toCapitalizeEachWord(this.urlNode.getUrl() + "-component");
+        return StringUtil.toCapitalizeEachWord(this.urlNode.getUrl() + "-component");
     }
     public String buildModuleName() {
-        return XeStringUtils.toCapitalizeEachWord(this.urlNode.getUrl() + "-module");
+        return StringUtil.toCapitalizeEachWord(this.urlNode.getUrl() + "-module");
     }
 
     public String buildKeyChain() {
         String ancestorsChain = this.urlNode.getAncestors().stream()
                 .map(UrlNode::getUrl)
-                .map(XeStringUtils::toKey)
+                .map(StringUtil::toKey)
                 .collect(Collectors.joining("."));
         return ancestorsChain.isEmpty()
                 ? this.buildKey()

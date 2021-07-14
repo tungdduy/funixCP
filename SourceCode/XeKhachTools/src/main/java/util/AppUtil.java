@@ -1,6 +1,6 @@
-package net.timxekhach.utility;
+package util;
 
-public class XeAppUtil {
+public class AppUtil {
 
     public static final String
             APP_ROOT = "SourceCode/XeKhachAngular/src/app/",
@@ -13,26 +13,15 @@ public class XeAppUtil {
     ;
 
     public static String getPathToFramework(int level) {
-        return XeStringUtils.repeat("../", level + 3);
+        return StringUtil.repeat("../", level + 3);
     }
 
     public static String getPathToI18n(int level) {
-        return XeStringUtils.repeat("../", level + 2);
+        return StringUtil.repeat("../", level + 2);
     }
 
     public static String getPathToAbstract(int level) {
-        return XeStringUtils.repeat("../", level + 2);
+        return StringUtil.repeat("../", level + 2);
     }
 
-    public static String getHtmlPath(String prefix) {
-        return prefix + ".component.html";
-    }
-
-    public static String getScssPath(String prefix) {
-        return prefix + ".component.scss";
-    }
-
-    public static String getComponentPath(String prefix) {
-        return prefix + ".component.ts";
-    }
 }

@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.Map;
 import java.util.Set;
 
-import static net.timxekhach.utility.XeAppUtil.FRAMEWORK_URL_DIR;
+import static util.AppUtil.FRAMEWORK_URL_DIR;
 
 @Getter
 @Setter

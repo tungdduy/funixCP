@@ -3,11 +3,11 @@ package generator.app.renderers.abstracts;
 import generator.app.models.abstracts.AbstractTemplateModel;
 import generator.app.models.abstracts.AbstractUrlTemplateModel;
 import generator.app.renderers.ApiMessagesTsFtl;
-import generator.DeclarationCentral;
+import generator.UrlDeclaration;
 import generator.urls.UrlArchitect;
 import generator.urls.UrlNode;
 import generator.urls.UrlTypeEnum;
-import net.timxekhach.utility.XeReflectionUtils;
+import util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,10 +53,10 @@ public abstract class AbstractUrlTemplateRender<E extends AbstractUrlTemplateMod
     }
 
     public static <E extends AbstractTemplateModel> void buildUrlFiles(){
-        DeclarationCentral.startBuildUrl();
+        UrlDeclaration.startBuildUrl();
         String packageName = ApiMessagesTsFtl.class.getPackage().getName();
         List<? extends AbstractUrlTemplateRender> builders
-                = XeReflectionUtils.newInstancesOfAllChildren(AbstractUrlTemplateRender.class, packageName);
+                = ReflectionUtil.newInstancesOfAllChildren(AbstractUrlTemplateRender.class, packageName);
         Consumer<UrlNode> visitNode = node -> builders.forEach(builder -> builder.visit(node));
         UrlArchitect.traverseAppUrls(visitNode);
         UrlArchitect.traverseApiUrls(visitNode);

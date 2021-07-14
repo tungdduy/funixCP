@@ -14,9 +14,9 @@ import static java.lang.String.join;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static net.timxekhach.utility.XeFileUtils.readAsString;
-import static net.timxekhach.utility.XePredicateUtils.negate;
-import static net.timxekhach.utility.XeStringUtils.fetchSeparatorContent;
-import static net.timxekhach.utility.XeStringUtils.toImportFormat;
+import static util.PredicateUtil.negate;
+import static util.StringUtil.fetchSeparatorContent;
+import static util.StringUtil.toImportFormat;
 
 public abstract class AbstractRestRender<E extends AbstractRestModel> extends AbstractApiUrlTemplateRender<E> {
 

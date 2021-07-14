@@ -1,5 +1,6 @@
 package net.timxekhach.security.handler;
 
+import lombok.RequiredArgsConstructor;
 import net.timxekhach.security.jwt.JwtFilter;
 import net.timxekhach.security.model.SecurityResource;
 import net.timxekhach.security.user.UserDetailsServiceImpl;
@@ -22,19 +23,32 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtFilter jwtFilter;
+    private final SecurityResource securityResource;
     private final UserDetailsServiceImpl userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final SecurityResource securityResource;
 
-    @Autowired
-    public SecurityConfig(SecurityResource securityResource, JwtFilter jwtFilter, UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.securityResource = securityResource;
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(securityResource.getAllowedOrigins());
+        corsConfiguration.setAllowedHeaders(securityResource.getAllowedHeaders());
+        corsConfiguration.setExposedHeaders(securityResource.getExposedHeaders());
+        corsConfiguration.setAllowedMethods(securityResource.getAllowedMethods());
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return new org.springframework.web.filter.CorsFilter(urlBasedCorsConfigurationSource);
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -72,28 +86,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(securityResource.getAllowedOrigins());
-        corsConfiguration.setAllowedHeaders(securityResource.getAllowedHeaders());
-        corsConfiguration.setExposedHeaders(securityResource.getExposedHeaders());
-        corsConfiguration.setAllowedMethods(securityResource.getAllowedMethods());
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-        return new org.springframework.web.filter.CorsFilter(urlBasedCorsConfigurationSource);
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
 }

@@ -1,17 +1,10 @@
 package generator.data.entities;
 
-import java.util.List;
+import generator.data.entities.abstracts.AbstractEntity;
+import generator.data.models.Pk;
 
 @SuppressWarnings("all")
-public class Buss {
-    class Pk {
-        String bussId;
-    }
-    String bussDesc;
-    Company company;
-    List<Employee> bussStaffs;
-    List<Employee> bussStaffsOk;
-    Employee callerStaff;
-
-
+public class Buss extends AbstractEntity {
+    Pk company = pk(Company.class);
+    Pk seqNo = pk(Integer.class);
 }

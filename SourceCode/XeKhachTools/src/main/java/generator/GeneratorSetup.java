@@ -4,29 +4,19 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import generator.app.models.abstracts.AbstractTemplateModel;
-import generator.app.renderers.abstracts.AbstractTemplateRender;
-import generator.app.renderers.abstracts.AbstractUrlTemplateRender;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Map;
 
-public class GenerationCentral {
-
+public class GeneratorSetup {
     public static final String
             API_ROOT = "SourceCode/XeKhachSpring/src/main/java/net/timxekhach/",
             API_OPERATION_REST_ROOT = API_ROOT + "operation/rest/",
             API_OPERATION_REST_API_ROOT = API_OPERATION_REST_ROOT + "api/",
             API_OPERATION_REST_SERVICE_ROOT = API_OPERATION_REST_ROOT + "service/",
-            GENERATOR_ROOT = "SourceCode/XeKhachTools/src/main/java/generator/",
-            TEMPLATE_ROOT = GENERATOR_ROOT + "templates/";
-
-    public static void main(String[] args) {
-
-        AbstractUrlTemplateRender.buildUrlFiles();
-        AbstractTemplateRender.buildAll();
-    }
+            GENERATOR_ROOT = "SourceCode/XeKhachTools/src/main/java/generator/";
 
     private static Configuration config;
 
@@ -70,4 +60,3 @@ public class GenerationCentral {
         return null;
     }
 }
-

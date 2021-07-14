@@ -1,16 +1,18 @@
 package net.timxekhach.security.constant;
 
 import lombok.Getter;
-import lombok.Setter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static net.timxekhach.security.constant.AuthEnum.*;
 @Getter
 public enum RoleEnum {
     ROLE_BUSS_ADMIN(ADMIN_READ, ADMIN_WRITE),
     ROLE_BUSS_STAFF(
-            Arrays.asList(ROLE_BUSS_ADMIN),
+            Collections.singletonList(ROLE_BUSS_ADMIN),
             USER_WRITE, USER_READ
             ),
     ROLE_CALLER_STAFF(
@@ -29,19 +31,6 @@ public enum RoleEnum {
     RoleEnum(){}
     RoleEnum(AuthEnum... auths) {
         this.authList = Arrays.asList(auths);
-    }
-
-    public List<AuthEnum> getAllAuthorities() {
-        Set<AuthEnum> auths = new HashSet<>(this.authList);
-        fetchAuths(this.roleList, auths);
-        return new ArrayList<>(auths);
-    }
-
-    private void fetchAuths(List<RoleEnum> roleList, Set<AuthEnum> auths){
-        roleList.forEach(role -> {
-            auths.addAll(role.authList);
-            fetchAuths(role.roleList, auths);
-        });
     }
 
 }

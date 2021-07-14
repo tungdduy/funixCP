@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.security.constant.AuthEnum;
 
-import static net.timxekhach.utility.XeAppUtil.BUSINESS_DIR;
+import static util.AppUtil.BUSINESS_DIR;
 
 @Getter @Setter
 public class XeAuthTsModel extends AbstractTemplateModel {

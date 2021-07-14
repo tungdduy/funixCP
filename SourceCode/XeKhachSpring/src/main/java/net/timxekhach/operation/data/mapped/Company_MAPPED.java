@@ -1,9 +1,9 @@
 package net.timxekhach.operation.data.mapped;
 
 import lombok.Getter;
+import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.response.ErrorCode;
 
 import javax.persistence.*;

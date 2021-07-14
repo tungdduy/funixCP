@@ -78,7 +78,7 @@ public class XeExceptionHandler {
 
         for(FieldError field : exception.getFieldErrors()) {
             if(field.getClass().getName().equals("org.springframework.validation.beanvalidation.SpringValidatorAdapter$ViolationFieldError")){
-                ConstraintViolation<?> violation = XeReflectionUtils.getField(field, "violation", ConstraintViolation.class);
+                ConstraintViolation<?> violation = XeReflectionUtils.getField(field, "violation");
                 if(violation != null) {
                     Message message = getConstraintMessage(violation);
                     if(message != null) {

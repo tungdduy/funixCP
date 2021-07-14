@@ -4,7 +4,7 @@ import generator.app.models.abstracts.AbstractTemplateModel;
 import lombok.Getter;
 import net.timxekhach.security.constant.RoleEnum;
 
-import static net.timxekhach.utility.XeAppUtil.BUSINESS_DIR;
+import static util.AppUtil.BUSINESS_DIR;
 
 @Getter
 public class XeRoleTsModel extends AbstractTemplateModel {

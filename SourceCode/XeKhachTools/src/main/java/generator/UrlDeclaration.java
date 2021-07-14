@@ -10,7 +10,7 @@ import static net.timxekhach.security.constant.AuthEnum.*;
 import static net.timxekhach.security.constant.RoleEnum.ROLE_BUSS_STAFF;
 import static net.timxekhach.security.constant.RoleEnum.ROLE_USER;
 
-public class DeclarationCentral {
+public class UrlDeclaration {
     public static void startBuildUrl(){
         UrlArchitect
                 .startApi("user").roles(ROLE_USER)

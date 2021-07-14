@@ -1,9 +1,8 @@
 package net.timxekhach.operation.rest.service;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import net.timxekhach.operation.data.entity.User;
+import org.springframework.transaction.annotation.Transactional;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service

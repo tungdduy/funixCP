@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.timxekhach.utility.XeAppUtil.FRAMEWORK_URL_DIR;
+import static util.AppUtil.FRAMEWORK_URL_DIR;
 
 @Getter @Setter
 public class UrlDeclareTsModel extends AbstractTemplateModel {

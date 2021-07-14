@@ -3,7 +3,7 @@ package generator.app.renderers;
 import generator.app.models.ComponentTsModel;
 import generator.app.renderers.abstracts.AbstractAppUrlTemplateRender;
 import generator.urls.UrlNode;
-import net.timxekhach.utility.XeAppUtil;
+import util.AppUtil;
 
 public class ComponentTsFtl extends AbstractAppUrlTemplateRender<ComponentTsModel> {
 
@@ -16,9 +16,9 @@ public class ComponentTsFtl extends AbstractAppUrlTemplateRender<ComponentTsMode
     protected void handleSource(ComponentTsModel source) {
         UrlNode urlNode = source.getUrlNode();
         int level = urlNode.getBuilder().getLevel();
-        source.setPathToFramework(XeAppUtil.getPathToFramework(level));
-        source.setPathToAbstract(XeAppUtil.getPathToAbstract(level));
-        source.setPathToI18n(XeAppUtil.getPathToI18n(level));
+        source.setPathToFramework(AppUtil.getPathToFramework(level));
+        source.setPathToAbstract(AppUtil.getPathToAbstract(level));
+        source.setPathToI18n(AppUtil.getPathToI18n(level));
         source.setUrl(urlNode.getUrl());
         source.setComponentName(urlNode.getBuilder().buildComponentName());
     }

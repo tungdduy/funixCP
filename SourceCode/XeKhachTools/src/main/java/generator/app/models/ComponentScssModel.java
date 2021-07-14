@@ -2,7 +2,7 @@ package generator.app.models;
 
 import generator.app.models.abstracts.AbstractUrlTemplateModel;
 
-import static net.timxekhach.utility.XeAppUtil.PAGES_DIR;
+import static util.AppUtil.PAGES_DIR;
 
 public class ComponentScssModel extends AbstractUrlTemplateModel {
     @Override

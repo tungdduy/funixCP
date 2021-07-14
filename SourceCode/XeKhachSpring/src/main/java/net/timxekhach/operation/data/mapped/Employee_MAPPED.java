@@ -1,11 +1,10 @@
 package net.timxekhach.operation.data.mapped;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.timxekhach.operation.data.entity.Company;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.data.entity.Company;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.XeStringUtils;
 

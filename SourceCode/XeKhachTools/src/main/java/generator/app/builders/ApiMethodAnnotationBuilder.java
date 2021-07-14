@@ -12,6 +12,7 @@ public class ApiMethodAnnotationBuilder {
     private final Map<String, Class<?>> pathParams;
     private final String methodName;
     private final List<Class<?>> allClasses = new ArrayList<>();
+    @SuppressWarnings("rawtypes")
     private static Map<RequestMethod, Class> requestAnnotationType;
 
     public ApiMethodAnnotationBuilder(ApiMethod apiMethod) {

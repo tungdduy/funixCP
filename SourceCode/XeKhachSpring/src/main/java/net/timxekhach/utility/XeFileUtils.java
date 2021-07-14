@@ -4,10 +4,6 @@ import org.aspectj.util.FileUtil;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -15,7 +11,7 @@ import java.util.function.Function;
 public class XeFileUtils extends FileSystemUtils {
 
     public static <E> void readByLine(File file, Function<String, E> function)  {
-        try(Scanner myReader = new Scanner(file);){
+        try(Scanner myReader = new Scanner(file)){
             while (myReader.hasNextLine()){
                 function.apply(myReader.nextLine());
             }
@@ -40,15 +36,4 @@ public class XeFileUtils extends FileSystemUtils {
         return "";
     }
 
-    public static void createFile(String path) {
-        File file = new File(path);
-        if(!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }

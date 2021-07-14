@@ -4,7 +4,7 @@ import generator.app.models.abstracts.AbstractRestModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import static generator.GenerationCentral.API_OPERATION_REST_API_ROOT;
+import static generator.GeneratorSetup.API_OPERATION_REST_API_ROOT;
 
 @Getter
 @Setter

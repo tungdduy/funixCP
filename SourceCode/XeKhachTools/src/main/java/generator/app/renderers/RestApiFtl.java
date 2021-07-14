@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static java.lang.String.join;
-import static net.timxekhach.utility.XeStringUtils.toImportFormat;
+import static util.StringUtil.toImportFormat;
 
 public class RestApiFtl extends AbstractRestRender<RestApiModel> {
 

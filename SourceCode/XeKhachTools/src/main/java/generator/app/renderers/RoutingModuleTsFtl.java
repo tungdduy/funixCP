@@ -2,7 +2,7 @@ package generator.app.renderers;
 
 import generator.app.models.RoutingModuleTsModel;
 import generator.app.renderers.abstracts.AbstractAppUrlTemplateRender;
-import net.timxekhach.utility.XeAppUtil;
+import util.AppUtil;
 
 public class RoutingModuleTsFtl extends AbstractAppUrlTemplateRender<RoutingModuleTsModel> {
 
@@ -19,7 +19,7 @@ public class RoutingModuleTsFtl extends AbstractAppUrlTemplateRender<RoutingModu
     @Override
     protected void handleSource(RoutingModuleTsModel source) {
         int level = source.getUrlNode().getBuilder().getLevel();
-        source.setPathToFramework(XeAppUtil.getPathToFramework(level));
+        source.setPathToFramework(AppUtil.getPathToFramework(level));
         source.setUrlKeyChain(source.getUrlNode().getBuilder().buildKeyChain());
         source.setCapitalizeName(source.getUrlNode().getBuilder().buildCapitalizeName());
     }

@@ -4,12 +4,12 @@ import generator.app.models.ApiMessagesTsModel;
 import generator.app.renderers.abstracts.AbstractTemplateRender;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.XeFileUtils;
-import net.timxekhach.utility.XeStringUtils;
+import util.StringUtil;
 
 import java.util.Map;
 import java.util.TreeMap;
 
-import static net.timxekhach.utility.XeAppUtil.MESSAGE_PATH;
+import static util.AppUtil.MESSAGE_PATH;
 
 public class ApiMessagesTsFtl extends AbstractTemplateRender<ApiMessagesTsModel> {
 
@@ -34,7 +34,7 @@ public class ApiMessagesTsFtl extends AbstractTemplateRender<ApiMessagesTsModel>
             String[] messageMap = message.split(":");
             if(messageMap.length > 1) {
                 String key = messageMap[0].trim();
-                String content = XeStringUtils.removeLastChar(message.substring(key.length() + 1).trim(), 1);
+                String content = StringUtil.removeLastChar(message.substring(key.length() + 1).trim(), 1);
                 getMessagesMap().put(key, content);
             }
         });
@@ -46,20 +46,20 @@ public class ApiMessagesTsFtl extends AbstractTemplateRender<ApiMessagesTsModel>
 
 
     private void buildRenderMessage(ErrorCode err) {
-        String content = XeStringUtils.trimToEmpty(getMessagesMap().get(err.name()));
+        String content = StringUtil.trimToEmpty(getMessagesMap().get(err.name()));
         StringBuilder params = new StringBuilder();
         boolean paramChanged = false;
 
         if(err.getParamNames() != null) {
             for(String paramName : err.getParamNames()) {
 
-                String param = "${param." + paramName + "}";
+                String param = String.format("${param.%s}", paramName);
                 if(!content.contains(param)){
                     paramChanged = true;
                 }
                 params.append(param);
             }
-            content = "(param) => `"+ params +"`";
+            content = String.format("(param) => `%s`", params);
         }
         if(content.isEmpty()) {
             content = "\"\"";

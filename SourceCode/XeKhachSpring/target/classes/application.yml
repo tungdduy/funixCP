@@ -34,6 +34,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: true
   mvc:
     throw-exception-if-no-handler-found: true
   web:
@@ -41,4 +42,5 @@ spring:
       add-mappings: false
   freemarker:
     enabled: true
+    check-template-location: false
 

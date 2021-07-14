@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.timxekhach.utility.XeAppUtil.PAGES_DIR;
+import static util.AppUtil.PAGES_DIR;
 
 @Getter
 @Setter

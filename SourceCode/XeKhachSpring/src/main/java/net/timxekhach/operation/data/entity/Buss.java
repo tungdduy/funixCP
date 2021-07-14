@@ -10,10 +10,5 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class Buss extends Buss_MAPPED {
-    public Buss(){}
-
-    public Buss(String bussId) {
-        super(bussId);
-    }
 
 }
