@@ -1,0 +1,18 @@
+package generator.models;
+
+import generator.models.abstracts.AbstractTemplateModel;
+import lombok.Getter;
+import net.timxekhach.security.constant.RoleEnum;
+
+import static util.AppUtil.BUSINESS_DIR;
+
+@Getter
+public class XeRoleTsModel extends AbstractTemplateModel {
+
+    private final RoleEnum[] roles = RoleEnum.values();
+
+    @Override
+    public String buildRenderFilePath() {
+        return BUSINESS_DIR + "xe.role.ts";
+    }
+}

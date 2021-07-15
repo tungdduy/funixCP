@@ -13,7 +13,7 @@ import static net.timxekhach.utility.XeResponseUtils.success;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = {"/user"})
+@RequestMapping(path = {"/account"})
 public class AccountApi {
 
     private final AccountService accountService;

@@ -1,25 +1,34 @@
 package net.timxekhach.operation.data.mapped;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.utility.XeStringUtils;
 
 import javax.persistence.*;
 
+@IdClass(Seat_MAPPED.Pk.class)
 @MappedSuperclass @Getter @Setter
 public abstract class Seat_MAPPED extends XeEntity {
 
-    @EmbeddedId
-    private Seat_MAPPED.Pk pk;
-    @Column(insertable = false, updatable = false)
-    protected String seatId;
+    @Id
+    @Column(nullable = false, updatable = false)
+    protected Long bussId;
 
-    @Column(insertable = false, updatable = false)
-    protected String bussId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, updatable = false)
+    protected Long seatId;
+
+    public Seat_MAPPED(Long bussId) {
+        this.bussId = bussId;
+    }
+    public Seat_MAPPED(){
+
+    }
 
     @Column
     protected String description;
@@ -33,32 +42,11 @@ public abstract class Seat_MAPPED extends XeEntity {
     )})
     protected Buss buss;
 
-    public Seat_MAPPED() {}
-
-    protected Seat_MAPPED(String bussId, String seatId) {
-        this.checkFKConsistency(seatId);
-        this.pk = new Seat_MAPPED.Pk(bussId, seatId);
-        setSeatId(seatId);
-    }
-
-    private void checkFKConsistency(String seatId) {
-        ErrorCode.UNDEFINED_ERROR.throwIf(seatId == null);
-    }
-
-    @Embeddable @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Pk extends XePk {
-        @Column
-        protected String seatId;
-        
-        @Column
-        protected String bussId;
-
-        public Pk() {}
-
-        public Pk(String bussId, String seatId) {
-            this.seatId = XeStringUtils.idTrim(seatId);
-            this.bussId = bussId;
-        }
+        protected Long seatId;
+        protected Long bussId;
     }
 
 }

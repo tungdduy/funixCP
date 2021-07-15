@@ -88,6 +88,7 @@ public class XeExceptionListener {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<XeHttpResponse> handleException(Exception exception) {
+        exception.printStackTrace();
         ResponseEntity<XeHttpResponse> handled = findAnyFeasibleResponse(exception);
         if(handled != null) {
             return handled;

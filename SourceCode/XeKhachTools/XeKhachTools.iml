@@ -31,7 +31,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.3.7" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.3.7" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:21.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.7" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:5.3.7" level="project" />

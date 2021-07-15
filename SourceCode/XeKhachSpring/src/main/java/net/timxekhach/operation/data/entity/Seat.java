@@ -8,4 +8,11 @@ import javax.persistence.Entity;
 
 @Entity @Getter @Setter
 public class Seat extends Seat_MAPPED {
+    public Seat(Long bussId) {
+        super(bussId);
+    }
+
+    public Seat() {
+        super();
+    }
 }

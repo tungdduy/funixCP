@@ -1,38 +1,35 @@
 package net.timxekhach.operation.data.mapped;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.response.ErrorCode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@MappedSuperclass @Getter
+@MappedSuperclass @Getter @Setter
 public abstract class Company_MAPPED extends XeEntity {
 
     @EmbeddedId
     protected Pk pk;
 
-    @Column(insertable = false, updatable = false)
-    protected String companyId;
-
     protected Company_MAPPED(){}
 
-    public Company_MAPPED(String companyId) {
-        ErrorCode.VALIDATOR_NOT_BLANK.throwIfBlank(companyId, "Company ID");
+    public Company_MAPPED(Long companyId) {
         this.pk = new Pk(companyId);
-        this.companyId = companyId;
     }
 
     @Embeddable @Getter
     public static class Pk extends XePk {
         @Column
-        private String companyId;
+        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "company_generator")
+        @SequenceGenerator(name="company_generator", sequenceName = "comp_seq")
+        private Long companyId;
         public Pk(){}
-        public Pk(String companyId) {
+        public Pk(Long companyId) {
             this.companyId = companyId;
         }
     }
@@ -43,6 +40,6 @@ public abstract class Company_MAPPED extends XeEntity {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
-    @OrderBy("employeeId")
+    @OrderBy("pk.employeeId")
     private final List<Employee> allEmployees = new ArrayList<>();
 }
