@@ -1,20 +1,21 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractTemplateModel;
+import data.entities.abstracts.AbstractEntity;
+import generator.models.abstracts.AbstractEntityModel;
+import lombok.Getter;
+import lombok.Setter;
 import util.StringUtil;
 
 import static generator.GeneratorSetup.API_OPERATION_DATA_ROOT;
 
-@SuppressWarnings("unused")
-public class EntityModel extends AbstractTemplateModel {
+@SuppressWarnings("all") @Getter @Setter
+public class EntityModel extends AbstractEntityModel {
 
     String importSeparator = StringUtil.buildSeparator("IMPORT");
     String importContent;
 
     String bodySeparator = StringUtil.buildSeparator("BODY");
     String bodyContent;
-
-    String entityClassName;
 
     @Override
     public String buildRenderFilePath() {

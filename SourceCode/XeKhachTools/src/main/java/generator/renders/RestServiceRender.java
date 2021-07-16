@@ -20,8 +20,7 @@ public class RestServiceRender extends AbstractRestRender<RestServiceModel> {
     }
 
     @Override
-    protected void secondHandleSource(RestServiceModel restServiceModel) {
-
+    protected void secondHandleModel(RestServiceModel restServiceModel) {
     }
 
     @Override

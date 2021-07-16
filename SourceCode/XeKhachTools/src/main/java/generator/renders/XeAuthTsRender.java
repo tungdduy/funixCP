@@ -2,9 +2,9 @@ package generator.renders;
 
 
 import generator.models.XeAuthTsModel;
-import generator.renders.abstracts.AbstractTemplateRender;
+import generator.renders.abstracts.AbstractRender;
 
-public class XeAuthTsRender extends AbstractTemplateRender<XeAuthTsModel> {
+public class XeAuthTsRender extends AbstractRender<XeAuthTsModel> {
 
     @Override
     protected void handleModel(XeAuthTsModel model) {

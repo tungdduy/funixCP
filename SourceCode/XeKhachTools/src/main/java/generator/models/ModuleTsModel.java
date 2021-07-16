@@ -1,7 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
-import architect.urls.UrlNode;
+import generator.models.abstracts.AbstractUrlModel;
 import generator.models.sub.Component;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,7 @@ import java.util.List;
 import static util.AppUtil.PAGES_DIR;
 @Getter
 @Setter
-public class ModuleTsModel extends AbstractUrlTemplateModel {
+public class ModuleTsModel extends AbstractUrlModel {
 
     private List<Component> children = new ArrayList<>();
     private String capitalizeName, url;

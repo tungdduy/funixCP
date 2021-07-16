@@ -3,7 +3,7 @@ package generator.renders;
 import architect.urls.UrlNode;
 import generator.models.SecurityConfigModel;
 import generator.models.sub.Authority;
-import generator.renders.abstracts.AbstractApiUrlTemplateRender;
+import generator.renders.abstracts.AbstractApiUrlRender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 import static net.timxekhach.utility.XeFileUtils.readAsString;
 import static util.StringUtil.fetchSeparator;
 
-public class SecurityConfigRender extends AbstractApiUrlTemplateRender<SecurityConfigModel> {
+public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {
@@ -29,8 +29,8 @@ public class SecurityConfigRender extends AbstractApiUrlTemplateRender<SecurityC
     }
 
     @Override
-    public void prepareRenderFiles() {
-        SecurityConfigModel source = this.getRenderFiles().get(0);
+    public void runBeforeRender() {
+        SecurityConfigModel source = this.getModelFiles().get(0);
         String oldContent = readAsString(source.buildRenderFilePath());
         String[] separatorContent = fetchSeparator(source.getUrlAuthorizationSeparator(), oldContent);
         if (separatorContent != null) {
@@ -38,8 +38,8 @@ public class SecurityConfigRender extends AbstractApiUrlTemplateRender<SecurityC
             source.setContentAfterAuthorization(separatorContent[2]);
         }
         source.setAuthorities(authorities);
-        this.getRenderFiles().clear();
-        this.getRenderFiles().add(source);
+        this.getModelFiles().clear();
+        this.getModelFiles().add(source);
     }
 
 }

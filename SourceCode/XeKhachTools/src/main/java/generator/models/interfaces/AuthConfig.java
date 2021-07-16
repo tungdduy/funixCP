@@ -5,7 +5,7 @@ import net.timxekhach.security.constant.RoleEnum;
 
 import java.util.List;
 
-public interface AuthorizationConfig {
+public interface AuthConfig {
     List<AuthEnum> getAuths();
     List<RoleEnum> getRoles();
     Boolean getIsPublic();

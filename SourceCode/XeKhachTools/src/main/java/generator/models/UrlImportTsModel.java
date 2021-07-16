@@ -1,6 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
+import generator.models.abstracts.AbstractUrlModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import static util.AppUtil.FRAMEWORK_URL_DIR;
 
 @Getter
 @Setter
-public class UrlImportTsModel extends AbstractUrlTemplateModel {
+public class UrlImportTsModel extends AbstractUrlModel {
 
     private Set<Map.Entry<String, String>> urlImports;
 

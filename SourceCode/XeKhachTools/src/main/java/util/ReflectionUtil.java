@@ -11,11 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ReflectionUtil extends ReflectionUtils {
 
@@ -52,5 +55,33 @@ public class ReflectionUtil extends ReflectionUtils {
 
         });
         return children;
+    }
+
+    public static void eachField(Object obj, Consumer<Field> consumer) {
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                consumer.accept(field);
+            } catch (Exception e) {
+                logger.error(String.format("cannot get field value of %s", obj.getClass().getName()));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E> List<E> findFieldsByType(Object obj, Class<E> targetClass, BiConsumer<Field, E> consumer) {
+        List<E> result = new ArrayList<>();
+        eachField(obj, field -> {
+            if (field.getDeclaringClass().isAssignableFrom(targetClass)) {
+                try {
+                    E e = (E) field.get(obj);
+                    consumer.accept(field, e);
+                    result.add(e);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return result;
     }
 }

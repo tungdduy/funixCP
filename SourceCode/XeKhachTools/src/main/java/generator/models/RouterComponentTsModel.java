@@ -1,6 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
+import generator.models.abstracts.AbstractUrlModel;
 import generator.models.sub.RouterChildren;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import static util.AppUtil.PAGES_DIR;
 
 @Getter
 @Setter
-public class RouterComponentTsModel extends AbstractUrlTemplateModel {
+public class RouterComponentTsModel extends AbstractUrlModel {
 
     private String pathToFramework, pathToI18n, url, capitalizeName;
     private List<RouterChildren> children = new ArrayList<>();

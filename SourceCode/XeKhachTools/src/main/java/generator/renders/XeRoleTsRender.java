@@ -2,9 +2,9 @@ package generator.renders;
 
 
 import generator.models.XeRoleTsModel;
-import generator.renders.abstracts.AbstractTemplateRender;
+import generator.renders.abstracts.AbstractRender;
 
-public class XeRoleTsRender extends AbstractTemplateRender<XeRoleTsModel> {
+public class XeRoleTsRender extends AbstractRender<XeRoleTsModel> {
 
     @Override
     protected void handleModel(XeRoleTsModel model) {

@@ -2,7 +2,7 @@ package architect.urls;
 
 
 import generator.builders.ApiMethodBuilder;
-import generator.models.interfaces.AuthorizationConfig;
+import generator.models.interfaces.AuthConfig;
 import lombok.Getter;
 import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.*;
 
 @Getter
-public class ApiMethod implements AuthorizationConfig {
+public class ApiMethod implements AuthConfig {
     private final Map<String, Class<?>> parameters = new HashMap<>();
     private Class<?> returnType;
     private final String url;

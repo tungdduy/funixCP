@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-public class UrlModel {
+public class Url {
     private String config;
     private String key;
-    private final List<UrlModel> children = new ArrayList<>();
+    private final List<Url> children = new ArrayList<>();
 }

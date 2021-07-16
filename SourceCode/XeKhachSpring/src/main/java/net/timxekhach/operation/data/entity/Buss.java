@@ -6,9 +6,7 @@ import net.timxekhach.operation.data.mapped.Buss_MAPPED;
 
 import javax.persistence.Entity;
 
-@Entity
-@Getter
-@Setter
+@Entity @Getter @Setter
 public class Buss extends Buss_MAPPED {
 
 }

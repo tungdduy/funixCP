@@ -20,37 +20,44 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
 <#list root.primaryKeys as pk>
     @Id
     @Column(nullable = false, updatable = false)
-    <#if pk.autoIncrement>@GeneratedValue(strategy = GenerationType.AUTO)</#if>
-    protected ${pk.className} ${pk.name};
+    <#if pk.isAutoIncrement>@GeneratedValue(strategy = GenerationType.AUTO)</#if>
+    protected Long ${pk.fieldName};
 </#list>
 
-<#list root.columns as column>
-    <#if column.mappedBy?has_content>
-    @OneToMany(
-        mappedBy = "${column.mappedBy}",
+<#list root.mapColumns as map>
+    <#if map.mappedBy?has_content>
+        @OneToMany(
+        mappedBy = "${map.mappedBy}",
         cascade = {CascadeType.ALL},
         orphanRemoval = true,
         fetch = FetchType.LAZY
-    )
+        )
     </#if>
-    <#if column.joins?size gt 0>
-    @ManyToOne
-    @JoinColumns({
-        <#list column.joins as join>
-        @JoinColumn(
-        name = "${join.thisName}",
-        referencedColumnName = "${join.referencedName}",
-        insertable = false,
-        updatable = false)<#if join_has_next>, </#if>
+    <#if map.joins?size gt 0>
+        <#if map.unique?has_content>@OneToOne<#else>@ManyToOne</#if>
+        @JoinColumns({
+        <#list map.joins as join>
+            @JoinColumn(
+            name = "${join.thisName.get()}",
+            referencedColumnName = "${join.referencedName.get()}",
+            insertable = false,
+            updatable = false)<#if join_has_next>, </#if>
         </#list>
-    })
+        })
     </#if>
+    protected ${map.simpleClassName} ${map.fieldName}${map.initialString};
+</#list>
+
+<#list root.columns as column>
     <#if column.orderBy?has_content>@OrderBy("${column.orderBy}")</#if>
-    <#if column.hasSize>@Size(<#if column.maxSize?has_content>max = ${column.maxSize}, </#if><#if column.minSize?has_content>min = ${column.minSize}</#if></#if>
+    <#if column.requireSize>@Size(<#if column.maxSize?has_content>max = ${column.maxSize}, </#if><#if column.minSize?has_content>min = ${column.minSize}</#if></#if>
     <#if column.isNotBlank>@NotBlank</#if>
     <#if column.isEmail>@Email</#if>
+    <#if column.min?has_content>@Min(${column.min})</#if>
+    <#if column.max?has_content>@Max(${column.max})</#if>
+    <#if column.isEmail>@Email</#if>
     <#if column.regex?has_content>@Pattern(regexp = "${column.regex}"</#if>
-    protected ${column.classname} ${column.name}${column.initialString};
+    protected ${column.simpleClassName} ${column.fieldName}${column.initialString};
 </#list>
 
 <#list root.constructors as con>
@@ -65,7 +72,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     @NoArgsConstructor
     public static class Pk extends XePk {
     <#list root.primaryKeys as pk>
-        protected ${pk.className} ${pk.name};
+        protected Long ${pk.fieldName};
     </#list>
     }
 

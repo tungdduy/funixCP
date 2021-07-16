@@ -1,9 +1,9 @@
 package generator.renders;
 
 import generator.models.ComponentScssModel;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 
-public class ComponentScssRender extends AbstractAppUrlTemplateRender<ComponentScssModel> {
+public class ComponentScssRender extends AbstractAppUrlRender<ComponentScssModel> {
 
     @Override
     protected void handleModel(ComponentScssModel model) {

@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 
 import static net.timxekhach.utility.XeStringUtils.PHONE_REGEX;
 
-@Entity
-@Getter
-@Setter
+@Entity @Getter @Setter
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

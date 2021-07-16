@@ -15,7 +15,9 @@ public class Authority {
 
     public Authority(String url, List<RoleEnum> roles, List<AuthEnum> auths) {
         this.url = url;
-        if (auths.isEmpty()) {
+        if(auths.isEmpty() && roles.isEmpty()) {
+            authorities = ".permitAll()";
+        } else if (auths.isEmpty()) {
             authorities = String.format(".hasAnyRole(%s)", roles.stream()
                     .map(RoleEnum::name)
                     .map(s -> s.substring("ROLE_".length()))

@@ -6,7 +6,7 @@ import util.StringUtil;
 
 @Getter
 @Setter
-public abstract class AbstractRestModel extends AbstractUrlTemplateModel {
+public abstract class AbstractRestModel extends AbstractUrlModel {
     protected final String
             importSeparator = StringUtil.buildSeparator("IMPORT"),
             bodySeparator = StringUtil.buildSeparator("BODY");

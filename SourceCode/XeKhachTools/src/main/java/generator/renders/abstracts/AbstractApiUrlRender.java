@@ -1,12 +1,12 @@
 package generator.renders.abstracts;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
+import generator.models.abstracts.AbstractUrlModel;
 import architect.urls.UrlTypeEnum;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractApiUrlTemplateRender<E extends AbstractUrlTemplateModel> extends AbstractUrlTemplateRender<E> {
+public abstract class AbstractApiUrlRender<E extends AbstractUrlModel> extends AbstractUrlRender<E> {
 
     @Override
     protected List<UrlTypeEnum> traverseUrlTypes() {

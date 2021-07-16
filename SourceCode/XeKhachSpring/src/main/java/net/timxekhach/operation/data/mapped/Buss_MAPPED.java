@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.timxekhach.operation.data.entity.Company;
 import net.timxekhach.operation.data.entity.Seat;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
@@ -23,6 +24,10 @@ public abstract class Buss_MAPPED extends XeEntity {
     @Column(nullable = false, updatable = false)
     Long bussId;
 
+    @Id
+    @Column(nullable = false, updatable = false)
+    Long companyId;
+
     @Column
     @Size(max = 255)
     protected String bussDesc;
@@ -32,6 +37,7 @@ public abstract class Buss_MAPPED extends XeEntity {
     @AllArgsConstructor
     public static class Pk extends XePk {
         protected Long bussId;
+        protected Long companyId;
     }
 
     @OneToMany(

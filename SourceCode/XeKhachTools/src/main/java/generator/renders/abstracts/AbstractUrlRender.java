@@ -1,21 +1,19 @@
 package generator.renders.abstracts;
 
-import generator.models.abstracts.AbstractTemplateModel;
-import generator.models.abstracts.AbstractUrlTemplateModel;
-import generator.renders.ApiMessagesTsRender;
+import generator.models.abstracts.AbstractUrlModel;
 import architect.UrlDeclaration;
 import architect.urls.UrlArchitect;
 import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
-import util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 @SuppressWarnings("all")
-public abstract class AbstractUrlTemplateRender<E extends AbstractUrlTemplateModel> extends AbstractTemplateRender<E> {
+public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends AbstractRender<E> {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -24,18 +22,18 @@ public abstract class AbstractUrlTemplateRender<E extends AbstractUrlTemplateMod
 
     void visit(UrlNode urlNode) {
         if(!this.traverseUrlTypes().contains(urlNode.getUrlType())) {
-            this.logger.warn(String.format("traverse cancelled, url-type: %s, this type: %s", urlNode.getUrlType(), this.traverseUrlTypes()));
+            this.logger.debug(String.format("traverse cancelled, url-type: %s, this type: %s", urlNode.getUrlType(), this.traverseUrlTypes()));
             return;
         }
         if(this.fetchModuleOnly() && !urlNode.getBuilder().isModule()) {
-            this.logger.warn(String.format("traverse cancelled: %s is not a routing module", urlNode.getBuilder().buildUrlChain()));
+            this.logger.debug(String.format("traverse cancelled: %s is not a routing module", urlNode.getBuilder().buildUrlChain()));
             return;
         }
 
         try {
             E source = newModel();
             source.setUrlNode(urlNode);
-            this.getRenderFiles().add(source);
+            this.getModelFiles().add(source);
             this.handleModel(source);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -48,19 +46,22 @@ public abstract class AbstractUrlTemplateRender<E extends AbstractUrlTemplateMod
     }
 
     @Override
-    protected boolean isBuildFileManually() {
+    protected boolean isManualRender() {
         return true;
     }
 
-    public static <E extends AbstractTemplateModel> void buildUrlFiles(){
+    AbstractUrlRender() {
+        renders.add(this);
+    }
+
+    private static List<AbstractUrlRender> renders = new ArrayList<>();
+
+    public static void render(){
         UrlDeclaration.startBuildUrl();
-        String packageName = ApiMessagesTsRender.class.getPackage().getName();
-        List<? extends AbstractUrlTemplateRender> builders
-                = ReflectionUtil.newInstancesOfAllChildren(AbstractUrlTemplateRender.class, packageName);
-        Consumer<UrlNode> visitNode = node -> builders.forEach(builder -> builder.visit(node));
+        Consumer<UrlNode> visitNode = node -> renders.forEach(render -> render.visit(node));
         UrlArchitect.traverseAppUrls(visitNode);
         UrlArchitect.traverseApiUrls(visitNode);
-        builders.forEach(AbstractTemplateRender::executeRenderFiles);
+        renders.forEach(AbstractRender::executeRenders);
     }
 
 }

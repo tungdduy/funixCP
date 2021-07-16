@@ -1,9 +1,9 @@
 package generator.renders;
 
 import generator.models.UrlDeclareTsModel;
-import generator.models.interfaces.AuthorizationConfig;
-import generator.models.sub.UrlModel;
-import generator.renders.abstracts.AbstractTemplateRender;
+import generator.models.interfaces.AuthConfig;
+import generator.models.sub.Url;
+import generator.renders.abstracts.AbstractRender;
 import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
 import net.timxekhach.utility.XeFileUtils;
@@ -12,10 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static architect.urls.UrlArchitect.*;
-import static generator.models.UrlDeclareTsModel.*;
 
 
-public class UrlDeclareTsRender extends AbstractTemplateRender<UrlDeclareTsModel> {
+public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     @Override
     protected boolean isOverrideExistingFile() {
         return true;
@@ -30,13 +29,13 @@ public class UrlDeclareTsRender extends AbstractTemplateRender<UrlDeclareTsModel
         appUrls.forEach(app -> buildRootModel(model.getAppUrls(), app));
     }
 
-    void buildRootModel(List<UrlModel> models, UrlNode urlNode) {
-        UrlModel rootModel = processModel(models, urlNode);
+    void buildRootModel(List<Url> models, UrlNode urlNode) {
+        Url rootModel = processModel(models, urlNode);
         buildChildModels(urlNode, rootModel);
     }
 
-    private static UrlModel processModel(List<UrlModel> models, UrlNode urlNode) {
-        UrlModel model = new UrlModel();
+    private static Url processModel(List<Url> models, UrlNode urlNode) {
+        Url model = new Url();
         model.setConfig(buildConfig(urlNode));
         model.setKey(urlNode.getBuilder().buildKey());
         models.add(model);
@@ -44,10 +43,10 @@ public class UrlDeclareTsRender extends AbstractTemplateRender<UrlDeclareTsModel
         return model;
     }
 
-    private static void processApiMethodUrl(UrlModel model, UrlNode urlNode) {
+    private static void processApiMethodUrl(Url model, UrlNode urlNode) {
         if (urlNode.getUrlType() == UrlTypeEnum.API) {
            urlNode.getMethods().forEach(method -> {
-               UrlModel child = new UrlModel();
+               Url child = new Url();
                child.setConfig(buildConfig(method));
                child.setKey(method.getBuilder().buildKey());
                model.getChildren().add(child);
@@ -55,18 +54,18 @@ public class UrlDeclareTsRender extends AbstractTemplateRender<UrlDeclareTsModel
         }
     }
 
-    void buildChildModels(UrlNode parentNode, UrlModel parentModel) {
+    void buildChildModels(UrlNode parentNode, Url parentModel) {
         parentNode.getChildren().forEach(childNode -> {
-            UrlModel childModel = processModel(parentModel.getChildren(), childNode);
+            Url childModel = processModel(parentModel.getChildren(), childNode);
             buildChildModels(childNode, childModel);
         });
     }
 
-    static String buildPublicConfig(AuthorizationConfig authConfig) {
+    static String buildPublicConfig(AuthConfig authConfig) {
         return authConfig.getIsPublic() != null? ".public()" : "";
     }
 
-    static String buildConfig(AuthorizationConfig authConfig) {
+    static String buildConfig(AuthConfig authConfig) {
         return  "config()"
                 + buildPublicConfig(authConfig)
                 + buildAuthsRolesConfig(authConfig);
@@ -76,7 +75,7 @@ public class UrlDeclareTsRender extends AbstractTemplateRender<UrlDeclareTsModel
      * @return string like .auths([r.ROLE_ADMIN, a.USER_READ])
      * must be consistent with the app config
      */
-    static String buildAuthsRolesConfig(AuthorizationConfig authConfig) {
+    static String buildAuthsRolesConfig(AuthConfig authConfig) {
         List<String> auths = authConfig.getAuths().stream()
                 .map(a -> "a." + a.name())
                 .collect(Collectors.toList());

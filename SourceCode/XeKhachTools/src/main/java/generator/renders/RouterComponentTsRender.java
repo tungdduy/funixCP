@@ -3,10 +3,10 @@ package generator.renders;
 import architect.urls.UrlNode;
 import generator.models.RouterComponentTsModel;
 import generator.models.sub.RouterChildren;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 import util.AppUtil;
 
-public class RouterComponentTsRender extends AbstractAppUrlTemplateRender<RouterComponentTsModel> {
+public class RouterComponentTsRender extends AbstractAppUrlRender<RouterComponentTsModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {

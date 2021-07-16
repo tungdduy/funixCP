@@ -1,6 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractTemplateModel;
+import generator.models.abstracts.AbstractModel;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.security.constant.AuthEnum;
@@ -8,7 +8,7 @@ import net.timxekhach.security.constant.AuthEnum;
 import static util.AppUtil.BUSINESS_DIR;
 
 @Getter @Setter
-public class XeAuthTsModel extends AbstractTemplateModel {
+public class XeAuthTsModel extends AbstractModel {
 
     private final AuthEnum[] auths = AuthEnum.values();
 

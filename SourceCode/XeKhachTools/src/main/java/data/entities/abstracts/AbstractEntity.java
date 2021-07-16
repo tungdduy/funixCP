@@ -2,42 +2,25 @@ package data.entities.abstracts;
 
 import data.models.Column;
 import data.models.MapColumn;
-import data.models.Pk;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
-@SuppressWarnings("all")
-public abstract class AbstractEntity {
-    int orderNo;
-    public int getNextOrderNo(){
-        return orderNo++;
+@SuppressWarnings("all") @Getter @Setter
+public abstract class  AbstractEntity {
+    List<Class<?>> primaryKeys = new ArrayList<>();
+    protected <E extends AbstractEntity> void pk(Class<E> pk) {
+        primaryKeys.add(pk);
     }
-
-    protected Column of(Class<?> dataType) {
-        return new Column(this, dataType);
+    protected Column of(DataType dataType) {
+        return dataType.column;
     }
-    protected Column email() {
-        Column c = new Column(this, String.class);
-        c.email();
-        return c;
-    }
-
-    protected Column phone() {
-        Column c = new Column(this, String.class);
-        c.phone();
-        return c;
-    }
-
-    protected <E extends AbstractEntity> Pk pk(Class<E> dataType) {
-        return new Pk(this, dataType);
-    }
-
-    protected Pk pk() {
-        return new Pk(this);
-    }
-
-    protected MapColumn map(Pk p) {
-        return new MapColumn(p.getEntity(), p);
+    protected <E extends AbstractEntity> MapColumn map(Class<E> e) {
+        return new MapColumn(e);
     }
 
 }

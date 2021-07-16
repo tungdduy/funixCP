@@ -1,8 +1,7 @@
 package generator.renders.abstracts;
 
 import freemarker.template.Template;
-import generator.models.abstracts.AbstractTemplateModel;
-import generator.renders.ApiMessagesTsRender;
+import generator.models.abstracts.AbstractModel;
 import lombok.Getter;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import util.ReflectionUtil;
@@ -16,14 +15,12 @@ import java.util.Map;
 
 import static generator.GeneratorSetup.*;
 
-public abstract class AbstractTemplateRender<E extends AbstractTemplateModel> {
-
-    public static final String APP_TEMPLATE_ROOT = GENERATOR_ROOT + "app/templates/";
+public abstract class AbstractRender<E extends AbstractModel> {
 
     protected abstract boolean isOverrideExistingFile();
 
     protected String getTemplatePath() {
-        return APP_TEMPLATE_ROOT + getTemplateName();
+        return GENERATOR_TEMPLATE_ROOT + getTemplateName();
     }
 
     protected String getTemplateName() {
@@ -33,11 +30,10 @@ public abstract class AbstractTemplateRender<E extends AbstractTemplateModel> {
 
     protected abstract void handleModel(E model);
 
-    public AbstractTemplateRender() {
-
+    public AbstractRender() {
         if (isNewModelOnInit()) {
             E model = newModel();
-            this.renderFiles.add(model);
+            this.modelFiles.add(model);
             handleModel(model);
         }
     }
@@ -66,14 +62,14 @@ public abstract class AbstractTemplateRender<E extends AbstractTemplateModel> {
     private final Template template = prepareTemplate(new File(getTemplatePath()));
 
     @Getter
-    private final List<E> renderFiles = new ArrayList<>();
+    private final List<E> modelFiles = new ArrayList<>();
 
-    public void prepareRenderFiles() {
+    public void runBeforeRender() {
     }
 
-    public void executeRenderFiles() {
-        this.prepareRenderFiles();
-        this.getRenderFiles().forEach(root -> {
+    public void executeRenders() {
+        this.runBeforeRender();
+        this.getModelFiles().forEach(root -> {
             Map<String, E> input = new HashMap<>();
             input.put("root", root);
             if (isOverrideExistingFile()) {
@@ -84,20 +80,25 @@ public abstract class AbstractTemplateRender<E extends AbstractTemplateModel> {
         });
     }
 
-    protected boolean isBuildFileManually() {
+    protected boolean isManualRender() {
         return false;
     }
 
+    public static void renderAll() {
+        batchNewThenExecuteRenders();
+        AbstractUrlRender.render();
+        AbstractEntityRender.render();
+    }
+
     @SuppressWarnings("rawtypes")
-    public static void buildAll() {
-        String packageName = ApiMessagesTsRender.class.getPackage().getName();
-        List<? extends AbstractTemplateRender> builders
-                = ReflectionUtil.newInstancesOfAllChildren(AbstractTemplateRender.class, packageName);
-        builders.forEach(builder -> {
-            if (!builder.isBuildFileManually()) {
-                builder.executeRenderFiles();
+    private static void batchNewThenExecuteRenders() {
+        String packageName = StringUtil.removeLastChar(AbstractRender.class.getPackage().getName(), ".abstract".length());
+        List<? extends AbstractRender> renders
+                = ReflectionUtil.newInstancesOfAllChildren(AbstractRender.class, packageName);
+        renders.forEach(render -> {
+            if (!render.isManualRender()) {
+                render.executeRenders();
             }
         });
     }
-
 }

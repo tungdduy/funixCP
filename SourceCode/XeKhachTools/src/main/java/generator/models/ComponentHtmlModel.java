@@ -1,13 +1,13 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
+import generator.models.abstracts.AbstractUrlModel;
 import lombok.Getter;
 import lombok.Setter;
 
 import static util.AppUtil.PAGES_DIR;
 @Getter
 @Setter
-public class ComponentHtmlModel extends AbstractUrlTemplateModel {
+public class ComponentHtmlModel extends AbstractUrlModel {
 
     private String name;
 

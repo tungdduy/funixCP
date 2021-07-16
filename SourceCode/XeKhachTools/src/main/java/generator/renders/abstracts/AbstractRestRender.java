@@ -18,7 +18,7 @@ import static util.PredicateUtil.negate;
 import static util.StringUtil.fetchSeparatorContent;
 import static util.StringUtil.toImportFormat;
 
-public abstract class AbstractRestRender<E extends AbstractRestModel> extends AbstractApiUrlTemplateRender<E> {
+public abstract class AbstractRestRender<E extends AbstractRestModel> extends AbstractApiUrlRender<E> {
 
     @Override
     protected boolean isOverrideExistingFile() {
@@ -28,7 +28,7 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
     protected final List<String> fetchingImportContents = new ArrayList<>();
 
     abstract protected Class<?> getBuilderClass(UrlNode urlNode);
-    abstract protected void secondHandleSource(E e);
+    abstract protected void secondHandleModel(E e);
 
     @Override
     protected void handleModel(E model) {
@@ -39,7 +39,7 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
         model.setImportContent(buildImportContent(model, currentContent));
         model.setPackagePath(buildPackagePath(urlNode));
         model.setCapitalizeName(builder.buildCapitalizeName());
-        this.secondHandleSource(model);
+        this.secondHandleModel(model);
     }
 
     protected abstract String buildPackagePath(UrlNode urlNode);
@@ -63,7 +63,6 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
     }
 
     abstract protected String initialImportContent(UrlNode urlNode);
-
 
     private String buildBodyContent(E source, String currentContent) {
         List<String> bodyContents = new ArrayList<>();

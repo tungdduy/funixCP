@@ -1,22 +1,24 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractTemplateModel;
-import generator.models.sub.Column;
+import data.models.Column;
+import data.models.MapColumn;
+import generator.models.abstracts.AbstractEntityModel;
 import generator.models.sub.Constructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static generator.GeneratorSetup.API_OPERATION_DATA_ROOT;
 
-@SuppressWarnings("all")
-public class EntityMappedModel extends AbstractTemplateModel {
+@Getter @Setter
+public class EntityMappedModel extends AbstractEntityModel {
     List<String> imports = new ArrayList<>();
     List<String> staticImports = new ArrayList<>();
-    List<Column> columns = new ArrayList<>();
+    List<Column.Core> columns;
+    List<MapColumn.Core> mapColumns;
     List<Constructor> constructors = new ArrayList<>();
-
-    String entityClassName;
 
     @Override
     public String buildRenderFilePath() {

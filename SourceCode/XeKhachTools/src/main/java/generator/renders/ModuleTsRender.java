@@ -2,9 +2,9 @@ package generator.renders;
 
 import generator.models.ModuleTsModel;
 import generator.models.sub.Component;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 
-public class ModuleTsRender extends AbstractAppUrlTemplateRender<ModuleTsModel> {
+public class ModuleTsRender extends AbstractAppUrlRender<ModuleTsModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {

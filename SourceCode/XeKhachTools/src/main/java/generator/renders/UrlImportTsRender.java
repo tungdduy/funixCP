@@ -2,7 +2,7 @@ package generator.renders;
 
 import generator.builders.UrlNodeBuilder;
 import generator.models.UrlImportTsModel;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 import architect.urls.UrlNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UrlImportTsRender extends AbstractAppUrlTemplateRender<UrlImportTsModel> {
+public class UrlImportTsRender extends AbstractAppUrlRender<UrlImportTsModel> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -20,18 +20,18 @@ public class UrlImportTsRender extends AbstractAppUrlTemplateRender<UrlImportTsM
     }
 
     @Override
-    public void prepareRenderFiles() {
-        UrlImportTsModel source = super.getRenderFiles().get(0);
+    public void runBeforeRender() {
+        UrlImportTsModel source = super.getModelFiles().get(0);
         source.setUrlImports(urlImportsMap.entrySet());
-        this.getRenderFiles().clear();
-        this.getRenderFiles().add(source);
+        this.getModelFiles().clear();
+        this.getModelFiles().add(source);
     }
 
     private final Map<String, String> urlImportsMap = new HashMap<>();
 
     @Override
     protected void handleModel(UrlImportTsModel model) {
-        logger.info(String.format("handle: %s", model.getUrlNode().getBuilder().buildUrlChain()));
+        logger.debug(String.format("handle: %s", model.getUrlNode().getBuilder().buildUrlChain()));
         UrlNode urlNode = model.getUrlNode();
         UrlNodeBuilder builder = urlNode.getBuilder();
         String key = builder.buildKeyChain() + "-component";
@@ -47,7 +47,7 @@ public class UrlImportTsRender extends AbstractAppUrlTemplateRender<UrlImportTsM
     }
 
     private static String prefixImport(UrlNode url) {
-        return "../../business/pages/" + url.getBuilder().buildUrlChain() + "/" + url.getUrl();
+        return "app/business/pages/" + url.getBuilder().buildUrlChain() + "/" + url.getUrl();
     }
 
 }

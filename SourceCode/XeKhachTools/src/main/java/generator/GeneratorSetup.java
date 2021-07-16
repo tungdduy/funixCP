@@ -3,7 +3,7 @@ package generator;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import generator.models.abstracts.AbstractTemplateModel;
+import generator.models.abstracts.AbstractModel;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +18,8 @@ public class GeneratorSetup {
             API_OPERATION_REST_ROOT = API_OPERATION_ROOT + "rest/",
             API_OPERATION_REST_API_ROOT = API_OPERATION_REST_ROOT + "api/",
             API_OPERATION_REST_SERVICE_ROOT = API_OPERATION_REST_ROOT + "service/",
-            GENERATOR_ROOT = "SourceCode/XeKhachTools/src/main/java/generator/";
+            GENERATOR_ROOT = "SourceCode/XeKhachTools/src/main/java/generator/",
+            GENERATOR_TEMPLATE_ROOT = GENERATOR_ROOT + "templates/";
 
     private static Configuration config;
 
@@ -34,14 +35,14 @@ public class GeneratorSetup {
     }
 
 
-    public static <E extends AbstractTemplateModel> void writeToNoneExistFileOnly(Map<String, E> input, Template template, File file) {
+    public static <E extends AbstractModel> void writeToNoneExistFileOnly(Map<String, E> input, Template template, File file) {
         if (file.exists()) {
             return;
         }
         writeToFile(input, template, file);
     }
 
-    public static <E extends AbstractTemplateModel> void writeToFile(Map<String, E> input, Template template, File realFile)  {
+    public static <E extends AbstractModel> void writeToFile(Map<String, E> input, Template template, File realFile)  {
         if(realFile == null) return;
         realFile.getParentFile().mkdirs();
         try (Writer fileWriter = new FileWriter(realFile)){

@@ -1,14 +1,12 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
-import net.timxekhach.operation.data.entity.User;
-import net.timxekhach.operation.rest.service.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
+import net.timxekhach.operation.rest.service.UserService;
 import static net.timxekhach.utility.XeResponseUtils.success;
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
+import net.timxekhach.operation.data.entity.User;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -18,17 +16,17 @@ public class UserApi {
     private final UserService userService;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-	@PostMapping("/login")
+	@GetMapping("/login")
 	public ResponseEntity<User> login (@RequestBody Map<String, String> info) {
 		return success(userService.login(info));
 	}
 
-	@PostMapping("/register")
+	@GetMapping("/register")
 	public ResponseEntity<User> register (@RequestBody User user) {
 		return success(userService.register(user));
 	}
 
-	@PostMapping("/forgot-password")
+	@GetMapping("/forgot-password")
 	public ResponseEntity<Void> forgotPassword (@RequestBody String email) {
 		userService.forgotPassword(email);
 		return success();

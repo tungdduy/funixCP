@@ -1,15 +1,27 @@
 package data.models;
 
 import data.entities.abstracts.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
 
-public class Pk<E extends AbstractEntity> extends Column<E> {
-    public  Pk(E e, Class<E> dataType) {
-        super(e, dataType);
-        this.isPk = true;
-        this.isNullable = false;
+@Getter
+public class Pk {
+    private final Class<?> dataType;
+    private final boolean isAutoIncrement;
+    private final String simpleClassName;
+
+    @Setter
+    private String fieldName;
+
+    public Pk() {
+        this.dataType = Long.class;
+        this.simpleClassName = Long.class.getSimpleName();
+        this.isAutoIncrement = true;
+    }
+    public <E extends AbstractEntity> Pk(Class<E> dataType) {
+        this.dataType = dataType;
+        this.isAutoIncrement = false;
+        this.simpleClassName = dataType.getSimpleName();
     }
 
-    public Pk(E e) {
-        super(e, Long.class);
-    }
 }

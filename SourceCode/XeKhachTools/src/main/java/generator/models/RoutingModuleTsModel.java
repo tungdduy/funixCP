@@ -1,6 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractUrlTemplateModel;
+import generator.models.abstracts.AbstractUrlModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import static util.AppUtil.PAGES_DIR;
 
 @Getter
 @Setter
-public class RoutingModuleTsModel extends AbstractUrlTemplateModel {
+public class RoutingModuleTsModel extends AbstractUrlModel {
 
     private String pathToFramework, urlKeyChain, capitalizeName;
 

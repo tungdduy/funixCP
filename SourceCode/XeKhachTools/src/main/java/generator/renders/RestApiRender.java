@@ -20,7 +20,7 @@ public class RestApiRender extends AbstractRestRender<RestApiModel> {
     }
 
     @Override
-    protected void secondHandleSource(RestApiModel source) {
+    protected void secondHandleModel(RestApiModel source) {
         source.setUrl(source.getUrlNode().getUrl());
         source.setCamelName(source.getUrlNode().getBuilder().buildCamelName());
     }

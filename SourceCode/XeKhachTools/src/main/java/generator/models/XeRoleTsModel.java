@@ -1,13 +1,13 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractTemplateModel;
+import generator.models.abstracts.AbstractModel;
 import lombok.Getter;
 import net.timxekhach.security.constant.RoleEnum;
 
 import static util.AppUtil.BUSINESS_DIR;
 
 @Getter
-public class XeRoleTsModel extends AbstractTemplateModel {
+public class XeRoleTsModel extends AbstractModel {
 
     private final RoleEnum[] roles = RoleEnum.values();
 

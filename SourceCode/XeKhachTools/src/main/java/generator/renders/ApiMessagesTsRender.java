@@ -1,7 +1,7 @@
 package generator.renders;
 
 import generator.models.ApiMessagesTsModel;
-import generator.renders.abstracts.AbstractTemplateRender;
+import generator.renders.abstracts.AbstractRender;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.XeFileUtils;
 import util.StringUtil;
@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import static util.AppUtil.MESSAGE_PATH;
 
-public class ApiMessagesTsRender extends AbstractTemplateRender<ApiMessagesTsModel> {
+public class ApiMessagesTsRender extends AbstractRender<ApiMessagesTsModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {

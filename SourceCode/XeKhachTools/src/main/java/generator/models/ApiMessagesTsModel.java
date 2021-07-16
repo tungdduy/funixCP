@@ -1,6 +1,6 @@
 package generator.models;
 
-import generator.models.abstracts.AbstractTemplateModel;
+import generator.models.abstracts.AbstractModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import static util.AppUtil.I18N_DIR;
 
 @Getter
 @Setter
-public class ApiMessagesTsModel extends AbstractTemplateModel {
+public class ApiMessagesTsModel extends AbstractModel {
 
     //______________ Must be used in template
     private Set<Map.Entry<String, String>> messages;

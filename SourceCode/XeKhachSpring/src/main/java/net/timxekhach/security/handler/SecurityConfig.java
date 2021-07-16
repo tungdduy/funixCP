@@ -67,6 +67,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(securityResource.getPublicUrls()).permitAll()
             // ------ START OF IMPORT ROLES ------------------
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
+                .antMatchers("user").hasAnyRole("USER")
+                .antMatchers("user/login").hasAnyAuthority("ROLE_BUSS_STAFF", "ADMIN_READ", "USER_READ")
+                .antMatchers("user/register").permitAll()
+                .antMatchers("user/forgot-password").hasAnyAuthority("ADMIN_WRITE")
+                .antMatchers("admin").permitAll()
+                .antMatchers("admin/list").permitAll()
+                .antMatchers("caller-staff").permitAll()
+                .antMatchers("buss-staff").permitAll()
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
             // ------ END OF IMPORT ROLES ------------------
                 .anyRequest().authenticated()

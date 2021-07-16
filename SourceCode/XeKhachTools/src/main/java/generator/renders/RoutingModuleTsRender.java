@@ -1,10 +1,10 @@
 package generator.renders;
 
 import generator.models.RoutingModuleTsModel;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 import util.AppUtil;
 
-public class RoutingModuleTsRender extends AbstractAppUrlTemplateRender<RoutingModuleTsModel> {
+public class RoutingModuleTsRender extends AbstractAppUrlRender<RoutingModuleTsModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {

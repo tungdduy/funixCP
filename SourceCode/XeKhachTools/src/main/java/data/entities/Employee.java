@@ -2,11 +2,16 @@ package data.entities;
 
 import data.entities.abstracts.AbstractEntity;
 import data.models.MapColumn;
-import data.models.Pk;
+import lombok.Getter;
+import lombok.Setter;
 
-@SuppressWarnings("all")
+@Getter @Setter
 public class Employee extends AbstractEntity {
-   Pk employeeId = pk();
-   Pk company = pk(Company.class);
-   MapColumn user = map(new User().userId);
+   {pk(Company.class);}
+   // OneToOne
+   MapColumn user = map(User.class).unique();
+   // OneToMany
+   MapColumn seats = map(EmployeeSeat.class);
+   // ManyToOne
+   MapColumn city = map(City.class);
 }

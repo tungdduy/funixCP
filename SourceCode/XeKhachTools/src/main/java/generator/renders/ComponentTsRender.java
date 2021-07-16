@@ -1,11 +1,11 @@
 package generator.renders;
 
 import generator.models.ComponentTsModel;
-import generator.renders.abstracts.AbstractAppUrlTemplateRender;
+import generator.renders.abstracts.AbstractAppUrlRender;
 import architect.urls.UrlNode;
 import util.AppUtil;
 
-public class ComponentTsRender extends AbstractAppUrlTemplateRender<ComponentTsModel> {
+public class ComponentTsRender extends AbstractAppUrlRender<ComponentTsModel> {
 
     @Override
     protected boolean isOverrideExistingFile() {

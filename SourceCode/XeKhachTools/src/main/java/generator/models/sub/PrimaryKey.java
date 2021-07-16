@@ -6,6 +6,5 @@ import lombok.Setter;
 @Getter @Setter
 public class PrimaryKey {
     boolean isAutoIncrement;
-    String className;
-    String name;
+    String className, name;
 }

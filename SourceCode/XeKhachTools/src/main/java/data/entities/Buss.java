@@ -1,12 +1,14 @@
 package data.entities;
 
 import data.entities.abstracts.AbstractEntity;
+import static data.entities.abstracts.DataType.*;
 import data.models.Column;
-import data.models.Pk;
+import data.models.MapColumn;
+import lombok.Getter;
 
-@SuppressWarnings("all")
+@Getter
 public class Buss extends AbstractEntity {
-    Pk bussId = pk();
-    Column bussDesc = of(String.class);
-    Pk company = pk(Company.class);
+    {pk(Company.class);}
+    Column bussDesc = of(DESCRIPTION);
+    MapColumn seats = map(Seat.class);
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.io.File;
 
 @Getter
-public abstract class AbstractTemplateModel {
+public abstract class AbstractModel {
     protected File renderFile;
     public File getRenderFile() {
         if(this.renderFile == null && buildRenderFilePath() != null) {
