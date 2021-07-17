@@ -1,115 +1,125 @@
 package generator.renders;
 
+import data.entities.abstracts.AbstractEntity;
 import data.models.Column;
 import data.models.MapColumn;
-import data.models.Pk;
+import data.models.PrimaryKey;
 import generator.models.EntityMappedModel;
-import generator.models.sub.Constructor;
 import generator.models.sub.Join;
 import generator.models.sub.Param;
+import generator.models.sub.PkMap;
 import generator.renders.abstracts.AbstractEntityRender;
-import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
-import static util.ReflectionUtil.findFieldsByType;
+import static util.StringUtil.toCamel;
+import static util.StringUtil.toIdName;
 
 public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> {
 
     @Override
     protected void handleModel(EntityMappedModel model) {
-        this.columns.forEach(column -> {
-            model.setColumns(this.columns
-                    .stream()
-                    .map(Column::getCore)
-                    .peek(this::updateColumn)
-                    .collect(Collectors.toList())
-            );
-        });
-
-        this.mapColumns.forEach(mapper -> {
-            model.setMapColumns(this.mapColumns
-                    .stream()
-                    .map(MapColumn::getCore)
-                    .peek(this::updateMapColumn)
-                    .collect(Collectors.toList())
-            );
-        });
-
-        List<Param> params = new ArrayList<>();
-        MutableInt longPkCount = new MutableInt(0);
-        this.pks.forEach(pk -> {
-            if (exceedNoOfLongPk(longPkCount, pk)) return;
-            Param param = new Param();
-            param.setName(pk.getFieldName());
-            param.setClassName(pk.getSimpleClassName());
-            params.add(param);
-        });
-
-        if (!params.isEmpty()) {
-            model.getConstructors().add(new Constructor(params));
-        }
-
-        model.getConstructors().add(new Constructor());
+        updatePrimaryKeys(model);
+        updateDeclaredColumns(model);
     }
 
-    private boolean exceedNoOfLongPk(MutableInt longPkCount, data.models.Pk pk) {
-        if (pk.getDataType() == Long.class) {
-            if (longPkCount.getValue() > 0) {
-                throw new RuntimeException("only 1 pk able to has type Long.class!");
+    private void updatePrimaryKeys(EntityMappedModel model) {
+        PrimaryKey defaultPk = new PrimaryKey();
+        defaultPk.setAutoIncrement(true);
+        defaultPk.setFieldName(toIdName(model.getEntity()));
+        model.getPrimaryKeys().add(defaultPk);
+
+        model.getEntity().getPrimaryKeyEntities().forEach(pkEntity -> {
+            String idName = toIdName(pkEntity);
+
+            PrimaryKey pk = new PrimaryKey();
+            pk.setFieldName(idName);
+            model.getPrimaryKeys().add(pk);
+
+            String pkSimpleClassName = pkEntity.getClass().getSimpleName();
+            Param param = new Param(pkSimpleClassName, toCamel(pkSimpleClassName));
+            model.getConstructorParams().add(param);
+
+            PkMap pkMap = new PkMap();
+            pkMap.setFieldName(idName);
+            pkMap.setSimpleClassName(pkSimpleClassName);
+            fetchAllIds(pkEntity, pkMap.getJoins()::add);
+            model.getPkMaps().add(pkMap);
+        });
+    }
+
+    private void fetchAllIds(AbstractEntity pkEntity, Consumer<String> consumer) {
+        consumer.accept(toIdName(pkEntity));
+        pkEntity.getPrimaryKeyEntities().forEach(pk -> fetchAllIds(pk, consumer));
+    }
+
+    private void updateDeclaredColumns(EntityMappedModel model) {
+        ReflectionUtil.eachField(model.getEntity(), field -> {
+            Object colObject = null;
+            String fieldName = field.getName();
+            try {
+                colObject = field.get(model.getEntity());
+                if (colObject instanceof MapColumn) {
+                    MapColumn mapColumn = (MapColumn) colObject;
+                    MapColumn.Core mapColumnCore = mapColumn.getCore();
+                    updateMapCore(mapColumn.getCore(), model);
+                    mapColumnCore.setFieldName(fieldName);
+                    model.getMapColumns().add(mapColumnCore);
+                } else if (colObject instanceof Column) {
+                    Column column = (Column) colObject;
+                    Column.Core columnCore = column.getCore();
+                    columnCore.setFieldName(fieldName);
+                    updateColumnCore(columnCore);
+                    model.getColumns().add(column.getCore());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            longPkCount.add(1);
-            return true;
-        }
-        return false;
+        });
     }
 
-    private void updateMapColumn(MapColumn.Core mapCore) {
-        updateManyToOne(mapCore);
-        updateOneToMany(mapCore);
-    }
-
-    private void updateOneToMany(MapColumn.Core mapCore) {
-        if (mapCore.getPk() != null) {
-            // TODO: updateOneToMany
-        }
-    }
-
-    private void updateManyToOne(MapColumn.Core mapCore) {
-        if (mapCore.getEntityClass() != null) {
-            // TODO: updateManyToOne
-            List<Pk> longPks = buildLongPks(mapCore);
-            mapCore.setJoins(longPks.stream()
-                    .map(Join::new)
-                    .collect(Collectors.toList()));
-            mapCore.setInitialString(" = new ArrayList<>()");
-            mapCore.setSimpleClassName("Long");
-        }
-    }
-
-    private List<Pk> buildLongPks(MapColumn.Core mapCore) {
-        List<Pk> longPks = new ArrayList<>();
-        fetchLongPk(mapCore.getEntityClass(), longPks);
-        return longPks;
-    }
-
-    private void fetchLongPk(Class<?> dataType, List<Pk> longPks) {
-        List<Pk> entityPks = findFieldsByType(dataType, Pk.class,
-                (field, pk) ->  pk.setFieldName(field.getName())
-        );
-        entityPks.forEach(pk -> {
-            if (pk.getDataType() == Long.class) {
-                longPks.add(pk);
+    private void updateMapCore(MapColumn.Core mapCore, EntityMappedModel model) {
+        AbstractEntity entityMapTo = mapCore.getMapTo().getEntity();
+        AbstractEntity thisEntity = model.getEntity();
+        MutableBoolean entityMapToHasPkToThis = new MutableBoolean(false);
+        List<String> mapToIds = new ArrayList<>();
+        fetchAllIds(entityMapTo, referenceIdName -> {
+            if (referenceIdName.equals(toIdName(thisEntity))) {
+                entityMapToHasPkToThis.setValue(true);
             } else {
-                fetchLongPk(pk.getDataType(), longPks);
+                String newIdFromThisMap = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
+                Join join = new Join(newIdFromThisMap, referenceIdName);
+                mapCore.getJoins().add(join);
             }
+        });
+
+        if (!entityMapToHasPkToThis.booleanValue()) {
+            mapCore.setMappedBy(toCamel(thisEntity.getClass().getSimpleName()));
+            mapCore.setInitialString(" = new ArrayList<>()");
+        } else {
+            addJoinColumnWithMapToEntity(mapCore, model);
+        }
+    }
+
+    private void addJoinColumnWithMapToEntity(MapColumn.Core mapCore, EntityMappedModel model) {
+        mapCore.getJoins().forEach(join -> {
+            Column.Core core = new Column.Core();
+            core.setFieldName(join.getThisName());
+            core.setDataType(Long.class);
+            boolean isIdExisted = model.getColumns().stream().anyMatch(column -> column.getFieldName().equals(core.getFieldName()));
+            if (isIdExisted) {
+                throw new RuntimeException("column name must not be matched with join id!");
+            }
+            model.getColumns().add(core);
         });
     }
 
-    public void updateColumn(Column.Core core) {
+    public void updateColumnCore(Column.Core core) {
+
         if (core.getDefaultValue() == null) {
             if (core.getDataType() == List.class) {
                 core.getImports().add(List.class.getName());

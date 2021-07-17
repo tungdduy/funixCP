@@ -45,14 +45,8 @@ public class ReflectionUtil extends ReflectionUtils {
             if (Modifier.isAbstract(childClass.getModifiers())) {
                 return;
             }
-            try {
-                Constructor constructor = childClass.getConstructor();
-                Object child = constructor.newInstance();
-                children.add(child);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-
+            Object child = newInstance(childClass);
+            children.add(child);
         });
         return children;
     }
@@ -83,5 +77,14 @@ public class ReflectionUtil extends ReflectionUtils {
             }
         });
         return result;
+    }
+
+    public static Object newInstance(Class<?> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("cannot create instance for " + clazz.getName());
+        }
+        return null;
     }
 }

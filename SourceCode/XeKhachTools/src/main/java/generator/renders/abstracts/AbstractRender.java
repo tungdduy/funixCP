@@ -84,21 +84,42 @@ public abstract class AbstractRender<E extends AbstractModel> {
         return false;
     }
 
-    public static void renderAll() {
+    private static void renderAll() {
         batchNewThenExecuteRenders();
-        AbstractUrlRender.render();
-        AbstractEntityRender.render();
+        AbstractUrlRender.renderWithParent();
+        AbstractEntityRender.renderWithParent();
     }
+
+    public static void renderByGroup(RenderGroup group) {
+        if (group == RenderGroup.ALL) {
+           renderAll();
+        }
+        if (group == RenderGroup.ENTITY) {
+            AbstractEntityRender.standaloneRender();
+        }
+        if (group == RenderGroup.URL) {
+           AbstractUrlRender.standaloneRender();
+        }
+
+        if (group == RenderGroup.OTHER) {
+           batchNewThenExecuteRenders();
+        }
+    }
+
 
     @SuppressWarnings("rawtypes")
     private static void batchNewThenExecuteRenders() {
-        String packageName = StringUtil.removeLastChar(AbstractRender.class.getPackage().getName(), ".abstract".length());
-        List<? extends AbstractRender> renders
-                = ReflectionUtil.newInstancesOfAllChildren(AbstractRender.class, packageName);
+        List<? extends AbstractRender> renders = batchNewAllChildrenRenders(AbstractRender.class);
         renders.forEach(render -> {
             if (!render.isManualRender()) {
                 render.executeRenders();
             }
         });
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected static List<? extends AbstractRender> batchNewAllChildrenRenders(Class<? extends AbstractRender> clazz) {
+        String packageName = StringUtil.removeLastChar(clazz.getPackage().getName(), ".abstract".length());
+        return ReflectionUtil.newInstancesOfAllChildren(clazz, packageName);
     }
 }

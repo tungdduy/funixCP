@@ -56,12 +56,16 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
 
     private static List<AbstractUrlRender> renders = new ArrayList<>();
 
-    public static void render(){
+    public static void renderWithParent(){
         UrlDeclaration.startBuildUrl();
         Consumer<UrlNode> visitNode = node -> renders.forEach(render -> render.visit(node));
         UrlArchitect.traverseAppUrls(visitNode);
         UrlArchitect.traverseApiUrls(visitNode);
         renders.forEach(AbstractRender::executeRenders);
+    }
+
+    public static void standaloneRender() {
+        batchNewAllChildrenRenders(AbstractUrlRender.class);
     }
 
 }

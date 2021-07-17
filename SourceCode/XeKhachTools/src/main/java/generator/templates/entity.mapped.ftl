@@ -17,11 +17,41 @@ import static ${import};
 @IdClass(${root.entityClassName}_MAPPED.Pk.class)
 public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
 
-<#list root.primaryKeys as pk>
+<#list root.primaryKeys as primaryKey>
     @Id
     @Column(nullable = false, updatable = false)
-    <#if pk.isAutoIncrement>@GeneratedValue(strategy = GenerationType.AUTO)</#if>
-    protected Long ${pk.fieldName};
+    <#if primaryKey.isAutoIncrement>@GeneratedValue(strategy = GenerationType.AUTO)</#if>
+    protected Long ${primaryKey.fieldName};
+</#list>
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Pk extends XePk {
+    <#list root.primaryKeys as primaryKey>
+        protected Long ${primaryKey.fieldName};
+    </#list>
+    }
+
+    protected ${root.entityClassName}_MAPPED(){}
+
+    protected ${root.entityClassName}_MAPPED(<#list root.constructorParams as param>${param.type} ${param.name}<#if param_has_next>, </#if></#list>) {
+    <#list root.constructParams as param>
+        this.${param.name} = ${param.name};
+    </#list>
+    }
+
+<#list root.pkMaps as pkMap>
+    @ManyToOne
+    @JoinColumns({
+    <#list pkMap.joins as join>
+        @JoinColumn(
+        name = "${join}",
+        referencedColumnName = "${join}",
+        insertable = false,
+        updatable = false)<#if join_has_next>, </#if>
+    </#list>
+    })
+    protected ${pkMap.simpleClassName} ${pkMap.fieldName};
 </#list>
 
 <#list root.mapColumns as map>
@@ -34,12 +64,12 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
         )
     </#if>
     <#if map.joins?size gt 0>
-        <#if map.unique?has_content>@OneToOne<#else>@ManyToOne</#if>
+        <#if map.isUnique>@OneToOne<#else>@ManyToOne</#if>
         @JoinColumns({
         <#list map.joins as join>
             @JoinColumn(
-            name = "${join.thisName.get()}",
-            referencedColumnName = "${join.referencedName.get()}",
+            name = "${join.thisName}",
+            referencedColumnName = "${join.referencedName}",
             insertable = false,
             updatable = false)<#if join_has_next>, </#if>
         </#list>
@@ -60,20 +90,5 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     protected ${column.simpleClassName} ${column.fieldName}${column.initialString};
 </#list>
 
-<#list root.constructors as con>
-    protected ${root.entityClassName}_MAPPED(<#list con.params as param>${param.type} ${param.name}</#list>) {
-    <#list con.params as param>
-        this.${param.name} = ${param.name};
-    </#list>
-    }
-</#list>
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Pk extends XePk {
-    <#list root.primaryKeys as pk>
-        protected Long ${pk.fieldName};
-    </#list>
-    }
 
 }

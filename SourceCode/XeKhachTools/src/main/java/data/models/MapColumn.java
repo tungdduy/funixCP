@@ -9,36 +9,45 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.ReflectionUtil.newInstance;
+
 @AllArgsConstructor @Getter @Setter
 public class MapColumn {
 
     @Getter @Setter
+    public static class MapTo {
+        MapTo(Class<?> entityClass) {
+            this.entityClass = entityClass;
+        }
+        AbstractEntity entity;
+        Class<?> entityClass;
+
+        public AbstractEntity getEntity() {
+            if(this.entity == null) {
+                this.entity = (AbstractEntity) newInstance(entityClass);
+            }
+            return this.entity;
+        }
+    }
+
+    @Getter @Setter
     public static class Core {
-        String fieldName, simpleClassName, initialString, mappedBy;
-        Boolean unique;
+        String fieldName, initialString, mappedBy;
+        boolean isUnique;
         List<Join> joins = new ArrayList<>();
-        Class<? extends AbstractEntity> entityClass;
-        Pk pk;
+        MapTo mapTo;
+        PrimaryKey primaryKey;
     }
 
     Core core = new Core();
 
-    //OneToMany
-    public MapColumn(Pk pk) {
-        core.pk = pk;
-        core.simpleClassName = "Long";
-    }
-
-    //OneToOne
     public MapColumn unique() {
-        core.unique = true;
+        core.isUnique = true;
         return this;
     }
 
-    //ManyToOne
     public <E extends AbstractEntity> MapColumn(Class<E> entityClass) {
-        core.entityClass = entityClass;
-        core.simpleClassName = entityClass.getSimpleName();
+        core.mapTo = new MapTo(entityClass);
     }
 
 

@@ -130,6 +130,10 @@ public class StringUtil extends StringUtils {
         return "";
     }
 
+    public static String toIdName(Object obj) {
+        return toCamel(obj.getClass().getSimpleName()) + "Id";
+    }
+
     public static String trimToEmpty(String value) {
         return value == null ? "": value.trim();
     }
