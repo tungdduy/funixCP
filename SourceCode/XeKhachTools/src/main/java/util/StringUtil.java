@@ -147,6 +147,13 @@ public class StringUtil extends StringUtils {
         return String.format("// ____________________ ::%s_SEPARATOR:: ____________________ //", name);
     }
 
+    public static String toUPPER_UNDERLINE(String value) {
+        return value == null ? "" : Arrays.stream(value.trim()
+                .split(NONE_ALPHA_REGEX))
+                .map(String::toUpperCase)
+                .collect(Collectors.joining("_"));
+    }
+
     public static List<String> toImportFormat(List<String> importClasses) {
         return importClasses.stream()
                 .map(s -> format("import %s;", s))

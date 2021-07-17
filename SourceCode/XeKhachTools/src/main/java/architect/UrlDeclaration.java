@@ -14,9 +14,9 @@ public class UrlDeclaration {
     public static void startBuildUrl(){
         UrlArchitect
                 .startApi("user").roles(ROLE_USER)
-                    .method("login").type(User.class).param("info", Map.class).auths(ADMIN_READ, USER_READ).roles(ROLE_BUSS_STAFF)
+                    .method("login").type(User.class).param("info", Map.class)
                     .method("register").type(User.class).param("user", User.class)
-                    .method("forgot-password").param("email", String.class).auths(ADMIN_WRITE)
+                    .method("forgot-password").param("email", String.class)
                 .create("admin")
                     .method("list").pathVar("id", Long.class)
                 .create("caller-staff")
@@ -27,7 +27,7 @@ public class UrlDeclaration {
                 .startApp("check-in")
                     .child("login")
                     .sibling("register")
-                    .sibling("forgot-password").roles(RoleEnum.ROLE_BUSS_ADMIN).auths(ADMIN_READ)
+                    .sibling("forgot-password")
                 .create("admin")
                     .child("buss-staff")
         ;

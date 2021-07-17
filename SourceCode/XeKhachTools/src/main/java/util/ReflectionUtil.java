@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,4 +85,18 @@ public class ReflectionUtil extends ReflectionUtils {
         }
         return null;
     }
+
+    @SuppressWarnings("all")
+    public static void invokeSet(Object obj, String fieldName, Object value) {
+        try {
+            Method method = obj.getClass().getMethod("set" + StringUtil.toCapitalizeEachWord(fieldName));
+            Class<?> fieldType = method.getParameters()[0].getType();
+            if (fieldType.isAssignableFrom(value.getClass()) && value.getClass().isAssignableFrom(fieldType)) {
+                method.invoke(obj, value.getClass().cast(value));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
