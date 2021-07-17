@@ -44,11 +44,11 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
 
     protected abstract String buildPackagePath(UrlNode urlNode);
 
-    private String buildImportContent(E source, String currentContent) {
+    private String buildImportContent(E model, String currentContent) {
         List<String> importContents = new ArrayList<>();
-        String currentImportContent = fetchSeparatorContent(source.getImportSeparator(), currentContent);
+        String currentImportContent = fetchSeparatorContent(model.getImportSeparator(), currentContent);
         if(currentImportContent.isEmpty()) {
-            currentImportContent = initialImportContent(source.getUrlNode());
+            currentImportContent = initialImportContent(model.getUrlNode());
         }
         String fetchingImportContent = fetchingImportContents.stream()
                 .filter(negate(currentImportContent::contains))

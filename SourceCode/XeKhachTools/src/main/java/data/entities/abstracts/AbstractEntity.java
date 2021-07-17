@@ -2,6 +2,8 @@ package data.entities.abstracts;
 
 import data.models.Column;
 import data.models.MapColumn;
+import generator.GeneratorCentral;
+import generator.GeneratorSetup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,11 +18,16 @@ import static util.ReflectionUtil.newInstance;
 @Getter
 @Setter
 public abstract class AbstractEntity {
-     List<Class<?>> primaryKeyClasses = new ArrayList<>();
-     List<AbstractEntity> primaryKeyEntities;
+
+    List<Class<?>> primaryKeyClasses = new ArrayList<>();
+    List<AbstractEntity> primaryKeyEntities;
+
+    public String getFullOperationClassName() {
+        return "net.timxekhach.operation.data.entity." + this.getClass().getSimpleName();
+    }
 
     public List<AbstractEntity> getPrimaryKeyEntities() {
-        if(this.primaryKeyEntities == null) {
+        if (this.primaryKeyEntities == null) {
             primaryKeyEntities = new ArrayList<>();
             primaryKeyClasses.forEach(clazz -> {
                 primaryKeyEntities.add((AbstractEntity) newInstance(clazz));
@@ -34,8 +41,13 @@ public abstract class AbstractEntity {
     }
 
     protected Column of(DataType dataType) {
-        return dataType.column;
+        return dataType.column.get();
     }
+
+    protected Column of(Class<Enum> enumClass) {
+        return new Column(enumClass);
+    }
+
 
     protected <E extends AbstractEntity> MapColumn map(Class<E> e) {
         return new MapColumn(e);

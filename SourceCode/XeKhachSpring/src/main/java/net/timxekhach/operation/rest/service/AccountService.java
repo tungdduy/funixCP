@@ -2,6 +2,7 @@ package net.timxekhach.operation.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.repository.UserRepository;
 import net.timxekhach.security.jwt.JwtTokenProvider;
 import net.timxekhach.utility.XeResponseUtils;
@@ -44,10 +45,10 @@ public class AccountService {
     }
 
     public void updateUser(User updateUser, Long id) {
-        if (!userRepository.findById(id).isPresent()) {
+        if (!userRepository.findById(new User_MAPPED.Pk(id)).isPresent()) {
             UNDEFINED_ERROR.throwNow();
         }
-        updateUser.setId(id);
+        updateUser.setUserId(id);
         userRepository.save(updateUser);
     }
 

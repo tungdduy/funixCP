@@ -155,7 +155,7 @@ public class ApiMethodBuilder {
 
     private String buildServiceBody() {
         List<String> body = new ArrayList<> ();
-        body.add(String.format("\t\t// TODO: service %s method", buildCamelName()));
+        body.add(String.format("\t\t// TODO : service %s method", buildCamelName()));
         if (!buildReturnType().equals("void")) {
             body.add("return null;");
         }

@@ -14,17 +14,17 @@ public class UserService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 	public User login (Map<String, String> info) {
-		// TODO: service login method
+		// TODO : service login method
 		return null;
 	}
 
 	public User register (User user) {
-		// TODO: service register method
+		// TODO : service register method
 		return null;
 	}
 
 	public void forgotPassword (String email) {
-		// TODO: service forgotPassword method
+		// TODO : service forgotPassword method
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

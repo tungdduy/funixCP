@@ -4,28 +4,29 @@ import data.models.Column;
 import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.models.abstracts.AbstractEntityModel;
-import generator.models.sub.Param;
 import generator.models.sub.PkMap;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static generator.GeneratorSetup.API_OPERATION_DATA_ROOT;
+import static generator.GeneratorSetup.API_OPERATION_DATA_MAPPED_ROOT;
 
 @Getter @Setter @SuppressWarnings("rawtypes")
 public class EntityMappedModel extends AbstractEntityModel {
-    List<String> imports = new ArrayList<>();
-    List<String> staticImports = new ArrayList<>();
+    Set<String> imports = new HashSet<>();
+    Set<String> staticImports = new HashSet<>();
     List<Column.Core> columns = new ArrayList<>();
     List<MapColumn.Core> mapColumns = new ArrayList<>();
-    List<PrimaryKey> primaryKeys = new ArrayList<>();
-    List<Param> constructorParams = new ArrayList<>();
+    List<Column.Core> joinIdColumns = new ArrayList<>();
+    Set<PrimaryKey> primaryKeys = new HashSet<>();
     List<PkMap> pkMaps = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {
-        return API_OPERATION_DATA_ROOT + "mapped/" + this.entityClassName + "_MAPPED.java";
+        return API_OPERATION_DATA_MAPPED_ROOT + this.entityClassName + "_MAPPED.java";
     }
 }

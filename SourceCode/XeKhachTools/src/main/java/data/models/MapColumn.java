@@ -15,12 +15,35 @@ import static util.ReflectionUtil.newInstance;
 public class MapColumn {
 
     @Getter @Setter
+    public static class Core {
+        String fieldName, mappedBy;
+        Boolean isUnique = false;
+        List<Join> joins = new ArrayList<>();
+        MapTo mapTo;
+        PrimaryKey primaryKey;
+    }
+
+    Core core;
+
+    public MapColumn unique() {
+        core.isUnique = true;
+        return this;
+    }
+
+    public <E extends AbstractEntity> MapColumn(Class<E> entityClass) {
+        core = new Core();
+        core.setMapTo(new MapTo(entityClass));
+    }
+
+    @Getter @Setter
     public static class MapTo {
         MapTo(Class<?> entityClass) {
             this.entityClass = entityClass;
+            this.simpleClassName = entityClass.getSimpleName();
         }
         AbstractEntity entity;
         Class<?> entityClass;
+        String simpleClassName;
 
         public AbstractEntity getEntity() {
             if(this.entity == null) {
@@ -29,27 +52,5 @@ public class MapColumn {
             return this.entity;
         }
     }
-
-    @Getter @Setter
-    public static class Core {
-        String fieldName, initialString, mappedBy;
-        boolean isUnique;
-        List<Join> joins = new ArrayList<>();
-        MapTo mapTo;
-        PrimaryKey primaryKey;
-    }
-
-    Core core = new Core();
-
-    public MapColumn unique() {
-        core.isUnique = true;
-        return this;
-    }
-
-    public <E extends AbstractEntity> MapColumn(Class<E> entityClass) {
-        core.mapTo = new MapTo(entityClass);
-    }
-
-
 
 }

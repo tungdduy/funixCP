@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
 public class GeneratorCentral {
     static Logger logger = LoggerFactory.getLogger(GeneratorCentral.class);
     public static void main(String[] args) {
-        AbstractRender.renderByGroup(RenderGroup.ENTITY);
+        AbstractRender.renderByGroup(RenderGroup.ALL);
     }
+
 }
 

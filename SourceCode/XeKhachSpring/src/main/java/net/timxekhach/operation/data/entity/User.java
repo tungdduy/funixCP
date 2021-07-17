@@ -1,52 +1,23 @@
 package net.timxekhach.operation.data.entity;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.security.constant.RoleEnum;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import java.io.Serializable;
+import javax.persistence.Entity;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static net.timxekhach.utility.XeStringUtils.PHONE_REGEX;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
-public class User implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, updatable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Long id;
+public class User extends User_MAPPED {
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank()
-    private String password;
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
-    @NotBlank
-    @Email
-    private String email;
-
-    private String username;
-
-    @Pattern(regexp = PHONE_REGEX)
-    private String phoneNumber;
-
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private String role = RoleEnum.ROLE_USER.name();
-
-    public List<String> getRoles() {
+public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);
     }
 
@@ -56,21 +27,6 @@ public class User implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    private Boolean nonLocked = true;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id) && username.equals(user.username);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username);
-    }
-
     public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.password = bCryptPasswordEncoder.encode(this.password);
     }
@@ -78,4 +34,13 @@ public class User implements Serializable {
     public String getPossibleLoginName() {
         return this.username != null ? username : email;
     }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
+
+
 }
+

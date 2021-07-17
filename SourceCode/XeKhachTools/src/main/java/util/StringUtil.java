@@ -16,13 +16,13 @@ public class StringUtil extends StringUtils {
     public static final String COMMA = ",",
             DOT = ".",
             EMPTY_STRING = "",
-            EMAIL_REGEX = "/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/",
-            PHONE_REGEX = "(03|05|07|08|09)+\\d{8,10}",
+            EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\\\.[A-Za-z]{2,6}$",
+            PHONE_REGEX = "(03|05|07|08|09)+\\\\d{8,10}",
             NONE_ALPHA_REGEX = "[^a-zA-Z]+";
 
     public static String fetchSeparatorContent(String separator, String content) {
         try {
-            return content.split(separator)[1];
+            return content.split(separator)[1].trim();
         } catch (Exception ignored) {
         }
         return "";

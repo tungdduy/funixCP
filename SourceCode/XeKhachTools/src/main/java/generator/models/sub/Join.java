@@ -6,5 +6,5 @@ import lombok.Setter;
 
 @Getter @Setter @AllArgsConstructor
 public class Join {
-    String thisName, referenceName;
+    String thisName, referencedName;
 }

@@ -1,7 +1,9 @@
 package generator.renders.abstracts;
 
 import data.entities.abstracts.AbstractEntity;
+import generator.models.EntityMappedModel;
 import generator.models.abstracts.AbstractEntityModel;
+import generator.models.sub.Param;
 import util.StringUtil;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static util.ReflectionUtil.newInstancesOfAllChildren;
+import static util.StringUtil.toCamel;
 
 @SuppressWarnings("all")
 public abstract class AbstractEntityRender<E extends AbstractEntityModel> extends AbstractRender<E> {
@@ -58,5 +61,12 @@ public abstract class AbstractEntityRender<E extends AbstractEntityModel> extend
         model.setEntity(entity);
         this.getModelFiles().add(model);
         handleModel(model);
+    }
+
+    protected String updateConstructorParams(AbstractEntityModel model, AbstractEntity pkEntity) {
+        String pkSimpleClassName = pkEntity.getClass().getSimpleName();
+        Param param = new Param(pkSimpleClassName, toCamel(pkSimpleClassName));
+        model.getConstructorParams().add(param);
+        return pkSimpleClassName;
     }
 }

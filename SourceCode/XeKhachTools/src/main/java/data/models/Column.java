@@ -4,26 +4,20 @@ package data.models;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.security.constant.AuthEnum;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 public class Column {
     @Getter @Setter
     public static class Core {
-        Object entity;
         Class<?> dataType;
         Object defaultValue;
         Number min, max;
         Integer maxSize, minSize;
-        Boolean isEmail, isPhone, isNullable, isUnique;
+        Boolean isEmail = false,
+                isPhone = false,
+                isNotNull = false,
+                isUnique = false;
         String regex, simpleClassName, fieldName, initialString = "";
-        Set<String> imports = new HashSet<>();
-        Set<String> staticImports = new HashSet<>();
 
         public String getSimpleClassName(){
             return dataType.getSimpleName();
@@ -32,13 +26,15 @@ public class Column {
 
     Core core = new Core();
 
-    public Column() {};
+    public Column() {
+        this.core.dataType = String.class;
+    };
 
     public Column(Class<?> dataType) {
         core.setDataType(dataType);
     }
 
-    Column defaultValue(Object value) {
+    public Column defaultValue(Object value) {
         core.setDefaultValue(value);
         return this;
     }
@@ -56,13 +52,11 @@ public class Column {
     }
 
     public Column notNull() {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getIsNullable() != null);
-        core.setIsNullable(false);
+        core.setIsNotNull(true);
         return this;
     }
 
     public Column unique() {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getIsUnique() != null);
         core.setIsUnique(true);
         return this;
     }
@@ -74,13 +68,11 @@ public class Column {
     }
 
     public Column email() {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getIsEmail() != null);
         core.setIsEmail(true);
         return this;
     }
 
     public Column phone() {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getIsPhone() != null);
         core.setIsPhone(true);
         return this;
     }

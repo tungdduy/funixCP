@@ -9,7 +9,9 @@ import static data.entities.abstracts.DataType.*;
 @Getter
 public class User extends AbstractEntity {
     Column email = of(EMAIL);
-    Column phone = of(PHONE);
+    Column phoneNumber = of(PHONE);
     Column password = of(REQUIRE_SHORT_STRING);
-    Column fullName = of(REQUIRE_SHORT_STRING);
+    Column username = of(REQUIRE_SHORT_STRING);
+    Column role = of(DESCRIPTION).defaultValue("ROLE_USER");
+    Column nonLocked = of(FALSE);
 }
