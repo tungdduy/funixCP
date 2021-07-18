@@ -8,7 +8,7 @@ import {XeLabel} from "../../i18n";
   templateUrl: './admin.component.html'
 })
 export class AdminComponent {
-  BUSS_STAFF = Url.app.ADMIN.BUSS_STAFF.__short;
+  BUSS_STAFF = Url.app.ADMIN.BUSS_STAFF._short;
   label = XeLabel;
   constructor() {}
 }

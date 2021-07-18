@@ -7,7 +7,6 @@ public class EntityRepositoryRender extends AbstractEntityRender<EntityRepositor
 
     @Override
     protected void handleModel(EntityRepositoryModel model) {
-        model.updateSeparatorContent();
     }
 
 }

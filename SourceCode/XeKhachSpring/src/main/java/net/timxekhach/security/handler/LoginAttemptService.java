@@ -5,7 +5,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.timxekhach.security.model.SecurityResource;
 import net.timxekhach.security.user.UserDetailsImpl;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
@@ -46,7 +45,7 @@ public class LoginAttemptService {
         super();
         loginAttemptCache = CacheBuilder.newBuilder().expireAfterWrite(15, MINUTES)
                 .maximumSize(100).build(new CacheLoader<String, Integer>() {
-                    public Integer load(@NotNull String key) {
+                    public Integer load(String key) {
                         return 0;
                     }
                 });

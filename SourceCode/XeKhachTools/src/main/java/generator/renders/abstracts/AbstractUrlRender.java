@@ -1,10 +1,10 @@
 package generator.renders.abstracts;
 
-import generator.models.abstracts.AbstractUrlModel;
 import architect.UrlDeclaration;
 import architect.urls.UrlArchitect;
 import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
+import generator.models.abstracts.AbstractUrlModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,10 +31,11 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
         }
 
         try {
-            E source = newModel();
-            source.setUrlNode(urlNode);
-            this.getModelFiles().add(source);
-            this.handleModel(source);
+            AbstractUrlModel.urlNodeHolder.value = urlNode;
+            E model = newModel();
+            model.setUrlNode(urlNode);
+            this.getModelFiles().add(model);
+            this.handleModel(model);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -50,7 +51,7 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
         return true;
     }
 
-    AbstractUrlRender() {
+    public AbstractUrlRender() {
         renders.add(this);
     }
 
@@ -66,6 +67,7 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
 
     public static void standaloneRender() {
         batchNewAllChildrenRenders(AbstractUrlRender.class);
+        renderWithParent();
     }
 
 }

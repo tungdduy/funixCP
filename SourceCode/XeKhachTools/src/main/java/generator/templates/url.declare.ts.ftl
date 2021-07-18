@@ -1,10 +1,10 @@
-${root.contentBeforeImport}<#lt>${root.IMPORT_SEPARATOR}
+${root.contentBeforeImport}<#lt>${root.IMPORT_SPLITTER}
 <#assign count=4 step=2>
   api: {
     <#macro tree urls>
         <#list urls as url>
             <#lt>${""?left_pad(count)}${url.key}: <#if url.children?size == 0>${url.config}<#else>{
-            <#lt>${""?left_pad(count+step)}__self: ${url.config},
+            <#lt>${""?left_pad(count+step)}_self: ${url.config},
             <#assign count = count+step>
             <#lt><@tree url.children />
             <#assign count = count-step>
@@ -18,7 +18,7 @@ ${root.contentBeforeImport}<#lt>${root.IMPORT_SEPARATOR}
     <#macro tree urls>
         <#list urls as url>
             <#lt>${""?left_pad(count)}${url.key}: <#if url.children?size == 0>${url.config}<#else>{
-            <#lt>${""?left_pad(count+step)}__self: ${url.config},
+            <#lt>${""?left_pad(count+step)}_self: ${url.config},
             <#assign count = count+step>
             <#lt><@tree url.children />
             <#assign count = count-step>

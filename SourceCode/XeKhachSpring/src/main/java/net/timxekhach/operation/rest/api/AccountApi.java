@@ -15,6 +15,7 @@ import static net.timxekhach.utility.XeResponseUtils.success;
 @RequiredArgsConstructor
 @RequestMapping(path = {"/account"})
 public class AccountApi {
+    // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
     private final AccountService accountService;
 
@@ -45,7 +46,5 @@ public class AccountApi {
         accountService.deleteUser(id);
         return success();
     }
-     /* || ========================================== ||
-        || _________ AUTO_IMPORT_ABOVE_THIS _________ ||
-        || ========================================== || */
+    // ____________________ ::BODY_SEPARATOR:: ____________________ //
 }

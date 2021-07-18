@@ -39,13 +39,13 @@ export const Url = {
 // ----------------------------------------------------------- //
   api: {
     USER: {
-      __self: config().auths([r.ROLE_USER]),
-      LOGIN: config().auths([r.ROLE_BUSS_STAFF, a.ADMIN_READ, a.USER_READ]),
+      _self: config().auths([r.ROLE_USER]),
+      LOGIN: config(),
       REGISTER: config(),
-      FORGOT_PASSWORD: config().auths([a.ADMIN_WRITE]),
+      FORGOT_PASSWORD: config(),
     },
     ADMIN: {
-      __self: config(),
+      _self: config(),
       LIST: config(),
     },
     CALLER_STAFF: config(),
@@ -53,13 +53,13 @@ export const Url = {
   },
   app: {
     CHECK_IN: {
-      __self: config(),
+      _self: config(),
       LOGIN: config(),
       REGISTER: config(),
-      FORGOT_PASSWORD: config().auths([r.ROLE_BUSS_ADMIN, a.ADMIN_READ]),
+      FORGOT_PASSWORD: config(),
     },
     ADMIN: {
-      __self: config(),
+      _self: config(),
       BUSS_STAFF: config(),
     },
   }

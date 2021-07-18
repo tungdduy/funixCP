@@ -32,15 +32,18 @@ public abstract class User_MAPPED extends XeEntity {
     @Column
     protected String phoneNumber;
 
-    @Size(max = 30, min = 3)
-    @NotBlank
+    @Size(max = 255)
     @Column
     protected String password;
+
+    @Size(max = 255)
+    @Column
+    protected String username;
 
     @Size(max = 30, min = 3)
     @NotBlank
     @Column
-    protected String username;
+    protected String fullName;
 
     @Size(max = 255)
     @Column

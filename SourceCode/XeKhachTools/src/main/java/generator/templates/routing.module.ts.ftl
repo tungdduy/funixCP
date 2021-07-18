@@ -8,7 +8,7 @@ const routes = RouterBuilder.build(Url.app.${root.urlKeyChain});
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: Url.app.${root.urlKeyChain}.__self.activateProviders
+  providers: Url.app.${root.urlKeyChain}._self.activateProviders
 })
 export class ${root.capitalizeName}RoutingModule {
   constructor() {}

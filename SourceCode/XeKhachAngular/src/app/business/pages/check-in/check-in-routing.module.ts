@@ -8,7 +8,7 @@ const routes = RouterBuilder.build(Url.app.CHECK_IN);
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: Url.app.CHECK_IN.__self.activateProviders
+  providers: Url.app.CHECK_IN._self.activateProviders
 })
 export class CheckInRoutingModule {
   constructor() {}

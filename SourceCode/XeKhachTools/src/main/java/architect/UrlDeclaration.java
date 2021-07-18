@@ -12,6 +12,7 @@ import static net.timxekhach.security.constant.RoleEnum.ROLE_USER;
 
 public class UrlDeclaration {
     public static void startBuildUrl(){
+        if(!UrlArchitect.apiUrls.isEmpty()) return;
         UrlArchitect
                 .startApi("user").roles(ROLE_USER)
                     .method("login").type(User.class).param("info", Map.class)

@@ -17,7 +17,7 @@ public class ApiMethod implements AuthConfig {
     private final String url;
     private final UrlNode caller;
     private final Map<String, Class<?>> pathVars = new HashMap<>();
-    private final RequestMethod requestMethod = RequestMethod.GET;
+    private final RequestMethod requestMethod = RequestMethod.POST;
     private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();
     private Boolean isPublic;

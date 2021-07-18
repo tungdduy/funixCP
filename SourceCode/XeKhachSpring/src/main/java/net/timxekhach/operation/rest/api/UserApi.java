@@ -16,17 +16,17 @@ public class UserApi {
     private final UserService userService;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-	@GetMapping("/login")
+	@PostMapping("/login")
 	public ResponseEntity<User> login (@RequestBody Map<String, String> info) {
-		return success(userService.login(info));
+		return userService.login(info);
 	}
 
-	@GetMapping("/register")
+	@PostMapping("/register")
 	public ResponseEntity<User> register (@RequestBody User user) {
 		return success(userService.register(user));
 	}
 
-	@GetMapping("/forgot-password")
+	@PostMapping("/forgot-password")
 	public ResponseEntity<Void> forgotPassword (@RequestBody String email) {
 		userService.forgotPassword(email);
 		return success();

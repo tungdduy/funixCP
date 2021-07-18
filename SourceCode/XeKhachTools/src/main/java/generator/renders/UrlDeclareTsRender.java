@@ -1,5 +1,7 @@
 package generator.renders;
 
+import architect.UrlDeclaration;
+import architect.urls.UrlArchitect;
 import generator.models.UrlDeclareTsModel;
 import generator.models.interfaces.AuthConfig;
 import generator.models.sub.Url;
@@ -22,8 +24,9 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
 
     @Override
     protected void handleModel(UrlDeclareTsModel model) {
+        UrlDeclaration.startBuildUrl();
         model.setContentBeforeImport(XeFileUtils.readAsString(
-                model.getRenderFile().getAbsolutePath()).split(model.getIMPORT_SEPARATOR())[0]);
+                model.getRenderFile().getAbsolutePath()).split(model.getIMPORT_SPLITTER())[0]);
 
         apiUrls.forEach(api -> buildRootModel(model.getApiUrls(), api));
         appUrls.forEach(app -> buildRootModel(model.getAppUrls(), app));

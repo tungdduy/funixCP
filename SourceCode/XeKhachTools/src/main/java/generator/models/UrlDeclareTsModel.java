@@ -15,7 +15,7 @@ public class UrlDeclareTsModel extends AbstractModel {
 
     //______________ Must be used in template
     private String contentBeforeImport;
-    private String IMPORT_SEPARATOR = String.format("%s%n%s%n%s",
+    private String IMPORT_SPLITTER = String.format("%s%n%s%n%s",
             "// ----------------------------------------------------------- //",
             "// ================= IMPORT TO END OF FILE =================== //",
             "// ----------------------------------------------------------- //");

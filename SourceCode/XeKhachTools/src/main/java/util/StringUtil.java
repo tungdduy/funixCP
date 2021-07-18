@@ -1,6 +1,8 @@
 package util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 public class StringUtil extends StringUtils {
+    static Logger logger = LoggerFactory.getLogger(StringUtil.class);
+
     public static final String COMMA = ",",
             DOT = ".",
             EMPTY_STRING = "",
@@ -24,10 +28,11 @@ public class StringUtil extends StringUtils {
         try {
             return content.split(separator)[1].trim();
         } catch (Exception ignored) {
+            logger.error("content is null or has no separator!");
         }
         return "";
     }
-    public static String[] fetchSeparator(String separator, String content) {
+    public static String[] fetchSplitter(String separator, String content) {
         try {
             String[] result = content.split(separator);
             if(result.length < 3) return null;
@@ -100,19 +105,17 @@ public class StringUtil extends StringUtils {
     }
 
     public static String toLowercaseCharsOnly(String value) {
-        return value == null
-                ? ""
-                : value.trim()
+        return value == null ? "" : value.trim()
                 .replaceAll(NONE_ALPHA_REGEX, "")
                 .toLowerCase();
     }
 
-    /**
-     * @param value like path-of-url
-     * @return PATH_OF_URL
-     */
-    public static String toKey(String value) {
-        return value == null ? "" : value.trim().toUpperCase().replaceAll(NONE_ALPHA_REGEX, "_");
+    public static String toUPPER_UNDERLINE(String value) {
+        return value == null ? ""
+                : Arrays.stream(value.trim().split(NONE_ALPHA_REGEX))
+                .flatMap(s -> Arrays.stream(splitByCapital(s)))
+                .map(String::toUpperCase)
+                .collect(Collectors.joining("_"));
     }
 
     public static String toCapitalizeEachWord(String value) {
@@ -138,20 +141,18 @@ public class StringUtil extends StringUtils {
         return value == null ? "": value.trim();
     }
 
+
+    public static String[] splitByCapital(String value) {
+        return value.split("(?=\\p{Upper})");
+    }
+
     public static String capitalizeEachWordToLowerDotChain(String CapitalizeNameLikeThis) {
-        String[] words = CapitalizeNameLikeThis.split("(?=\\p{Upper})");
+        String[] words = splitByCapital(CapitalizeNameLikeThis);
         return Arrays.stream(words).map(String::toLowerCase).collect(Collectors.joining("."));
     }
 
     public static String buildSeparator(String name) {
         return String.format("// ____________________ ::%s_SEPARATOR:: ____________________ //", name);
-    }
-
-    public static String toUPPER_UNDERLINE(String value) {
-        return value == null ? "" : Arrays.stream(value.trim()
-                .split(NONE_ALPHA_REGEX))
-                .map(String::toUpperCase)
-                .collect(Collectors.joining("_"));
     }
 
     public static List<String> toImportFormat(List<String> importClasses) {

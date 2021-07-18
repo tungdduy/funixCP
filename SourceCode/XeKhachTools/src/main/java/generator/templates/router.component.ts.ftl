@@ -9,7 +9,7 @@ import {XeLabel} from "${root.pathToI18n}i18n";
 })
 export class ${root.capitalizeName}Component {
 <#list root.children as child>
-    <#lt>${""?left_pad(2)}${child.key} = Url.app.${child.keyChain}.__short;
+    <#lt>${""?left_pad(2)}${child.key} = Url.app.${child.keyChain}._short;
 </#list>
   label = XeLabel;
   constructor() {}

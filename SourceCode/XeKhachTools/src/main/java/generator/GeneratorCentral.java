@@ -9,8 +9,8 @@ import util.StringUtil;
 public class GeneratorCentral {
     static Logger logger = LoggerFactory.getLogger(GeneratorCentral.class);
     public static void main(String[] args) {
-        // AbstractRender.renderByGroup(RenderGroup.ALL);
-        System.out.println(StringUtil.buildSeparator("IMPORT_CHILD_COMPONENT"));
+         AbstractRender.renderByGroup(RenderGroup.ALL);
+//        System.out.println(StringUtil.buildSeparator("IMPORT_CHILD_COMPONENT"));
     }
 
 }

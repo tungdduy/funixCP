@@ -1,5 +1,6 @@
 package generator.renders.abstracts;
 
+import architect.urls.UrlArchitect;
 import freemarker.template.Template;
 import generator.models.abstracts.AbstractModel;
 import lombok.Getter;
@@ -42,11 +43,12 @@ public abstract class AbstractRender<E extends AbstractModel> {
         return true;
     }
 
-    protected E newModel() {
+    protected E newModel(Object... args) {
         try {
             return getParameterizeClass()
                     .getConstructor()
                     .newInstance();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

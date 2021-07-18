@@ -11,7 +11,7 @@ import java.util.Set;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static util.StringUtil.toCamel;
-import static util.StringUtil.toKey;
+import static util.StringUtil.toUPPER_UNDERLINE;
 
 public class ApiMethodBuilder {
 
@@ -32,7 +32,7 @@ public class ApiMethodBuilder {
     }
 
     public String buildKey() {
-        return toKey(this.apiMethod.getUrl());
+        return toUPPER_UNDERLINE(this.apiMethod.getUrl());
     }
 
     public String buildUrlChain() {

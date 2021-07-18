@@ -89,10 +89,12 @@ public class ReflectionUtil extends ReflectionUtils {
     @SuppressWarnings("all")
     public static void invokeSet(Object obj, String fieldName, Object value) {
         try {
-            Method method = obj.getClass().getMethod("set" + StringUtil.toCapitalizeEachWord(fieldName));
-            Class<?> fieldType = method.getParameters()[0].getType();
+            Method setMethod = obj.getClass().getMethod("set" + StringUtil.toCapitalizeEachWord(fieldName), value.getClass());
+            Method getMethod = obj.getClass().getMethod("get" + StringUtil.toCapitalizeEachWord(fieldName));
+            Class<?> fieldType = setMethod.getParameters()[0].getType();
             if (fieldType.isAssignableFrom(value.getClass()) && value.getClass().isAssignableFrom(fieldType)) {
-                method.invoke(obj, value.getClass().cast(value));
+                setMethod.invoke(obj, value.getClass().cast(value));
+                logger.info(String.format("%s updated %s: %s", obj.getClass().getSimpleName(), fieldName, getMethod.invoke(obj)));
             }
         } catch (Exception e) {
             e.printStackTrace();

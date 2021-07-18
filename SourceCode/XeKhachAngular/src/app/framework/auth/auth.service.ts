@@ -34,11 +34,11 @@ export class AuthService {
   }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
-    return this.http.post<User>(Url.api.USER.full, user, {observe: 'response'});
+    return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});
   }
 
   public register(user: RegisterModel): Observable<User> {
-    return this.http.post<User>(Url.api.USER.full, user);
+    return this.http.post<User>(Url.api.USER.REGISTER.full, user);
   }
 
   isUserLoggedIn(): boolean {

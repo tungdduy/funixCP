@@ -1,10 +1,10 @@
 package generator.renders.abstracts;
 
+import architect.urls.ApiMethod;
+import architect.urls.UrlNode;
 import com.sun.istack.internal.NotNull;
 import generator.builders.UrlNodeBuilder;
 import generator.models.abstracts.AbstractRestModel;
-import architect.urls.ApiMethod;
-import architect.urls.UrlNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static net.timxekhach.utility.XeFileUtils.readAsString;
 import static util.PredicateUtil.negate;
-import static util.StringUtil.fetchSeparatorContent;
 import static util.StringUtil.toImportFormat;
 
 public abstract class AbstractRestRender<E extends AbstractRestModel> extends AbstractApiUrlRender<E> {
@@ -34,9 +32,8 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
     protected void handleModel(E model) {
         UrlNode urlNode = model.getUrlNode();
         UrlNodeBuilder builder = urlNode.getBuilder();
-        String currentContent = readAsString(model.buildRenderFilePath());
-        model.setBodyContent(buildBodyContent(model, currentContent));
-        model.setImportContent(buildImportContent(model, currentContent));
+        buildBodyContent(model);
+        buildImportContent(model);
         model.setPackagePath(buildPackagePath(urlNode));
         model.setCapitalizeName(builder.buildCapitalizeName());
         this.secondHandleModel(model);
@@ -44,9 +41,9 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
 
     protected abstract String buildPackagePath(UrlNode urlNode);
 
-    private String buildImportContent(E model, String currentContent) {
+    private void buildImportContent(E model) {
         List<String> importContents = new ArrayList<>();
-        String currentImportContent = fetchSeparatorContent(model.getImportSeparator(), currentContent);
+        String currentImportContent = model.getImportContent();
         if(currentImportContent.isEmpty()) {
             currentImportContent = initialImportContent(model.getUrlNode());
         }
@@ -59,23 +56,23 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
         if (!fetchingImportContent.isEmpty()) {
             importContents.add(fetchingImportContent);
         }
-        return join("\n", importContents).trim();
+        model.setImportContent(join("\n", importContents).trim());
     }
 
     abstract protected String initialImportContent(UrlNode urlNode);
 
-    private String buildBodyContent(E source, String currentContent) {
+    private void buildBodyContent(E model) {
         List<String> bodyContents = new ArrayList<>();
-        String currentBodyContent = fetchSeparatorContent(source.getBodySeparator(), currentContent);
+        String currentBodyContent = model.getBodyContent();
         if(!currentBodyContent.isEmpty()) {
             bodyContents.add(currentBodyContent);
         }
-        List<ApiMethod> methodsToBuilder = filterMethodToBuilder(source);
+        List<ApiMethod> methodsToBuilder = filterMethodToBuilder(model);
         String newBodyContent = buildMethodContents(methodsToBuilder);
         if(!newBodyContent.isEmpty()) {
             bodyContents.add(newBodyContent);
         }
-        return "\t".concat(join("\n", bodyContents).trim());
+        model.setBodyContent("\t".concat(join("\n", bodyContents).trim()));
     }
 
     @NotNull

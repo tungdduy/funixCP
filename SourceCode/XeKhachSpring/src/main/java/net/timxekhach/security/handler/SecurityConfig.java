@@ -68,9 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ------ START OF IMPORT ROLES ------------------
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
                 .antMatchers("user").hasAnyRole("USER")
-                .antMatchers("user/login").hasAnyAuthority("ROLE_BUSS_STAFF", "ADMIN_READ", "USER_READ")
+                .antMatchers("user/login").permitAll()
                 .antMatchers("user/register").permitAll()
-                .antMatchers("user/forgot-password").hasAnyAuthority("ADMIN_WRITE")
+                .antMatchers("user/forgot-password").permitAll()
                 .antMatchers("admin").permitAll()
                 .antMatchers("admin/list").permitAll()
                 .antMatchers("caller-staff").permitAll()

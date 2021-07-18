@@ -1,7 +1,6 @@
 package generator.renders.abstracts;
 
 import data.entities.abstracts.AbstractEntity;
-import generator.models.EntityMappedModel;
 import generator.models.abstracts.AbstractEntityModel;
 import generator.models.sub.Param;
 import util.StringUtil;
@@ -56,9 +55,8 @@ public abstract class AbstractEntityRender<E extends AbstractEntityModel> extend
     }
 
     private <T extends AbstractEntity> void prepareNewModelThenForwardHandle(T entity) {
+        AbstractEntityModel.entityHolder.value = entity;
         E model = newModel();
-        model.setEntityClassName(entity.getClass().getSimpleName());
-        model.setEntity(entity);
         this.getModelFiles().add(model);
         handleModel(model);
     }

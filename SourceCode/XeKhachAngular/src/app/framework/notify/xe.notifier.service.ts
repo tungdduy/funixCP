@@ -16,7 +16,7 @@ export class XeNotifierService {
     const toastConfig = {
       status: type,
       destroyByClick: false,
-      duration: 3000,
+      duration: 30000,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
 
     };

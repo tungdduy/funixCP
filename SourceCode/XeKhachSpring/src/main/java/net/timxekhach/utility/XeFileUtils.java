@@ -28,6 +28,10 @@ public class XeFileUtils extends FileSystemUtils {
         if (!file.exists()) {
             return "";
         }
+        return readFileAsString(file);
+    }
+
+    public static String readFileAsString(File file) {
         try {
             return FileUtil.readAsString(file);
         } catch (Exception e) {

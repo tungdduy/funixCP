@@ -9,5 +9,5 @@ export const ApiMessages_vi = {
   VALIDATOR_EMAIL_INVALID: "",
   VALIDATOR_NOT_BLANK: (param) => `${param.fieldName}`,
   VALIDATOR_PATTERN_INVALID: (param) => `${param.fieldName}`,
-  VALIDATOR_SIZE_INVALID: (param) => `${param.fieldName} không hợp lệ rồi ${param.min}${param.max}`,
+  VALIDATOR_SIZE_INVALID: (param) => `${param.fieldName} không hợp lệ, độ dài cần ${param.min} đến ${param.max} ký tự`,
 };

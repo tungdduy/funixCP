@@ -3,11 +3,11 @@ import {NgModule} from '@angular/core';
 
 export const routes: Routes = [
   {path: 'admin', loadChildren: () => import('./business/pages/demo-pages/demo.module').then(m => m.DemoModule)},
-  {path: 'auth', loadChildren: () => import('app/business/pages/check-in/check-in.module').then(m => m['CheckInModule'])},
+  {path: 'check-in', loadChildren: () => import('app/business/pages/check-in/check-in.module').then(m => m['CheckInModule'])},
   {path: 'demo', loadChildren: () => import('./business/pages/demo-pages/demo.module').then(m => m.DemoModule)},
 
-  {path: '', redirectTo: 'auth', pathMatch: 'full' },
-  {path: '**', redirectTo: 'demo' },
+  {path: '', redirectTo: 'check-in', pathMatch: 'full' },
+  {path: '**', redirectTo: 'check-in' },
 ];
 
 const config: ExtraOptions = {

@@ -15,7 +15,8 @@ public enum DataType {
     PHONE(() -> new Column().regex(PHONE_REGEX)),
     EMAIL(() -> new Column().email()),
     FALSE(() -> new Column(Boolean.class).defaultValue(false)),
-    TRUE(() -> new Column(Boolean.class).defaultValue(true))
+    TRUE(() -> new Column(Boolean.class).defaultValue(true)),
+    SECRET_TOKEN(() -> new Column().maxLen(255))
     ;
 
 

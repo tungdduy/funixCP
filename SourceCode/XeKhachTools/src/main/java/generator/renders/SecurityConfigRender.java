@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.timxekhach.utility.XeFileUtils.readAsString;
-import static util.StringUtil.fetchSeparator;
+import static util.StringUtil.fetchSplitter;
 
 public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigModel> {
 
@@ -32,7 +32,7 @@ public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigMod
     public void runBeforeRender() {
         SecurityConfigModel source = this.getModelFiles().get(0);
         String oldContent = readAsString(source.buildRenderFilePath());
-        String[] separatorContent = fetchSeparator(source.getUrlAuthorizationSeparator(), oldContent);
+        String[] separatorContent = fetchSplitter(source.getUrlAuthorizationSplitter(), oldContent);
         if (separatorContent != null) {
             source.setContentBeforeAuthorization(separatorContent[0]);
             source.setContentAfterAuthorization(separatorContent[2]);

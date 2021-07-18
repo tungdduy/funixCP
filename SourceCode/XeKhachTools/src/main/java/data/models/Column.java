@@ -17,7 +17,7 @@ public class Column {
                 isPhone = false,
                 isNotNull = false,
                 isUnique = false;
-        String regex, simpleClassName, fieldName, initialString = "";
+        String regex, simpleClassName, fieldName, initialString;
 
         public String getSimpleClassName(){
             return dataType.getSimpleName();

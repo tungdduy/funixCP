@@ -81,7 +81,7 @@ public class UrlNodeBuilder {
     }
 
     public String buildKey(){
-        return StringUtil.toKey(this.urlNode.getUrl());
+        return StringUtil.toUPPER_UNDERLINE(this.urlNode.getUrl());
     }
     public String buildComponentName() {
         return StringUtil.toCapitalizeEachWord(this.urlNode.getUrl() + "-component");
@@ -93,7 +93,7 @@ public class UrlNodeBuilder {
     public String buildKeyChain() {
         String ancestorsChain = this.urlNode.getAncestors().stream()
                 .map(UrlNode::getUrl)
-                .map(StringUtil::toKey)
+                .map(StringUtil::toUPPER_UNDERLINE)
                 .collect(Collectors.joining("."));
         return ancestorsChain.isEmpty()
                 ? this.buildKey()

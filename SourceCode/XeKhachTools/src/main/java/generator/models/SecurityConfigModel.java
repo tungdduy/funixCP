@@ -13,9 +13,9 @@ import java.util.List;
 @Getter @Setter
 public class SecurityConfigModel extends AbstractUrlModel {
 
-    private String urlAuthorizationSeparator = StringUtil.buildSeparator("AUTHORIZATION");
+    private String urlAuthorizationSplitter = StringUtil.buildSeparator("AUTHORIZATION");
     private List<Authority> authorities = new ArrayList<>();
-    private String contentBeforeAuthorization = "", contentAfterAuthorization = "";
+    private String contentBeforeAuthorization, contentAfterAuthorization;
 
     @Override
     public String buildRenderFilePath() {

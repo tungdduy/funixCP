@@ -1,7 +1,7 @@
 ${root.contentBeforeAuthorization}<#compress>
-</#compress>${root.urlAuthorizationSeparator}
+</#compress>${root.urlAuthorizationSplitter}
 <#list root.authorities as auth>
                 .antMatchers("${auth.url}")${auth.authorities}
 </#list>
-            ${root.urlAuthorizationSeparator}<#compress>
+            ${root.urlAuthorizationSplitter}<#compress>
 </#compress>${root.contentAfterAuthorization}
