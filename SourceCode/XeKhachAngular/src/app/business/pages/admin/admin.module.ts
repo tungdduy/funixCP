@@ -1,4 +1,12 @@
-import {BussStaffComponent} from "./buss-staff/buss-staff.component";
+import {MyAccountComponent} from "./my-account/my-account.component";
+import {MyTripComponent} from "./my-trip/my-trip.component";
+import {CompanyManagerComponent} from "./company-manager/company-manager.component";
+import {CallerEmployeeComponent} from "./caller-employee/caller-employee.component";
+import {BussTypeComponent} from "./buss-type/buss-type.component";
+import {BussComponent} from "./buss/buss.component";
+import {BussEmployeeComponent} from "./buss-employee/buss-employee.component";
+import {BussStopComponent} from "./buss-stop/buss-stop.component";
+import {TicketComponent} from "./ticket/ticket.component";
 import {AdminComponent} from './admin.component';
 import {AdminRoutingModule} from "./admin-routing.module";
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
@@ -20,7 +28,15 @@ import {RouterModule} from "@angular/router";
   ],
   declarations: [
     AdminComponent,
-    BussStaffComponent,
+    MyAccountComponent,
+    MyTripComponent,
+    CompanyManagerComponent,
+    CallerEmployeeComponent,
+    BussTypeComponent,
+    BussComponent,
+    BussEmployeeComponent,
+    BussStopComponent,
+    TicketComponent,
   ],
   exports: [
     AdminComponent
