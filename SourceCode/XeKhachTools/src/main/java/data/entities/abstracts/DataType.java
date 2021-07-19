@@ -16,7 +16,11 @@ public enum DataType {
     EMAIL(() -> new Column().email()),
     FALSE(() -> new Column(Boolean.class).defaultValue(false)),
     TRUE(() -> new Column(Boolean.class).defaultValue(true)),
-    SECRET_TOKEN(() -> new Column().maxLen(255))
+    SECRET_TOKEN(() -> new Column().maxLen(255)),
+    MONEY(() -> new Column(Long.class)),
+    TIME_ONLY(() -> new Column(java.util.Date.class)),
+    DATE_ONLY(() -> new Column(java.util.Date.class)),
+    DATE_TIME(() -> new Column(java.util.Date.class))
     ;
 
 

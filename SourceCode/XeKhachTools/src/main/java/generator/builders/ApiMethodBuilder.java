@@ -65,11 +65,11 @@ public class ApiMethodBuilder {
     private String buildArguments() {
         List<String> paramNames = new ArrayList<>();
         this.apiMethod.getParameters().forEach((name, type) -> {
-            paramNames.add(name);
+            paramNames.add(toCamel(name));
         });
 
         this.apiMethod.getPathVars().forEach((name, type) -> {
-            paramNames.add(name);
+            paramNames.add(toCamel(name));
         });
 
         return join(", ", paramNames);
@@ -100,14 +100,14 @@ public class ApiMethodBuilder {
         this.apiMethod.getParameters().forEach((name, type) -> {
             String oriType = type.getSimpleName();
             String convertedType = oriType.equals("Map") ? "Map<String, String>" : oriType;
-            String param = format("@RequestBody %s %s", convertedType, name);
+            String param = format("@RequestBody %s %s", convertedType, toCamel(name));
             params.add(param);
         });
     }
 
     private void buildControllerPathParams(List<String> params) {
         this.apiMethod.getPathVars().forEach((name, type) -> {
-            String pathVar =  format("@PathVariable(\"%s\") %s %s", name, type.getSimpleName(), name) ;
+            String pathVar =  format("@PathVariable(\"%s\") %s %s", name, type.getSimpleName(), toCamel(name)) ;
             params.add(pathVar);
         });
     }
@@ -180,14 +180,14 @@ public class ApiMethodBuilder {
         this.apiMethod.getParameters().forEach((name, type) -> {
             String oriType = type.getSimpleName();
             String convertedType = oriType.equals("Map") ? "Map<String, String>" : oriType;
-            String param = format("%s %s", convertedType, name);
+            String param = format("%s %s", convertedType, toCamel(name));
             params.add(param);
         });
     }
 
     private void buildServicePathParams(List<String> params) {
         this.apiMethod.getPathVars().forEach((name, type) -> {
-            String pathVar =  format("%s %s", type.getSimpleName(), name) ;
+            String pathVar =  format("%s %s", type.getSimpleName(), toCamel(name));
             params.add(pathVar);
         });
     }

@@ -57,6 +57,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             if (testNull != null) {
                 model.getImports().add("javax.validation.constraints.*");
             }
+            model.filterThenAddImport(columnCore.getDataType().getName());
 
         });
         model.getMapColumns().forEach(mapColumn -> {
@@ -70,34 +71,27 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
     }
 
     private void updatePrimaryKeys(EntityMappedModel model) {
-        if(model.getEntity().getPrimaryKeyClasses().size() < 2) {
-            PrimaryKey defaultPk = new PrimaryKey();
-            defaultPk.setAutoIncrement(true);
-            defaultPk.setFieldName(toIdName(model.getEntity()));
-            model.getPrimaryKeys().add(defaultPk);
-        }
+        PrimaryKey defaultPk = new PrimaryKey();
+        defaultPk.setAutoIncrement(true);
+        defaultPk.setFieldName(toIdName(model.getEntity()));
+        model.getPrimaryKeys().add(defaultPk);
 
         model.getEntity().getPrimaryKeyEntities().forEach(pkEntity -> {
 
             String pkSimpleClassName = updateConstructorParams(model, pkEntity);
+            String pkIdName = toIdName(pkEntity);
 
             PkMap pkMap = new PkMap();
             pkMap.setFieldName(toCamel(pkSimpleClassName));
             pkMap.setSimpleClassName(pkSimpleClassName);
-            fetchAllIds(pkEntity, namedId -> {
-                pkMap.getJoins().add(namedId);
-                PrimaryKey pk = new PrimaryKey();
-                pk.setFieldName(namedId);
-                model.getPrimaryKeys().add(pk);
-            });
+            pkMap.getJoins().add(pkIdName);
             model.getPkMaps().add(pkMap);
+
+            PrimaryKey pk = new PrimaryKey();
+            pk.setFieldName(pkIdName);
+            model.getPrimaryKeys().add(pk);
+
         });
-    }
-
-
-    private void fetchAllIds(AbstractEntity pkEntity, Consumer<String> consumer) {
-        consumer.accept(toIdName(pkEntity));
-        pkEntity.getPrimaryKeyEntities().forEach(pk -> fetchAllIds(pk, consumer));
     }
 
     private void updateDeclaredColumns(EntityMappedModel model) {
@@ -129,48 +123,40 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         AbstractEntity entityMapTo = mapCore.getMapTo().getEntity();
         AbstractEntity thisEntity = model.getEntity();
         MutableBoolean entityMapToHasPkToThis = new MutableBoolean(false);
-        fetchAllIds(entityMapTo, referenceIdName -> {
-            if (referenceIdName.equals(toIdName(thisEntity))) {
+        String thisEntityIdName = toIdName(thisEntity);
+        entityMapTo.getPrimaryKeyEntities().forEach(pkEntity -> {
+            String referenceIdName = toIdName(pkEntity);
+            if (referenceIdName.equals(thisEntityIdName)) {
                 entityMapToHasPkToThis.setValue(true);
             } else {
-                Join join = new Join(referenceIdName, referenceIdName);
+                String thisName = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
+                Join join = new Join(thisName, referenceIdName);
                 mapCore.getJoins().add(join);
             }
+
         });
 
         if (entityMapToHasPkToThis.isTrue()) {
             mapCore.setMappedBy(toCamel(thisEntity.getClass().getSimpleName()));
         } else {
-            updateMapToOne(mapCore, model);
+            mapCore.getJoins().forEach(join -> {
+                throwErrorIfColumnNameExisted(model, join);
+
+                Column.Core core = new Column.Core();
+                core.setDataType(Long.class);
+                core.setFieldName(join.getThisName());
+
+                model.getJoinIdColumns().add(core);
+            });
+
         }
     }
 
-    private void updateMapToOne(MapColumn.Core mapCore, EntityMappedModel model) {
-        Set<Column.Core> joinIdColumns = new HashSet<>();
-        mapCore.getJoins().forEach(join -> {
-            Column.Core core = new Column.Core();
-            core.setDataType(Long.class);
-
-            changeJoinNameIfPkExisted(mapCore, model, join);
-            throwErrorIfColumnNameExisted(model, join);
-
-            core.setFieldName(join.getThisName());
-            joinIdColumns.add(core);
-        });
-        model.getJoinIdColumns().addAll(joinIdColumns);
-    }
 
     private void throwErrorIfColumnNameExisted(EntityMappedModel model, Join join) {
         boolean isColumnExisted = model.getColumns().stream().anyMatch(column -> column.getFieldName().equals(join.getThisName()));
         if (isColumnExisted) {
             throw new RuntimeException("column name must not be matched with join id!");
-        }
-    }
-
-    private void changeJoinNameIfPkExisted(MapColumn.Core mapCore, EntityMappedModel model, Join join) {
-        boolean pkExisted = model.getPrimaryKeys().stream().anyMatch(pk -> pk.getFieldName().equals(join.getThisName()));
-        if (pkExisted) {
-            join.setThisName(toCamel(String.format("%s-%s", mapCore.getFieldName(), join.getThisName())));
         }
     }
 

@@ -44,7 +44,7 @@ public abstract class AbstractEntity {
         return dataType.column.get();
     }
 
-    protected Column of(Class<Enum> enumClass) {
+    protected <E extends Enum> Column status(Class<E> enumClass) {
         return new Column(enumClass);
     }
 

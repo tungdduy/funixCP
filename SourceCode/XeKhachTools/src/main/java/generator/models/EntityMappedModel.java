@@ -29,4 +29,11 @@ public class EntityMappedModel extends AbstractEntityModel {
     public String buildRenderFilePath() {
         return API_OPERATION_DATA_MAPPED_ROOT + this.entityClassName + "_MAPPED.java";
     }
+
+    public void filterThenAddImport(String importString) {
+        if(!importString.startsWith("java.lang")) {
+            imports.add(importString);
+        }
+    }
+
 }

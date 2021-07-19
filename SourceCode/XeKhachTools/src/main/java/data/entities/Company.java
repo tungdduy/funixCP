@@ -9,5 +9,9 @@ import static data.entities.abstracts.DataType.*;
 @SuppressWarnings("all")
 public class Company extends AbstractEntity {
     Column companyDesc = of(DESCRIPTION);
+    Column companyName = of(DESCRIPTION);
+    Column isLock = of(FALSE);
+
+
     MapColumn employees = map(Employee.class);
 }

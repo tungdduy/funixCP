@@ -27,7 +27,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     <#if primaryKey.isAutoIncrement()>
     @GeneratedValue(strategy = GenerationType.AUTO)
     </#if>
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long ${primaryKey.fieldName};
 
 </#list>
@@ -59,7 +59,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     })
     protected ${pkMap.simpleClassName} ${pkMap.fieldName};
 
-    public void set${pkMap.simpleClassName}(${pkMap.simpleClassName} ${pkMap.fieldName}) {
+    public void set${pkMap.fieldName?cap_first}(${pkMap.simpleClassName} ${pkMap.fieldName}) {
         this.${pkMap.fieldName} = ${pkMap.fieldName};
         <#list pkMap.joins as join>
         this.${join} = ${pkMap.fieldName}.get${join?cap_first}();
@@ -93,10 +93,10 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     })
     protected ${map.mapTo.simpleClassName} ${map.fieldName};
 
-    public void set${map.mapTo.simpleClassName}(${map.mapTo.simpleClassName} ${map.fieldName}) {
+    public void set${map.fieldName?cap_first}(${map.mapTo.simpleClassName} ${map.fieldName}) {
         this.${map.fieldName} = ${map.fieldName};
     <#list map.joins as join>
-        this.${join.thisName} = ${map.fieldName}.get${join.thisName?cap_first}();
+        this.${join.thisName} = ${map.fieldName}.get${join.referencedName?cap_first}();
     </#list>
     }
     </#if>
@@ -104,7 +104,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
 </#list>
 <#list root.joinIdColumns as idColumn>
     @Column
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //map join
     protected Long ${idColumn.fieldName};
 
 </#list>

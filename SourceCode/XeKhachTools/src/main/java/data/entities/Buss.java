@@ -8,7 +8,10 @@ import lombok.Getter;
 
 @Getter
 public class Buss extends AbstractEntity {
-    {pk(Company.class);}
+    {
+        pk(Company.class);
+        pk(BussType.class);
+    }
     Column bussDesc = of(DESCRIPTION);
-    MapColumn seats = map(Seat.class);
+    MapColumn seats = map(SeatType.class);
 }
