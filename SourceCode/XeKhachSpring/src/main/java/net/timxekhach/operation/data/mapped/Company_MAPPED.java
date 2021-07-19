@@ -17,7 +17,7 @@ public abstract class Company_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
 
     @AllArgsConstructor
@@ -36,5 +36,13 @@ public abstract class Company_MAPPED extends XeEntity {
     @Size(max = 255)
     @Column
     protected String companyDesc;
+
+    @Size(max = 255)
+    @Column
+    protected String companyName;
+
+
+    @Column
+    protected Boolean isLock = false;
 
 }

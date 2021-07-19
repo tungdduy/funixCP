@@ -30,6 +30,10 @@ export class AuthService {
     return AuthService._roles;
   }
 
+  static get auths() {
+    return AuthService._authorities;
+  }
+
   constructor(private http: HttpClient) {
   }
 
@@ -83,12 +87,7 @@ export class AuthService {
   }
 
   private convertRoleFromApiToApp(roles: string[]): Role[] {
-    const appRoles = [];
-    roles.forEach(role => {
-      const converted = role.replace("ROLE_", "").toUpperCase();
-      appRoles.push(XeRole[converted]);
-    });
-    return appRoles;
+    return roles.map(r => XeRole[r]);
   }
 
   private setRoles = (xeRoles: Role[]) => {

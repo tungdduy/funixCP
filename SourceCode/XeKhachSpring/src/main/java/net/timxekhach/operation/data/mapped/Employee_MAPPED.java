@@ -4,12 +4,9 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Company;
-import java.util.List;
-import net.timxekhach.operation.data.entity.EmployeeSeat;
-import net.timxekhach.operation.data.entity.City;
 import net.timxekhach.operation.data.entity.User;
-import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
@@ -19,12 +16,12 @@ public abstract class Employee_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long employeeId;
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
 
     @AllArgsConstructor
@@ -52,50 +49,9 @@ public abstract class Employee_MAPPED extends XeEntity {
         this.companyId = company.getCompanyId();
     }
 
-    @OneToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "userId",
-        referencedColumnName = "userId",
-        insertable = false,
-        updatable = false)
-    })
-    protected User user;
 
-    public void setUser(User user) {
-        this.user = user;
-        this.userId = user.getUserId();
-    }
-
-    @OneToMany(
-        mappedBy = "employee",
-        cascade = {CascadeType.ALL},
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<EmployeeSeat> seats = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "cityId",
-        referencedColumnName = "cityId",
-        insertable = false,
-        updatable = false)
-    })
-    protected City city;
-
-    public void setCity(City city) {
-        this.city = city;
-        this.cityId = city.getCityId();
-    }
 
     @Column
-    @Setter(AccessLevel.PRIVATE)
-    protected Long userId;
-
-    @Column
-    @Setter(AccessLevel.PRIVATE)
-    protected Long cityId;
+    protected Boolean isLock = false;
 
 }

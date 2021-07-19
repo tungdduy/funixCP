@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 public class Buss extends Buss_MAPPED {
 
     public Buss() {}
-    public Buss(Company company) {
-        super(company);
+    public Buss(Company company, BussType bussType) {
+        super(company, bussType);
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

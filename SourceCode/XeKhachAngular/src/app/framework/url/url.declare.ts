@@ -43,11 +43,9 @@ export const Url = {
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
+      FORGOT_PASSWORD_SECRET_KEY: config(),
     },
-    ADMIN: {
-      _self: config(),
-      LIST: config(),
-    },
+    ADMIN: config(),
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
   },
@@ -60,7 +58,15 @@ export const Url = {
     },
     ADMIN: {
       _self: config(),
-      BUSS_STAFF: config(),
+      MY_ACCOUNT: config(),
+      MY_TRIP: config(),
+      COMPANY_MANAGER: config(),
+      CALLER_EMPLOYEE: config(),
+      BUSS_TYPE: config(),
+      BUSS: config(),
+      BUSS_EMPLOYEE: config(),
+      BUSS_STOP: config(),
+      TICKET: config(),
     },
   }
 };

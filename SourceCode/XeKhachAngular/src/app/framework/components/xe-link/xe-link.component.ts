@@ -17,7 +17,6 @@ export class XeLinkComponent {
   @Input() xeUrl: UrlConfig;
 
   hideThis() {
-    return "d-none";
   }
 
 }

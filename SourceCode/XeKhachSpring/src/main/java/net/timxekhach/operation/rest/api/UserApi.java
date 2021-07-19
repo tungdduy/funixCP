@@ -31,6 +31,11 @@ public class UserApi {
 		userService.forgotPassword(email);
 		return success();
 	}
+	@PostMapping("/forgot-password-secret-key")
+	public ResponseEntity<Void> forgotPasswordSecretKey (@RequestBody String email, @RequestBody String emailKey) {
+		userService.forgotPasswordSecretKey(email, emailKey);
+		return success();
+	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

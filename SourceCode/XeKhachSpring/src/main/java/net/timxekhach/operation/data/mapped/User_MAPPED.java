@@ -5,6 +5,9 @@ import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import javax.validation.constraints.*;
+import java.util.List;
+import net.timxekhach.operation.data.entity.TripUser;
+import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
@@ -14,7 +17,7 @@ public abstract class User_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long userId;
 
     @AllArgsConstructor
@@ -22,6 +25,14 @@ public abstract class User_MAPPED extends XeEntity {
     public static class Pk extends XePk {
         protected Long userId;
     }
+    @OneToMany(
+        mappedBy = "user",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<TripUser> allMyTrips = new ArrayList<>();
+
 
     @Email
     @Column

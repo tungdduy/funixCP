@@ -25,13 +25,12 @@ NbCardModule,
     ThemeModule,
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   ],
-    declarations: [
-        CheckInComponent,
-        LoginComponent,
-        RegisterComponent,
-        ForgotPasswordComponent,
-        XeLinkComponent,
-    ],
+  declarations: [
+    CheckInComponent,
+    LoginComponent,
+    RegisterComponent,
+    ForgotPasswordComponent,
+  ],
   exports: [
     CheckInComponent
   ]

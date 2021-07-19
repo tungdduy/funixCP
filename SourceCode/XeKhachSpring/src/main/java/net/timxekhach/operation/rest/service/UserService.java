@@ -52,6 +52,9 @@ public class UserService {
 	public void forgotPassword (String email) {
 		// TODO : service forgotPassword method
 	}
+	public void forgotPasswordSecretKey (String email, String emailKey) {
+		// TODO : service forgotPasswordSecretKey method
+	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

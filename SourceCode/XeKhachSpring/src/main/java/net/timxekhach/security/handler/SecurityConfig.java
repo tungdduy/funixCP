@@ -71,8 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("user/login").permitAll()
                 .antMatchers("user/register").permitAll()
                 .antMatchers("user/forgot-password").permitAll()
+                .antMatchers("user/forgot-password-secret-key").permitAll()
                 .antMatchers("admin").permitAll()
-                .antMatchers("admin/list").permitAll()
                 .antMatchers("caller-staff").permitAll()
                 .antMatchers("buss-staff").permitAll()
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //

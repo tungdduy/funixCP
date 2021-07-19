@@ -5,10 +5,9 @@ import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import javax.validation.constraints.*;
-import net.timxekhach.operation.data.entity.Seat;
 import net.timxekhach.operation.data.entity.Company;
-import java.util.List;
-import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.SeatType;
+import net.timxekhach.operation.data.entity.BussType;
 
 
 @MappedSuperclass @Getter @Setter
@@ -17,24 +16,31 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussTypeId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
+        protected Long bussTypeId;
         protected Long bussId;
         protected Long companyId;
     }
     protected Buss_MAPPED(){}
-    protected Buss_MAPPED(Company company) {
+    protected Buss_MAPPED(Company company, BussType bussType) {
         this.company = company;
+        this.bussType = bussType;
     }
     @ManyToOne
     @JoinColumns({
@@ -51,13 +57,39 @@ public abstract class Buss_MAPPED extends XeEntity {
         this.companyId = company.getCompanyId();
     }
 
-    @OneToMany(
-        mappedBy = "buss",
-        cascade = {CascadeType.ALL},
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<Seat> seats = new ArrayList<>();
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false)
+    })
+    protected BussType bussType;
+
+    public void setBussType(BussType bussType) {
+        this.bussType = bussType;
+        this.bussTypeId = bussType.getBussTypeId();
+    }
+
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "seatsBussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false)
+    })
+    protected SeatType seats;
+
+    public void setSeats(SeatType seats) {
+        this.seats = seats;
+        this.seatsBussTypeId = seats.getBussTypeId();
+    }
+
+    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long seatsBussTypeId;
 
     @Size(max = 255)
     @Column
