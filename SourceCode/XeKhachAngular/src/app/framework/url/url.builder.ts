@@ -1,7 +1,8 @@
 import {UrlConfig} from "./url.config";
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
-import {StorageUtil} from "../util/storage.util";
 import {Url} from "./url.declare";
+import {AuthService} from "../auth/auth.service";
+import {XeRouter} from "../../business/service/xe-router";
 
 export class UrlBuilder {
   static buildUrlConfig = (parent: UrlConfig, urls: {}) => {
@@ -23,11 +24,17 @@ export class UrlBuilder {
     config.key = key;
     config.keyChane = !!parent.keyChane ? parent.keyChane + "." + key : key;
     config.short = key.replace(/_/g, "-").toLowerCase();
-    if (config.authorities.length > 0) {
+    if (config.roles.length > 0) {
       const activateProvider = {
         provide: config.keyChane,
-        useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) =>
-          config.authorities.every(auth => StorageUtil.getAuthorities().includes(auth))
+        useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+           if (!AuthService.isAllow(config.roles)) {
+             XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
+             return false;
+           }
+           return true;
+        }
+
       };
       config.parent.activateProviders.push(activateProvider);
     }

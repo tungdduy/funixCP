@@ -8,9 +8,9 @@ import {XeLabel} from "../../i18n";
   templateUrl: './check-in.component.html'
 })
 export class CheckInComponent {
-  LOGIN = Url.app.CHECK_IN.LOGIN._short;
-  REGISTER = Url.app.CHECK_IN.REGISTER._short;
-  FORGOT_PASSWORD = Url.app.CHECK_IN.FORGOT_PASSWORD._short;
+  LOGIN = Url.app.CHECK_IN.LOGIN.short;
+  REGISTER = Url.app.CHECK_IN.REGISTER.short;
+  FORGOT_PASSWORD = Url.app.CHECK_IN.FORGOT_PASSWORD.short;
   label = XeLabel;
   constructor() {}
 }

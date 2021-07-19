@@ -30,9 +30,9 @@ export class LoginComponent extends XeForm implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.authService.login(model).subscribe(
         (response: HttpResponse<User>) => {
-          this.authService.saveResponse(response);
+          AuthService.saveResponse(response);
           this.showLoading = false;
-          this.router.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
+          XeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
         },
         (error: HttpErrorResponse) => {
           this.notifier.httpErrorResponse(error);
@@ -43,14 +43,13 @@ export class LoginComponent extends XeForm implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.authService.isUserLoggedIn()) {
-      this.router.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
+    if (AuthService.isUserLoggedIn()) {
+      XeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
     }
   }
 
   constructor(private authService: AuthService,
-              private notifier: XeNotifierService,
-              private router: XeRouter) {
+              private notifier: XeNotifierService) {
     super();
   }
 }

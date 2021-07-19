@@ -1,19 +1,19 @@
 package generator.renders;
 
 import architect.UrlDeclaration;
-import architect.urls.UrlArchitect;
+import architect.urls.UrlNode;
+import architect.urls.UrlTypeEnum;
 import generator.models.UrlDeclareTsModel;
 import generator.models.interfaces.AuthConfig;
 import generator.models.sub.Url;
 import generator.renders.abstracts.AbstractRender;
-import architect.urls.UrlNode;
-import architect.urls.UrlTypeEnum;
 import net.timxekhach.utility.XeFileUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static architect.urls.UrlArchitect.*;
+import static architect.urls.UrlArchitect.apiUrls;
+import static architect.urls.UrlArchitect.appUrls;
 
 
 public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
@@ -75,22 +75,18 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     }
 
     /**
-     * @return string like .auths([r.ROLE_ADMIN, a.USER_READ])
+     * @return string like .roles([r.ROLE_ADMIN, a.USER_READ])
      * must be consistent with the app config
      */
     static String buildAuthsRolesConfig(AuthConfig authConfig) {
-        List<String> auths = authConfig.getAuths().stream()
-                .map(a -> "a." + a.name())
-                .collect(Collectors.toList());
         List<String> roles = authConfig.getRoles().stream()
                 .map(r -> "r." + r.name())
                 .collect(Collectors.toList());
-        roles.addAll(auths);
-        String authsAndRoles = String.join(", ", roles);
-        if (!authsAndRoles.isEmpty()) {
-            authsAndRoles = ".auths([" + authsAndRoles + "])";
+        String rolesJoin = String.join(", ", roles);
+        if (!rolesJoin.isEmpty()) {
+            rolesJoin = ".roles([" + rolesJoin + "])";
         }
-        return authsAndRoles;
+        return rolesJoin;
     }
 
 

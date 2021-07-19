@@ -1,7 +1,7 @@
 package generator.builders;
 
-import com.sun.istack.internal.NotNull;
 import architect.urls.ApiMethod;
+import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;

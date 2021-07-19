@@ -2,13 +2,9 @@ package architect;
 
 import architect.urls.UrlArchitect;
 import net.timxekhach.operation.data.entity.User;
-import net.timxekhach.security.constant.RoleEnum;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Map;
 
-import static net.timxekhach.security.constant.AuthEnum.*;
-import static net.timxekhach.security.constant.RoleEnum.ROLE_BUSS_STAFF;
 import static net.timxekhach.security.constant.RoleEnum.ROLE_USER;
 
 public class UrlDeclaration {

@@ -27,13 +27,25 @@ public abstract class Trip_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussTypeId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long companyId;
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long tripId;
+        protected Long bussTypeId;
         protected Long bussId;
+        protected Long companyId;
     }
     protected Trip_MAPPED(){}
     protected Trip_MAPPED(Buss buss) {
@@ -41,6 +53,16 @@ public abstract class Trip_MAPPED extends XeEntity {
     }
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "bussId",
         referencedColumnName = "bussId",
@@ -51,6 +73,8 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     public void setBuss(Buss buss) {
         this.buss = buss;
+        this.companyId = buss.getCompanyId();
+        this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
 

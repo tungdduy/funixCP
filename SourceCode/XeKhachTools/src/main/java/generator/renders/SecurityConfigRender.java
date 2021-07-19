@@ -22,9 +22,9 @@ public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigMod
     @Override
     protected void handleModel(SecurityConfigModel model) {
         UrlNode urlNode = model.getUrlNode();
-        authorities.add(new Authority(urlNode.getBuilder().buildUrlChain(), urlNode.getRoles(), urlNode.getAuths()));
+        authorities.add(new Authority(urlNode.getBuilder().buildUrlChain(), urlNode.getRoles()));
         urlNode.getMethods().forEach(method -> {
-            authorities.add(new Authority(method.getBuilder().buildUrlChain(), method.getRoles(), method.getAuths()));
+            authorities.add(new Authority(method.getBuilder().buildUrlChain(), method.getRoles()));
         });
     }
 

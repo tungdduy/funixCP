@@ -4,7 +4,8 @@ import data.entities.abstracts.AbstractEntity;
 import data.models.Column;
 import data.models.MapColumn;
 
-import static data.entities.abstracts.DataType.*;
+import static data.entities.abstracts.DataType.DESCRIPTION;
+import static data.entities.abstracts.DataType.FALSE;
 
 @SuppressWarnings("all")
 public class Company extends AbstractEntity {

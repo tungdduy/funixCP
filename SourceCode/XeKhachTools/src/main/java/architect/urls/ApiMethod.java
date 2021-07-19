@@ -4,7 +4,6 @@ package architect.urls;
 import generator.builders.ApiMethodBuilder;
 import generator.models.interfaces.AuthConfig;
 import lombok.Getter;
-import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -18,7 +17,6 @@ public class ApiMethod implements AuthConfig {
     private final UrlNode caller;
     private final Map<String, Class<?>> pathVars = new HashMap<>();
     private final RequestMethod requestMethod = RequestMethod.POST;
-    private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();
     private Boolean isPublic;
 
@@ -54,11 +52,6 @@ public class ApiMethod implements AuthConfig {
             this.builder = new ApiMethodBuilder(this);
         }
         return this.builder;
-    }
-
-    public ApiMethod auths(AuthEnum... auths) {
-        this.auths = Arrays.asList(auths);
-        return this;
     }
 
     public ApiMethod roles(RoleEnum... roles) {

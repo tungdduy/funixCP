@@ -1,5 +1,4 @@
 import {environment} from "../../../environments/environment";
-import {Authority} from "../../business/constant/auth.enum";
 import {XeRole} from "../../business/constant/xe.role";
 import {UrlConfig} from "./url.config";
 
@@ -7,7 +6,6 @@ export const config = () => {
   return new UrlConfig();
 };
 const r = XeRole;
-const a = Authority;
 
 export const Url = {
   publicApi : [],
@@ -32,14 +30,14 @@ export const Url = {
     return Url.publicApi.includes(url);
   },
   DEFAULT_URL_AFTER_LOGIN: (): string => {
-    return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
+    return Url.app.ADMIN._self.noHost;
   },
 // ----------------------------------------------------------- //
 // ================= IMPORT TO END OF FILE =================== //
 // ----------------------------------------------------------- //
   api: {
     USER: {
-      _self: config().auths([r.ROLE_USER]),
+      _self: config(),
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
@@ -55,10 +53,11 @@ export const Url = {
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
+      LOGOUT: config()
     },
     ADMIN: {
-      _self: config(),
-      MY_ACCOUNT: config(),
+      _self: config().setRoles([r.ROLE_USER]),
+      MY_ACCOUNT: config().setRoles([r.ROLE_USER]),
       MY_TRIP: config(),
       COMPANY_MANAGER: config(),
       CALLER_EMPLOYEE: config(),

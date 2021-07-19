@@ -21,6 +21,21 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussTypeId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long companyId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long userId;
 
     @Id
@@ -38,6 +53,9 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long tripId;
+        protected Long bussTypeId;
+        protected Long bussId;
+        protected Long companyId;
         protected Long userId;
         protected Long seatTypeId;
         protected Long tripUserSeatId;
@@ -51,8 +69,23 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "tripId",
         referencedColumnName = "tripId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussId",
+        referencedColumnName = "bussId",
         insertable = false,
         updatable = false)
     })
@@ -60,7 +93,10 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
 
     public void setTrip(Trip trip) {
         this.trip = trip;
+        this.companyId = trip.getCompanyId();
+        this.bussTypeId = trip.getBussTypeId();
         this.tripId = trip.getTripId();
+        this.bussId = trip.getBussId();
     }
 
     @ManyToOne
@@ -81,6 +117,11 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "seatTypeId",
         referencedColumnName = "seatTypeId",
         insertable = false,
@@ -90,6 +131,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
 
     public void setSeatType(SeatType seatType) {
         this.seatType = seatType;
+        this.bussTypeId = seatType.getBussTypeId();
         this.seatTypeId = seatType.getSeatTypeId();
     }
 

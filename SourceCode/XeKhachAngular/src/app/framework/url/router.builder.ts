@@ -1,7 +1,7 @@
-import {Authority} from "../../business/constant/auth.enum";
-import {StorageUtil} from "../util/storage.util";
 import {UrlConfig} from "./url.config";
 import {UrlImport} from "./url.import";
+import {XeRole} from "../../business/constant/xe.role";
+import {AuthService} from "../auth/auth.service";
 
 export class RouterBuilder {
 
@@ -10,13 +10,13 @@ export class RouterBuilder {
       return;
     }
     const config = module['_self'];
-    const userAuthorities: Authority[] = StorageUtil.getAuthorities();
+    const roles: XeRole[] = AuthService.roles;
     const routes = {
       path: '', component: RouterBuilder.requireComponent(config)
     };
     const children = [];
     config.children.forEach(child => {
-      children.push(RouterBuilder.buildRoutes(child, userAuthorities));
+      children.push(RouterBuilder.buildRoutes(child, roles));
     });
 
     if (children.length > 0) {
@@ -35,14 +35,14 @@ export class RouterBuilder {
     return UrlImport[config.keyChane + "-module"]();
   }
 
-  private static buildRoutes(config: UrlConfig, userAuthorities: Authority[]) {
+  private static buildRoutes(config: UrlConfig, roles: XeRole[]) {
     const path = {path: config.short};
     if (config.isModule()) {
       path['loadChildren'] = RouterBuilder.importModule(config);
     } else {
       path['component'] = RouterBuilder.requireComponent(config);
 
-      if (config.authorities.length > 0) {
+      if (config.roles.length > 0) {
         path['canActivate'] = [config.keyChane];
       }
     }

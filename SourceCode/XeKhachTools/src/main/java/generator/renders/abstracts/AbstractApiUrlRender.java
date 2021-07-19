@@ -1,7 +1,7 @@
 package generator.renders.abstracts;
 
-import generator.models.abstracts.AbstractUrlModel;
 import architect.urls.UrlTypeEnum;
+import generator.models.abstracts.AbstractUrlModel;
 
 import java.util.Collections;
 import java.util.List;

@@ -7,16 +7,18 @@ import {ObjectUtil} from "../../framework/util/object.util";
   providedIn: 'root'
 })
 export class XeRouter {
+  private static router;
   constructor(private router: Router) {
+    XeRouter.router = router;
   }
 
-  public navigate(url: any): void {
+  public static navigate(url: any): void {
     if (typeof url === "string") {
       this.router.navigateByUrl(url).then(r => {});
     } else if (url.hasOwnProperty("_self")) {
-      this.router.navigateByUrl(url._self.full).then(r => {});
+      this.router.navigateByUrl(url._self.noHost).then(r => {});
     } else if (url.hasOwnProperty("_full")) {
-      this.router.navigateByUrl(url.full).then(r => {});
+      this.router.navigateByUrl(url.noHost).then(r => {});
     }
   }
 

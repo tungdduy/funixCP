@@ -27,14 +27,13 @@ export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
   public showLoading: boolean = false;
 
   constructor(private authService: AuthService,
-              private xeRouter: XeRouter,
               private notifier: XeNotifierService) {
     super();
   }
 
   ngOnInit(): void {
-    if (this.authService.isUserLoggedIn()) {
-      this.xeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
+    if (AuthService.isUserLoggedIn()) {
+      XeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
     }
   }
 
@@ -45,7 +44,7 @@ export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
         (response: User) => {
           this.showLoading = false;
           this.notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email));
-          this.xeRouter.navigate(Url.app.CHECK_IN.LOGIN);
+          XeRouter.navigate(Url.app.CHECK_IN.LOGIN);
         },
         (error: HttpErrorResponse) => {
           this.notifier.httpErrorResponse(error);

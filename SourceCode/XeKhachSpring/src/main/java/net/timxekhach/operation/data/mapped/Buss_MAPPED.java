@@ -6,7 +6,6 @@ import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.entity.SeatType;
 import net.timxekhach.operation.data.entity.BussType;
 
 
@@ -71,25 +70,6 @@ public abstract class Buss_MAPPED extends XeEntity {
         this.bussType = bussType;
         this.bussTypeId = bussType.getBussTypeId();
     }
-
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "seatsBussTypeId",
-        referencedColumnName = "bussTypeId",
-        insertable = false,
-        updatable = false)
-    })
-    protected SeatType seats;
-
-    public void setSeats(SeatType seats) {
-        this.seats = seats;
-        this.seatsBussTypeId = seats.getBussTypeId();
-    }
-
-    @Column
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long seatsBussTypeId;
 
     @Size(max = 255)
     @Column

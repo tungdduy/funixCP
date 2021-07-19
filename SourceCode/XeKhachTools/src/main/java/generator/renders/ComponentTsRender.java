@@ -1,8 +1,8 @@
 package generator.renders;
 
+import architect.urls.UrlNode;
 import generator.models.ComponentTsModel;
 import generator.renders.abstracts.AbstractAppUrlRender;
-import architect.urls.UrlNode;
 import util.AppUtil;
 
 public class ComponentTsRender extends AbstractAppUrlRender<ComponentTsModel> {

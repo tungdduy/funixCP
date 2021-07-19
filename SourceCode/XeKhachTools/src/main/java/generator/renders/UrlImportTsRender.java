@@ -1,9 +1,9 @@
 package generator.renders;
 
+import architect.urls.UrlNode;
 import generator.builders.UrlNodeBuilder;
 import generator.models.UrlImportTsModel;
 import generator.renders.abstracts.AbstractAppUrlRender;
-import architect.urls.UrlNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

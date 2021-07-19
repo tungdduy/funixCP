@@ -2,8 +2,6 @@ package data.entities.abstracts;
 
 import data.models.Column;
 import data.models.MapColumn;
-import generator.GeneratorCentral;
-import generator.GeneratorSetup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

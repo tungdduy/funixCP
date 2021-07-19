@@ -8,12 +8,12 @@ import generator.models.EntityMappedModel;
 import generator.models.sub.Join;
 import generator.models.sub.PkMap;
 import generator.renders.abstracts.AbstractEntityRender;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import util.ReflectionUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static util.StringUtil.toCamel;
@@ -84,7 +84,12 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             PkMap pkMap = new PkMap();
             pkMap.setFieldName(toCamel(pkSimpleClassName));
             pkMap.setSimpleClassName(pkSimpleClassName);
-            pkMap.getJoins().add(pkIdName);
+            fetchAllIds(pkEntity, namedId -> {
+                pkMap.getJoins().add(namedId);
+                PrimaryKey pk = new PrimaryKey();
+                pk.setFieldName(namedId);
+                model.getPrimaryKeys().add(pk);
+            });
             model.getPkMaps().add(pkMap);
 
             PrimaryKey pk = new PrimaryKey();
@@ -92,6 +97,11 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             model.getPrimaryKeys().add(pk);
 
         });
+    }
+
+    private void fetchAllIds(AbstractEntity pkEntity, Consumer<String> consumer) {
+        consumer.accept(toIdName(pkEntity));
+        pkEntity.getPrimaryKeyEntities().forEach(pk -> fetchAllIds(pk, consumer));
     }
 
     private void updateDeclaredColumns(EntityMappedModel model) {

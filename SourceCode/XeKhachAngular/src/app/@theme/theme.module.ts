@@ -32,6 +32,8 @@ import {XeInputComponent} from '../framework/components/xe-input/xe-input.compon
 import {XeBtnWithCheckboxComponent} from '../framework/components/xe-btn-with-checkbox/xe-btn-with-checkbox.component';
 import {XeCenterBtnComponent} from '../framework/components/xe-center-btn/xe-center-btn.component';
 import {FormsModule} from "@angular/forms";
+import {XeLinkComponent} from "../framework/components/xe-link/xe-link.component";
+import {RouterModule} from "@angular/router";
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -71,7 +73,8 @@ const PIPES = [
     ...NB_MODULES,
     NbInputModule,
     NbCheckboxModule,
-    FormsModule
+    FormsModule,
+    RouterModule
   ],
   exports: [
     CommonModule,
@@ -79,6 +82,7 @@ const PIPES = [
     ...PIPES,
     ...COMPONENTS,
     XeInputComponent,
+    XeLinkComponent,
     XeBtnWithCheckboxComponent,
     XeCenterBtnComponent,
   ],
@@ -86,6 +90,7 @@ const PIPES = [
     ...COMPONENTS,
     ...PIPES,
     XeInputComponent,
+    XeLinkComponent,
     XeBtnWithCheckboxComponent,
     XeCenterBtnComponent,
   ],

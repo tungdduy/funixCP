@@ -21,12 +21,30 @@ public abstract class TripPoint_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussTypeId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long companyId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripBussId;
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long tripPointId;
+        protected Long bussTypeId;
+        protected Long bussId;
+        protected Long companyId;
         protected Long tripBussId;
     }
     protected TripPoint_MAPPED(){}
@@ -36,8 +54,23 @@ public abstract class TripPoint_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "tripBussId",
         referencedColumnName = "tripBussId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussId",
+        referencedColumnName = "bussId",
         insertable = false,
         updatable = false)
     })
@@ -45,7 +78,10 @@ public abstract class TripPoint_MAPPED extends XeEntity {
 
     public void setTripBuss(TripBuss tripBuss) {
         this.tripBuss = tripBuss;
+        this.companyId = tripBuss.getCompanyId();
+        this.bussTypeId = tripBuss.getBussTypeId();
         this.tripBussId = tripBuss.getTripBussId();
+        this.bussId = tripBuss.getBussId();
     }
 
     @ManyToOne

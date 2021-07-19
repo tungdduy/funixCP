@@ -10,7 +10,7 @@ import {FormsModule as ngFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {NbCardModule, NbLayoutModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
-import {XeLinkComponent} from "../../../framework/components/xe-link/xe-link.component";
+import { LogoutComponent } from './logout/logout.component';
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
@@ -30,6 +30,7 @@ NbCardModule,
     LoginComponent,
     RegisterComponent,
     ForgotPasswordComponent,
+    LogoutComponent,
   ],
   exports: [
     CheckInComponent

@@ -1,6 +1,5 @@
 package generator.renders.abstracts;
 
-import architect.urls.UrlArchitect;
 import freemarker.template.Template;
 import generator.models.abstracts.AbstractModel;
 import lombok.Getter;

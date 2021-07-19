@@ -7,35 +7,17 @@ import {StorageUtil} from "../util/storage.util";
 import {AuthConfig} from "./auth.config";
 import {RegisterModel} from "../../business/model/register.model";
 import {StringUtil} from "../util/string.util";
-import {Role} from "../model/role.model";
-import {XeRole} from "../../business/constant/xe.role";
-import {Authority} from "../../business/constant/auth.enum";
 import {Url} from "../url/url.declare";
 import {configConstant} from "../config.constant";
+import {XeRole} from "../../business/constant/xe.role";
+import {XeRouter} from "../../business/service/xe-router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private static _jwtHelper = new JwtHelperService();
-  private static _token: string | null | undefined;
-  private static _authorities: Authority[];
-  private static _roles: Role[];
 
-  get authorities(): Authority[] {
-    return AuthService._authorities;
-  }
-
-  get roles(): Role[] {
-    return AuthService._roles;
-  }
-
-  static get auths() {
-    return AuthService._authorities;
-  }
-
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
   public login(user: User): Observable<HttpResponse<User>> | any {
     return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});
@@ -45,92 +27,101 @@ export class AuthService {
     return this.http.post<User>(Url.api.USER.REGISTER.full, user);
   }
 
-  isUserLoggedIn(): boolean {
-    const token = StorageUtil.getString(configConstant.TOKEN);
-    if (StringUtil.blankOrNotEqual(AuthService._token, token)) {
-      return this.decodeAndSaveToken(token);
-    }
-    return !this.isExpired();
+  static isUserLoggedIn(): boolean {
+    return !AuthService.instance().isExpired();
   }
 
-  private isExpired(): boolean {
+  static instance() {
+    const token = StorageUtil.getString(configConstant.TOKEN);
+    if (StringUtil.blankOrNotEqual(AuthService._token, token)) {
+      AuthService.decodeAndSaveToken(token);
+    }
+    return AuthService;
+  }
+
+  private static _jwtHelper = new JwtHelperService();
+  private static _token: string | null | undefined;
+  private static _roles: XeRole[] = [];
+  private static _user: User;
+
+  static get roles(): XeRole[] {
+    return AuthService._roles;
+  }
+
+  private static isExpired(): boolean {
     if (AuthService._jwtHelper.isTokenExpired(AuthService._token)) {
-      this.logOut();
+      AuthService.logout();
       return true;
     }
     return false;
   }
 
-  private decodeAndSaveToken(token: string): boolean {
+  private static decodeAndSaveToken(token: string) {
 
     if (StringUtil.isBlank(token)) return false;
 
     const tokenContent = AuthService._jwtHelper.decodeToken(token);
     if (StringUtil.isNotBlank(tokenContent?.sub)) {
       if (!AuthService._jwtHelper.isTokenExpired(token)) {
-        this.setRepoToken(token);
-        this.setRoles(this.convertRoleFromApiToApp(tokenContent.roles));
-        this.setAuthorities(this.convertAuthoritiesFromApiToApp(tokenContent.authorities));
-        return true;
+        AuthService.setRepoToken(token);
+        AuthService.setRoles(AuthService.convertToAppRoles(tokenContent.authorities));
+        return;
       }
     }
-    this.logOut();
-    return false;
+    AuthService.logout();
   }
 
-  private convertAuthoritiesFromApiToApp(apiAuthorities: string[]): Authority[] {
-    const appAuthorities: Authority[] = [];
+  private static convertToAppRoles(apiAuthorities: string[]): XeRole[] {
+    const roles: XeRole[] = [];
     apiAuthorities.forEach(authority => {
-      appAuthorities.push(Authority[authority]);
+      if (authority.startsWith("ROLE_")) {
+        roles.push(XeRole[authority]);
+      }
     });
-    return appAuthorities;
+    return roles;
   }
 
-  private convertRoleFromApiToApp(roles: string[]): Role[] {
-    return roles.map(r => XeRole[r]);
-  }
 
-  private setRoles = (xeRoles: Role[]) => {
+  private static setRoles = (xeRoles: XeRole[]) => {
     AuthService._roles = xeRoles;
   }
-  private setAuthorities = (authorities: Authority[]) => {
-    AuthService._authorities = authorities;
+
+  static get token(): string {
+    return AuthService.instance()._token;
   }
 
-  public logOut() {
-    this.setRepoUser(null);
-    this.setRepoToken(null);
-  }
-
-  get token(): string {
-    if (!AuthService._token) {
-      this.decodeAndSaveToken(this.repoToken);
-    }
-    return AuthService._token;
-  }
-
-  saveResponse(response: HttpResponse<User>) {
+  static saveResponse(response: HttpResponse<User>) {
     const token = response.headers.get(AuthConfig.tokenHeader);
-    this.decodeAndSaveToken(token);
-    this.setRepoUser(response.body);
+    AuthService.decodeAndSaveToken(token);
+    AuthService.setRepoUser(response.body);
   }
 
-  get repoUser() {
+  static get repoUser() {
     return StorageUtil.getString(configConstant.USER);
   }
 
-  setRepoUser(user: User) {
+  static setRepoUser(user: User) {
+    AuthService._user = user;
     StorageUtil.setItem(configConstant.USER, user);
   }
 
-  get repoToken() {
+  static get repoToken() {
     return StorageUtil.getString(configConstant.TOKEN);
   }
 
-  setRepoToken(token: any) {
+  private static setRepoToken(token: any) {
     AuthService._token = token;
     StorageUtil.setItem(configConstant.TOKEN, token);
   }
 
+  static isAllow(userRoles: XeRole[]): boolean {
+    return userRoles.every(r => AuthService.instance()._roles.includes(r));
+  }
 
+  static logout() {
+    AuthService._roles = [];
+    AuthService.setRepoToken(null);
+    AuthService.setRepoUser(null);
+    XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
+  }
 }

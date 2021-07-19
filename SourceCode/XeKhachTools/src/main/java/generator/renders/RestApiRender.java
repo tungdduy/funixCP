@@ -1,9 +1,9 @@
 package generator.renders;
 
-import generator.models.RestApiModel;
-import generator.renders.abstracts.AbstractRestRender;
 import architect.urls.ApiMethod;
 import architect.urls.UrlNode;
+import generator.models.RestApiModel;
+import generator.renders.abstracts.AbstractRestRender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 

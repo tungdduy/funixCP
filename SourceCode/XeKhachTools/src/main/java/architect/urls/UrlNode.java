@@ -3,7 +3,6 @@ package architect.urls;
 import generator.builders.UrlNodeBuilder;
 import generator.models.interfaces.AuthConfig;
 import lombok.Getter;
-import net.timxekhach.security.constant.AuthEnum;
 import net.timxekhach.security.constant.RoleEnum;
 
 import java.util.ArrayList;
@@ -13,7 +12,6 @@ import java.util.List;
 @Getter
 public class UrlNode implements AuthConfig {
     private final UrlTypeEnum urlType;
-    private List<AuthEnum> auths = new ArrayList<>();
     private List<RoleEnum> roles = new ArrayList<>();
     private Boolean isPublic;
     private final String url;
@@ -67,11 +65,6 @@ public class UrlNode implements AuthConfig {
 
     public UrlNode create(String url) {
         return UrlArchitect.start(url);
-    }
-
-    public UrlNode auths(AuthEnum... auths) {
-        this.auths = Arrays.asList(auths);
-        return this;
     }
 
     public UrlNode roles(RoleEnum... roles) {

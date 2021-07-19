@@ -1,7 +1,4 @@
-import {Authority} from "../../business/constant/auth.enum";
-import {ObjectUtil} from "../util/object.util";
-import {Role} from "../model/role.model";
-
+import {XeRole} from "../../business/constant/xe.role";
 
 export class UrlConfig {
   private _short: string;
@@ -9,12 +6,15 @@ export class UrlConfig {
   private _children: UrlConfig[] = [];
   private _full: string;
   private _noHost: string;
-  private _authorities: Authority[] = [];
   private _public: boolean;
   private _root: UrlConfig;
   private _key: string;
   private _keyChane: string;
   private _activateProviders: {}[] = [];
+  private _roles: XeRole[] = [];
+  public get roles(): XeRole[] {
+    return this._roles;
+  }
 
   get full() {
     if (!this._full) {
@@ -31,37 +31,19 @@ export class UrlConfig {
 
   get noHost(): string {
     if (!this._noHost) {
-      this._noHost = this.full.substring(this._root._short.length + 1);
+      this._noHost = '/' + this.full.substring(this._root._short.length + 1);
     }
     return this._noHost;
   }
 
-  public auths(authAndRoles: any[]) {
-    if (authAndRoles.length > 0) {
-      const auths: Set<Authority> = new Set<Authority>();
-      this.fetchAuths(auths, authAndRoles);
-      this._authorities = Array.from(auths);
-    }
+  public setRoles(roles: XeRole[]) {
+    this._roles = roles;
     return this;
   }
 
   isModule() {
       return this._children.length > 0;
   }
-
-  private fetchAuths(auths: Set<Authority>, authAndRoles: string[] | any[]): void {
-    authAndRoles.forEach(ar => {
-      if (ObjectUtil.isString(ar)) {
-        auths.add(ar as Authority);
-      } else if (ObjectUtil.isObject(ar)) {
-        const role = ar as unknown as Role;
-        role.authorities.forEach(auth => auths.add(auth));
-        this.fetchAuths(auths, role.roles);
-      }
-    });
-  }
-
-
 
   set parent(value: UrlConfig) {
     this._parent = value;
@@ -102,10 +84,6 @@ export class UrlConfig {
     return this._children;
   }
 
-  public get authorities() {
-    return this._authorities;
-  }
-
   public get activateProviders(): any[] {
     return this._activateProviders;
   }
@@ -118,7 +96,6 @@ export class UrlConfig {
   public isPublic() {
     return this._public;
   }
-
 
 }
 

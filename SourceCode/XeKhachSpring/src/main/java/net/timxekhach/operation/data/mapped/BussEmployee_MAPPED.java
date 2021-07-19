@@ -22,6 +22,11 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
+    protected Long bussTypeId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
     protected Long employeeId;
 
     @Id
@@ -29,12 +34,19 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long companyId;
+
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long bussEmployeeId;
+        protected Long bussTypeId;
         protected Long employeeId;
         protected Long bussId;
+        protected Long companyId;
     }
     protected BussEmployee_MAPPED(){}
     protected BussEmployee_MAPPED(Buss buss, Employee employee) {
@@ -43,6 +55,16 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
     }
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "bussId",
         referencedColumnName = "bussId",
@@ -53,11 +75,18 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
 
     public void setBuss(Buss buss) {
         this.buss = buss;
+        this.companyId = buss.getCompanyId();
+        this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
 
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "employeeId",
         referencedColumnName = "employeeId",
@@ -68,6 +97,7 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+        this.companyId = employee.getCompanyId();
         this.employeeId = employee.getEmployeeId();
     }
 

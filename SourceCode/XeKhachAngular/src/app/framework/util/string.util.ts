@@ -1,6 +1,6 @@
 export const StringUtil = {
   isBlank(value: string | null | undefined) {
-    return value === null || value === undefined || value.toString().trim().length === 0;
+    return value === null || value === undefined || value.toString().trim().length === 0 || value.toString().trim() === "null";
   },
 
   isNotBlank(value: string | null | undefined) {

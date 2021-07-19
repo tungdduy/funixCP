@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {UrlConfig} from "../../url/url.config";
+import {AuthService} from "../../auth/auth.service";
 
 @Component({
   selector: 'xe-link',
@@ -17,6 +18,7 @@ export class XeLinkComponent {
   @Input() xeUrl: UrlConfig;
 
   hideThis() {
+    return AuthService.isAllow(this.xeUrl.roles) ? "" : "d-none";
   }
 
 }

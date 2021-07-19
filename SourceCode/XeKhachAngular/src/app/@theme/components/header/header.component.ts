@@ -6,6 +6,7 @@ import {LayoutService} from '../../../@core/utils';
 import {map, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {RippleService} from '../../../@core/utils/ripple.service';
+import {Url} from "../../../framework/url/url.declare";
 
 @Component({
   selector: 'ngx-header',
@@ -30,7 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [ { title: 'Log out', url: Url.app.CHECK_IN.LOGOUT.full} ];
 
   public constructor(
     private sidebarService: NbSidebarService,
@@ -92,6 +93,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   navigateHome() {
     this.menuService.navigateHome();
-    return false;
+     return false;
   }
 }

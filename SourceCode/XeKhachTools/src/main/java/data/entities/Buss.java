@@ -1,10 +1,10 @@
 package data.entities;
 
 import data.entities.abstracts.AbstractEntity;
-import static data.entities.abstracts.DataType.*;
 import data.models.Column;
-import data.models.MapColumn;
 import lombok.Getter;
+
+import static data.entities.abstracts.DataType.DESCRIPTION;
 
 @Getter
 public class Buss extends AbstractEntity {
@@ -13,5 +13,4 @@ public class Buss extends AbstractEntity {
         pk(BussType.class);
     }
     Column bussDesc = of(DESCRIPTION);
-    MapColumn seats = map(SeatType.class);
 }
