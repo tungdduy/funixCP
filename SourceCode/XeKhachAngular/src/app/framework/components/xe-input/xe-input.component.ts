@@ -21,7 +21,7 @@ export class XeInputComponent {
   @Input() name?: string;
   @Input() disabled?: any;
 
-  value: string;
+  @Input() value: string;
 
   getId(): string {
     if (!this.id) {

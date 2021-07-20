@@ -3,7 +3,6 @@ import {XeForm} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
 import {Subscription} from "rxjs";
 import {XeLabel} from "../../../i18n";
-import {NbIconLibraries} from "@nebular/theme";
 
 @Component({
   selector: 'xe-my-account',

@@ -84,7 +84,7 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
                 .collect(Collectors.toList());
         String rolesJoin = String.join(", ", roles);
         if (!rolesJoin.isEmpty()) {
-            rolesJoin = ".roles([" + rolesJoin + "])";
+            rolesJoin = ".setRoles([" + rolesJoin + "])";
         }
         return rolesJoin;
     }

@@ -30,7 +30,7 @@ export const Url = {
     return Url.publicApi.includes(url);
   },
   DEFAULT_URL_AFTER_LOGIN: (): string => {
-    return Url.app.ADMIN._self.noHost;
+    return '/admin';
   },
 // ----------------------------------------------------------- //
 // ================= IMPORT TO END OF FILE =================== //
@@ -57,8 +57,8 @@ export const Url = {
     },
     ADMIN: {
       _self: config().setRoles([r.ROLE_USER]),
-      MY_ACCOUNT: config().setRoles([r.ROLE_USER]),
-      MY_TRIP: config(),
+      MY_ACCOUNT: config(),
+      MY_TRIP: config().setRoles([r.ROLE_ADMIN]),
       COMPANY_MANAGER: config(),
       CALLER_EMPLOYEE: config(),
       BUSS_TYPE: config(),

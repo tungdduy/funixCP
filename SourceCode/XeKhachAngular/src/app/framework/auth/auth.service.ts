@@ -17,7 +17,8 @@ import {XeRouter} from "../../business/service/xe-router";
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
     return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});
@@ -27,11 +28,7 @@ export class AuthService {
     return this.http.post<User>(Url.api.USER.REGISTER.full, user);
   }
 
-  static isUserLoggedIn(): boolean {
-    return !AuthService.instance().isExpired();
-  }
-
-  static instance() {
+  private static get instance() {
     const token = StorageUtil.getString(configConstant.TOKEN);
     if (StringUtil.blankOrNotEqual(AuthService._token, token)) {
       AuthService.decodeAndSaveToken(token);
@@ -43,10 +40,6 @@ export class AuthService {
   private static _token: string | null | undefined;
   private static _roles: XeRole[] = [];
   private static _user: User;
-
-  static get roles(): XeRole[] {
-    return AuthService._roles;
-  }
 
   private static isExpired(): boolean {
     if (AuthService._jwtHelper.isTokenExpired(AuthService._token)) {
@@ -86,8 +79,12 @@ export class AuthService {
     AuthService._roles = xeRoles;
   }
 
+  // ===========================================================
+  // ===========================================================
+  // ============ PUBLIC STATIC METHOD BELOW HERE
+
   static get token(): string {
-    return AuthService.instance()._token;
+    return AuthService.instance._token;
   }
 
   static saveResponse(response: HttpResponse<User>) {
@@ -96,17 +93,9 @@ export class AuthService {
     AuthService.setRepoUser(response.body);
   }
 
-  static get repoUser() {
-    return StorageUtil.getString(configConstant.USER);
-  }
-
-  static setRepoUser(user: User) {
+  private static setRepoUser(user: User) {
     AuthService._user = user;
     StorageUtil.setItem(configConstant.USER, user);
-  }
-
-  static get repoToken() {
-    return StorageUtil.getString(configConstant.TOKEN);
   }
 
   private static setRepoToken(token: any) {
@@ -115,7 +104,7 @@ export class AuthService {
   }
 
   static isAllow(userRoles: XeRole[]): boolean {
-    return userRoles.every(r => AuthService.instance()._roles.includes(r));
+    return userRoles.every(r => AuthService.instance._roles.includes(r));
   }
 
   static logout() {
@@ -123,5 +112,13 @@ export class AuthService {
     AuthService.setRepoToken(null);
     AuthService.setRepoUser(null);
     XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
+  }
+
+  static isUserLoggedIn(): boolean {
+    return !AuthService.instance.isExpired();
+  }
+
+  static get roles(): XeRole[] {
+    return AuthService.instance._roles;
   }
 }

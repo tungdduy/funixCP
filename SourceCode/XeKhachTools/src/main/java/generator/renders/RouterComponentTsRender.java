@@ -10,7 +10,7 @@ public class RouterComponentTsRender extends AbstractAppUrlRender<RouterComponen
 
     @Override
     protected boolean isOverrideExistingFile() {
-        return true;
+        return false;
     }
 
     @Override
