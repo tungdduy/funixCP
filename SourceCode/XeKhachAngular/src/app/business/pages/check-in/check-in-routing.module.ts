@@ -6,8 +6,6 @@ import {RegisterComponent} from "./register/register.component";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
 import {LogoutComponent} from "./logout/logout.component";
 import {CheckInComponent} from "./check-in.component";
-import {UrlBuilder} from "../../../framework/url/url.builder";
-import {RouterBuilder} from "../../../framework/url/router.builder";
 
 const routes = [{
   path: '', component: CheckInComponent,
@@ -16,10 +14,10 @@ const routes = [{
     { path: 'register', component: RegisterComponent },
     { path: 'forgot-password', component: ForgotPasswordComponent },
     { path: 'logout', component: LogoutComponent },
-    { path: '', redirectTo: 'login', pathMatch: 'full' }
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
   ],
 }];
-// RouterBuilder.build(Url.app.CHECK_IN)
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],

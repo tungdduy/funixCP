@@ -64,13 +64,9 @@ public class ApiMethodBuilder {
 
     private String buildArguments() {
         List<String> paramNames = new ArrayList<>();
-        this.apiMethod.getParameters().forEach((name, type) -> {
-            paramNames.add(toCamel(name));
-        });
+        this.apiMethod.getParameters().forEach((name, type) -> paramNames.add(toCamel(name)));
 
-        this.apiMethod.getPathVars().forEach((name, type) -> {
-            paramNames.add(toCamel(name));
-        });
+        this.apiMethod.getPathVars().forEach((name, type) -> paramNames.add(toCamel(name)));
 
         return join(", ", paramNames);
     }
@@ -80,12 +76,8 @@ public class ApiMethodBuilder {
 
     public List<String> allControllerImportClasses() {
         Set<String> result = new HashSet<>(apiMethodAnnotationBuilder.allImportClasses());
-        apiMethod.getParameters().forEach((name, param) -> {
-            result.add(param.getName());
-        });
-        apiMethod.getPathVars().forEach((name, type) -> {
-            result.add(type.getName());
-        });
+        apiMethod.getParameters().forEach((name, param) -> result.add(param.getName()));
+        apiMethod.getPathVars().forEach((name, type) -> result.add(type.getName()));
         return new ArrayList<>(result);
     }
 
@@ -194,12 +186,8 @@ public class ApiMethodBuilder {
 
     public List<String> allServiceImportClasses() {
         Set<String> result = new HashSet<>();
-        apiMethod.getParameters().forEach((name, param) -> {
-            result.add(param.getName());
-        });
-        apiMethod.getPathVars().forEach((name, type) -> {
-            result.add(type.getName());
-        });
+        apiMethod.getParameters().forEach((name, param) -> result.add(param.getName()));
+        apiMethod.getPathVars().forEach((name, type) -> result.add(type.getName()));
         return new ArrayList<>(result);
     }
 

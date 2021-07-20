@@ -34,11 +34,7 @@ export class AuthService {
   private static _user: User;
 
   private static isExpired(): boolean {
-    if (AuthService._jwtHelper.isTokenExpired(AuthService._token)) {
-      AuthService.logout();
-      return true;
-    }
-    return false;
+      return AuthService._jwtHelper.isTokenExpired(AuthService._token);
   }
 
   private static decodeAndSaveToken(token: string) {

@@ -1,10 +1,11 @@
-<div class="form-group">
-  <span *ngIf="isShowLabel()" class="text-info">{{label}}</span>
+<div class="form-group row">
+  <span class="text-info {{isGrid ? 'col-sm-3 col-form-label' : ''}} {{labelHiddenClass()}}">{{label}}</span>
   <input
+    class="{{isGrid ? 'col-sm-9' : ''}}"
     [(ngModel)]="value"
     [disabled]="disabled"
     [type]="type"
-    (change)="validate()"
+    (change)="isValidateSuccess()"
     [id]="getId()"
     nbInput fullWidth
     [name]="getName()"

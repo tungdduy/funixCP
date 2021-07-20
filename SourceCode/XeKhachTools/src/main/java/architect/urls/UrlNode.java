@@ -1,7 +1,7 @@
 package architect.urls;
 
 import generator.builders.UrlNodeBuilder;
-import generator.models.interfaces.AuthConfig;
+import generator.abstracts.interfaces.AuthConfig;
 import lombok.Getter;
 import net.timxekhach.security.constant.RoleEnum;
 

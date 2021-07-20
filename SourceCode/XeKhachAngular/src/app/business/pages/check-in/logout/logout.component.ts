@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import {XeRouter} from "../../../service/xe-router";
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
 
 @Component({

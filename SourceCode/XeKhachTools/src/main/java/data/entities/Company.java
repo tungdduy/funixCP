@@ -13,6 +13,5 @@ public class Company extends AbstractEntity {
     Column companyName = of(DESCRIPTION);
     Column isLock = of(FALSE);
 
-
     MapColumn employees = map(Employee.class);
 }

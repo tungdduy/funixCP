@@ -99,7 +99,7 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 * In GitHub, send a pull request to `ngx-admin:master`.
 * If we suggest changes then:
   * Make the required updates.
-  * Re-run `npm run release:validate` to ensure tests are still passing, linter & build has no errors.
+  * Re-run `npm run release:isValidateSuccess` to ensure tests are still passing, linter & build has no errors.
   * Rebase your branch and force push to your GitHub repository (this will update your Pull
     Request):
 

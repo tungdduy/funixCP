@@ -1,7 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
-import {AppMessages} from "../../../business/i18n";
+import {AppMessages, XeLabel} from "../../../business/i18n";
+import {StringUtil} from "../../util/string.util";
 
 @Component({
   selector: 'xe-input',
@@ -11,7 +12,7 @@ import {AppMessages} from "../../../business/i18n";
 export class XeInputComponent {
 
   @Input() type: string = "text";
-  @Input() label: string = "";
+  @Input() lblKey: string;
   @Input() id: string;
   @Input() required: boolean = true;
   @Input() validatorMsg?: string;
@@ -20,8 +21,23 @@ export class XeInputComponent {
   @Input() matching?: any;
   @Input() name?: string;
   @Input() disabled?: any;
-
+  @Input() isGrid?: any;
   @Input() value: string;
+
+  private _label: string;
+  public get label() {
+    if (!this._label) {
+      if (!this.lblKey) {
+        this.lblKey = StringUtil.toUPPER_UNDERLINE(this.getName());
+      }
+      if (XeLabel[this.lblKey]) {
+        this._label = XeLabel[this.lblKey];
+      } else {
+        this._label = this.lblKey;
+      }
+    }
+    return this._label;
+  }
 
   getId(): string {
     if (!this.id) {
@@ -39,12 +55,13 @@ export class XeInputComponent {
 
   public errorMessage?: string;
 
-  isShowLabel() {
+  labelHiddenClass() {
     return this.value
-      && this.value.length > 0;
+      && this.value.length > 0
+      || this.isGrid ? '' : 'd-none';
   }
 
-  validate(): boolean {
+  isValidateSuccess(): boolean {
     if (this.required &&
             (!this.value || this.value.trim().length === 0)) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);

@@ -3,7 +3,7 @@ package generator;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import generator.models.abstracts.AbstractModel;
+import generator.abstracts.models.AbstractModel;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,8 +21,7 @@ public class GeneratorSetup {
             API_OPERATION_REST_ROOT = API_OPERATION_ROOT + "rest/",
             API_OPERATION_REST_API_ROOT = API_OPERATION_REST_ROOT + "api/",
             API_OPERATION_REST_SERVICE_ROOT = API_OPERATION_REST_ROOT + "service/",
-            GENERATOR_ROOT = "SourceCode/XeKhachTools/src/main/java/generator/",
-            GENERATOR_TEMPLATE_ROOT = GENERATOR_ROOT + "templates/";
+            TOOLS_ROOT = "SourceCode/XeKhachTools/src/main/java/";
 
     private static Configuration config;
 

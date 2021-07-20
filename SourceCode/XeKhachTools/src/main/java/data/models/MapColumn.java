@@ -1,7 +1,7 @@
 package data.models;
 
 import data.entities.abstracts.AbstractEntity;
-import generator.models.sub.Join;
+import generator.java.data.mapped.Join;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

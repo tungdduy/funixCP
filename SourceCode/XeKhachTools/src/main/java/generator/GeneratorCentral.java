@@ -1,7 +1,7 @@
 package generator;
 
-import generator.renders.abstracts.AbstractRender;
-import generator.renders.abstracts.RenderGroup;
+import generator.abstracts.render.AbstractRender;
+import generator.abstracts.interfaces.RenderGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

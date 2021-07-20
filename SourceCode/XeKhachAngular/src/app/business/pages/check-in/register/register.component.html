@@ -1,11 +1,10 @@
 
-
 <form (submit)="onSubmit()">
-  <xe-input [label]="label.FULL_NAME" name="fullName" minLength="3" maxLength="30" ></xe-input>
-  <xe-input [label]="label.EMAIL" type="email"></xe-input>
-  <xe-input [label]="label.PASSWORD" type="password" #password></xe-input>
-  <xe-input [label]="label.RE_PASSWORD" type="password" [matching]="password"></xe-input>
-  <xe-center-btn [btnText]="label.REGISTER" [disabled]="showLoading"></xe-center-btn>
+  <xe-input name="fullName" minLength="3" maxLength="30"></xe-input>
+  <xe-input type="email"></xe-input>
+  <xe-input type="password" #password></xe-input>
+  <xe-input lblKey="RE_PASSWORD" type="password" [matching]="password"></xe-input>
+  <xe-center-btn lblKey="REGISTER" [disabled]="isLoading"></xe-center-btn>
 </form>
 
 

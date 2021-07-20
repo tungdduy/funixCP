@@ -1,14 +1,10 @@
-import {Component, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {XeNotifierService} from "../../../../framework/notify/xe.notifier.service";
-import {RegisterModel} from "../../../model/register.model";
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Notifier} from "../../../../framework/notify/notify.service";
 import {XeForm} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
 import {XeRouter} from "../../../service/xe-router";
 import {AuthService} from "../../../../framework/auth/auth.service";
-import {Subscription} from "rxjs";
-import {User} from "../../../model/user";
-import {AppMessages, XeLabel} from "../../../i18n";
-import {HttpErrorResponse} from "@angular/common/http";
+import {AppMessages} from "../../../i18n";
 import {Url} from "../../../../framework/url/url.declare";
 
 
@@ -17,17 +13,12 @@ import {Url} from "../../../../framework/url/url.declare";
   styles: [],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
+export class RegisterComponent extends XeForm implements OnInit {
 
   @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
   getFormControls = () => this.formControls;
-  label = XeLabel;
 
-  private subscriptions: Subscription[] = [];
-  public showLoading: boolean = false;
-
-  constructor(private authService: AuthService,
-              private notifier: XeNotifierService) {
+  constructor(private authService: AuthService) {
     super();
   }
 
@@ -37,25 +28,13 @@ export class RegisterComponent extends XeForm implements OnInit, OnDestroy {
     }
   }
 
-  doSubmitAfterBasicValidate(user: RegisterModel): void {
-    this.showLoading = true;
-    this.subscriptions.push(
-      this.authService.register(user).subscribe(
-        (response: User) => {
-          this.showLoading = false;
-          this.notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email));
-          XeRouter.navigate(Url.app.CHECK_IN.LOGIN);
-        },
-        (error: HttpErrorResponse) => {
-          this.notifier.httpErrorResponse(error);
-          this.showLoading = false;
-        }
-      )
-    );
+  getObservable(model: any) {
+    return this.authService.register(model);
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+  onSubmitSuccess(response: any) {
+    Notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email));
+    XeRouter.navigate(Url.app.CHECK_IN.LOGIN);
   }
 
 }

@@ -34,9 +34,9 @@ public class UrlNodeBuilder {
         return buildPackagePath("api");
     }
 
-    public String buildControllerFilePath() {
-        return buildControllerPackagePath().replaceAll("\\.", "/").concat(".java");
-    }
+//    public String buildControllerFilePath() {
+//        return buildControllerPackagePath().replaceAll("\\.", "/").concat(".java");
+//    }
 
     public String buildFullControllerClassName() {
         return StringUtil.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName() + "Api");
@@ -52,9 +52,7 @@ public class UrlNodeBuilder {
 
     private String buildPackagePath(String prefix) {
         List<String> ancestorChain = new ArrayList<>();
-        this.urlNode.getAncestors().forEach(ancestor -> {
-            ancestorChain.add(ancestor.getBuilder().buildLowercaseCharsOnly());
-        });
+        this.urlNode.getAncestors().forEach(ancestor -> ancestorChain.add(ancestor.getBuilder().buildLowercaseCharsOnly()));
         String packagePath = "net.timxekhach.operation.rest." + prefix;
         if(!ancestorChain.isEmpty()) {
             packagePath += "." + StringUtil.joinByDot(ancestorChain);

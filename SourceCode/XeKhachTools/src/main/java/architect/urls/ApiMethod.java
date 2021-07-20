@@ -2,7 +2,7 @@ package architect.urls;
 
 
 import generator.builders.ApiMethodBuilder;
-import generator.models.interfaces.AuthConfig;
+import generator.abstracts.interfaces.AuthConfig;
 import lombok.Getter;
 import net.timxekhach.security.constant.RoleEnum;
 import org.springframework.web.bind.annotation.RequestMethod;

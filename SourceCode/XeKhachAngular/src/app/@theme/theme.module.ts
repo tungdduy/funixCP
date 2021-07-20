@@ -29,7 +29,6 @@ import {DARK_THEME} from './styles/theme.dark';
 import {MATERIAL_LIGHT_THEME} from './styles/material/theme.material-light';
 import {MATERIAL_DARK_THEME} from './styles/material/theme.material-dark';
 import {XeInputComponent} from '../framework/components/xe-input/xe-input.component';
-import {XeBtnWithCheckboxComponent} from '../framework/components/xe-btn-with-checkbox/xe-btn-with-checkbox.component';
 import {XeCenterBtnComponent} from '../framework/components/xe-center-btn/xe-center-btn.component';
 import {FormsModule} from "@angular/forms";
 import {XeLinkComponent} from "../framework/components/xe-link/xe-link.component";
@@ -83,7 +82,6 @@ const PIPES = [
     ...COMPONENTS,
     XeInputComponent,
     XeLinkComponent,
-    XeBtnWithCheckboxComponent,
     XeCenterBtnComponent,
   ],
   declarations: [
@@ -91,7 +89,6 @@ const PIPES = [
     ...PIPES,
     XeInputComponent,
     XeLinkComponent,
-    XeBtnWithCheckboxComponent,
     XeCenterBtnComponent,
   ],
 })
