@@ -1,6 +1,6 @@
 export const StringUtil = {
   isBlank(value: string | null | undefined) {
-    return value === null || value === undefined || value.toString().trim().length === 0;
+    return value === null || value === undefined || value.toString().trim().length === 0 || value.toString().trim() === "null";
   },
 
   isNotBlank(value: string | null | undefined) {
@@ -17,7 +17,7 @@ export const StringUtil = {
   capitalizeEachWord(strings: string[]) {
     strings.map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`).join("");
   },
-  urlToCapitalLizeEachWord(str: string) {
+  urlToCapitalizeEachWord(str: string) {
     return str.split("-")
       .map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`)
       .join("");

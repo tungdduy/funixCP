@@ -1,4 +1,4 @@
-import {Authority} from "../../business/constant/auth.enum";
+import {XeRole} from "../../business/constant/xe.role";
 
 export class StorageUtil {
 
@@ -30,11 +30,4 @@ export class StorageUtil {
     return Object(value) !== value;
   }
 
-  static getAuthorities(): Authority[] {
-    const authString = localStorage.getItem('authorities');
-    if (authString !== null) {
-      return JSON.parse(authString);
-    }
-    return [];
-  }
 }

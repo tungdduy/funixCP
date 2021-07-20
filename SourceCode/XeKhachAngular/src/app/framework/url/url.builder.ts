@@ -1,35 +1,42 @@
 import {UrlConfig} from "./url.config";
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
-import {StorageUtil} from "../util/storage.util";
 import {Url} from "./url.declare";
+import {AuthService} from "../auth/auth.service";
+import {XeRouter} from "../../business/service/xe-router";
 
 export class UrlBuilder {
   static buildUrlConfig = (parent: UrlConfig, urls: {}) => {
     Object.entries(urls).forEach(([key, value]) => {
-      if (key === '__self') return;
+      if (key === '_self') return;
 
       if (value instanceof UrlConfig) {
         UrlBuilder.updateConfig(value, parent, key);
       } else {
-        UrlBuilder.updateConfig(value['__self'], parent, key);
-        UrlBuilder.buildUrlConfig(value['__self'], value as UrlConfig);
+        UrlBuilder.updateConfig(value['_self'], parent, key);
+        UrlBuilder.buildUrlConfig(value['_self'], value as UrlConfig);
       }
     });
   }
 
   private static updateConfig(config: UrlConfig, parent: UrlConfig, key: string) {
-    config.__parent = parent;
-    parent.__children.push(config);
-    config.__key = key;
-    config.__keyChane = !!parent.__keyChane ? parent.__keyChane + "." + key : key;
-    config.__short = key.replace(/_/g, "-").toLowerCase();
-    if (config.__authorities.length > 0) {
+    config.parent = parent;
+    parent.children.push(config);
+    config.key = key;
+    config.keyChane = !!parent.keyChane ? parent.keyChane + "." + key : key;
+    config.short = key.replace(/_/g, "-").toLowerCase();
+    if (config.roles.length > 0) {
       const activateProvider = {
-        provide: config.__keyChane,
-        useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) =>
-          config.__authorities.every(auth => StorageUtil.getAuthorities().includes(auth))
+        provide: config.keyChane,
+        useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+           if (!AuthService.isAllow(config.roles)) {
+             XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
+             return false;
+           }
+           return true;
+        }
+
       };
-      config.__parent.activateProviders.push(activateProvider);
+      config.parent.activateProviders.push(activateProvider);
     }
   }
 
@@ -40,7 +47,7 @@ export class UrlBuilder {
 
   static root(url: string) {
     const config = new UrlConfig();
-    config.__short = url;
+    config.short = url;
     return config;
   }
 }

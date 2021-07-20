@@ -1,5 +1,4 @@
 import {environment} from "../../../environments/environment";
-import {Authority} from "../../business/constant/auth.enum";
 import {XeRole} from "../../business/constant/xe.role";
 import {UrlConfig} from "./url.config";
 
@@ -7,7 +6,6 @@ export const config = () => {
   return new UrlConfig();
 };
 const r = XeRole;
-const a = Authority;
 
 export const Url = {
   publicApi : [],
@@ -32,35 +30,42 @@ export const Url = {
     return Url.publicApi.includes(url);
   },
   DEFAULT_URL_AFTER_LOGIN: (): string => {
-    return Url.app.CHECK_IN.FORGOT_PASSWORD.full;
+    return '/admin';
   },
 // ----------------------------------------------------------- //
 // ================= IMPORT TO END OF FILE =================== //
 // ----------------------------------------------------------- //
   api: {
     USER: {
-      __self: config().auths([r.ROLE_USER]),
-      LOGIN: config().auths([r.ROLE_BUSS_STAFF, a.ADMIN_READ, a.USER_READ]),
+      _self: config(),
+      LOGIN: config(),
       REGISTER: config(),
-      FORGOT_PASSWORD: config().auths([a.ADMIN_WRITE]),
+      FORGOT_PASSWORD: config(),
+      FORGOT_PASSWORD_SECRET_KEY: config(),
     },
-    ADMIN: {
-      __self: config(),
-      LIST: config(),
-    },
+    ADMIN: config(),
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
   },
   app: {
     CHECK_IN: {
-      __self: config(),
+      _self: config(),
       LOGIN: config(),
       REGISTER: config(),
-      FORGOT_PASSWORD: config().auths([r.ROLE_BUSS_ADMIN, a.ADMIN_READ]),
+      FORGOT_PASSWORD: config(),
+      LOGOUT: config()
     },
     ADMIN: {
-      __self: config(),
-      BUSS_STAFF: config(),
+      _self: config().setRoles([r.ROLE_USER]),
+      MY_ACCOUNT: config(),
+      MY_TRIP: config().setRoles([r.ROLE_ADMIN]),
+      COMPANY_MANAGER: config(),
+      CALLER_EMPLOYEE: config(),
+      BUSS_TYPE: config(),
+      BUSS: config(),
+      BUSS_EMPLOYEE: config(),
+      BUSS_STOP: config(),
+      TICKET: config(),
     },
   }
 };
