@@ -16,13 +16,11 @@ import {FormsModule as ngFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {NbCardModule, NbIconModule, NbLayoutModule, NbMenuModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
-import {DashboardModule} from "../demo-pages/dashboard/dashboard.module";
-import {ECommerceModule} from "../demo-pages/e-commerce/e-commerce.module";
-import {MiscellaneousModule} from "../demo-pages/miscellaneous/miscellaneous.module";
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 @NgModule({
+// ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   imports: [
     AdminRoutingModule,
     ngFormsModule,
@@ -31,7 +29,7 @@ import {MiscellaneousModule} from "../demo-pages/miscellaneous/miscellaneous.mod
     ThemeModule,
     NbCardModule,
     NbLayoutModule,
-// ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
+
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   ],
   declarations: [

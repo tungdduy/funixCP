@@ -12,7 +12,7 @@ import static util.AppUtil.PAGES_DIR;
 @Setter
 public class RoutingModuleTsModel extends AbstractUrlModel {
 
-    private String pathToFramework, urlKeyChain, capitalizeName;
+    private String url, pathToFramework, urlKeyChain, capitalizeName;
     private List<Component> components;
     private List<Module> modules;
 
