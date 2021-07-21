@@ -6,19 +6,23 @@ import {CheckInComponent} from './check-in.component';
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 import {NgModule} from '@angular/core';
-import {FormsModule as ngFormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
 import {NbCardModule, NbLayoutModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
-import { LogoutComponent } from './logout/logout.component';
+import {RouterModule} from "@angular/router";
+import {MyTripComponent} from "./my-trip/my-trip.component";
+import {CheckInRoutingModule} from "./check-in-routing.module";
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 @NgModule({
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
-NbCardModule,
+  imports: [
+    CheckInRoutingModule,
+    NbCardModule,
     NbLayoutModule,
     ThemeModule,
+    RouterModule,
+  ],
 
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   declarations: [
@@ -27,6 +31,7 @@ NbCardModule,
     RegisterComponent,
     ForgotPasswordComponent,
     LogoutComponent,
+    MyTripComponent
   ],
   exports: [
     CheckInComponent

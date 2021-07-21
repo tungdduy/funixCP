@@ -12,4 +12,9 @@ public class ComponentScssRender extends AbstractAppUrlRender<ComponentScssModel
     protected boolean isOverrideExistingFile() {
         return false;
     }
+
+    @Override
+    public void runBeforeRender() {
+        this.getModelFiles().clear();
+    }
 }

@@ -1,7 +1,6 @@
 import {Component, OnInit, ViewChildren} from '@angular/core';
-import {XeForm} from "../../../abstract/xe-form.abstract";
+import {XeFormComponent} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
-import {HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from "../../../../framework/auth/auth.service";
 
 @Component({
@@ -9,7 +8,7 @@ import {AuthService} from "../../../../framework/auth/auth.service";
   styles: [],
   templateUrl: 'forgot-password.component.html',
 })
-export class ForgotPasswordComponent extends XeForm {
+export class ForgotPasswordComponent extends XeFormComponent {
   getObservable(model: any) {
       throw new Error('Method not implemented.');
   }

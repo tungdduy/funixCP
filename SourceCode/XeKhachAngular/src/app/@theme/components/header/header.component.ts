@@ -7,6 +7,7 @@ import {map, takeUntil} from 'rxjs/operators';
 import {Observable, Subject} from 'rxjs';
 import {RippleService} from '../../../@core/utils/ripple.service';
 import {Url} from "../../../framework/url/url.declare";
+import {AuthUtil} from "../../../framework/auth/auth.util";
 
 @Component({
   selector: 'ngx-header',
@@ -31,7 +32,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Log out', url: Url.app.CHECK_IN.LOGOUT.full} ];
+  userMenu = [ { title: 'Log out', data: () => AuthUtil.logout()}];
 
   public constructor(
     private sidebarService: NbSidebarService,
@@ -42,6 +43,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private breakpointService: NbMediaBreakpointsService,
     private rippleService: RippleService,
   ) {
+    menuService.onItemClick().subscribe((menu) => {
+      if (!!menu.item.data) {
+        menu.item.data();
+      }
+    });
     this.materialTheme$ = this.themeService.onThemeChange()
       .pipe(map(theme => {
         const themeName: string = theme?.name || '';

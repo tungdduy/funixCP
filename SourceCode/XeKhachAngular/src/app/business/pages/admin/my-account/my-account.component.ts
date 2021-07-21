@@ -1,5 +1,5 @@
 import {Component, QueryList, ViewChildren} from '@angular/core';
-import {XeForm} from "../../../abstract/xe-form.abstract";
+import {XeFormComponent} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
 
 @Component({
@@ -7,15 +7,15 @@ import {XeInputComponent} from "../../../../framework/components/xe-input/xe-inp
   styles: [],
   templateUrl: 'my-account.component.html',
 })
-export class MyAccountComponent extends XeForm {
-
+export class MyAccountComponent extends XeFormComponent {
   @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
   getFormControls = () => this.formControls;
 
   getObservable(model: any) {
+
   }
 
   onSubmitSuccess(response: any) {
-  }
 
+  }
 }

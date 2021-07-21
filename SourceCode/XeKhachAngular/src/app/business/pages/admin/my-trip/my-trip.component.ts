@@ -1,31 +1,21 @@
-import {Component, OnDestroy, OnInit, ViewChildren} from '@angular/core';
-import {XeForm} from "../../../abstract/xe-form.abstract";
+import {Component, QueryList, ViewChildren} from '@angular/core';
+import {XeFormComponent} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
-import {Subscription} from "rxjs";
-import {XeLabel} from "../../../i18n";
 
 @Component({
   selector: 'xe-my-trip',
   styles: [],
   templateUrl: 'my-trip.component.html',
 })
-export class MyTripComponent extends XeForm implements OnInit, OnDestroy {
-  public showLoading: boolean;
-  private subscriptions: Subscription[] = [];
-  label = XeLabel;
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-  @ViewChildren(XeInputComponent) formControls;
+export class MyTripComponent extends XeFormComponent {
+  @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
   getFormControls = () => this.formControls;
 
-  doSubmitAfterBasicValidate(model: any): void {
+  getObservable(model: any) {
+
   }
 
-  ngOnInit(): void {
-  }
+  onSubmitSuccess(response: any) {
 
-  constructor() {
-    super();
   }
 }

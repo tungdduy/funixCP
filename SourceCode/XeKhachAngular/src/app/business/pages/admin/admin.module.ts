@@ -13,16 +13,9 @@ import {AdminComponent} from './admin.component';
 import {NgModule} from '@angular/core';
 import {FormsModule as ngFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
-import {
-  NbButtonModule,
-  NbCardModule,
-  NbIconModule,
-  NbInputModule,
-  NbLayoutModule,
-  NbMenuModule,
-  NbRadioModule
-} from "@nebular/theme";
+import {NbButtonModule, NbCardModule, NbInputModule, NbLayoutModule, NbMenuModule, NbRadioModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
+import {AdminRoutingModule} from "./admin-routing.module";
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
@@ -39,6 +32,7 @@ imports: [
     NbRadioModule,
     NbButtonModule,
     NbInputModule,
+],
 
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   declarations: [
