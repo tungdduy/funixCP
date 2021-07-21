@@ -29,9 +29,8 @@ export const Url = {
     }
     return Url.publicApi.includes(url);
   },
-  DEFAULT_URL_AFTER_LOGIN: (): string => {
-    return '/admin';
-  },
+  DEFAULT_URL_AFTER_LOGIN: () => Url.app.ADMIN._self
+  ,
 // ----------------------------------------------------------- //
 // ================= IMPORT TO END OF FILE =================== //
 // ----------------------------------------------------------- //
@@ -51,6 +50,7 @@ export const Url = {
     CHECK_IN: {
       _self: config(),
       LOGIN: config(),
+      MY_TRIP: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
       LOGOUT: config(),

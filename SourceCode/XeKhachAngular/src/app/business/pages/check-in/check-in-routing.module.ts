@@ -6,6 +6,7 @@ import {RegisterComponent} from "./register/register.component";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
 import {LogoutComponent} from "./logout/logout.component";
 import {CheckInComponent} from "./check-in.component";
+import {MyTripComponent} from "./my-trip/my-trip.component";
 
 const routes = [{
   path: '', component: CheckInComponent,
@@ -14,6 +15,7 @@ const routes = [{
     { path: 'register', component: RegisterComponent },
     { path: 'forgot-password', component: ForgotPasswordComponent },
     { path: 'logout', component: LogoutComponent },
+    { path: 'my-trip', component: MyTripComponent },
     { path: '', redirectTo: 'login', pathMatch: 'full' }
   ],
 }];

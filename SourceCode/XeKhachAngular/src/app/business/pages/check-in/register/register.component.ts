@@ -1,11 +1,12 @@
 import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Notifier} from "../../../../framework/notify/notify.service";
-import {XeForm} from "../../../abstract/xe-form.abstract";
+import {XeFormComponent} from "../../../abstract/xe-form.abstract";
 import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
 import {XeRouter} from "../../../service/xe-router";
 import {AuthService} from "../../../../framework/auth/auth.service";
 import {AppMessages} from "../../../i18n";
 import {Url} from "../../../../framework/url/url.declare";
+import {AuthUtil} from "../../../../framework/auth/auth.util";
 
 
 @Component({
@@ -13,7 +14,7 @@ import {Url} from "../../../../framework/url/url.declare";
   styles: [],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent extends XeForm implements OnInit {
+export class RegisterComponent extends XeFormComponent implements OnInit {
 
   @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
   getFormControls = () => this.formControls;
@@ -23,7 +24,7 @@ export class RegisterComponent extends XeForm implements OnInit {
   }
 
   ngOnInit(): void {
-    if (AuthService.isUserLoggedIn()) {
+    if (AuthUtil.isUserLoggedIn()) {
       XeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
     }
   }

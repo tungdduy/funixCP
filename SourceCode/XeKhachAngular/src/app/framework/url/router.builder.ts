@@ -1,7 +1,7 @@
 import {UrlConfig} from "./url.config";
 import {UrlImport} from "./url.import";
 import {XeRole} from "../../business/constant/xe.role";
-import {AuthService} from "../auth/auth.service";
+import {AuthUtil} from "../auth/auth.util";
 
 export class RouterBuilder {
 
@@ -10,7 +10,7 @@ export class RouterBuilder {
       return;
     }
     const config = module['_self'];
-    const roles: XeRole[] = AuthService.roles;
+    const roles: XeRole[] = AuthUtil.roles;
     const routes = {
       path: '', component: RouterBuilder.requireComponent(config)
     };

@@ -12,13 +12,19 @@ export class XeRouter {
     XeRouter.router = router;
   }
 
+  private static go(url: string): void {
+    XeRouter.router.navigateByUrl(url).then(r => {
+
+    });
+  }
+
   public static navigate(url: any): void {
     if (typeof url === "string") {
-      this.router.navigateByUrl(url).then(r => {});
+      XeRouter.go(url);
     } else if (url.hasOwnProperty("_self")) {
-      this.router.navigateByUrl(url._self.noHost).then(r => {});
+      XeRouter.go(url._self.noHost);
     } else if (url.hasOwnProperty("_full")) {
-      this.router.navigateByUrl(url.noHost).then(r => {});
+      XeRouter.go(url.noHost);
     }
   }
 

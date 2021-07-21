@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from "../../../../framework/auth/auth.service";
+import {AuthUtil} from "../../../../framework/auth/auth.util";
+import {Url} from "../../../../framework/url/url.declare";
 
 @Component({
   selector: 'xe-logout',
@@ -11,7 +12,7 @@ export class LogoutComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    AuthService.logout();
+    AuthUtil.logout(Url.app.CHECK_IN.LOGIN);
   }
 
 }

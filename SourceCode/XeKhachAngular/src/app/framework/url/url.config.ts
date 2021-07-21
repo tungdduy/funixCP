@@ -1,4 +1,6 @@
 import {XeRole} from "../../business/constant/xe.role";
+import {AuthUtil} from "../auth/auth.util";
+import {XeRouter} from "../../business/service/xe-router";
 
 export class UrlConfig {
   private _short: string;
@@ -39,6 +41,13 @@ export class UrlConfig {
   public setRoles(roles: XeRole[]) {
     this._roles = roles;
     return this;
+  }
+
+  public hasPermission() {
+    return AuthUtil.isAllow(this._roles);
+  }
+  public forbidden() {
+    return !this.hasPermission();
   }
 
   isModule() {
@@ -96,6 +105,11 @@ export class UrlConfig {
   public isPublic() {
     return this._public;
   }
+
+  public go() {
+    XeRouter.navigate(this.noHost);
+  }
+
 
 }
 

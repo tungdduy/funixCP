@@ -1,8 +1,8 @@
 import {UrlConfig} from "./url.config";
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {Url} from "./url.declare";
-import {AuthService} from "../auth/auth.service";
 import {XeRouter} from "../../business/service/xe-router";
+import {AuthUtil} from "../auth/auth.util";
 
 export class UrlBuilder {
   static buildUrlConfig = (parent: UrlConfig, urls: {}) => {
@@ -28,7 +28,7 @@ export class UrlBuilder {
       const activateProvider = {
         provide: config.keyChane,
         useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-           if (!AuthService.isAllow(config.roles)) {
+           if (!AuthUtil.isAllow(config.roles)) {
              XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
              return false;
            }

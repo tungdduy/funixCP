@@ -1,15 +1,14 @@
 import {User} from "../model/user";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
-import {OnDestroy, QueryList} from "@angular/core";
+import {Component, OnDestroy, QueryList} from "@angular/core";
 import {Notifier} from "../../framework/notify/notify.service";
 import {XeInputComponent} from "../../framework/components/xe-input/xe-input.component";
 
-export abstract class XeForm implements OnDestroy {
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
+@Component({
+  template: '',
+})
+export abstract class XeFormComponent implements OnDestroy {
 
   public onSubmit() {
     const m = {};
@@ -20,10 +19,11 @@ export abstract class XeForm implements OnDestroy {
     if (invalidNumber === 0) {
       this.doSubmit(m);
     }
+    return false;
   }
   public isLoading: boolean = false;
 
-  private subscriptions: Subscription[] = [];
+  protected subscriptions: Subscription[] = [];
 
   doSubmit(model: any): void {
     this.isLoading = true;
@@ -43,5 +43,9 @@ export abstract class XeForm implements OnDestroy {
   abstract getObservable(model: any);
   abstract onSubmitSuccess(response: any);
   abstract getFormControls(): QueryList<XeInputComponent>;
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
 
 }

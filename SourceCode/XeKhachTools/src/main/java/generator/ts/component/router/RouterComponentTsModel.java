@@ -13,8 +13,7 @@ import static util.AppUtil.PAGES_DIR;
 @Setter
 public class RouterComponentTsModel extends AbstractUrlModel {
 
-    private String pathToFramework, pathToI18n, url, capitalizeName;
-    private List<RouterChildren> children = new ArrayList<>();
+    private String url, capitalizeName;
 
     @Override
     public String buildRenderFilePath() {
