@@ -4,24 +4,23 @@ import freemarker.template.Template;
 import generator.abstracts.interfaces.RenderGroup;
 import generator.abstracts.models.AbstractModel;
 import lombok.Getter;
+import net.timxekhach.utility.XeFileUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
-import util.ReflectionUtil;
 import util.StringUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 import static generator.GeneratorSetup.*;
+import static util.ObjectUtil.newInstanceFromClass;
 
 public abstract class AbstractRender<E extends AbstractModel> {
 
     protected abstract boolean isOverrideExistingFile();
 
     protected String getTemplatePath() {
-        return TOOLS_ROOT + this.getClass().getPackage().getName().replace(".", "/") + getTemplateName();
+        return TOOLS_ROOT + this.getClass().getPackage().getName().replace(".", "/") + "/" + getTemplateName();
     }
 
     protected String getTemplateName() {
@@ -120,8 +119,30 @@ public abstract class AbstractRender<E extends AbstractModel> {
     }
 
     @SuppressWarnings("rawtypes")
-    protected static List<? extends AbstractRender> batchNewAllChildrenRenders(Class<? extends AbstractRender> clazz) {
-        String packageName = StringUtil.removeLastChar(clazz.getPackage().getName(), ".abstract".length());
-        return ReflectionUtil.newInstancesOfAllChildren(clazz, packageName);
+    protected static List<? extends AbstractRender> batchNewAllChildrenRenders(Class<? extends AbstractRender> parentClass) {
+        return XeFileUtils.fetchAllPossibleFiles(TOOL_GENERATOR_ROOT,
+                getChildrenRender(parentClass),
+                newInstanceFromClass());
     }
+
+    @SuppressWarnings("rawtypes")
+    public static Function getChildrenRender(Class<? extends AbstractRender> parentClass) {
+        return object -> {
+            File file = (File) object;
+            String className = file.getPath().substring(TOOLS_ROOT.length(), file.getPath().length() - ".java".length()).replace("\\", ".");
+            if (!className.startsWith("generator.builder")
+                    && !className.startsWith("generator.abstract")
+                    && className.endsWith("Render")) {
+                try {
+                    Class<?> clazz = Class.forName(className);
+                    if (parentClass.isAssignableFrom(clazz))
+                        return clazz;
+                } catch (ClassNotFoundException e) {
+                    System.out.println("cannot make class for " + className);
+                }
+            }
+            return null;
+        };
+    }
+
 }

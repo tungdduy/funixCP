@@ -4,13 +4,13 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Company;
 import net.timxekhach.operation.data.entity.User;
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Employee_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class Employee_MAPPED extends XeEntity {
 
     @Id
@@ -49,9 +49,26 @@ public abstract class Employee_MAPPED extends XeEntity {
         this.companyId = company.getCompanyId();
     }
 
+    @OneToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "userUserId",
+        referencedColumnName = "userId",
+        insertable = false,
+        updatable = false)
+    })
+    protected User user;
+
+    public void setUser(User user) {
+        this.user = user;
+        this.userUserId = user.getUserId();
+    }
+
+    @Column(unique = true)
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long userUserId;
 
 
-    @Column
     protected Boolean isLock = false;
 
 }

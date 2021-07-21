@@ -16,7 +16,8 @@ public class Column {
         Boolean isEmail = false,
                 isPhone = false,
                 isNotNull = false,
-                isUnique = false;
+                isUnique = false,
+                isEnumerated = false;
         String regex, simpleClassName, fieldName, initialString;
 
         public String getSimpleClassName(){
@@ -32,6 +33,9 @@ public class Column {
 
     public Column(Class<?> dataType) {
         core.setDataType(dataType);
+        if (Enum.class.isAssignableFrom(dataType)){
+            core.isEnumerated = true;
+        }
     }
 
     public Column defaultValue(Object value) {

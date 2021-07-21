@@ -9,6 +9,7 @@ import javax.validation.constraints.*;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussType_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class BussType_MAPPED extends XeEntity {
 
     @Id
@@ -23,11 +24,9 @@ public abstract class BussType_MAPPED extends XeEntity {
         protected Long bussTypeId;
     }
     @Size(max = 255)
-    @Column
     protected String bussTypeName;
 
     @Size(max = 255)
-    @Column
     protected String bussTypeDesc;
 
 }

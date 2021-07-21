@@ -10,6 +10,7 @@ import net.timxekhach.operation.data.entity.BussPoint;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripPoint_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class TripPoint_MAPPED extends XeEntity {
 
     @Id
@@ -90,6 +91,11 @@ public abstract class TripPoint_MAPPED extends XeEntity {
         name = "stopPointLocationId",
         referencedColumnName = "locationId",
         insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "stopPointBussPointId",
+        referencedColumnName = "bussPointId",
+        insertable = false,
         updatable = false)
     })
     protected BussPoint stopPoint;
@@ -97,10 +103,13 @@ public abstract class TripPoint_MAPPED extends XeEntity {
     public void setStopPoint(BussPoint stopPoint) {
         this.stopPoint = stopPoint;
         this.stopPointLocationId = stopPoint.getLocationId();
+        this.stopPointBussPointId = stopPoint.getBussPointId();
     }
 
-    @Column
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long stopPointLocationId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long stopPointBussPointId;
 
 }

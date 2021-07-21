@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static util.ReflectionUtil.newInstance;
 
@@ -18,7 +20,7 @@ public class MapColumn {
     public static class Core {
         String fieldName, mappedBy;
         Boolean isUnique = false;
-        List<Join> joins = new ArrayList<>();
+        Set<Join> joins = new HashSet<>();
         MapTo mapTo;
         PrimaryKey primaryKey;
     }

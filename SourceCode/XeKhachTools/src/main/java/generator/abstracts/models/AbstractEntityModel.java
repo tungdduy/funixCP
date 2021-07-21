@@ -23,7 +23,6 @@ public abstract class AbstractEntityModel<E extends AbstractEntity> extends Abst
     protected void init() {
         this.entity = (E) entityHolder.value;
         this.entityClassName = this.entity.getClass().getSimpleName();
-        logger.info("fetch and set Separator Content for " + this.getClass().getSimpleName() + entity.getClass().getSimpleName());
         super.init();
     }
 

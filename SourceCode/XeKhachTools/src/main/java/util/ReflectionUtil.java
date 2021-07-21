@@ -25,6 +25,7 @@ public class ReflectionUtil extends ReflectionUtils {
     static Logger logger = LoggerFactory.getLogger(ReflectionUtil.class);
 
     public static <E, T extends E> Set<Class<? extends E>> findExtendsClassesInPackage(Class<E> clazz, String packageName) {
+
         List<ClassLoader> classLoadersList = new LinkedList<ClassLoader>();
         classLoadersList.add(ClasspathHelper.contextClassLoader());
         classLoadersList.add(ClasspathHelper.staticClassLoader());
@@ -83,7 +84,7 @@ public class ReflectionUtil extends ReflectionUtils {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            logger.error("cannot create instance for " + clazz.getName());
+//            logger.error("cannot create instance for " + clazz.getName());
         }
         return null;
     }
@@ -96,7 +97,7 @@ public class ReflectionUtil extends ReflectionUtils {
             Class<?> fieldType = setMethod.getParameters()[0].getType();
             if (fieldType.isAssignableFrom(value.getClass()) && value.getClass().isAssignableFrom(fieldType)) {
                 setMethod.invoke(obj, value.getClass().cast(value));
-                logger.info(String.format("%s updated %s: %s", obj.getClass().getSimpleName(), fieldName, getMethod.invoke(obj)));
+//                logger.info(String.format("%s updated %s: %s", obj.getClass().getSimpleName(), fieldName, getMethod.invoke(obj)));
             }
         } catch (Exception e) {
             e.printStackTrace();

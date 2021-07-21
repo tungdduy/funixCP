@@ -4,18 +4,16 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import javax.validation.constraints.*;
-import java.util.List;
 import net.timxekhach.operation.data.entity.TripUser;
 import java.util.Date;
 import net.timxekhach.operation.data.entity.BussPoint;
 import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.enumeration.TripStatus;
-import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Trip_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class Trip_MAPPED extends XeEntity {
 
     @Id
@@ -84,6 +82,11 @@ public abstract class Trip_MAPPED extends XeEntity {
         name = "startPointLocationId",
         referencedColumnName = "locationId",
         insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "startPointBussPointId",
+        referencedColumnName = "bussPointId",
+        insertable = false,
         updatable = false)
     })
     protected BussPoint startPoint;
@@ -91,10 +94,16 @@ public abstract class Trip_MAPPED extends XeEntity {
     public void setStartPoint(BussPoint startPoint) {
         this.startPoint = startPoint;
         this.startPointLocationId = startPoint.getLocationId();
+        this.startPointBussPointId = startPoint.getBussPointId();
     }
 
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "endPointBussPointId",
+        referencedColumnName = "bussPointId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "endPointLocationId",
         referencedColumnName = "locationId",
@@ -105,35 +114,93 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     public void setEndPoint(BussPoint endPoint) {
         this.endPoint = endPoint;
+        this.endPointBussPointId = endPoint.getBussPointId();
         this.endPointLocationId = endPoint.getLocationId();
     }
 
-    @OneToMany(
-        mappedBy = "trip",
-        cascade = {CascadeType.ALL},
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<TripUser> tripUsers = new ArrayList<>();
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "tripUsersTripUserId",
+        referencedColumnName = "tripUserId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripUsersBussId",
+        referencedColumnName = "bussId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripUsersCompanyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripUsersBussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripUsersUserId",
+        referencedColumnName = "userId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripUsersTripId",
+        referencedColumnName = "tripId",
+        insertable = false,
+        updatable = false)
+    })
+    protected TripUser tripUsers;
 
-    @Column
+    public void setTripUsers(TripUser tripUsers) {
+        this.tripUsers = tripUsers;
+        this.tripUsersTripUserId = tripUsers.getTripUserId();
+        this.tripUsersBussId = tripUsers.getBussId();
+        this.tripUsersCompanyId = tripUsers.getCompanyId();
+        this.tripUsersBussTypeId = tripUsers.getBussTypeId();
+        this.tripUsersUserId = tripUsers.getUserId();
+        this.tripUsersTripId = tripUsers.getTripId();
+    }
+
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long startPointLocationId;
 
-    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long startPointBussPointId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long endPointBussPointId;
+
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long endPointLocationId;
 
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersTripUserId;
 
-    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersBussId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersCompanyId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersBussTypeId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersUserId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripUsersTripId;
+
+
     protected Long price;
 
 
-    @Column
+    @Enumerated(EnumType.STRING)
     protected TripStatus status;
 
 
-    @Column
     protected Date startTime;
 
 }

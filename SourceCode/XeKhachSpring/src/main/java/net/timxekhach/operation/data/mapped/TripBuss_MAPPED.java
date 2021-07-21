@@ -4,17 +4,15 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import javax.validation.constraints.*;
-import java.util.List;
 import java.util.Date;
 import net.timxekhach.operation.data.entity.BussPoint;
 import net.timxekhach.operation.data.entity.TripPoint;
 import net.timxekhach.operation.data.entity.Buss;
-import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripBuss_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class TripBuss_MAPPED extends XeEntity {
 
     @Id
@@ -77,19 +75,55 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         this.bussId = buss.getBussId();
     }
 
-    @OneToMany(
-        mappedBy = "tripBuss",
-        cascade = {CascadeType.ALL},
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<TripPoint> tripPoints = new ArrayList<>();
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "tripPointsBussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripPointsCompanyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripPointsTripPointId",
+        referencedColumnName = "tripPointId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripPointsTripBussId",
+        referencedColumnName = "tripBussId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "tripPointsBussId",
+        referencedColumnName = "bussId",
+        insertable = false,
+        updatable = false)
+    })
+    protected TripPoint tripPoints;
+
+    public void setTripPoints(TripPoint tripPoints) {
+        this.tripPoints = tripPoints;
+        this.tripPointsBussTypeId = tripPoints.getBussTypeId();
+        this.tripPointsCompanyId = tripPoints.getCompanyId();
+        this.tripPointsTripPointId = tripPoints.getTripPointId();
+        this.tripPointsTripBussId = tripPoints.getTripBussId();
+        this.tripPointsBussId = tripPoints.getBussId();
+    }
 
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
         name = "startPointLocationId",
         referencedColumnName = "locationId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "startPointBussPointId",
+        referencedColumnName = "bussPointId",
         insertable = false,
         updatable = false)
     })
@@ -98,10 +132,16 @@ public abstract class TripBuss_MAPPED extends XeEntity {
     public void setStartPoint(BussPoint startPoint) {
         this.startPoint = startPoint;
         this.startPointLocationId = startPoint.getLocationId();
+        this.startPointBussPointId = startPoint.getBussPointId();
     }
 
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "endPointBussPointId",
+        referencedColumnName = "bussPointId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "endPointLocationId",
         referencedColumnName = "locationId",
@@ -112,55 +152,65 @@ public abstract class TripBuss_MAPPED extends XeEntity {
 
     public void setEndPoint(BussPoint endPoint) {
         this.endPoint = endPoint;
+        this.endPointBussPointId = endPoint.getBussPointId();
         this.endPointLocationId = endPoint.getLocationId();
     }
 
-    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripPointsBussTypeId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripPointsCompanyId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripPointsTripPointId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripPointsTripBussId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long tripPointsBussId;
+
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long startPointLocationId;
 
-    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long startPointBussPointId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long endPointBussPointId;
+
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long endPointLocationId;
 
 
-    @Column
     protected Date launchTime;
 
 
-    @Column
     protected Date effectiveDateFrom;
 
 
-    @Column
     protected Long price;
 
 
-    @Column
     protected Boolean sunday = false;
 
 
-    @Column
     protected Boolean monday = false;
 
 
-    @Column
     protected Boolean tuesday = false;
 
 
-    @Column
     protected Boolean wednesday = false;
 
 
-    @Column
     protected Boolean thursday = false;
 
 
-    @Column
     protected Boolean friday = false;
 
 
-    @Column
     protected Boolean saturday = false;
 
 }

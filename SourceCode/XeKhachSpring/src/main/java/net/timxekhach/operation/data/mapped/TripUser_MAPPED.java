@@ -4,7 +4,6 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
@@ -13,6 +12,7 @@ import net.timxekhach.operation.data.entity.User;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUser_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class TripUser_MAPPED extends XeEntity {
 
     @Id
@@ -112,6 +112,11 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "confirmedByEmployeeId",
+        referencedColumnName = "employeeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "confirmedByCompanyId",
         referencedColumnName = "companyId",
         insertable = false,
@@ -121,19 +126,21 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public void setConfirmedBy(Employee confirmedBy) {
         this.confirmedBy = confirmedBy;
+        this.confirmedByEmployeeId = confirmedBy.getEmployeeId();
         this.confirmedByCompanyId = confirmedBy.getCompanyId();
     }
 
-    @Column
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long confirmedByEmployeeId;
+
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long confirmedByCompanyId;
 
 
-    @Column
     protected Long totalPrice;
 
 
-    @Column
+    @Enumerated(EnumType.STRING)
     protected TripUserStatus status = net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
 
 }

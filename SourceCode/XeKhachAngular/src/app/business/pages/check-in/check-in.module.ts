@@ -1,8 +1,8 @@
 import {LoginComponent} from "./login/login.component";
 import {RegisterComponent} from "./register/register.component";
 import {ForgotPasswordComponent} from "./forgot-password/forgot-password.component";
+import {LogoutComponent} from "./logout/logout.component";
 import {CheckInComponent} from './check-in.component';
-import {CheckInRoutingModule} from "./check-in-routing.module";
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 import {NgModule} from '@angular/core';
@@ -15,16 +15,12 @@ import { LogoutComponent } from './logout/logout.component';
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 @NgModule({
-  imports: [
-    CheckInRoutingModule,
-    ngFormsModule,
-    RouterModule,
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
 NbCardModule,
     NbLayoutModule,
     ThemeModule,
+
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
-  ],
   declarations: [
     CheckInComponent,
     LoginComponent,

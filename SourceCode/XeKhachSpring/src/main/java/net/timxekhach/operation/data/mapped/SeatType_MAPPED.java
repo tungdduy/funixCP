@@ -10,6 +10,7 @@ import net.timxekhach.operation.data.entity.BussType;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(SeatType_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class SeatType_MAPPED extends XeEntity {
 
     @Id
@@ -49,7 +50,6 @@ public abstract class SeatType_MAPPED extends XeEntity {
     }
 
     @Size(max = 255)
-    @Column
     protected String name;
 
 }

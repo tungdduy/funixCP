@@ -24,13 +24,13 @@ export const UrlImport = {
     // @ts-ignore
     "CHECK_IN.LOGIN-component": () => require('app/business/pages/check-in/login/login.component').LoginComponent,
     // @ts-ignore
-    "CHECK_IN.LOGOUT-component": () => require('app/business/pages/check-in/logout/logout.component').LogoutComponent,
-    // @ts-ignore
     "CHECK_IN-module": () => import('app/business/pages/check-in/check-in.module').then(m => m.CheckInModule),
     // @ts-ignore
     "ADMIN-module": () => import('app/business/pages/admin/admin.module').then(m => m.AdminModule),
     // @ts-ignore
     "ADMIN.MY_ACCOUNT-component": () => require('app/business/pages/admin/my-account/my-account.component').MyAccountComponent,
+    // @ts-ignore
+    "CHECK_IN.LOGOUT-component": () => require('app/business/pages/check-in/logout/logout.component').LogoutComponent,
     // @ts-ignore
     "ADMIN.MY_TRIP-component": () => require('app/business/pages/admin/my-trip/my-trip.component').MyTripComponent,
 };

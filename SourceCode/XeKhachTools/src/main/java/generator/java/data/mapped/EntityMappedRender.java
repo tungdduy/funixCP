@@ -7,6 +7,7 @@ import data.models.PrimaryKey;
 import generator.abstracts.render.AbstractEntityRender;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import util.ObjectUtil;
 import util.ReflectionUtil;
 
 import java.util.ArrayList;
@@ -43,15 +44,18 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             if (columnCore.getDefaultValue() instanceof Enum<?>) {
                 model.getImports().add(columnCore.getDefaultValue().getClass().getName());
             }
-            Object testNull = ObjectUtils.firstNonNull(columnCore.getMax(),
+            Object testNull = ObjectUtils.firstNonNull(
+                    columnCore.getMax(),
                     columnCore.getMaxSize(),
                     columnCore.getMinSize(),
-                    columnCore.getRegex(),
-                    columnCore.getIsEmail(),
-                    columnCore.getIsPhone(),
-                    columnCore.getIsNotNull()
+                    columnCore.getRegex()
                     );
-            if (testNull != null) {
+            boolean testBoolean = ObjectUtil.anyTrue(
+                    columnCore.getIsEmail(),
+                    columnCore.getIsNotNull(),
+                    columnCore.getIsPhone()
+            );
+            if (testNull != null || testBoolean) {
                 model.getImports().add("javax.validation.constraints.*");
             }
             model.filterThenAddImport(columnCore.getDataType().getName());
@@ -130,17 +134,11 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         AbstractEntity entityMapTo = mapCore.getMapTo().getEntity();
         AbstractEntity thisEntity = model.getEntity();
         MutableBoolean entityMapToHasPkToThis = new MutableBoolean(false);
-        String thisEntityIdName = toIdName(thisEntity);
-        entityMapTo.getPrimaryKeyEntities().forEach(pkEntity -> {
-            String referenceIdName = toIdName(pkEntity);
-            if (referenceIdName.equals(thisEntityIdName)) {
-                entityMapToHasPkToThis.setValue(true);
-            } else {
-                String thisName = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
-                Join join = new Join(thisName, referenceIdName);
-                mapCore.getJoins().add(join);
-            }
 
+        fetchAllIds(entityMapTo, referenceIdName -> {
+            String thisName = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
+            Join join = new Join(thisName, referenceIdName);
+            mapCore.getJoins().add(join);
         });
 
         if (entityMapToHasPkToThis.isTrue()) {
@@ -152,7 +150,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
                 Column.Core core = new Column.Core();
                 core.setDataType(Long.class);
                 core.setFieldName(join.getThisName());
-
+                core.setIsUnique(mapCore.getIsUnique());
                 model.getJoinIdColumns().add(core);
             });
 

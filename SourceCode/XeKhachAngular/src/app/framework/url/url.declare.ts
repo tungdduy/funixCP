@@ -37,7 +37,7 @@ export const Url = {
 // ----------------------------------------------------------- //
   api: {
     USER: {
-      _self: config(),
+      _self: config().setRoles([r.ROLE_USER]),
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
@@ -53,12 +53,12 @@ export const Url = {
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
-      LOGOUT: config()
+      LOGOUT: config(),
     },
     ADMIN: {
-      _self: config().setRoles([r.ROLE_USER]),
+      _self: config(),
       MY_ACCOUNT: config(),
-      MY_TRIP: config().setRoles([r.ROLE_ADMIN]),
+      MY_TRIP: config().setRoles([r.ROLE_USER]),
       COMPANY_MANAGER: config(),
       CALLER_EMPLOYEE: config(),
       BUSS_TYPE: config(),

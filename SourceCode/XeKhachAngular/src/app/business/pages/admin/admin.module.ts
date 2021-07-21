@@ -8,7 +8,6 @@ import {BussEmployeeComponent} from "./buss-employee/buss-employee.component";
 import {BussStopComponent} from "./buss-stop/buss-stop.component";
 import {TicketComponent} from "./ticket/ticket.component";
 import {AdminComponent} from './admin.component';
-import {AdminRoutingModule} from "./admin-routing.module";
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 import {NgModule} from '@angular/core';
@@ -29,7 +28,7 @@ import {ThemeModule} from "../../../@theme/theme.module";
 
 @NgModule({
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
-  imports: [
+imports: [
     AdminRoutingModule,
     ngFormsModule,
     RouterModule,
@@ -42,7 +41,6 @@ import {ThemeModule} from "../../../@theme/theme.module";
     NbInputModule,
 
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
-  ],
   declarations: [
     AdminComponent,
     MyAccountComponent,

@@ -28,7 +28,7 @@ public class StringUtil extends StringUtils {
         try {
             return content.split(separator)[1].trim();
         } catch (Exception ignored) {
-            logger.error("content is null or has no separator!");
+//            logger.error("content is null or has no separator!");
         }
         return "";
     }

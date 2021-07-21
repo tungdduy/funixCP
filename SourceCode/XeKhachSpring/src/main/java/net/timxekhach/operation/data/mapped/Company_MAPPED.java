@@ -5,13 +5,12 @@ import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import javax.validation.constraints.*;
-import java.util.List;
 import net.timxekhach.operation.data.entity.Employee;
-import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Company_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class Company_MAPPED extends XeEntity {
 
     @Id
@@ -25,24 +24,40 @@ public abstract class Company_MAPPED extends XeEntity {
     public static class Pk extends XePk {
         protected Long companyId;
     }
-    @OneToMany(
-        mappedBy = "company",
-        cascade = {CascadeType.ALL},
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<Employee> employees = new ArrayList<>();
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "employeesEmployeeId",
+        referencedColumnName = "employeeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "employeesCompanyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false)
+    })
+    protected Employee employees;
+
+    public void setEmployees(Employee employees) {
+        this.employees = employees;
+        this.employeesEmployeeId = employees.getEmployeeId();
+        this.employeesCompanyId = employees.getCompanyId();
+    }
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long employeesEmployeeId;
+
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long employeesCompanyId;
 
     @Size(max = 255)
-    @Column
     protected String companyDesc;
 
     @Size(max = 255)
-    @Column
     protected String companyName;
 
 
-    @Column
     protected Boolean isLock = false;
 
 }

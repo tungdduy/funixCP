@@ -11,6 +11,7 @@ import net.timxekhach.operation.data.entity.User;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUserSeat_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class TripUserSeat_MAPPED extends XeEntity {
 
     @Id

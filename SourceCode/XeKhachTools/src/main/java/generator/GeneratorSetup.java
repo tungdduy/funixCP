@@ -21,7 +21,9 @@ public class GeneratorSetup {
             API_OPERATION_REST_ROOT = API_OPERATION_ROOT + "rest/",
             API_OPERATION_REST_API_ROOT = API_OPERATION_REST_ROOT + "api/",
             API_OPERATION_REST_SERVICE_ROOT = API_OPERATION_REST_ROOT + "service/",
-            TOOLS_ROOT = "SourceCode/XeKhachTools/src/main/java/";
+            TOOLS_ROOT = "SourceCode/XeKhachTools/src/main/java/",
+            TOOL_GENERATOR_ROOT = TOOLS_ROOT + "generator/";
+
 
     private static Configuration config;
 

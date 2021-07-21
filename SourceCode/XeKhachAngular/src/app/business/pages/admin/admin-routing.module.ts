@@ -24,7 +24,7 @@ const routes = [{
     { path: 'buss-employee', component: BussEmployeeComponent },
     { path: 'buss-stop', component: BussStopComponent },
     { path: 'ticket', component: TicketComponent },
-    { path: '', redirectTo: 'my-account', pathMatch: 'full' },
+    { path: '', redirectTo: 'my-account', pathMatch: 'full' }
   ],
 }];
 

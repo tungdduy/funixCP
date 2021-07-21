@@ -4,13 +4,13 @@ import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.entity.Buss;
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussEmployee_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class BussEmployee_MAPPED extends XeEntity {
 
     @Id
@@ -102,7 +102,6 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
     }
 
 
-    @Column
     protected Boolean isLock = false;
 
 }

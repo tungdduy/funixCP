@@ -19,6 +19,7 @@ import static ${import};
 
 @MappedSuperclass @Getter @Setter
 @IdClass(${root.entityClassName}_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
 
 <#list root.primaryKeys as primaryKey>
@@ -103,7 +104,9 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
 
 </#list>
 <#list root.joinIdColumns as idColumn>
-    @Column
+    <#if idColumn.isUnique>
+    @Column(unique = true)
+    </#if>
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long ${idColumn.fieldName};
 
@@ -129,7 +132,12 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     <#if column.regex?has_content>
     @Pattern(regexp = "${column.regex}")
     </#if>
-    @Column
+    <#if column.isEnumerated>
+    @Enumerated(EnumType.STRING)
+    </#if>
+    <#if column.isUnique>
+    @Column(unique = true)
+    </#if>
     protected ${column.simpleClassName} ${column.fieldName}${column.initialString};
 
 </#list>

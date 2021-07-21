@@ -11,6 +11,7 @@ import net.timxekhach.operation.data.entity.BussType;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Buss_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class Buss_MAPPED extends XeEntity {
 
     @Id
@@ -72,7 +73,6 @@ public abstract class Buss_MAPPED extends XeEntity {
     }
 
     @Size(max = 255)
-    @Column
     protected String bussDesc;
 
 }

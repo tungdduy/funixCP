@@ -10,6 +10,7 @@ import net.timxekhach.operation.data.entity.Location;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussPoint_MAPPED.Pk.class)
+@SuppressWarnings("unused")
 public abstract class BussPoint_MAPPED extends XeEntity {
 
     @Id
@@ -49,7 +50,6 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     }
 
     @Size(max = 255)
-    @Column
     protected String bussPointDesc;
 
 }
