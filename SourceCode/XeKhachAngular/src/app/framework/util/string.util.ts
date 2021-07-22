@@ -1,5 +1,5 @@
 const NONE_ALPHA_DIGIT_REGEX = /[^A-Za-z0-9]/g;
-const CAPITAL_REGEX = /(?=[A-Z])/g;
+const CAPITAL_REGEX = /(?=[A-Z][a-z]+)/g;
 
 export const StringUtil = {
   isBlank(value: string | null | undefined) {
@@ -19,9 +19,6 @@ export const StringUtil = {
 
   blankOrNotEqual(value1: any, value2: any) {
     return !this.equalAndNotBlank(value1, value2);
-  },
-  capitalizeEachWord(strings: string[]) {
-    strings.map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`).join("");
   },
   urlToCapitalizeEachWord: (str: string) =>
     str.split("-")

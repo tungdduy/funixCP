@@ -29,7 +29,7 @@ export const Url = {
     }
     return Url.publicApi.includes(url);
   },
-  DEFAULT_URL_AFTER_LOGIN: () => Url.app.ADMIN._self
+  DEFAULT_URL_AFTER_LOGIN: () => Url.app  .ADMIN._self
   ,
 // ----------------------------------------------------------- //
 // ================= IMPORT TO END OF FILE =================== //

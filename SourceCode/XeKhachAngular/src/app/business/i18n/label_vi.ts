@@ -7,5 +7,8 @@ export const Label_vi = {
   PASSWORD: "Mật khẩu",
   REQUIRE_CHANGE_PASSWORD: "Yêu cầu đổi mật khẩu!",
   USERNAME_PLACE_HOLDER: "Email | Tên đăng nhập",
-  RE_PASSWORD: "Nhập lại mật khẩu"
+  RE_PASSWORD: "Nhập lại mật khẩu",
+  USERNAME: "Tên đăng nhập",
+  PHONE_NUMBER: "Số điện thoại",
+  SAVE: "Lưu"
 };

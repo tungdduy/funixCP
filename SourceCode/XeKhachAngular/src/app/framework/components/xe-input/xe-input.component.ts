@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
-import {AppMessages, XeLabel} from "../../../business/i18n";
+import {AppMessages, XeLabel, XeLbl} from "../../../business/i18n";
 import {StringUtil} from "../../util/string.util";
 
 @Component({
@@ -14,29 +14,33 @@ export class XeInputComponent {
   @Input() type: string = "text";
   @Input() lblKey: string;
   @Input() id: string;
-  @Input() required: boolean = true;
+  @Input() required?: any;
   @Input() validatorMsg?: string;
   @Input() minLength?: bigint;
   @Input() maxLength?: bigint;
   @Input() matching?: any;
   @Input() name?: string;
   @Input() disabled?: any;
-  @Input() isGrid?: any;
+  @Input() grid?: any;
   @Input() value: string;
+  public errorMessage?: string;
 
   private _label: string;
+
   public get label() {
     if (!this._label) {
-      if (!this.lblKey) {
-        this.lblKey = StringUtil.toUPPER_UNDERLINE(this.getName());
-      }
-      if (XeLabel[this.lblKey]) {
-        this._label = XeLabel[this.lblKey];
-      } else {
-        this._label = this.lblKey;
-      }
+      if (!this.lblKey) this.lblKey = this.getName();
+      this._label = XeLbl(this.lblKey);
     }
     return this._label;
+  }
+
+  get isGrid() {
+    return this.grid === '';
+  }
+
+  get isRequire() {
+    return this.required === '';
   }
 
   getId(): string {
@@ -53,17 +57,15 @@ export class XeInputComponent {
     return this.name;
   }
 
-  public errorMessage?: string;
-
   labelHiddenClass() {
     return this.value
-      && this.value.length > 0
-      || this.isGrid ? '' : 'd-none';
+    && this.value.length > 0
+    || this.isGrid ? '' : 'd-none';
   }
 
   isValidateSuccess(): boolean {
-    if (this.required &&
-            (!this.value || this.value.trim().length === 0)) {
+    if (this.isRequire &&
+      (!this.value || this.value.trim().length === 0)) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
       return;
     }

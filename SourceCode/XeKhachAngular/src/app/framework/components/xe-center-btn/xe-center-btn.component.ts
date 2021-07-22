@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {XeLabel} from "../../../business/i18n";
+import {XeLabel, XeLbl} from "../../../business/i18n";
 
 @Component({
   selector: 'xe-center-btn',
@@ -14,7 +14,7 @@ export class XeCenterBtnComponent {
   private _label: string;
   get label(): string {
     if (!this._label) {
-      this._label = XeLabel[this.lblKey] ? XeLabel[this.lblKey] : this.lblKey;
+      this._label = XeLbl(this.lblKey);
     }
     return this._label;
   }

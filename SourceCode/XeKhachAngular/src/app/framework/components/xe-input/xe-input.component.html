@@ -9,6 +9,8 @@
     [id]="getId()"
     nbInput fullWidth
     [name]="getName()"
-    [placeholder]="label"
-  ><span *ngIf="errorMessage" class="text-danger">{{errorMessage}}</span>
+    [placeholder]="isGrid?'':label"
+  >
+  <br/>
+  <span *ngIf="errorMessage" class="text-danger badge text-right d-inline-block" style="width: 100%">{{errorMessage}}</span>
 </div>

@@ -4,6 +4,7 @@ import {Subscription} from "rxjs";
 import {Component, OnDestroy, QueryList} from "@angular/core";
 import {Notifier} from "../../framework/notify/notify.service";
 import {XeInputComponent} from "../../framework/components/xe-input/xe-input.component";
+import {AppMessages} from "../i18n";
 
 @Component({
   template: '',
@@ -17,6 +18,10 @@ export abstract class XeFormComponent implements OnDestroy {
       return !control.isValidateSuccess();
     }).length;
     if (invalidNumber === 0) {
+      if (!this.getObservable(m)) {
+        Notifier.error(AppMessages.DEFAULT_ERROR_MESSAGE);
+        return;
+      }
       this.doSubmit(m);
     }
     return false;

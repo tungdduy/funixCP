@@ -20,7 +20,7 @@ export class Notifier {
     const toastConfig = {
       status: type,
       destroyByClick: false,
-      duration: 10000,
+      duration: 5000,
       position: NbGlobalPhysicalPosition.TOP_RIGHT,
 
     };

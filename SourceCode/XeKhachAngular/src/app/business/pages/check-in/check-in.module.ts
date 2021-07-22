@@ -9,7 +9,6 @@ import {NgModule} from '@angular/core';
 import {NbCardModule, NbLayoutModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
 import {RouterModule} from "@angular/router";
-import {MyTripComponent} from "./my-trip/my-trip.component";
 import {CheckInRoutingModule} from "./check-in-routing.module";
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
@@ -31,7 +30,6 @@ import {CheckInRoutingModule} from "./check-in-routing.module";
     RegisterComponent,
     ForgotPasswordComponent,
     LogoutComponent,
-    MyTripComponent
   ],
   exports: [
     CheckInComponent

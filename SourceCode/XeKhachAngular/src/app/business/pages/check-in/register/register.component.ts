@@ -35,7 +35,7 @@ export class RegisterComponent extends XeFormComponent implements OnInit {
 
   onSubmitSuccess(response: any) {
     Notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email));
-    XeRouter.navigate(Url.app.CHECK_IN.LOGIN);
+    Url.app.CHECK_IN.LOGIN.go();
   }
 
 }
