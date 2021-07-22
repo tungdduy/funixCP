@@ -16,7 +16,9 @@ public class UrlDeclaration {
                         .method("register").type(User.class).param("user", User.class)
                         .method("forgot-password").param("email", String.class)
                         .method("forgot-password-secret-key").param("email", String.class).param("email-key", String.class)
-                .create("admin")
+                        .method("update-user")
+                        .method("update-thumbnails")
+
                 .create("caller-staff")
                 .create("buss-staff")
         ;

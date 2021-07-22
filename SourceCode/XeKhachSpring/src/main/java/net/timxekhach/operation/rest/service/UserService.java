@@ -1,7 +1,11 @@
 package net.timxekhach.operation.rest.service;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
+import net.timxekhach.operation.data.entity.Buss;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import net.timxekhach.operation.data.repository.UserRepository;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.jwt.JwtTokenProvider;
 import net.timxekhach.utility.XeMailUtils;
 import net.timxekhach.utility.XeResponseUtils;
@@ -12,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import net.timxekhach.operation.data.entity.User;
 
@@ -32,14 +38,23 @@ public class UserService {
 	public ResponseEntity<User> login (Map<String, String> info) {
 		String username = info.get("username");
 		String password = info.get("password");
+
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(username, password)
 		);
+
+
+		ErrorCode.ASSIGN_1_TIME_ONLY.cumulative();
+		ErrorCode.UNDEFINED_ERROR.cumulative();
+
+
+
 
 		User loginUser = userRepository.findFirstByUsernameOrEmail(username, username);
 		HttpHeaders jwtHeader = jwtTokenProvider.getJwtHeader(loginUser);
 		return XeResponseUtils.successWithHeaders(loginUser, jwtHeader);
 	}
+
 
 	public User register (User user) {
 		EMAIL_EXISTED.cumulativeIf(userRepository.existsByEmail(user.getEmail()));
@@ -48,6 +63,7 @@ public class UserService {
 		XeMailUtils.sendEmailRegisterSuccessFully(user);
 		return user;
 	}
+
 
 	public void forgotPassword (String email) {
 		// TODO : service forgotPassword method

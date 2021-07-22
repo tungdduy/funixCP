@@ -29,7 +29,8 @@ public enum ErrorCode {
     VALIDATOR_PATTERN_INVALID("fieldName"),
     VALIDATOR_SIZE_INVALID("fieldName", "min", "max"),
     ASSIGN_1_TIME_ONLY,
-    SEND_EMAIL_FAILED;
+    SEND_EMAIL_FAILED,
+    ;
 
 
     private String[] paramNames;

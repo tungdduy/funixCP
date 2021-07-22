@@ -58,6 +58,7 @@ package buss.config {
 		buss_type_id
 		name
 		description
+        total_seats
 	}
 	
 	class Seat_type {
@@ -83,7 +84,7 @@ package position {
 
 package trip.setup {
 	class Trip_Buss {
-		trip_buss_id
+		trip_id
 		buss_id
 		launch_time
 		start_point
@@ -108,7 +109,7 @@ package trip.setup {
 package trip.operation {
 	class Trip {
 		trip_id
-		trip_buss_id
+		buss_id
 		price
 		status
 		start_time
@@ -117,6 +118,7 @@ package trip.operation {
 	}
 	
 	class Trip_User {
+        trip_user_id
 		trip_id
 		user_id
 		total_price

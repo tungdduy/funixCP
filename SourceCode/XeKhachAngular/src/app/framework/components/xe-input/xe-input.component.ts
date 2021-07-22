@@ -39,10 +39,6 @@ export class XeInputComponent {
     return this.grid === '';
   }
 
-  get isRequire() {
-    return this.required === '';
-  }
-
   getId(): string {
     if (!this.id) {
       this.id = Math.random().toString(36).substring(7);
@@ -61,6 +57,14 @@ export class XeInputComponent {
     return this.value
     && this.value.length > 0
     || this.isGrid ? '' : 'd-none';
+  }
+
+  validateFailed() {
+    return !this.isValidateSuccess();
+  }
+
+  get isRequire() {
+    return this.required === '' || this.minLength || this.maxLength || this.matching;
   }
 
   isValidateSuccess(): boolean {

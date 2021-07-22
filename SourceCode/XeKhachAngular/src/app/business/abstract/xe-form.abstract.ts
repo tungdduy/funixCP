@@ -15,7 +15,7 @@ export abstract class XeFormComponent implements OnDestroy {
     const m = {};
     const invalidNumber = this.getFormControls().filter(control => {
       m[control.name] = control.value;
-      return !control.isValidateSuccess();
+      return control.validateFailed();
     }).length;
     if (invalidNumber === 0) {
       if (!this.getObservable(m)) {
