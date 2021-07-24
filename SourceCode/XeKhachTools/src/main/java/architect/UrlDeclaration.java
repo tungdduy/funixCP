@@ -3,6 +3,7 @@ package architect;
 import architect.urls.UrlArchitect;
 import net.timxekhach.operation.data.entity.User;
 
+import java.util.List;
 import java.util.Map;
 
 import static net.timxekhach.security.constant.RoleEnum.ROLE_USER;
@@ -40,6 +41,15 @@ public class UrlDeclaration {
                         .sibling("buss-stop")
                         .sibling("ticket")
 
+        ;
+
+        UrlArchitect
+                .startApi("buss-operation").roles(ROLE_USER)
+                .method("findBussPoint").type(List.class).param("desc", String.class)
+                .method("findBuss").type(List.class)
+                    .param("startPoint", Long.class)
+                    .param("endPoint", Long.class)
+                    .param("departureTime", Long.class)
         ;
 
     }
