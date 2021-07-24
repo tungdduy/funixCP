@@ -30,6 +30,8 @@ public enum ErrorCode {
     VALIDATOR_SIZE_INVALID("fieldName", "min", "max"),
     ASSIGN_1_TIME_ONLY,
     SEND_EMAIL_FAILED,
+    EMAIL_NOT_EXIST("email"),
+    SECRET_KEY_NOT_MATCH
     ;
 
 
@@ -68,6 +70,14 @@ public enum ErrorCode {
         if (isThrow) {
             throwNow(paramValues);
         }
+    }
+
+    public <T> T throwIfNull(T object, String... paramValues) {
+        if (object == null) {
+            throwNow(paramValues);
+        }
+        return object;
+
     }
 
     public void throwIfBlank(String value, String... paramValues) {

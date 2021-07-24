@@ -1,12 +1,9 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Notifier} from "../../../../framework/notify/notify.service";
-import {XeFormComponent} from "../../../abstract/xe-form.abstract";
-import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
-import {XeRouter} from "../../../service/xe-router";
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
 import {AppMessages} from "../../../i18n";
 import {Url} from "../../../../framework/url/url.declare";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
+import {FormAbstract} from "../../../abstract/form.abstract";
 
 
 @Component({
@@ -14,10 +11,7 @@ import {AuthUtil} from "../../../../framework/auth/auth.util";
   styles: [],
   templateUrl: './register.component.html'
 })
-export class RegisterComponent extends XeFormComponent implements OnInit {
-
-  @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
-  getFormControls = () => this.formControls;
+export class RegisterComponent extends FormAbstract implements OnInit {
 
   constructor(private authService: AuthService) {
     super();
@@ -25,19 +19,22 @@ export class RegisterComponent extends XeFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (AuthUtil.isUserLoggedIn()) {
-      XeRouter.navigate(Url.DEFAULT_URL_AFTER_LOGIN());
+      Url.DEFAULT_URL_AFTER_LOGIN().go();
     }
   }
 
-  getObservable(model: any) {
-    return this.authService.register(model);
-  }
+  successMessage;
+  handlers = () => ({
+    processor: (data) => this.authService.register(data),
+    success: (response) => {
+      this.successMessage = AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email);
+      this.showForm('success');
+    }
+  })
 
-  onSubmitSuccess(response: any) {
-    Notifier.success(AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email));
+  gotoLogin() {
     Url.app.CHECK_IN.LOGIN.go();
   }
-
 }
 
 

@@ -10,5 +10,13 @@ export const Label_vi = {
   RE_PASSWORD: "Nhập lại mật khẩu",
   USERNAME: "Tên đăng nhập",
   PHONE_NUMBER: "Số điện thoại",
-  SAVE: "Lưu"
+  SAVE: "Lưu",
+  SECRET_KEY_HAS_SENT_TO_YOUR_EMAIL: "Mã bí mật đã được gửi đến email của bạn!",
+  INPUT_THAT_CODE_HERE_TO_NEXT_STEP: "Nhập mã đó vào đây để sang bước tiếp theo:",
+  NEXT: "Tiếp tục",
+  NEW_PASSWORD: "Mật khẩu mới",
+  RE_NEW_PASSWORD: "Nhập lại mật khẩu mới",
+  CHANGE_PASSWORD: "Đổi mật khẩu",
+  CLICK_TO_LOGIN: "Click để đăng nhập",
+  PASSWORD_CHANGED_SUCCESSFULLY: "Đổi mật khẩu thành công"
 };

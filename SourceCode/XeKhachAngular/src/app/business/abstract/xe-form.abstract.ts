@@ -11,18 +11,18 @@ import {AppMessages} from "../i18n";
 })
 export abstract class XeFormComponent implements OnDestroy {
 
-  public onSubmit() {
+  public onSubmit(formCode: string) {
     const m = {};
-    const invalidNumber = this.getFormControls().filter(control => {
+    const invalidNumber = this.getFormControls(formCode).filter(control => {
       m[control.name] = control.value;
       return control.validateFailed();
     }).length;
     if (invalidNumber === 0) {
-      if (!this.getObservable(m)) {
+      if (!this.getObservable(m, formCode)) {
         Notifier.error(AppMessages.DEFAULT_ERROR_MESSAGE);
         return;
       }
-      this.doSubmit(m);
+      this.doSubmit(m, formCode);
     }
     return false;
   }
@@ -30,13 +30,13 @@ export abstract class XeFormComponent implements OnDestroy {
 
   protected subscriptions: Subscription[] = [];
 
-  doSubmit(model: any): void {
+  doSubmit(model: any, formCode = null): void {
     this.isLoading = true;
     this.subscriptions.push(
-      this.getObservable(model).subscribe(
+      this.getObservable(model, formCode).subscribe(
         (response: User) => {
           this.isLoading = false;
-          this.onSubmitSuccess(response);
+          this.onSubmitSuccess(response, formCode);
         },
         (error: HttpErrorResponse) => {
           this.isLoading = false;
@@ -45,9 +45,9 @@ export abstract class XeFormComponent implements OnDestroy {
       )
     );
   }
-  abstract getObservable(model: any);
-  abstract onSubmitSuccess(response: any);
-  abstract getFormControls(): QueryList<XeInputComponent>;
+  abstract getObservable(model: any, formCode: any);
+  abstract onSubmitSuccess(response: any, formCode: any);
+  abstract getFormControls(formCode: any): QueryList<XeInputComponent>;
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());

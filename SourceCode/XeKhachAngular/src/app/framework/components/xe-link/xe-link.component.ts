@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {UrlConfig} from "../../url/url.config";
-import {AuthService} from "../../auth/auth.service";
 import {AuthUtil} from "../../auth/auth.util";
 
 @Component({

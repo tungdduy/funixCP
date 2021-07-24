@@ -16,6 +16,7 @@ public class User extends AbstractEntity {
     Column fullName = of(REQUIRE_SHORT_STRING);
     Column role = of(DESCRIPTION).defaultValue("ROLE_USER");
     Column nonLocked = of(FALSE);
+    Column secretPasswordKey = of(SECRET_TOKEN);
 
     MapColumn allMyTrips = map(TripUser.class);
 }

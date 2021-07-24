@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {XeLabel, XeLbl} from "../../../business/i18n";
+import {XeLbl} from "../../../business/i18n";
 
 @Component({
   selector: 'xe-center-btn',

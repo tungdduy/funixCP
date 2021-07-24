@@ -1,8 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
-import {AppMessages, XeLabel, XeLbl} from "../../../business/i18n";
-import {StringUtil} from "../../util/string.util";
+import {AppMessages, XeLbl} from "../../../business/i18n";
 
 @Component({
   selector: 'xe-input',
@@ -14,7 +13,7 @@ export class XeInputComponent {
   @Input() type: string = "text";
   @Input() lblKey: string;
   @Input() id: string;
-  @Input() required?: any;
+  @Input() required: any;
   @Input() validatorMsg?: string;
   @Input() minLength?: bigint;
   @Input() maxLength?: bigint;

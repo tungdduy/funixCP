@@ -1,5 +1,3 @@
-import {Authority} from "./auth.enum";
-
 export class XeRole {
 <#list root.roles as role >
   static ${role.name()} = {
