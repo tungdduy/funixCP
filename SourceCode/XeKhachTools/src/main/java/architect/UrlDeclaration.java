@@ -16,7 +16,8 @@ public class UrlDeclaration {
                         .method("login").type(User.class).param("info", Map.class)
                         .method("register").type(User.class).param("user", User.class)
                         .method("forgot-password").param("email", String.class)
-                        .method("forgot-password-secret-key").param("email", String.class).param("email-key", String.class)
+                        .method("forgot-password-secret-key").param("secretKeyInfo", Map.class)
+                        .method("change-password").param("secretKeyInfo", Map.class)
                         .method("update-user")
                         .method("update-thumbnails")
 

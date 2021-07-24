@@ -1,8 +1,14 @@
 package generator.abstracts.render;
 
+import net.timxekhach.utility.Xe;
 import freemarker.template.Template;
 import generator.abstracts.interfaces.RenderGroup;
 import generator.abstracts.models.AbstractModel;
+import generator.java.rest.api.RestApiRender;
+import generator.java.rest.service.RestServiceRender;
+import generator.java.security.config.SecurityConfigRender;
+import generator.ts.api.messages.ApiMessagesTsRender;
+import generator.ts.url.declare.UrlDeclareTsRender;
 import lombok.Getter;
 import net.timxekhach.utility.XeFileUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
@@ -15,7 +21,7 @@ import java.util.function.Function;
 import static generator.GeneratorSetup.*;
 import static util.ObjectUtil.newInstanceFromClass;
 
-public abstract class AbstractRender<E extends AbstractModel> {
+public abstract class AbstractRender<E extends AbstractModel> extends Xe {
 
     protected abstract boolean isOverrideExistingFile();
 
@@ -42,7 +48,7 @@ public abstract class AbstractRender<E extends AbstractModel> {
         return true;
     }
 
-    protected E newModel(Object... args) {
+    protected E newModel() {
         try {
             return getParameterizeClass()
                     .getConstructor()
@@ -70,6 +76,7 @@ public abstract class AbstractRender<E extends AbstractModel> {
 
     public void executeRenders() {
         this.runBeforeRender();
+        logger.info("execute Render");
         this.getModelFiles().forEach(root -> {
             Map<String, E> input = new HashMap<>();
             input.put("root", root);
@@ -99,7 +106,19 @@ public abstract class AbstractRender<E extends AbstractModel> {
             AbstractEntityRender.standaloneRender();
         }
         if (group == RenderGroup.URL) {
-           AbstractUrlRender.standaloneRender();
+            new UrlDeclareTsRender().executeRenders();
+            new SecurityConfigRender();
+            AbstractUrlRender.renderWithParent();
+        }
+
+        if (group == RenderGroup.MESSAGE) {
+            new ApiMessagesTsRender().executeRenders();
+        }
+
+        if (group == RenderGroup.API) {
+            new RestApiRender();
+            new RestServiceRender();
+            AbstractUrlRender.renderWithParent();
         }
 
         if (group == RenderGroup.OTHER) {

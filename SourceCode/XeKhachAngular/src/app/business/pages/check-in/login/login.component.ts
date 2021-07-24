@@ -1,37 +1,29 @@
-import {Component, OnInit, ViewChildren} from '@angular/core';
-import {XeFormComponent} from "../../../abstract/xe-form.abstract";
-import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
-import {XeRouter} from "../../../service/xe-router";
 import {Url} from "../../../../framework/url/url.declare";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
+import {FormAbstract} from "../../../abstract/form.abstract";
 
 @Component({
   selector: 'xe-login',
   styles: [],
-  templateUrl: 'login.component.html',
+  templateUrl: 'login.component.html'
 })
-export class LoginComponent extends XeFormComponent implements OnInit {
-
-  @ViewChildren(XeInputComponent) formControls;
-  getFormControls = () => this.formControls;
-
-  getObservable(model: any) {
-    return this.authService.login(model);
-  }
-  onSubmitSuccess(response: any) {
-    AuthUtil.saveResponse(response);
-    Url.DEFAULT_URL_AFTER_LOGIN().go();
-  }
-
-  ngOnInit(): void {
-    if (AuthUtil.isUserLoggedIn()) {
-      Url.DEFAULT_URL_AFTER_LOGIN().go();
-    }
-  }
+export class LoginComponent extends FormAbstract implements OnInit {
 
   constructor(private authService: AuthService) {
     super();
   }
 
+  ngOnInit(): void {
+    if (AuthUtil.isUserLoggedIn()) Url.DEFAULT_URL_AFTER_LOGIN().go();
+  }
+
+  handlers = () => ({
+      processor: (data) => this.authService.login(data),
+      success: (response) => {
+        AuthUtil.saveResponse(response);
+        Url.DEFAULT_URL_AFTER_LOGIN().go();
+      }
+  })
 }

@@ -1,11 +1,14 @@
 
-<form (submit)="onSubmit()">
+<xe-form #register name="register">
   <xe-input name="fullName" minLength="3" maxLength="30"></xe-input>
   <xe-input type="email"></xe-input>
   <xe-input type="password" #password></xe-input>
   <xe-input lblKey="RE_PASSWORD" type="password" [matching]="password"></xe-input>
-  <xe-center-btn lblKey="REGISTER" [disabled]="isLoading"></xe-center-btn>
-</form>
+  <xe-center-btn lblKey="REGISTER" [disabled]="register.isLoading"></xe-center-btn>
+</xe-form>
 
-
+<div *ngIf="successMessage">
+  <p>{{successMessage}}</p>
+  <xe-center-btn lblKey="CLICK_TO_LOGIN" (click)="gotoLogin()"></xe-center-btn>
+</div>
 

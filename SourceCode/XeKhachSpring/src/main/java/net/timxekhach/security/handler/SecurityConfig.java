@@ -31,6 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private static BCryptPasswordEncoder passwordEncoder;
+    public static BCryptPasswordEncoder getPasswordEncoder(){
+        if(passwordEncoder == null) {
+            passwordEncoder = new BCryptPasswordEncoder();
+        }
+        return passwordEncoder;
+    }
+
 
     @Bean
     public CorsFilter corsFilter() {
@@ -72,7 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("user/register").permitAll()
                 .antMatchers("user/forgot-password").permitAll()
                 .antMatchers("user/forgot-password-secret-key").permitAll()
-                .antMatchers("admin").permitAll()
+                .antMatchers("user/change-password").permitAll()
+                .antMatchers("user/update-user").permitAll()
+                .antMatchers("user/update-thumbnails").permitAll()
                 .antMatchers("caller-staff").permitAll()
                 .antMatchers("buss-staff").permitAll()
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //

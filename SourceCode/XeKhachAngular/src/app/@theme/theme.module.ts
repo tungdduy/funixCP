@@ -19,19 +19,16 @@ import {
 import {NbEvaIconsModule} from '@nebular/eva-icons';
 import {NbSecurityModule} from '@nebular/security';
 
-import {FooterComponent, HeaderComponent, SearchInputComponent, TinyMCEComponent, } from './components';
-import {CapitalizePipe, NumberWithCommasPipe, PluralPipe, RoundPipe, TimingPipe, } from './pipes';
-import {OneColumnLayoutComponent, ThreeColumnsLayoutComponent, TwoColumnsLayoutComponent, } from './layouts';
+import {FooterComponent, HeaderComponent, SearchInputComponent, TinyMCEComponent} from './components';
+import {CapitalizePipe, NumberWithCommasPipe, PluralPipe, RoundPipe, TimingPipe} from './pipes';
+import {OneColumnLayoutComponent, ThreeColumnsLayoutComponent, TwoColumnsLayoutComponent} from './layouts';
 import {DEFAULT_THEME} from './styles/theme.default';
 import {COSMIC_THEME} from './styles/theme.cosmic';
 import {CORPORATE_THEME} from './styles/theme.corporate';
 import {DARK_THEME} from './styles/theme.dark';
 import {MATERIAL_LIGHT_THEME} from './styles/material/theme.material-light';
 import {MATERIAL_DARK_THEME} from './styles/material/theme.material-dark';
-import {XeInputComponent} from '../framework/components/xe-input/xe-input.component';
-import {XeCenterBtnComponent} from '../framework/components/xe-center-btn/xe-center-btn.component';
 import {FormsModule} from "@angular/forms";
-import {XeLinkComponent} from "../framework/components/xe-link/xe-link.component";
 import {RouterModule} from "@angular/router";
 
 const NB_MODULES = [
@@ -80,16 +77,10 @@ const PIPES = [
     MatRippleModule,
     ...PIPES,
     ...COMPONENTS,
-    XeInputComponent,
-    XeLinkComponent,
-    XeCenterBtnComponent,
   ],
   declarations: [
     ...COMPONENTS,
     ...PIPES,
-    XeInputComponent,
-    XeLinkComponent,
-    XeCenterBtnComponent,
   ],
 })
 export class ThemeModule {

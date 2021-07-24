@@ -1,25 +1,36 @@
-import {Component, OnInit, ViewChildren} from '@angular/core';
-import {XeFormComponent} from "../../../abstract/xe-form.abstract";
-import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
+import {Component} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
+import {FormAbstract} from "../../../abstract/form.abstract";
+import {Url} from "../../../../framework/url/url.declare";
 
 @Component({
   selector: 'xe-forgot-password',
   styles: [],
   templateUrl: 'forgot-password.component.html',
 })
-export class ForgotPasswordComponent extends XeFormComponent {
-  getObservable(model: any) {
-      throw new Error('Method not implemented.');
-  }
-  onSubmitSuccess(response: any) {
-      throw new Error('Method not implemented.');
+export class ForgotPasswordComponent extends FormAbstract {
+
+  constructor(private authService: AuthService) { super(); }
+
+  gotoLogin() {
+    Url.app.CHECK_IN.LOGIN.go();
   }
 
-  @ViewChildren(XeInputComponent) formControls;
-  getFormControls = () => this.formControls;
+  handlers = () => ({
+    start: {
+      processor: (data) => this.authService.forgotPassword(data),
+      success: (response) => this.showForm('secret')
+    },
+    secret: {
+      processor: (data) => this.authService.forgotPasswordSecretKey(data),
+      success: (response) => this.showForm('newPassword')
+    },
+    newPassword: {
+      processor: (data) => this.authService.changePassword(data),
+      success: (response) => this.showForm('success')
+    }
+  })
 
-  constructor(authService: AuthService) {
-    super();
-  }
 }
+
+

@@ -3,10 +3,10 @@ package net.timxekhach.operation.data.entity;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
+import net.timxekhach.security.handler.SecurityConfig;
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,16 +27,24 @@ public List<String> getRoles() {
                 .collect(Collectors.toList());
     }
 
-    public void encodePassword(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.password = bCryptPasswordEncoder.encode(this.password);
+    public void encodePassword() {
+        this.password = SecurityConfig.getPasswordEncoder().encode(this.password);
+    }
+    public void encodePassword(String password) {
+        this.password = SecurityConfig.getPasswordEncoder().encode(password);
     }
 
     public String getPossibleLoginName() {
         return this.username != null ? username : email;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void createSecretPasswordKey() {
+        this.secretPasswordKey = XeStringUtils.randomAlphaNumerics(6);
+        logger.info("secret passwork key is: " + this.secretPasswordKey);
+    }
+
+    public boolean isMatchSecretPasswordKey(String secretKey) {
+        return secretKey == null || !secretKey.equals(this.secretPasswordKey);
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

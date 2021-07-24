@@ -21,7 +21,6 @@ public abstract class User_MAPPED extends XeEntity {
 
     @AllArgsConstructor
     @NoArgsConstructor
-    @Getter @Setter
     public static class Pk extends XePk {
         protected Long userId;
     }
@@ -112,5 +111,8 @@ public abstract class User_MAPPED extends XeEntity {
 
 
     protected Boolean nonLocked = false;
+
+    @Size(max = 255)
+    protected String secretPasswordKey;
 
 }

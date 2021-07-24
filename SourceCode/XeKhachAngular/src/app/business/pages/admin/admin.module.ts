@@ -16,23 +16,25 @@ import {RouterModule} from "@angular/router";
 import {NbButtonModule, NbCardModule, NbInputModule, NbLayoutModule, NbMenuModule, NbRadioModule} from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
 import {AdminRoutingModule} from "./admin-routing.module";
+import {CommonComponentsModule} from "../../../framework/components/common-components.module";
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
 @NgModule({
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
 imports: [
-    AdminRoutingModule,
-    ngFormsModule,
-    RouterModule,
-    NbMenuModule,
-    ThemeModule,
-    NbCardModule,
-    NbLayoutModule,
-    NbRadioModule,
-    NbButtonModule,
-    NbInputModule,
-],
+        AdminRoutingModule,
+        ngFormsModule,
+        RouterModule,
+        NbMenuModule,
+        ThemeModule,
+        NbCardModule,
+        NbLayoutModule,
+        NbRadioModule,
+        NbButtonModule,
+        NbInputModule,
+        CommonComponentsModule,
+    ],
 
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
   declarations: [

@@ -1,5 +1,3 @@
-import {Authority} from "./auth.enum";
-
 export class XeRole {
   static ROLE_USER = {
     roles: [],

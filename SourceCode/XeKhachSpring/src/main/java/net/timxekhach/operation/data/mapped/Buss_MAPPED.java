@@ -2,7 +2,6 @@ package net.timxekhach.operation.data.mapped;
 
 import javax.persistence.*;
 import lombok.*;
-import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import javax.validation.constraints.*;
@@ -75,12 +74,5 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     @Size(max = 255)
     protected String bussDesc;
-
-    public void updateByOtherBuss(Buss buss) {
-        if (buss.bussDesc != null) {
-            this.bussDesc = buss.bussDesc;
-        }
-
-    }
 
 }

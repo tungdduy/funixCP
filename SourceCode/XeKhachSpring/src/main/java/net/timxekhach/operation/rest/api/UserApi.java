@@ -35,17 +35,27 @@ public class UserApi {
 		userService.forgotPassword(email);
 		return success();
 	}
+
 	@PostMapping("/forgot-password-secret-key")
-	public ResponseEntity<Void> forgotPasswordSecretKey (@RequestBody String email, @RequestBody String emailKey) {
-		userService.forgotPasswordSecretKey(email, emailKey);
+	public ResponseEntity<Void> forgotPasswordSecretKey (@RequestBody Map<String, String> secretInfo) {
+		userService.forgotPasswordSecretKey(secretInfo);
 		return success();
 	}
 
+	@PostMapping("/update-user")
+	public ResponseEntity<Void> updateUser () {
+		userService.updateUser();
+		return success();
+	}
 
-	private final UserRepository userRepository;
-	@PostMapping("/test-api")
-	public ResponseEntity<Void> testApi (@RequestBody Buss buss) {
-
+	@PostMapping("/update-thumbnails")
+	public ResponseEntity<Void> updateThumbnails () {
+		userService.updateThumbnails();
+		return success();
+	}
+	@PostMapping("/change-password")
+	public ResponseEntity<Void> changePassword (@RequestBody Map<String, String> secretKeyInfo) {
+		userService.changePassword(secretKeyInfo);
 		return success();
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
