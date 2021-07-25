@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import net.timxekhach.operation.data.entity.User;
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service

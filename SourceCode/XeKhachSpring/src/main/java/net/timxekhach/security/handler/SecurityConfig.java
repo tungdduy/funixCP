@@ -83,6 +83,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("user/change-password").permitAll()
                 .antMatchers("user/update-user").permitAll()
                 .antMatchers("user/update-thumbnails").permitAll()
+                .antMatchers("buss-operation").hasAnyAuthority("ROLE_USER")
+                .antMatchers("buss-operation/findBussPoint").permitAll()
+                .antMatchers("buss-operation/findBuss").permitAll()
+                .antMatchers("buss-operation/countAvailableSeat").permitAll()
+                .antMatchers("buss-operation/getAvailableSeat").permitAll()
+                .antMatchers("buss-operation/bookTicket").permitAll()
                 .antMatchers("caller-staff").permitAll()
                 .antMatchers("buss-staff").permitAll()
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //

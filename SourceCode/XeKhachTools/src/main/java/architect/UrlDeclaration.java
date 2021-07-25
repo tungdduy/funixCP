@@ -1,6 +1,7 @@
 package architect;
 
 import architect.urls.UrlArchitect;
+import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.data.entity.User;
 
 import java.util.List;
@@ -20,7 +21,18 @@ public class UrlDeclaration {
                         .method("change-password").param("secretKeyInfo", Map.class)
                         .method("update-user")
                         .method("update-thumbnails")
-
+                .create("buss-operation").roles(ROLE_USER)
+                    .method("findBussPoint").type(List.class).param("desc", String.class)
+                    .method("findBuss").type(List.class)
+                        .param("startPoint", Long.class)
+                        .param("endPoint", Long.class)
+                        .param("departureTime", Long.class)
+                    .method("countAvailableSeat").type(Integer.class).param("tripId", Long.class)
+                    .method("getAvailableSeat").type(List.class).param("tripId", Long.class)
+                    .method("bookTicket").type(TripUser.class)
+                        .param("userID", Long.class)
+                        .param("tripID", Long.class)
+                        .param("seatIDs", List.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;
@@ -43,16 +55,6 @@ public class UrlDeclaration {
                         .sibling("ticket")
 
         ;
-
-        UrlArchitect
-                .startApi("buss-operation").roles(ROLE_USER)
-                .method("findBussPoint").type(List.class).param("desc", String.class)
-                .method("findBuss").type(List.class)
-                    .param("startPoint", Long.class)
-                    .param("endPoint", Long.class)
-                    .param("departureTime", Long.class)
-        ;
-
     }
 
 }

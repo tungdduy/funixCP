@@ -1,4 +1,4 @@
-package net.timxekhach.operation.rest.service.ticket;
+package net.timxekhach.operation.rest.service.trip;
 
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.repository.TripRepository;
@@ -17,11 +17,16 @@ public class UserTripService extends TripAbstractService {
     }
 
     @Override
-    public List<Trip> getTripBussList() {
+    public List<Trip> getTripList() {
         List<Trip> tripList = tripRepository.findByStartPointAndEndPointAndStatus(startPoint, endPoint);
         if (startTime != null ){
             tripList.removeIf( t -> t.getStartTime().getTime() == startTime);
         }
         return tripList;
+    }
+
+    @Override
+    public Trip getTrip(Long tripId) {
+        return tripRepository.findTripByTripId(tripId);
     }
 }

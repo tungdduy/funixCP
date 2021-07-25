@@ -11,6 +11,7 @@ public interface BussRepository extends JpaRepository<Buss, Buss_MAPPED.Pk> {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
+    Buss findByBussId(Long bussId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

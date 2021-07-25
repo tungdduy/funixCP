@@ -1,4 +1,4 @@
-package net.timxekhach.operation.rest.service.ticket;
+package net.timxekhach.operation.rest.service.trip;
 
 public abstract class TripAbstractService implements ITripService{
 
