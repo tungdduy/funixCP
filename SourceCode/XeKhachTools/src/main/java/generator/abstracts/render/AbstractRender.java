@@ -115,7 +115,7 @@ public abstract class AbstractRender<E extends AbstractModel> extends Xe {
             new ApiMessagesTsRender().executeRenders();
         }
 
-        if (group == RenderGroup.API) {
+        if (group == RenderGroup.API_REST_SERVICE) {
             new RestApiRender();
             new RestServiceRender();
             AbstractUrlRender.renderWithParent();

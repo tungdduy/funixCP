@@ -6,6 +6,8 @@ export const AppMessages_vi = {
   FIELD_MUST_HAS_AT_LEAST_CHAR: (fieldName, minLength) => `${fieldName} cần có ít nhất ${minLength} ký tự`,
   MAXIMUM_LENGTH_OF_FIELD: (fieldName, maxLength) => `${fieldName} không vượt quá ${maxLength} ký tự`,
   EMAIL_NOT_VALID: "Email không hợp lệ!",
+  PHONE_NOT_VALID: "Số điện thoại không hợp lệ!",
   FIELD_NOT_MATCH: (fieldName) => `${fieldName} không khớp`,
   INVALID_FIELD: (fieldName) => `${fieldName} không hợp lệ`,
+
 };

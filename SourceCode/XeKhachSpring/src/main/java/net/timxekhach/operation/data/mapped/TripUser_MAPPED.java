@@ -1,12 +1,16 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.Employee;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
 
 
@@ -56,11 +60,31 @@ public abstract class TripUser_MAPPED extends XeEntity {
         protected Long companyId;
         protected Long userId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long tripIdLong = Long.parseLong(data.get("tripId"));
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long tripUserIdLong = Long.parseLong(data.get("tripUserId"));
+            Long bussIdLong = Long.parseLong(data.get("bussId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new TripUser_MAPPED.Pk(tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new TripUser_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L);
+    }
+
     protected TripUser_MAPPED(){}
     protected TripUser_MAPPED(Trip trip, User user) {
         this.trip = trip;
         this.user = user;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -84,6 +108,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Trip trip;
 
     public void setTrip(Trip trip) {
@@ -102,6 +127,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected User user;
 
     public void setUser(User user) {
@@ -122,6 +148,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Employee confirmedBy;
 
     public void setConfirmedBy(Employee confirmedBy) {
@@ -142,5 +169,19 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     @Enumerated(EnumType.STRING)
     protected TripUserStatus status = net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("totalPrice")) {
+                this.totalPrice = Long.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("status")) {
+                this.status = TripUserStatus.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

@@ -1,11 +1,16 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
+import java.util.List;
 import net.timxekhach.operation.data.entity.Employee;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
+import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
@@ -24,32 +29,27 @@ public abstract class Company_MAPPED extends XeEntity {
     public static class Pk extends XePk {
         protected Long companyId;
     }
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "employeesEmployeeId",
-        referencedColumnName = "employeeId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "employeesCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false)
-    })
-    protected Employee employees;
 
-    public void setEmployees(Employee employees) {
-        this.employees = employees;
-        this.employeesEmployeeId = employees.getEmployeeId();
-        this.employeesCompanyId = employees.getCompanyId();
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            if(NumberUtils.min(new long[]{companyIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new Company_MAPPED.Pk(companyIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new Company_MAPPED.Pk(0L);
     }
 
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long employeesEmployeeId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long employeesCompanyId;
+    @OneToMany(
+        mappedBy = "company",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<Employee> employees = new ArrayList<>();
 
     @Size(max = 255)
     protected String companyDesc;
@@ -59,5 +59,23 @@ public abstract class Company_MAPPED extends XeEntity {
 
 
     protected Boolean isLock = false;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("companyDesc")) {
+                this.companyDesc = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("companyName")) {
+                this.companyName = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("isLock")) {
+                this.isLock = Boolean.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

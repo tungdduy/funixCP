@@ -1,19 +1,51 @@
-import {Component, ContentChildren, Input, OnDestroy} from '@angular/core';
+import {AfterViewInit, Component, ContentChildren, Input, OnDestroy, QueryList} from '@angular/core';
 import {Subscription} from "rxjs";
 import {XeInputComponent} from "../xe-input/xe-input.component";
 import {FormAbstract} from "../../../business/abstract/form.abstract";
 import {Notifier} from "../../notify/notify.service";
 import {HttpErrorResponse} from "@angular/common/http";
+import {FormHandler} from "../../../business/abstract/formHandler";
+import {XeLabel} from "../../../business/i18n";
+import {State} from "../../model/message.model";
+import {XeLabelComponent} from "../xe-label/xe-label.component";
 
 @Component({
   selector: 'xe-form',
   templateUrl: './xe-form.component.html',
   styleUrls: ['./xe-form.component.scss']
 })
-export class XeFormComponent implements OnDestroy {
+export class XeFormComponent implements OnDestroy, AfterViewInit {
 
+  @Input() onSuccess: 'update' | 'reset';
+  private get isResetOnSuccess() {
+    return this.onSuccess === 'reset';
+  }
+  @Input() readonly;
+  @Input() class;
   @Input() name;
   @Input() hide;
+  @ContentChildren(XeInputComponent, {descendants: true}) formControls: QueryList<XeInputComponent>;
+  ctrl: FormAbstract;
+  isLoading: boolean = false;
+  messages = {
+    success: {
+      code: XeLabel.SAVED_SUCCESSFULLY,
+      state: State.success,
+    },
+    noChange: {
+      code: XeLabel.DATA_NO_CHANGE,
+      state: State.info,
+    },
+    error: {
+      code: XeLabel.ERROR_PLEASE_TRY_AGAIN,
+      state: State.danger
+    }
+  };
+  @ContentChildren('msg', {descendants: true}) _msg: QueryList<XeLabelComponent>;
+  msg: XeLabelComponent;
+  protected subscriptions: Subscription[] = [];
+  private _originalMute;
+
   get show() {
     if (this.hide === undefined) {
       return true;
@@ -23,58 +55,131 @@ export class XeFormComponent implements OnDestroy {
     }
     return this.hide;
   }
+
   set show(value) {
     this.hide = value;
   }
-  @ContentChildren(XeInputComponent) formControls;
-  ctrl: FormAbstract;
-  isLoading: boolean = false;
 
-  public onSubmit(htmlForm: HTMLFormElement) {
+  _handler: FormHandler;
 
-    const formName = htmlForm.name;
+  get handler() {
+    if (this._handler === undefined
+      && this.ctrl
+      && !!this.ctrl.handlers) {
+
+      this._handler = this.ctrl.handlers.find(s => s.name === this.name);
+      if (this._handler === undefined) {
+        this._handler = this.ctrl.handlers[0];
+      }
+    }
+    return this._handler;
+  }
+
+  get isMute() {
+    return this.readonly === '' || this.readonly === true;
+  }
+
+  public onSubmit() {
+    if (!this.handler) {
+      console.log("no FormHandler found!");
+    }
     let model = {};
-
+    console.log("start submit form: " + this.name);
+    let changedInputsNumber = 0;
     const invalidNumber = this.formControls.filter(control => {
       model[control.name] = control.value;
+      if (control.isChanged) {
+        changedInputsNumber++;
+      }
       return control.validateFailed();
     }).length;
+
+    console.log("changedInputsNumber: " + changedInputsNumber);
 
     if (Object.keys(model).length === 1) {
       model = this.formControls.first.value;
     }
 
-    if (invalidNumber === 0) {
-      const forms = this.ctrl.handlers();
-      let form = forms[formName];
-      if (!form) form = forms;
-
-      const processor = form['processor'];
-      if (!processor) {
-        return;
-      }
-
-      this.isLoading = true;
-      this.subscriptions.push(
-        processor(model).subscribe(
-          (response: any) => {
-            this.isLoading = false;
-            form.success(response);
-          },
-          (error: HttpErrorResponse) => {
-            this.isLoading = false;
-            Notifier.httpErrorResponse(error);
-          }
-        )
-      );
+    if (invalidNumber !== 0) {
+      console.log("form invalid, exit");
+      console.log(model);
+      return false;
     }
+    console.log("form valid, begin post...");
+
+    if (changedInputsNumber === 0) {
+      console.log("nothing changed");
+      this.msg.setMessage(this.messages.noChange);
+      return;
+    }
+
+    this.isLoading = true;
+
+    this.subscriptions.push(
+      this.handler.processor(model).subscribe(
+        (response: any) => {
+          this.isLoading = false;
+          this.msg?.setMessage(this.messages.success);
+          this.handler.success?.call(response);
+          this.handler.callbackOnSuccess?.call(this);
+          if (this.isResetOnSuccess) {
+            this.formControls.forEach(input => input.reset());
+          } else {
+            this.formControls.forEach(input => input.update());
+          }
+
+          this.mute();
+        },
+        (error: HttpErrorResponse) => {
+          this.isLoading = false;
+          Notifier.httpErrorResponse(error, this.msg);
+        }
+      )
+    );
     return false;
   }
-
-  protected subscriptions: Subscription[] = [];
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  ngAfterViewInit(): void {
+    this.msg = this._msg.first;
+    this._originalMute = this.readonly;
+    this.updateMute();
+    this.handler?.reset?.call();
+  }
+
+  reset() {
+    this.formControls.forEach(input => input.reset());
+    this.readonly = this._originalMute;
+    this.handler?.reset?.call();
+    this.updateMute();
+  }
+
+  mute() {
+    this.readonly = true;
+    this.updateMute();
+  }
+
+  unMute() {
+    this.readonly = false;
+    this.updateMute();
+  }
+
+  private updateMute() {
+    if (this.isMute) {
+      setTimeout(() => {
+        this.formControls.forEach(input => {
+          input.disabled = false;
+        });
+      }, 0);
+    } else {
+      setTimeout(() => {
+        this.formControls.forEach(input => {
+          input.disabled = true;
+        });
+      }, 0);
+    }
+  }
 }

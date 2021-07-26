@@ -21,6 +21,7 @@ public class Trip extends AbstractEntity {
     Column status = status(TripStatus.class);
     Column startTime = of(TIME_ONLY);
 
+    MapColumn allTripUserSeats = map(TripUserSeat.class);
     MapColumn startPoint = map(BussPoint.class);
     MapColumn endPoint = map(BussPoint.class);
     MapColumn tripUsers = map(TripUser.class);

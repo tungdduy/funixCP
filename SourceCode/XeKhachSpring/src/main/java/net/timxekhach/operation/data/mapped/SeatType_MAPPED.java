@@ -1,10 +1,14 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.BussType;
 
 
@@ -30,10 +34,26 @@ public abstract class SeatType_MAPPED extends XeEntity {
         protected Long bussTypeId;
         protected Long seatTypeId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long seatTypeIdLong = Long.parseLong(data.get("seatTypeId"));
+            if(NumberUtils.min(new long[]{bussTypeIdLong, seatTypeIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new SeatType_MAPPED.Pk(bussTypeIdLong, seatTypeIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new SeatType_MAPPED.Pk(0L, 0L);
+    }
+
     protected SeatType_MAPPED(){}
     protected SeatType_MAPPED(BussType bussType) {
         this.bussType = bussType;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -42,6 +62,7 @@ public abstract class SeatType_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussType bussType;
 
     public void setBussType(BussType bussType) {
@@ -51,5 +72,15 @@ public abstract class SeatType_MAPPED extends XeEntity {
 
     @Size(max = 255)
     protected String name;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("name")) {
+                this.name = String.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

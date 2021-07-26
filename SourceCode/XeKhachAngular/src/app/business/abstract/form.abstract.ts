@@ -1,19 +1,13 @@
-import {
-  AfterContentChecked,
-  AfterContentInit,
-  AfterViewChecked,
-  AfterViewInit,
-  Directive, QueryList,
-  ViewChildren
-} from "@angular/core";
+import {AfterViewInit, Directive, QueryList, ViewChildren} from "@angular/core";
 import {XeFormComponent} from "../../framework/components/xe-form/xe-form.component";
+import {FormHandler} from "./formHandler";
 
 @Directive()
 export abstract class FormAbstract  implements AfterViewInit {
 
   @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
 
-  abstract handlers();
+  handlers: FormHandler[];
 
   ngAfterViewInit(): void {
     this.___forms.forEach(form => {
@@ -22,6 +16,7 @@ export abstract class FormAbstract  implements AfterViewInit {
   }
 
   private getGroupCode = (formCode: string) => {
+    if (!formCode) return "";
     const groups = formCode.split(".");
     if (groups.length > 1) {
       return groups.join(".");
@@ -39,4 +34,5 @@ export abstract class FormAbstract  implements AfterViewInit {
       });
     }, 0);
   }
+
 }

@@ -1,0 +1,25 @@
+.camera {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.avatar-holder {
+  position: relative;
+}
+
+
+.avatar-content {
+  position: relative;
+  height: 100px;
+}
+
+.avatar-title {
+  top: 50%;
+  position: absolute;
+  margin: 0;
+  width: 100%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+

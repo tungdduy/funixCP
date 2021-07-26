@@ -1,11 +1,6 @@
 package net.timxekhach.operation.data.mapped;
 
 <#compress>
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-
 <#list root.imports as import>
 import ${import};
 </#list>
@@ -39,6 +34,22 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
         protected Long ${primaryKey.fieldName};
     </#list>
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            <#list root.primaryKeys as pk>
+            Long ${pk.fieldName}Long = Long.parseLong(data.get("${pk.fieldName}"));
+            </#list>
+            if(NumberUtils.min(new long[]{<#list root.primaryKeys as pk>${pk.fieldName}Long<#if pk_has_next>, </#if></#list>}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new ${root.entityClassName}_MAPPED.Pk(<#list root.primaryKeys as pk>${pk.fieldName}Long<#if pk_has_next>, </#if></#list>);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new ${root.entityClassName}_MAPPED.Pk(<#list root.primaryKeys as pk>0L<#if pk_has_next>, </#if></#list>);
+    }
+
     <#if root.constructorParams?size gt 0>
     protected ${root.entityClassName}_MAPPED(){}
     protected ${root.entityClassName}_MAPPED(<#list root.constructorParams as param>${param.simpleClassName} ${param.name}<#if param_has_next>, </#if></#list>) {
@@ -46,6 +57,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
         this.${param.name} = ${param.name};
     </#list>
     }
+
     </#if>
 <#list root.pkMaps as pkMap>
     @ManyToOne
@@ -58,6 +70,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
         updatable = false)<#if join_has_next>, </#if>
     </#list>
     })
+    @JsonIgnore
     protected ${pkMap.simpleClassName} ${pkMap.fieldName};
 
     public void set${pkMap.fieldName?cap_first}(${pkMap.simpleClassName} ${pkMap.fieldName}) {
@@ -92,6 +105,7 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
         updatable = false)<#if join_has_next>, </#if>
     </#list>
     })
+    @JsonIgnore
     protected ${map.mapTo.simpleClassName} ${map.fieldName};
 
     public void set${map.fieldName?cap_first}(${map.mapTo.simpleClassName} ${map.fieldName}) {
@@ -138,7 +152,33 @@ public abstract class ${root.entityClassName}_MAPPED extends XeEntity {
     <#if column.isUnique>
     @Column(unique = true)
     </#if>
+    <#if column.jsonIgnore>
+    @JsonIgnore
+    </#if>
     protected ${column.simpleClassName} ${column.fieldName}${column.initialString};
 
 </#list>
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+        <#list root.fieldsAbleAssignByString as column>
+            if (fieldName.equals("${column.fieldName}")) {
+                <#if column.simpleClassName == 'Date'>
+                try {
+                    this.${column.fieldName} = DateUtils.parseDate(value);
+                } catch (Exception e) {
+                    ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                }
+                <#else>
+                this.${column.fieldName} = ${column.simpleClassName}.valueOf(value);
+                </#if>
+                <#if column_has_next>
+                return;
+                </#if>
+            }
+        </#list>
+        });
+    }
+
+
+
 }

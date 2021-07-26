@@ -1,20 +1,23 @@
 package net.timxekhach.operation.data.repository;
+<#assign camelName = root.entityCamelName>
+<#assign capName = root.entityClassName>
 ${root.importSeparator}
 <#compress>
-    <#if root.importContent?has_content>
-        ${root.importContent}
-    <#else>
-    import net.timxekhach.operation.data.entity.${root.entityClassName};
-    import net.timxekhach.operation.data.mapped.${root.entityClassName}_MAPPED;
-    import org.springframework.data.jpa.repository.JpaRepository;
-    import org.springframework.stereotype.Repository;
-    </#if>
+<#if root.importContent?has_content>
+${root.importContent}
+</#if>
 </#compress>
 
 ${root.importSeparator}
 
 @Repository
-public interface ${root.entityClassName}Repository extends JpaRepository<${root.entityClassName}, ${root.entityClassName}_MAPPED.Pk> {
+public interface ${capName}Repository extends JpaRepository<${capName}, ${capName}_MAPPED.Pk> {
+    @SuppressWarnings("unused")
+    default void update${capName}(Map<String, String> data) {
+        ${capName} ${camelName} = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(${capName}.pk(data)));
+        ${camelName}.setFieldByName(data);
+        this.save(${camelName});
+    }
 
 ${root.bodySeparator}
 

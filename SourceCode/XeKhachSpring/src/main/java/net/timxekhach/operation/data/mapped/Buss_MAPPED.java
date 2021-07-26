@@ -1,11 +1,15 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.BussType;
 
 
@@ -37,11 +41,28 @@ public abstract class Buss_MAPPED extends XeEntity {
         protected Long bussId;
         protected Long companyId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long bussIdLong = Long.parseLong(data.get("bussId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            if(NumberUtils.min(new long[]{bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new Buss_MAPPED.Pk(bussTypeIdLong, bussIdLong, companyIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new Buss_MAPPED.Pk(0L, 0L, 0L);
+    }
+
     protected Buss_MAPPED(){}
     protected Buss_MAPPED(Company company, BussType bussType) {
         this.company = company;
         this.bussType = bussType;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -50,6 +71,7 @@ public abstract class Buss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Company company;
 
     public void setCompany(Company company) {
@@ -65,6 +87,7 @@ public abstract class Buss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussType bussType;
 
     public void setBussType(BussType bussType) {
@@ -74,5 +97,15 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     @Size(max = 255)
     protected String bussDesc;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("bussDesc")) {
+                this.bussDesc = String.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

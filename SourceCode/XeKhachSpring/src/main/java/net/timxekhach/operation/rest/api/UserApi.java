@@ -8,9 +8,14 @@ import net.timxekhach.operation.data.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.UserService;
 import static net.timxekhach.utility.XeResponseUtils.success;
+import static org.springframework.http.HttpStatus.OK;
+
 import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
 import java.util.Map;
 import net.timxekhach.operation.data.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -42,21 +47,34 @@ public class UserApi {
 		return success();
 	}
 
-	@PostMapping("/update-user")
-	public ResponseEntity<Void> updateUser () {
-		userService.updateUser();
-		return success();
-	}
-
 	@PostMapping("/update-thumbnails")
 	public ResponseEntity<Void> updateThumbnails () {
 		userService.updateThumbnails();
 		return success();
 	}
+
 	@PostMapping("/change-password")
 	public ResponseEntity<Void> changePassword (@RequestBody Map<String, String> secretKeyInfo) {
 		userService.changePassword(secretKeyInfo);
 		return success();
+	}
+
+	@PostMapping("/update-password")
+	public ResponseEntity<Void> updatePassword (@RequestBody Map<String, String> data) {
+		userService.updatePassword(data);
+		return success();
+	}
+
+	@PostMapping("/update-user")
+	public ResponseEntity<Void> updateUser (@RequestBody Map<String, String> data) {
+		userService.updateUser(data);
+		return success();
+	}
+
+	@PostMapping("/update-profile-image")
+	public ResponseEntity<String> updateProfileImage(@RequestParam("username") String userId,
+												   @RequestParam(value = "profileImage") MultipartFile profileImage){
+		return success(userService.updateProfileImage(userId, profileImage));
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

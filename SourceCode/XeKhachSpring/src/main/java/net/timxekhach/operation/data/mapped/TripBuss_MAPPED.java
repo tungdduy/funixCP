@@ -1,12 +1,19 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import javax.persistence.*;;
 import java.util.Date;
+import net.timxekhach.operation.response.ErrorCode;;
+import java.util.ArrayList;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.math.NumberUtils;;
+import java.util.List;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussPoint;
 import net.timxekhach.operation.data.entity.TripPoint;
+import lombok.*;;
 import net.timxekhach.operation.data.entity.Buss;
 
 
@@ -44,10 +51,28 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         protected Long companyId;
         protected Long tripBussId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long bussIdLong = Long.parseLong(data.get("bussId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            Long tripBussIdLong = Long.parseLong(data.get("tripBussId"));
+            if(NumberUtils.min(new long[]{bussTypeIdLong, bussIdLong, companyIdLong, tripBussIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new TripBuss_MAPPED.Pk(bussTypeIdLong, bussIdLong, companyIdLong, tripBussIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new TripBuss_MAPPED.Pk(0L, 0L, 0L, 0L);
+    }
+
     protected TripBuss_MAPPED(){}
     protected TripBuss_MAPPED(Buss buss) {
         this.buss = buss;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -66,6 +91,7 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Buss buss;
 
     public void setBuss(Buss buss) {
@@ -75,44 +101,13 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         this.bussId = buss.getBussId();
     }
 
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "tripPointsBussTypeId",
-        referencedColumnName = "bussTypeId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripPointsCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripPointsTripPointId",
-        referencedColumnName = "tripPointId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripPointsTripBussId",
-        referencedColumnName = "tripBussId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripPointsBussId",
-        referencedColumnName = "bussId",
-        insertable = false,
-        updatable = false)
-    })
-    protected TripPoint tripPoints;
-
-    public void setTripPoints(TripPoint tripPoints) {
-        this.tripPoints = tripPoints;
-        this.tripPointsBussTypeId = tripPoints.getBussTypeId();
-        this.tripPointsCompanyId = tripPoints.getCompanyId();
-        this.tripPointsTripPointId = tripPoints.getTripPointId();
-        this.tripPointsTripBussId = tripPoints.getTripBussId();
-        this.tripPointsBussId = tripPoints.getBussId();
-    }
+    @OneToMany(
+        mappedBy = "tripBuss",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<TripPoint> tripPoints = new ArrayList<>();
 
     @ManyToOne
     @JoinColumns({
@@ -127,6 +122,7 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussPoint startPoint;
 
     public void setStartPoint(BussPoint startPoint) {
@@ -148,6 +144,7 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussPoint endPoint;
 
     public void setEndPoint(BussPoint endPoint) {
@@ -155,21 +152,6 @@ public abstract class TripBuss_MAPPED extends XeEntity {
         this.endPointBussPointId = endPoint.getBussPointId();
         this.endPointLocationId = endPoint.getLocationId();
     }
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripPointsBussTypeId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripPointsCompanyId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripPointsTripPointId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripPointsTripBussId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripPointsBussId;
 
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long startPointLocationId;
@@ -212,5 +194,59 @@ public abstract class TripBuss_MAPPED extends XeEntity {
 
 
     protected Boolean saturday = false;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("launchTime")) {
+                try {
+                    this.launchTime = DateUtils.parseDate(value);
+                } catch (Exception e) {
+                    ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                }
+                return;
+            }
+            if (fieldName.equals("effectiveDateFrom")) {
+                try {
+                    this.effectiveDateFrom = DateUtils.parseDate(value);
+                } catch (Exception e) {
+                    ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                }
+                return;
+            }
+            if (fieldName.equals("price")) {
+                this.price = Long.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("sunday")) {
+                this.sunday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("monday")) {
+                this.monday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("tuesday")) {
+                this.tuesday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("wednesday")) {
+                this.wednesday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("thursday")) {
+                this.thursday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("friday")) {
+                this.friday = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("saturday")) {
+                this.saturday = Boolean.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

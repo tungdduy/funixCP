@@ -13,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-
+@SuppressWarnings("all")
 public enum ErrorCode {
     ACCESS_DENIED,
     DO_NOT_HAVE_PERMISSION,
@@ -31,7 +32,14 @@ public enum ErrorCode {
     ASSIGN_1_TIME_ONLY,
     SEND_EMAIL_FAILED,
     EMAIL_NOT_EXIST("email"),
-    SECRET_KEY_NOT_MATCH
+    SECRET_KEY_NOT_MATCH,
+    INVALID_TIME_FORMAT("fieldName"),
+    CANNOT_FIND_USER("userId", "username", "email"),
+    DATA_NOT_FOUND,
+    CURRENT_PASSWORD_WRONG,
+    PASSWORD_NOT_MATCH,
+    NOTHING_CHANGED,
+    TRIP_NOT_FOUND
     ;
 
 
@@ -72,12 +80,24 @@ public enum ErrorCode {
         }
     }
 
+    public void throwIfFalse(boolean isFalse, String... paramValues) {
+        if(!isFalse) {
+            throwNow(paramValues);
+        }
+    }
+
     public <T> T throwIfNull(T object, String... paramValues) {
         if (object == null) {
             throwNow(paramValues);
         }
         return object;
+    }
 
+    public <T> T throwIfNotPresent(Optional<T> optional, String... paramValues) {
+        if (!optional.isPresent()) {
+            throwNow(paramValues);
+        }
+        return optional.get();
     }
 
     public void throwIfBlank(String value, String... paramValues) {

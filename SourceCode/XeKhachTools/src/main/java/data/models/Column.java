@@ -17,7 +17,8 @@ public class Column {
                 isPhone = false,
                 isNotNull = false,
                 isUnique = false,
-                isEnumerated = false;
+                isEnumerated = false,
+                jsonIgnore = false;
         String regex, simpleClassName, fieldName, initialString;
 
         public String getSimpleClassName(){
@@ -90,6 +91,11 @@ public class Column {
     public Column maxLen(int maxSize) {
         ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getMaxSize() != null);
         core.setMaxSize(maxSize);
+        return this;
+    }
+
+    public Column jsonIgnore() {
+        core.jsonIgnore = true;
         return this;
     }
 

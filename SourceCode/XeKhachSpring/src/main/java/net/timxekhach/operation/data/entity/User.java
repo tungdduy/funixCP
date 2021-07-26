@@ -40,11 +40,16 @@ public List<String> getRoles() {
 
     public void createSecretPasswordKey() {
         this.secretPasswordKey = XeStringUtils.randomAlphaNumerics(6);
-        logger.info("secret passwork key is: " + this.secretPasswordKey);
+        logger.info("secret password key is: " + this.secretPasswordKey);
     }
 
     public boolean isMatchSecretPasswordKey(String secretKey) {
         return secretKey == null || !secretKey.equals(this.secretPasswordKey);
+    }
+
+    public String nullIfNotCurrentPassword(String currentPassword) {
+        return currentPassword != null
+                && SecurityConfig.getPasswordEncoder().matches(currentPassword, this.password) ? currentPassword : null;
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

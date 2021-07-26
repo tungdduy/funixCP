@@ -5,7 +5,7 @@ import data.models.MapColumn;
 
 public class TripPoint extends AbstractEntity {
     {
-        pk(TripBuss.class);
+        pk(BussTrip.class);
     }
     MapColumn stopPoint = map(BussPoint.class);
 }

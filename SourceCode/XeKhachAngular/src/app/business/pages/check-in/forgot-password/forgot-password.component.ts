@@ -16,20 +16,23 @@ export class ForgotPasswordComponent extends FormAbstract {
     Url.app.CHECK_IN.LOGIN.go();
   }
 
-  handlers = () => ({
-    start: {
+  handlers = [
+    {
+      name: "start",
       processor: (data) => this.authService.forgotPassword(data),
-      success: (response) => this.showForm('secret')
+      success: {call: () => this.showForm('secret')}
     },
-    secret: {
+    {
+      name: "secret",
       processor: (data) => this.authService.forgotPasswordSecretKey(data),
-      success: (response) => this.showForm('newPassword')
+      success: {call: () => this.showForm('newPassword')}
     },
-    newPassword: {
+    {
+      name: "newPassword",
       processor: (data) => this.authService.changePassword(data),
-      success: (response) => this.showForm('success')
+      success: {call: () => this.showForm('success')}
     }
-  })
+  ];
 
 }
 

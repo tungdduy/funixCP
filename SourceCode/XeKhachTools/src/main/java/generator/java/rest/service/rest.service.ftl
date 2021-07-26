@@ -3,10 +3,11 @@ ${root.importSeparator}
 ${root.importContent}
 ${root.importSeparator}
 
+<#assign capName = root.capitalizeName>
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ${root.capitalizeName}Service {
+public class ${capName}Service {
 
 ${root.bodySeparator}
 ${root.bodyContent}

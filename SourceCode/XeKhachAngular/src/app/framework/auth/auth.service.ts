@@ -31,4 +31,16 @@ export class AuthService {
   public changePassword(changePasswordInfo): Observable<any> {
     return this.http.post<any>(Url.api.USER.CHANGE_PASSWORD.full, changePasswordInfo);
   }
+
+  updateUser(data): Observable<any> {
+    return this.http.post<any>(Url.api.USER.UPDATE_USER.full, data);
+  }
+
+  updatePassword(data): Observable<any> {
+    return this.http.post<any>(Url.api.USER.UPDATE_PASSWORD.full, data);
+  }
+
+  updateProfileImage(formData: FormData) {
+    return this.http.post<any>(Url.api.USER.UPDATE_PROFILE_IMAGE.full, formData);
+  }
 }

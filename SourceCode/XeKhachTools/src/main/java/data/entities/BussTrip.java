@@ -9,7 +9,7 @@ import lombok.Setter;
 import static data.entities.abstracts.DataType.*;
 
 @Getter @Setter
-public class TripBuss extends AbstractEntity {
+public class BussTrip extends AbstractEntity {
     {
         pk(Buss.class);
     }

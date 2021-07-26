@@ -1,5 +1,6 @@
 package util;
 
+import generator.abstracts.interfaces.SeparatorContent;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -38,16 +39,16 @@ public class ReflectionUtil extends ReflectionUtils {
         return reflections.getSubTypesOf(clazz);
     }
 
-    @SuppressWarnings({"unchecked","rawtypes"})
-    public static <E> List<? extends E> newInstancesOfAllChildren(Class<E> clazz, String packageName) {
-        List children = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public static <E, T extends E> List<T> newInstancesOfAllChildren(Class<E> clazz, String packageName) {
+        List<T> children = new ArrayList<>();
         findExtendsClassesInPackage(clazz, packageName).forEach(childClass -> {
             logger.debug("new instance for " + childClass.getName());
             if (Modifier.isAbstract(childClass.getModifiers())) {
                 return;
             }
             Object child = newInstance(childClass);
-            children.add(child);
+            children.add((T) child);
         });
         return children;
     }
@@ -89,11 +90,9 @@ public class ReflectionUtil extends ReflectionUtils {
         return null;
     }
 
-    @SuppressWarnings("all")
     public static void invokeSet(Object obj, String fieldName, Object value) {
         try {
             Method setMethod = obj.getClass().getMethod("set" + StringUtil.toCapitalizeEachWord(fieldName), value.getClass());
-            Method getMethod = obj.getClass().getMethod("get" + StringUtil.toCapitalizeEachWord(fieldName));
             Class<?> fieldType = setMethod.getParameters()[0].getType();
             if (fieldType.isAssignableFrom(value.getClass()) && value.getClass().isAssignableFrom(fieldType)) {
                 setMethod.invoke(obj, value.getClass().cast(value));
@@ -102,6 +101,35 @@ public class ReflectionUtil extends ReflectionUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeStatic(Class<?> objClass, String methodName, Object... params) {
+        try {
+            Class<?>[] paramClasses = null;
+            if (params != null) {
+                 paramClasses = new Class<?>[params.length];
+                for (int i = 0; i < params.length; i++) {
+                    paramClasses[i] = params[i].getClass();
+                }
+            }
+            Method method = objClass.getDeclaredMethod(methodName, paramClasses);
+            return (T) method.invoke(null, params);
+        } catch (Exception e) {
+            logger.debug(String.format("not found method %s of %s", methodName, objClass.getSimpleName()));
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeGet(Object obj, String fieldName) {
+        try {
+            Method getMethod = obj.getClass().getDeclaredMethod("get" + StringUtil.toCapitalizeEachWord(fieldName));
+            return (T) getMethod.invoke(obj);
+        } catch (Exception e) {
+            logger.debug(String.format("not found field %s of %s", fieldName, obj.getClass().getSimpleName()));
+        }
+        return null;
     }
 
 }

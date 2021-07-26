@@ -10,10 +10,14 @@ import javax.xml.ws.Holder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static util.StringUtil.toCamel;
+
 @Getter @Setter
 public abstract class AbstractEntityModel<E extends AbstractEntity> extends AbstractModel{
-    protected String entityClassName;
+
     protected E entity;
+    protected String entityClassName;
+    protected String entityCamelName;
     protected List<Param> constructorParams = new ArrayList<>();
 
     public static Holder<AbstractEntity> entityHolder = new Holder<>();
@@ -23,6 +27,7 @@ public abstract class AbstractEntityModel<E extends AbstractEntity> extends Abst
     protected void init() {
         this.entity = (E) entityHolder.value;
         this.entityClassName = this.entity.getClass().getSimpleName();
+        this.entityCamelName = toCamel(this.entityClassName);
         super.init();
     }
 

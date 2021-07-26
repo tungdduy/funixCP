@@ -1,11 +1,15 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
 import net.timxekhach.operation.data.entity.SeatType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
 
 
@@ -61,12 +65,33 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         protected Long seatTypeId;
         protected Long tripUserSeatId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long tripIdLong = Long.parseLong(data.get("tripId"));
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long bussIdLong = Long.parseLong(data.get("bussId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            Long seatTypeIdLong = Long.parseLong(data.get("seatTypeId"));
+            Long tripUserSeatIdLong = Long.parseLong(data.get("tripUserSeatId"));
+            if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong, userIdLong, seatTypeIdLong, tripUserSeatIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new TripUserSeat_MAPPED.Pk(tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong, userIdLong, seatTypeIdLong, tripUserSeatIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new TripUserSeat_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L, 0L);
+    }
+
     protected TripUserSeat_MAPPED(){}
     protected TripUserSeat_MAPPED(Trip trip, User user, SeatType seatType) {
         this.trip = trip;
         this.user = user;
         this.seatType = seatType;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -90,6 +115,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Trip trip;
 
     public void setTrip(Trip trip) {
@@ -108,6 +134,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected User user;
 
     public void setUser(User user) {
@@ -128,6 +155,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected SeatType seatType;
 
     public void setSeatType(SeatType seatType) {
@@ -135,5 +163,12 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         this.bussTypeId = seatType.getBussTypeId();
         this.seatTypeId = seatType.getSeatTypeId();
     }
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+        });
+    }
+
+
 
 }

@@ -6,24 +6,38 @@ import org.slf4j.LoggerFactory;
 import util.StringUtil;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static net.timxekhach.utility.XeFileUtils.readAsString;
-import static util.ReflectionUtil.invokeSet;
+import static util.ReflectionUtil.*;
 import static util.StringUtil.*;
 
 public interface SeparatorContent extends RenderFilePath {
-    static Logger logger = LoggerFactory.getLogger(SeparatorContent.class);
 
     default void updateSeparatorContent() {
         String oldContent = readAsString(this.buildRenderFilePath());
         fetchAllSeparator(null, this.getClass()).forEach(segmentName -> {
             String segmentSeparator = buildSeparator(toUPPER_UNDERLINE(segmentName));
+
             String segmentContentName = segmentName + "Content";
-            invokeSet(this, segmentContentName, fetchSeparatorContent(segmentSeparator, oldContent));
+            String segmentContent = fetchSeparatorContent(segmentSeparator, oldContent);
+
+            String segmentRequireLinesName =  segmentName + "RequireLines";
+            Set<String> segmentRequireLines = invokeGet(this, segmentRequireLinesName);
+
+            if (segmentRequireLines != null) {
+                segmentRequireLines.addAll(Arrays.asList(StringUtil.split("\n", segmentContent)));
+                segmentContent = String.join("\n", segmentRequireLines);
+            }
+
+            invokeSet(this, segmentContentName, segmentContent);
         });
     }
+
+
 
     default Set<String> fetchAllSeparator(Set<String> separatorNames, Class<?> checkingClass) {
         if(separatorNames == null) {

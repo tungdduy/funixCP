@@ -1,11 +1,15 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.Location;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 
 
 @MappedSuperclass @Getter @Setter
@@ -24,6 +28,20 @@ public abstract class Location_MAPPED extends XeEntity {
     public static class Pk extends XePk {
         protected Long locationId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long locationIdLong = Long.parseLong(data.get("locationId"));
+            if(NumberUtils.min(new long[]{locationIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new Location_MAPPED.Pk(locationIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new Location_MAPPED.Pk(0L);
+    }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -32,6 +50,7 @@ public abstract class Location_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Location parent;
 
     public void setParent(Location parent) {
@@ -44,5 +63,15 @@ public abstract class Location_MAPPED extends XeEntity {
 
     @Size(max = 255)
     protected String locationName;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("locationName")) {
+                this.locationName = String.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

@@ -5,6 +5,7 @@ import data.models.MapColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,10 @@ public abstract class AbstractEntity {
 
     public String getFullOperationClassName() {
         return "net.timxekhach.operation.data.entity." + this.getClass().getSimpleName();
+    }
+
+    public String idName(){
+        return StringUtil.toIdName(this);
     }
 
     public List<AbstractEntity> getPrimaryKeyEntities() {

@@ -1,1 +1,3 @@
-<span class="{{isParagraph ? 'd-inline-block pb-3' : ''}}">{{textValue}}<br *ngIf="breakLine"></span>
+<span *ngIf="textValue" class="{{msgClass}} {{isParagraph ? 'd-block pb-3' : ''}}">{{textValue}}<br *ngIf="breakLine">
+  <ng-content></ng-content>
+</span>

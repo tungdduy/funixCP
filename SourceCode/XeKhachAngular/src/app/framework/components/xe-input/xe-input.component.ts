@@ -1,14 +1,23 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, EventEmitter, Output, AfterViewInit} from '@angular/core';
 import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
 import {AppMessages, XeLbl} from "../../../business/i18n";
+
 
 @Component({
   selector: 'xe-input',
   templateUrl: './xe-input.component.html',
   styleUrls: ['./xe-input.component.scss']
 })
-export class XeInputComponent {
+export class XeInputComponent implements AfterViewInit {
+  _originValue;
+  ngAfterViewInit(): void {
+      this._originValue = this.value;
+  }
+
+  get isChanged() {
+    return this._originValue !== this.value;
+  }
 
   @Input() type: string = "text";
   @Input() lblKey: string;
@@ -19,12 +28,40 @@ export class XeInputComponent {
   @Input() maxLength?: bigint;
   @Input() matching?: any;
   @Input() name?: string;
-  @Input() disabled?: any;
+  @Input() _disabled;
+  get disabled() {
+    return this._disabled === false || this._disabled === undefined;
+  }
+  set disabled(val) {
+    this.errorMessage = undefined;
+    this._disabled = val;
+  }
   @Input() grid?: any;
-  @Input() value: string;
+  @Input() get value() {
+    return this._value;
+  }
+  set value(val) {
+    this._value = val;
+    this.valueChange.emit(this._value);
+  }
+  _value;
+  @Output() valueChange = new EventEmitter<any>();
+  @Input() icon?;
   public errorMessage?: string;
 
   private _label: string;
+
+  get isShowError() {
+    return !this.disabled && !!this.errorMessage;
+  }
+
+  public get hint() {
+    if (this.disabled) {
+      return XeLbl('NO_VALUE');
+    } else {
+      return XeLbl('PLEASE_INPUT');
+    }
+  }
 
   public get label() {
     if (!this._label) {
@@ -34,8 +71,32 @@ export class XeInputComponent {
     return this._label;
   }
 
+  public get placeHolder() {
+    if (this.isGrid) {
+      return XeLbl(this.hint);
+    }
+    return this.label;
+  }
+
+  icons = {
+    email: 'envelope',
+    username: 'id-card',
+    password: 'key',
+    fullName: 'user',
+    phoneNumber: 'mobile-alt',
+  };
+
+  getIcon() {
+    if (!this.icon) {
+      this.icon = this.icons[this.type] ? this.icons[this.type]
+      : this.icons[this.name] ? this.icons[this.name]
+          : this.fetchAnyPossibleIconFromName();
+    }
+    return this.icon;
+  }
+
   get isGrid() {
-    return this.grid === '';
+    return this.grid === '' || this.grid === true;
   }
 
   getId(): string {
@@ -63,7 +124,7 @@ export class XeInputComponent {
   }
 
   get isRequire() {
-    return this.required === '' || this.minLength || this.maxLength || this.matching;
+    return this.required === '' || this.required === true || this.minLength || this.maxLength || this.matching;
   }
 
   isValidateSuccess(): boolean {
@@ -87,6 +148,12 @@ export class XeInputComponent {
       this.errorMessage = AppMessages.EMAIL_NOT_VALID;
       return;
     }
+
+    if (this.getName().toLowerCase().includes("phone") && !RegexUtil.isValidPhone(this.value)) {
+      this.errorMessage = AppMessages.PHONE_NOT_VALID;
+      return;
+    }
+
 
     if (this.matching) {
       if (this.matching instanceof XeInputComponent && this.matching.value !== this.value) {
@@ -114,5 +181,21 @@ export class XeInputComponent {
     return true;
   }
 
+  private fetchAnyPossibleIconFromName() {
+    for (const key in this.icons) {
+      if (this.getName().toLowerCase().includes(key)) {
+        return this.icons[key];
+      }
+    }
+    console.log(this.getName());
+    return 'book-open';
+  }
+
+  reset() {
+    this.value = this._originValue;
+  }
+  update() {
+    this._originValue = this.value;
+  }
 }
 

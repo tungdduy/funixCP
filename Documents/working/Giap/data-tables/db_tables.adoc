@@ -68,7 +68,7 @@ package buss.config {
 	}
 }
 
-package position {
+package pos {
 	class Buss_point {
 		point_id
 		location_id
@@ -100,10 +100,6 @@ package trip.setup {
 		saturday
 	}
 	
-	class Trip_Point {
-		trip_buss_id
-		point_id
-	}
 }
 
 package trip.operation {
@@ -157,10 +153,5 @@ Buss_Employee::buss_id --> Buss::buss_id
 
 Trip_Buss::buss_id --> Buss::buss_id
 Buss_point::location_id --> Location::location_id
-
-Trip_Point::trip_buss_id --> Trip_Buss::trip_buss_id
-Trip_Point::point_id --> Buss_point::point_id
-
-
 
 ....

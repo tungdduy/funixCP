@@ -1,0 +1,7 @@
+<div class="p-2 {{posClass}}">
+  <button
+    [type]="btnType"
+    class="btn btn-{{state}} {{btnSize}}"
+    [disabled]="disabled"
+  ><nb-icon *ngIf="icon" [icon]="icon" pack="fa"></nb-icon><span class="d-inline-block pl-2">{{label}}</span></button>
+</div>

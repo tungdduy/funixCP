@@ -8,7 +8,7 @@ export const AppMessages = AppMessages_vi;
 export const XeLabel = Label_vi;
 export const XeLbl = (lblKey: string) => {
   if (!lblKey) return "";
-  lblKey = StringUtil.toUPPER_UNDERLINE(lblKey);
-  const lbl = XeLabel[lblKey];
+  const testKey = StringUtil.toUPPER_UNDERLINE(lblKey);
+  const lbl = XeLabel[testKey];
   return lbl ? lbl : lblKey;
 };

@@ -53,6 +53,7 @@ export class AuthUtil {
     const token = StorageUtil.getString(configConstant.TOKEN);
     if (StringUtil.blankOrNotEqual(AuthUtil._token, token)) {
       AuthUtil.decodeAndSaveToken(token);
+      AuthUtil._user = StorageUtil.getFromJson(configConstant.USER);
     }
     return AuthUtil;
   }
@@ -65,17 +66,18 @@ export class AuthUtil {
   }
 
   static saveResponse(response: HttpResponse<User>) {
+    console.log(response);
     const token = response.headers.get(AuthConfig.tokenHeader);
     AuthUtil.decodeAndSaveToken(token);
     AuthUtil.setRepoUser(response.body);
   }
 
   static get user() {
-    return AuthUtil.instance.user;
+    return Object.assign({}, AuthUtil.instance._user);
   }
 
-  private static setRepoUser(user: User) {
-    AuthUtil._user = user;
+  public static setRepoUser(user: User) {
+    AuthUtil._user = Object.assign({}, user);
     StorageUtil.setItem(configConstant.USER, user);
   }
 

@@ -1,20 +1,20 @@
 package net.timxekhach.operation.rest.service;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
+import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.data.repository.UserRepository;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.jwt.JwtTokenProvider;
 import net.timxekhach.utility.XeResponseUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
-
-import net.timxekhach.operation.data.entity.User;
 
 import static net.timxekhach.operation.response.ErrorCode.*;
 import static net.timxekhach.utility.XeMailUtils.sendEmailPasswordSecretKey;
@@ -30,7 +30,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public ResponseEntity<User> login (Map<String, String> info) {
 		String username = info.get("username");
@@ -67,13 +66,8 @@ public class UserService {
 		SECRET_KEY_NOT_MATCH.throwIf(user.isMatchSecretPasswordKey(secretKey));
 	}
 
-	public void updateUser () {
-		// TODO : service updateUser method
-	}
-
 	public void updateThumbnails () {
 		// TODO : service updateThumbnails method
-
 	}
 	public void changePassword (Map<String, String> secretKeyInfo) {
 		String email = secretKeyInfo.get("email");
@@ -83,6 +77,26 @@ public class UserService {
 		SECRET_KEY_NOT_MATCH.throwIf(user.isMatchSecretPasswordKey(secretKey));
 		user.encodePassword(newPassword);
 		userRepository.save(user);
+	}
+
+	public void updateUser(Map<String, String> user) {
+		userRepository.updateUser(user);
+	}
+
+	public void updatePassword (Map<String, String> data) {
+		User user = ErrorCode.DATA_NOT_FOUND
+				.throwIfNotPresent(userRepository.findById(User.pk(data)));
+		String currentPassword = ErrorCode.CURRENT_PASSWORD_WRONG.throwIfNull(
+				user.nullIfNotCurrentPassword(data.get("currentPassword")));
+		String newPassword = data.get("newPassword");
+		ErrorCode.PASSWORD_NOT_MATCH.throwIfFalse(newPassword.equals(data.get("reNewPassword")));
+		ErrorCode.NOTHING_CHANGED.throwIf(newPassword.equals(currentPassword));
+		user.encodePassword(newPassword);
+		userRepository.save(user);
+	}
+
+	public String updateProfileImage(String userId, MultipartFile profileImage) {
+		return null;
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

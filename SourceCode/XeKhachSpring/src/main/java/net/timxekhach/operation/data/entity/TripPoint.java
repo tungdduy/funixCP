@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 public class TripPoint extends TripPoint_MAPPED {
 
     public TripPoint() {}
-    public TripPoint(TripBuss tripBuss) {
-        super(tripBuss);
+    public TripPoint(BussTrip bussTrip) {
+        super(bussTrip);
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

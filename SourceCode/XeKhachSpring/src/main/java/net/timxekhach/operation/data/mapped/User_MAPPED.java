@@ -1,11 +1,17 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
+import java.util.List;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
 import net.timxekhach.operation.data.entity.TripUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
+import java.util.ArrayList;
 
 
 @MappedSuperclass @Getter @Setter
@@ -24,68 +30,27 @@ public abstract class User_MAPPED extends XeEntity {
     public static class Pk extends XePk {
         protected Long userId;
     }
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "allMyTripsCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allMyTripsBussId",
-        referencedColumnName = "bussId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allMyTripsUserId",
-        referencedColumnName = "userId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allMyTripsBussTypeId",
-        referencedColumnName = "bussTypeId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allMyTripsTripId",
-        referencedColumnName = "tripId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allMyTripsTripUserId",
-        referencedColumnName = "tripUserId",
-        insertable = false,
-        updatable = false)
-    })
-    protected TripUser allMyTrips;
 
-    public void setAllMyTrips(TripUser allMyTrips) {
-        this.allMyTrips = allMyTrips;
-        this.allMyTripsCompanyId = allMyTrips.getCompanyId();
-        this.allMyTripsBussId = allMyTrips.getBussId();
-        this.allMyTripsUserId = allMyTrips.getUserId();
-        this.allMyTripsBussTypeId = allMyTrips.getBussTypeId();
-        this.allMyTripsTripId = allMyTrips.getTripId();
-        this.allMyTripsTripUserId = allMyTrips.getTripUserId();
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            if(NumberUtils.min(new long[]{userIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new User_MAPPED.Pk(userIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new User_MAPPED.Pk(0L);
     }
 
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsCompanyId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsBussId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsUserId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsBussTypeId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsTripId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long allMyTripsTripUserId;
+    @OneToMany(
+        mappedBy = "user",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<TripUser> allMyTrips = new ArrayList<>();
 
 
     @Email
@@ -96,6 +61,7 @@ public abstract class User_MAPPED extends XeEntity {
     protected String phoneNumber;
 
     @Size(max = 255)
+    @JsonIgnore
     protected String password;
 
     @Size(max = 255)
@@ -113,6 +79,45 @@ public abstract class User_MAPPED extends XeEntity {
     protected Boolean nonLocked = false;
 
     @Size(max = 255)
+    @JsonIgnore
     protected String secretPasswordKey;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("email")) {
+                this.email = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("phoneNumber")) {
+                this.phoneNumber = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("password")) {
+                this.password = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("username")) {
+                this.username = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("fullName")) {
+                this.fullName = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("role")) {
+                this.role = String.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("nonLocked")) {
+                this.nonLocked = Boolean.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("secretPasswordKey")) {
+                this.secretPasswordKey = String.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

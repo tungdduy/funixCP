@@ -10,7 +10,7 @@ export class StorageUtil {
     return +localStorage.getItem((key));
   }
 
-  static getFromJson(key: string): object {
+  static getFromJson(key: string): any {
     const jsonString = StorageUtil.getString(key);
     if (jsonString !== null) {
       return JSON.parse(localStorage.getItem(key));

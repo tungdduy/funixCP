@@ -98,7 +98,7 @@ ene<a name="7.0.0"></a>
 * **dashboard:** update title country->region the orders list component  ([#1987](https://github.com/akveo/ngx-admin/issues/1987)) ([cf1bf4d](https://github.com/akveo/ngx-admin/commit/cf1bf4d))
 * **readme:** fix demo links ([#2028](https://github.com/akveo/ngx-admin/issues/2028)) ([1fb3205](https://github.com/akveo/ngx-admin/commit/1fb3205))
 * **rtl:** remove duplicate of nebular styles ([#1824](https://github.com/akveo/ngx-admin/issues/1824)) ([d8e7092](https://github.com/akveo/ngx-admin/commit/d8e7092))
-* **setting-sidebar:** Ie and firefox position bugs, linter ([#2023](https://github.com/akveo/ngx-admin/issues/2023)) ([8d471ba](https://github.com/akveo/ngx-admin/commit/8d471ba))
+* **setting-sidebar:** Ie and firefox pos bugs, linter ([#2023](https://github.com/akveo/ngx-admin/issues/2023)) ([8d471ba](https://github.com/akveo/ngx-admin/commit/8d471ba))
 * **sidebar:** Add Form Inputs extra component menu item ([#1966](https://github.com/akveo/ngx-admin/issues/1966)) ([658aa19](https://github.com/akveo/ngx-admin/commit/658aa19)), closes [#1965](https://github.com/akveo/ngx-admin/issues/1965)
 
 
@@ -115,7 +115,7 @@ ene<a name="7.0.0"></a>
 ### Bug Fixes
 
 * **datepicker:** fix datepicker arrow style ([#1925](https://github.com/akveo/ngx-admin/issues/1925)) ([a878197](https://github.com/akveo/ngx-admin/commit/a878197))
-* **toggle-settings-button:** position while search open ([#1993](https://github.com/akveo/ngx-admin/issues/1993)) ([f17aa32](https://github.com/akveo/ngx-admin/commit/f17aa32))
+* **toggle-settings-button:** pos while search open ([#1993](https://github.com/akveo/ngx-admin/issues/1993)) ([f17aa32](https://github.com/akveo/ngx-admin/commit/f17aa32))
 
 
 ### Features

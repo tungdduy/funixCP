@@ -3,7 +3,10 @@ import {NbComponentStatus, NbGlobalPhysicalPosition, NbToastrService} from "@neb
 import {XeResponseModel} from "./xe.response.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ObjectUtil} from "../util/object.util";
-import {ApiMessages, AppMessages} from "../../business/i18n";
+import {ApiMessages, AppMessages, XeLabel, XeLbl} from "../../business/i18n";
+import {StringUtil} from "../util/string.util";
+import {XeLabelComponent} from "../components/xe-label/xe-label.component";
+import {State} from "../model/message.model";
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +24,7 @@ export class Notifier {
       status: type,
       destroyByClick: false,
       duration: 5000,
-      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+      position: NbGlobalPhysicalPosition.BOTTOM_LEFT,
 
     };
     Notifier.toastService.show(body, title, toastConfig);
@@ -36,8 +39,12 @@ export class Notifier {
   }
 
 
-  static httpErrorResponse(error: HttpErrorResponse) {
-    Notifier.errorResponse(error.error);
+  static httpErrorResponse(error: HttpErrorResponse, labelComponent?: XeLabelComponent) {
+    if (labelComponent) {
+      labelComponent.setMessage({code: Notifier.responseToString(error.error), state: State.danger});
+    } else {
+      Notifier.errorResponse(error.error);
+    }
   }
 
   static errorResponse(response: XeResponseModel) {
@@ -63,21 +70,21 @@ export class Notifier {
       }
     });
     if (msgFinder.length === 0) {
-      msgFinder.push(response.reason);
+      msgFinder.push(Notifier.messageToString(response.reason));
     }
     return msgFinder.join(`\n`);
   }
 
   static API = "API: ";
-  private static messageToString = (code: string, param: any): string => {
+  private static messageToString = (code: string, param?: any): string => {
 
-    const message = ApiMessages[code];
+    const message = ApiMessages[StringUtil.toUPPER_UNDERLINE(code)];
     if (ObjectUtil.isFunction(message)) {
-      return Notifier.API + ApiMessages[code](param);
+      return Notifier.API + message(param);
     } else if (ObjectUtil.isString(message)) {
-      return Notifier.API + ApiMessages[code];
+      return Notifier.API + message;
     } else {
-      return "";
+      return code;
     }
   }
 

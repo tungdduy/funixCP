@@ -19,11 +19,12 @@ export class LoginComponent extends FormAbstract implements OnInit {
     if (AuthUtil.isUserLoggedIn()) Url.DEFAULT_URL_AFTER_LOGIN().go();
   }
 
-  handlers = () => ({
+  handlers = [{
+      name: "login",
       processor: (data) => this.authService.login(data),
-      success: (response) => {
+      success: {call:  (response) => {
         AuthUtil.saveResponse(response);
         Url.DEFAULT_URL_AFTER_LOGIN().go();
-      }
-  })
+      }}
+  }];
 }

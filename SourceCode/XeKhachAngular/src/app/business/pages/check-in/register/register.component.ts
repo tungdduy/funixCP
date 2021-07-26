@@ -24,13 +24,14 @@ export class RegisterComponent extends FormAbstract implements OnInit {
   }
 
   successMessage;
-  handlers = () => ({
+  handlers = [{
+    name: "register",
     processor: (data) => this.authService.register(data),
     success: (response) => {
       this.successMessage = AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email);
       this.showForm('success');
     }
-  })
+  }];
 
   gotoLogin() {
     Url.app.CHECK_IN.LOGIN.go();

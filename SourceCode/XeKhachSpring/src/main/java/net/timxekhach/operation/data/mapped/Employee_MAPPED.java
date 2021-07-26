@@ -1,10 +1,14 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
 
 
@@ -30,10 +34,26 @@ public abstract class Employee_MAPPED extends XeEntity {
         protected Long employeeId;
         protected Long companyId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long employeeIdLong = Long.parseLong(data.get("employeeId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            if(NumberUtils.min(new long[]{employeeIdLong, companyIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new Employee_MAPPED.Pk(employeeIdLong, companyIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new Employee_MAPPED.Pk(0L, 0L);
+    }
+
     protected Employee_MAPPED(){}
     protected Employee_MAPPED(Company company) {
         this.company = company;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -42,6 +62,7 @@ public abstract class Employee_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Company company;
 
     public void setCompany(Company company) {
@@ -57,6 +78,7 @@ public abstract class Employee_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected User user;
 
     public void setUser(User user) {
@@ -70,5 +92,15 @@ public abstract class Employee_MAPPED extends XeEntity {
 
 
     protected Boolean isLock = false;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("isLock")) {
+                this.isLock = Boolean.valueOf(value);
+            }
+        });
+    }
+
+
 
 }

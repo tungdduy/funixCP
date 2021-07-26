@@ -1,12 +1,20 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import javax.persistence.*;;
 import net.timxekhach.operation.data.entity.TripUser;
 import java.util.Date;
+import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.data.entity.TripUserSeat;
+import java.util.ArrayList;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.math.NumberUtils;;
+import java.util.List;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussPoint;
+import lombok.*;;
 import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.enumeration.TripStatus;
 
@@ -45,10 +53,28 @@ public abstract class Trip_MAPPED extends XeEntity {
         protected Long bussId;
         protected Long companyId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long tripIdLong = Long.parseLong(data.get("tripId"));
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            Long bussIdLong = Long.parseLong(data.get("bussId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
+            if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new Trip_MAPPED.Pk(tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new Trip_MAPPED.Pk(0L, 0L, 0L, 0L);
+    }
+
     protected Trip_MAPPED(){}
     protected Trip_MAPPED(Buss buss) {
         this.buss = buss;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -67,6 +93,7 @@ public abstract class Trip_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Buss buss;
 
     public void setBuss(Buss buss) {
@@ -75,6 +102,14 @@ public abstract class Trip_MAPPED extends XeEntity {
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
+
+    @OneToMany(
+        mappedBy = "trip",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<TripUserSeat> allTripUserSeats = new ArrayList<>();
 
     @ManyToOne
     @JoinColumns({
@@ -89,6 +124,7 @@ public abstract class Trip_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussPoint startPoint;
 
     public void setStartPoint(BussPoint startPoint) {
@@ -110,6 +146,7 @@ public abstract class Trip_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected BussPoint endPoint;
 
     public void setEndPoint(BussPoint endPoint) {
@@ -118,50 +155,13 @@ public abstract class Trip_MAPPED extends XeEntity {
         this.endPointLocationId = endPoint.getLocationId();
     }
 
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "tripUsersTripUserId",
-        referencedColumnName = "tripUserId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripUsersBussId",
-        referencedColumnName = "bussId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripUsersCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripUsersBussTypeId",
-        referencedColumnName = "bussTypeId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripUsersUserId",
-        referencedColumnName = "userId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "tripUsersTripId",
-        referencedColumnName = "tripId",
-        insertable = false,
-        updatable = false)
-    })
-    protected TripUser tripUsers;
-
-    public void setTripUsers(TripUser tripUsers) {
-        this.tripUsers = tripUsers;
-        this.tripUsersTripUserId = tripUsers.getTripUserId();
-        this.tripUsersBussId = tripUsers.getBussId();
-        this.tripUsersCompanyId = tripUsers.getCompanyId();
-        this.tripUsersBussTypeId = tripUsers.getBussTypeId();
-        this.tripUsersUserId = tripUsers.getUserId();
-        this.tripUsersTripId = tripUsers.getTripId();
-    }
+    @OneToMany(
+        mappedBy = "trip",
+        cascade = {CascadeType.ALL},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<TripUser> tripUsers = new ArrayList<>();
 
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long startPointLocationId;
@@ -175,24 +175,6 @@ public abstract class Trip_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long endPointLocationId;
 
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersTripUserId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersBussId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersCompanyId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersBussTypeId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersUserId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long tripUsersTripId;
-
 
     protected Long price;
 
@@ -202,5 +184,27 @@ public abstract class Trip_MAPPED extends XeEntity {
 
 
     protected Date startTime;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("price")) {
+                this.price = Long.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("status")) {
+                this.status = TripStatus.valueOf(value);
+                return;
+            }
+            if (fieldName.equals("startTime")) {
+                try {
+                    this.startTime = DateUtils.parseDate(value);
+                } catch (Exception e) {
+                    ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                }
+            }
+        });
+    }
+
+
 
 }

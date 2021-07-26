@@ -6,7 +6,7 @@ import net.timxekhach.operation.data.entity.User;
 import java.util.List;
 import java.util.Map;
 
-import static net.timxekhach.security.constant.RoleEnum.ROLE_USER;
+import static net.timxekhach.security.constant.RoleEnum.*;
 
 public class UrlDeclaration {
     public static void startBuildUrl(){
@@ -18,9 +18,12 @@ public class UrlDeclaration {
                         .method("forgot-password").param("email", String.class)
                         .method("forgot-password-secret-key").param("secretKeyInfo", Map.class)
                         .method("change-password").param("secretKeyInfo", Map.class)
-                        .method("update-user")
+                        .method("update-user").param("data", Map.class)
+                        .method("update-password").param("data", Map.class)
                         .method("update-thumbnails")
-
+                .create("trip")
+                        .method("available-seats").type(List.class).param("data", Map.class)
+                        .method("available-trips").type(List.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;

@@ -1,11 +1,15 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;;
+import java.util.Map;;
+import javax.persistence.*;;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.Location;
+import lombok.*;;
+import net.timxekhach.operation.response.ErrorCode;;
 
 
 @MappedSuperclass @Getter @Setter
@@ -30,10 +34,26 @@ public abstract class BussPoint_MAPPED extends XeEntity {
         protected Long locationId;
         protected Long bussPointId;
     }
+
+    public static Pk pk(Map<String, String> data) {
+        try {
+            Long locationIdLong = Long.parseLong(data.get("locationId"));
+            Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
+            if(NumberUtils.min(new long[]{locationIdLong, bussPointIdLong}) < 1) {
+                ErrorCode.DATA_NOT_FOUND.throwNow();
+            };
+            return new BussPoint_MAPPED.Pk(locationIdLong, bussPointIdLong);
+        } catch (Exception ex) {
+            ErrorCode.DATA_NOT_FOUND.throwNow();
+        }
+        return new BussPoint_MAPPED.Pk(0L, 0L);
+    }
+
     protected BussPoint_MAPPED(){}
     protected BussPoint_MAPPED(Location location) {
         this.location = location;
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -42,6 +62,7 @@ public abstract class BussPoint_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
+    @JsonIgnore
     protected Location location;
 
     public void setLocation(Location location) {
@@ -51,5 +72,15 @@ public abstract class BussPoint_MAPPED extends XeEntity {
 
     @Size(max = 255)
     protected String bussPointDesc;
+
+    public void setFieldByName(Map<String, String> data) {
+        data.forEach((fieldName, value) -> {
+            if (fieldName.equals("bussPointDesc")) {
+                this.bussPointDesc = String.valueOf(value);
+            }
+        });
+    }
+
+
 
 }
