@@ -13,7 +13,7 @@ public class Authority {
     private final String url, authorities;
 
     public Authority(String url, List<RoleEnum> roles) {
-        this.url = url;
+        this.url = "/" + url + "/**";
         if(roles.isEmpty()) {
             authorities = ".permitAll()";
         } else {

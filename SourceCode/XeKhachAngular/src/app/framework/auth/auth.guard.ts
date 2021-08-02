@@ -14,7 +14,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean {
-    if (AuthUtil.isUserLoggedIn()) {
+    if (AuthUtil.instance.isUserLoggedIn) {
       return true;
     }
     XeRouter.navigate(Url.app.CHECK_IN.LOGIN);

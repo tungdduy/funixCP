@@ -10,6 +10,10 @@ export abstract class FormAbstract  implements AfterViewInit {
   handlers: FormHandler[];
 
   ngAfterViewInit(): void {
+    this.assignCtrlForForms();
+  }
+
+  assignCtrlForForms() {
     this.___forms.forEach(form => {
       form.ctrl = this;
     });

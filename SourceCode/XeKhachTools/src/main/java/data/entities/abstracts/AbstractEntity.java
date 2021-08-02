@@ -9,10 +9,13 @@ import util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static util.ReflectionUtil.newInstance;
+import static util.StringUtil.toCamel;
+import static util.StringUtil.toIdName;
 
-@NoArgsConstructor
 @SuppressWarnings("all")
 @Getter
 @Setter
@@ -20,9 +23,20 @@ public abstract class AbstractEntity {
 
     List<Class<?>> primaryKeyClasses = new ArrayList<>();
     List<AbstractEntity> primaryKeyEntities;
+    Set<String> primaryKeyIdNames;
+    String capName, camelName;
+
+    public boolean hasProfileImage() {
+        return false;
+    }
+
+    protected AbstractEntity() {
+        this.capName = this.getClass().getSimpleName();
+        this.camelName = toCamel(this.capName);
+    }
 
     public String getFullOperationClassName() {
-        return "net.timxekhach.operation.data.entity." + this.getClass().getSimpleName();
+        return "net.timxekhach.operation.data.entity." + this.capName;
     }
 
     public String idName(){
@@ -37,6 +51,16 @@ public abstract class AbstractEntity {
             });
         }
         return primaryKeyEntities;
+    }
+
+    public Set<String> getPrimaryKeyIdNames() {
+        if (this.primaryKeyIdNames == null) {
+            primaryKeyIdNames = new TreeSet<>();
+            primaryKeyClasses.forEach(clazz -> {
+                primaryKeyIdNames.add(toIdName(clazz));
+            });
+        }
+        return primaryKeyIdNames;
     }
 
     protected <E extends AbstractEntity> void pk(Class<E> pkClass) {

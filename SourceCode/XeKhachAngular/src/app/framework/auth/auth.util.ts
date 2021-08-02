@@ -9,31 +9,29 @@ import {AuthConfig} from "./auth.config";
 import {XeRouter} from "../../business/service/xe-router";
 
 export class AuthUtil {
-  private static _jwtHelper = new JwtHelperService();
-  private static _token: string | null | undefined;
-  private static _roles: XeRole[] = [];
-  private static _user: User;
+  private _jwtHelper = new JwtHelperService();
+  private _token: string | null | undefined;
+  private _roles: XeRole[] = [];
+  private _user: User;
 
-  private static isExpired(): boolean {
-    return AuthUtil._jwtHelper.isTokenExpired(AuthUtil.token);
+  private isExpired(): boolean {
+    return this._jwtHelper.isTokenExpired(this.token);
   }
 
-  private static decodeAndSaveToken(token: string) {
-
+  private decodeAndSaveToken(token: string) {
     if (StringUtil.isBlank(token)) return false;
-
-    const tokenContent = AuthUtil._jwtHelper.decodeToken(token);
+    const tokenContent = this._jwtHelper.decodeToken(token);
     if (StringUtil.isNotBlank(tokenContent?.sub)) {
-      if (!AuthUtil._jwtHelper.isTokenExpired(token)) {
-        AuthUtil.setRepoToken(token);
-        AuthUtil.setRoles(AuthUtil.convertToAppRoles(tokenContent.authorities));
+      if (this._jwtHelper.isTokenExpired(token)) {
+        this.setRepoToken(token);
+        this.setRoles(this.convertToAppRoles(tokenContent.authorities));
         return;
       }
     }
-    AuthUtil.logout();
+    this.logout();
   }
 
-  private static convertToAppRoles(apiAuthorities: string[]): XeRole[] {
+  private convertToAppRoles(apiAuthorities: string[]): XeRole[] {
     const roles: XeRole[] = [];
     apiAuthorities.forEach(authority => {
       if (authority.startsWith("ROLE_")) {
@@ -43,65 +41,64 @@ export class AuthUtil {
     return roles;
   }
 
-
-  private static setRoles = (xeRoles: XeRole[]) => {
-    AuthUtil._roles = xeRoles;
+  private setRoles = (xeRoles: XeRole[]) => {
+    this._roles = xeRoles;
   }
 
-
-  private static get instance() {
-    const token = StorageUtil.getString(configConstant.TOKEN);
-    if (StringUtil.blankOrNotEqual(AuthUtil._token, token)) {
-      AuthUtil.decodeAndSaveToken(token);
-      AuthUtil._user = StorageUtil.getFromJson(configConstant.USER);
+  private static _instance: AuthUtil;
+  public static get instance() {
+    if (this._instance === undefined) {
+      this._instance = new AuthUtil();
+      const token = StorageUtil.getString(configConstant.TOKEN);
+      this._instance.decodeAndSaveToken(token);
+      this._instance._user = StorageUtil.getFromJson(configConstant.USER);
     }
-    return AuthUtil;
+    return this._instance;
   }
   // ===========================================================
   // ===========================================================
   // ============ PUBLIC STATIC METHOD BELOW HERE
 
-  static get token(): string {
-    return AuthUtil.instance._token;
+  get token(): string {
+    return this._token;
   }
 
-  static saveResponse(response: HttpResponse<User>) {
-    console.log(response);
+  saveResponse(response: HttpResponse<User>) {
     const token = response.headers.get(AuthConfig.tokenHeader);
-    AuthUtil.decodeAndSaveToken(token);
-    AuthUtil.setRepoUser(response.body);
+    this.decodeAndSaveToken(token);
+    this.setRepoUser(response.body);
   }
 
-  static get user() {
-    return Object.assign({}, AuthUtil.instance._user);
+  get user() {
+    return this._user;
   }
 
-  public static setRepoUser(user: User) {
-    AuthUtil._user = Object.assign({}, user);
+  public setRepoUser(user: User) {
+    this._user = user;
     StorageUtil.setItem(configConstant.USER, user);
   }
 
-  private static setRepoToken(token: any) {
-    AuthUtil._token = token;
+  private setRepoToken(token: any) {
+    this._token = token;
     StorageUtil.setItem(configConstant.TOKEN, token);
   }
 
-  static isAllow(userRoles: XeRole[]): boolean {
-    return userRoles.every(r => AuthUtil.instance._roles.includes(r));
+  isAllow(userRoles: XeRole[]): boolean {
+    return userRoles.every(r => this._roles.includes(r));
   }
 
-  static logout(url: any = '/check-in/login') {
-    AuthUtil._roles = [];
-    AuthUtil.setRepoToken(null);
-    AuthUtil.setRepoUser(null);
+  logout(url: any = '/check-in/login') {
+    this._roles = [];
+    this.setRepoToken(null);
+    this.setRepoUser(null);
     XeRouter.navigate(url);
   }
 
-  static isUserLoggedIn(): boolean {
-    return !AuthUtil.instance.isExpired();
+  get isUserLoggedIn(): boolean {
+    return !this.isExpired();
   }
 
-  static get roles(): XeRole[] {
-    return AuthUtil.instance._roles;
+  get roles(): XeRole[] {
+    return this._roles;
   }
 }

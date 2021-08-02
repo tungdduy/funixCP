@@ -10,7 +10,7 @@ export class RouterBuilder {
       return;
     }
     const config = module['_self'];
-    const roles: XeRole[] = AuthUtil.roles;
+    const roles: XeRole[] = AuthUtil.instance.roles;
     const routes = {
       path: '', component: RouterBuilder.requireComponent(config)
     };

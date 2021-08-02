@@ -12,12 +12,18 @@ ${root.importSeparator}
 
 @Repository
 public interface ${capName}Repository extends JpaRepository<${capName}, ${capName}_MAPPED.Pk> {
+
+    @Modifying
+    @Query("delete from ${capName} e where e.${camelName}Id in ?1")
+    void deleteBy${capName}Id(Long... id);
+    ${capName} findBy${capName}Id(Long id);
+
+    <#list root.byPkMethods as pkMethod>
     @SuppressWarnings("unused")
-    default void update${capName}(Map<String, String> data) {
-        ${capName} ${camelName} = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(${capName}.pk(data)));
-        ${camelName}.setFieldByName(data);
-        this.save(${camelName});
-    }
+    void deleteBy${pkMethod.name}(<#list pkMethod.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
+    @SuppressWarnings("unused")
+    List<${capName}> findBy${pkMethod.name}(<#list pkMethod.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
+    </#list>
 
 ${root.bodySeparator}
 

@@ -12,7 +12,7 @@ export class LogoutComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    AuthUtil.logout(Url.app.CHECK_IN.LOGIN);
+    AuthUtil.instance.logout(Url.app.CHECK_IN.LOGIN);
   }
 
 }

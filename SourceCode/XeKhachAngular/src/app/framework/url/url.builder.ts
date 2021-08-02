@@ -28,7 +28,7 @@ export class UrlBuilder {
       const activateProvider = {
         provide: config.keyChane,
         useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-           if (!AuthUtil.isAllow(config.roles)) {
+           if (!AuthUtil.instance.isAllow(config.roles)) {
              XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
              return false;
            }

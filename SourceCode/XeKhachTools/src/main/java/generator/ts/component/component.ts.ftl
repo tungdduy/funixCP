@@ -7,15 +7,6 @@ import {XeInputComponent} from "${root.pathToFramework}framework/components/xe-i
   styles: [],
   templateUrl: '${root.url}.component.html',
 })
-export class ${root.componentName} extends XeFormComponent {
-  @ViewChildren(XeInputComponent) formControls: QueryList<XeInputComponent>;
-  getFormControls = () => this.formControls;
+export class ${root.componentName} {
 
-  getObservable(model: any) {
-
-  }
-
-  onSubmitSuccess(response: any) {
-
-  }
 }

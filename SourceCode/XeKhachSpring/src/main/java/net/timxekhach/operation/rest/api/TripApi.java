@@ -22,6 +22,10 @@ public class TripApi {
 	public ResponseEntity<List<SeatType>> availableSeats (@RequestBody Map<String, String> data) {
 		return success(tripService.availableSeats(data));
 	}
+	@PostMapping("/available-trips")
+	public ResponseEntity<List> availableTrips () {
+		return success(tripService.availableTrips());
+	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

@@ -6,6 +6,7 @@ import com.sun.istack.internal.NotNull;
 import generator.builders.UrlNodeBuilder;
 import generator.abstracts.models.AbstractRestModel;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,11 +82,10 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
             Class<?> clazz = getBuilderClass(source.getUrlNode());
             return source.getUrlNode().getMethods().stream()
                     .filter(method -> {
-                        try {
-                            clazz.getMethod(method.getBuilder().buildCamelName(), method.getBuilder().getAllParamTypes());
-                            return false;
-                        } catch (NoSuchMethodException e) {
-                            logger.debug(format("method %s not found", method.getBuilder().buildCamelName()));
+                        for (Method clazzMethod : clazz.getMethods()) {
+                            if(clazzMethod.getName().equalsIgnoreCase(method.getBuilder().buildCamelName())){
+                                return false;
+                            }
                         }
                         return true;
                     })

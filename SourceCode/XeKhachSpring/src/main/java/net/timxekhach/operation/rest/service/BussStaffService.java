@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
+import net.timxekhach.operation.data.entity.User;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service

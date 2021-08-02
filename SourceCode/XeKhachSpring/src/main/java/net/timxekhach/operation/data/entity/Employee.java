@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 public class Employee extends Employee_MAPPED {
 
     public Employee() {}
-    public Employee(Company company) {
-        super(company);
+    public Employee(Company company, User user) {
+        super(company, user);
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

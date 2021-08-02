@@ -11,6 +11,7 @@ import {BussEmployeeComponent} from "./buss-employee/buss-employee.component";
 import {BussStopComponent} from "./buss-stop/buss-stop.component";
 import {TicketComponent} from "./ticket/ticket.component";
 import {AdminComponent} from "./admin.component";
+import {AllUserComponent} from "./all-user/all-user.component";
 
 const routes = [{
   path: '', component: AdminComponent,
@@ -24,6 +25,7 @@ const routes = [{
     { path: 'buss-employee', component: BussEmployeeComponent },
     { path: 'buss-stop', component: BussStopComponent },
     { path: 'ticket', component: TicketComponent },
+    { path: 'all-user', component: AllUserComponent },
     { path: '', redirectTo: 'my-account', pathMatch: 'full' }
   ],
 }];

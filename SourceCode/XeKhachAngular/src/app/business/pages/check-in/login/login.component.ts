@@ -16,14 +16,14 @@ export class LoginComponent extends FormAbstract implements OnInit {
   }
 
   ngOnInit(): void {
-    if (AuthUtil.isUserLoggedIn()) Url.DEFAULT_URL_AFTER_LOGIN().go();
+    if (AuthUtil.instance.isUserLoggedIn) Url.DEFAULT_URL_AFTER_LOGIN().go();
   }
 
   handlers = [{
       name: "login",
       processor: (data) => this.authService.login(data),
       success: {call:  (response) => {
-        AuthUtil.saveResponse(response);
+        AuthUtil.instance.saveResponse(response);
         Url.DEFAULT_URL_AFTER_LOGIN().go();
       }}
   }];

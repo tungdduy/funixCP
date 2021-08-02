@@ -46,9 +46,7 @@ public class UserService {
 
 	public User register (User user) {
 		EMAIL_EXISTED.throwIf(userRepository.existsByEmail(user.getEmail()));
-		user.encodePassword();
 		userRepository.save(user);
-		sendEmailRegisterSuccessFully(user);
 		return user;
 	}
 
@@ -77,10 +75,6 @@ public class UserService {
 		SECRET_KEY_NOT_MATCH.throwIf(user.isMatchSecretPasswordKey(secretKey));
 		user.encodePassword(newPassword);
 		userRepository.save(user);
-	}
-
-	public void updateUser(Map<String, String> user) {
-		userRepository.updateUser(user);
 	}
 
 	public void updatePassword (Map<String, String> data) {

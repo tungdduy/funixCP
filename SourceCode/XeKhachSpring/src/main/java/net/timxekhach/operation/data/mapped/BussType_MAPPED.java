@@ -10,12 +10,13 @@ import javax.persistence.*;;
 import net.timxekhach.operation.data.entity.SeatType;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
-
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussType_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class BussType_MAPPED extends XeEntity {
 
     @Id
@@ -23,6 +24,10 @@ public abstract class BussType_MAPPED extends XeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
+    protected Long getIncrementId() {
+        return this.bussTypeId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -35,7 +40,7 @@ public abstract class BussType_MAPPED extends XeEntity {
             Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
             if(NumberUtils.min(new long[]{bussTypeIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new BussType_MAPPED.Pk(bussTypeIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -45,12 +50,14 @@ public abstract class BussType_MAPPED extends XeEntity {
 
     @OneToMany(
         mappedBy = "bussType",
-        cascade = {CascadeType.ALL},
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
     protected List<SeatType> allSeatTypes = new ArrayList<>();
 
+
+    
     @Size(max = 255)
     protected String bussTypeName;
 
@@ -58,15 +65,21 @@ public abstract class BussType_MAPPED extends XeEntity {
     protected String bussTypeDesc;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("bussTypeName")) {
                 this.bussTypeName = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("bussTypeDesc")) {
                 this.bussTypeDesc = String.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+            }
+        }
     }
 
 

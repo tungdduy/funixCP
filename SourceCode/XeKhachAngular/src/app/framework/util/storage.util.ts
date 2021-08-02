@@ -1,5 +1,3 @@
-import {XeRole} from "../../business/constant/xe.role";
-
 export class StorageUtil {
 
   static getString(key: string): string | null {

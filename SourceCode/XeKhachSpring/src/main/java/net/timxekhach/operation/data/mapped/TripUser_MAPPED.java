@@ -1,22 +1,23 @@
 package net.timxekhach.operation.data.mapped;
 
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Trip;
+import javax.persistence.*;;
+import net.timxekhach.operation.response.ErrorCode;;
+import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;;
 import java.util.Map;;
-import javax.persistence.*;;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUser_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class TripUser_MAPPED extends XeEntity {
 
     @Id
@@ -24,10 +25,12 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -35,20 +38,27 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripUserId;
 
+    protected Long getIncrementId() {
+        return this.tripUserId;
+    }
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long userId;
+
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -71,7 +81,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
             Long userIdLong = Long.parseLong(data.get("userId"));
             if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new TripUser_MAPPED.Pk(tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -81,8 +91,8 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     protected TripUser_MAPPED(){}
     protected TripUser_MAPPED(Trip trip, User user) {
-        this.trip = trip;
-        this.user = user;
+        this.setTrip(trip);
+        this.setUser(user);
     }
 
     @ManyToOne
@@ -138,6 +148,11 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "confirmedByUserId",
+        referencedColumnName = "userId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "confirmedByEmployeeId",
         referencedColumnName = "employeeId",
         insertable = false,
@@ -153,9 +168,15 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public void setConfirmedBy(Employee confirmedBy) {
         this.confirmedBy = confirmedBy;
+        this.confirmedByUserId = confirmedBy.getUserId();
         this.confirmedByEmployeeId = confirmedBy.getEmployeeId();
         this.confirmedByCompanyId = confirmedBy.getCompanyId();
     }
+
+
+    
+    @Setter(AccessLevel.PRIVATE) //map join
+    protected Long confirmedByUserId;
 
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long confirmedByEmployeeId;
@@ -171,15 +192,41 @@ public abstract class TripUser_MAPPED extends XeEntity {
     protected TripUserStatus status = net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("totalPrice")) {
                 this.totalPrice = Long.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("status")) {
                 this.status = TripUserStatus.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("tripId")) {
+                this.tripId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("tripUserId")) {
+                this.tripUserId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussId")) {
+                this.bussId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+            }
+        }
     }
 
 

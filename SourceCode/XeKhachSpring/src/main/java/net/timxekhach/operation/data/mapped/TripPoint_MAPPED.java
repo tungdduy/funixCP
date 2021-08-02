@@ -10,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussPoint;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripPoint_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class TripPoint_MAPPED extends XeEntity {
 
     @Id
@@ -22,26 +23,34 @@ public abstract class TripPoint_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTripId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripPointId;
 
+    protected Long getIncrementId() {
+        return this.tripPointId;
+    }
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -62,7 +71,7 @@ public abstract class TripPoint_MAPPED extends XeEntity {
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             if(NumberUtils.min(new long[]{bussTripIdLong, tripPointIdLong, bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new TripPoint_MAPPED.Pk(bussTripIdLong, tripPointIdLong, bussTypeIdLong, bussIdLong, companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -72,7 +81,7 @@ public abstract class TripPoint_MAPPED extends XeEntity {
 
     protected TripPoint_MAPPED(){}
     protected TripPoint_MAPPED(BussTrip bussTrip) {
-        this.bussTrip = bussTrip;
+        this.setBussTrip(bussTrip);
     }
 
     @ManyToOne
@@ -131,6 +140,8 @@ public abstract class TripPoint_MAPPED extends XeEntity {
         this.stopPointBussPointId = stopPoint.getBussPointId();
     }
 
+
+    
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long stopPointLocationId;
 
@@ -138,8 +149,29 @@ public abstract class TripPoint_MAPPED extends XeEntity {
     protected Long stopPointBussPointId;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
-        });
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
+            if (fieldName.equals("bussTripId")) {
+                this.bussTripId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("tripPointId")) {
+                this.tripPointId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussId")) {
+                this.bussId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+            }
+        }
     }
 
 

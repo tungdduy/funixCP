@@ -1,43 +1,7 @@
 <div class="row">
-  <nb-card class="col-md-8">
-    <nb-card-header>
-      <div class="row">
-        <div class="col-sm-3 avatar-holder">
-          <img src="assets/images/nick.png" alt="hello" class="d-inline border-info rounded-circle avatar w-100">
-          <button class="btn btn-sm btn-info badge camera" onclick="document.getElementById('inputProfile').click()">
-            <nb-icon icon="camera" pack="fa"></nb-icon>
-            <input id="inputProfile" type="file" accept="image/*" hidden
-                   (change)="onProfileImageChange($event.target['files'][0])">
-          </button>
-
-        </div>
-        <div class="col-sm-9 avatar-content">
-          <div class="avatar-title">
-            <h4 >{{user.fullName}}</h4>
-            {{user.phoneNumber}}
-          </div>
-        </div>
-      </div>
-    </nb-card-header>
-    <nb-card-body>
-      <xe-form #acc name="userInfo" readonly>
-        <xe-input name="userId" [value]="user.userId" hidden></xe-input>
-        <xe-input grid name="username" required [(value)]="user.username"></xe-input>
-        <xe-input grid required name="fullName" [(value)]="user.fullName"></xe-input>
-        <xe-input grid required type="email" [(value)]="user.email"></xe-input>
-        <xe-input grid name="phoneNumber" [(value)]="user.phoneNumber"></xe-input>
-        <div class="text-right">
-          <lbl #msg p></lbl>
-          <xe-btn type="edit" [hidden]="!acc.isMute" (click)="acc.unMute()"></xe-btn>
-          <div [hidden]="acc.isMute">
-            <xe-btn type="cancel" (click)="acc.reset()"></xe-btn>
-            <xe-btn type="save" [disabled]="acc.isLoading" #submit></xe-btn>
-          </div>
-        </div>
-      </xe-form>
-    </nb-card-body>
-  </nb-card>
-
+  <xe-basic-form class="col-md-8"
+                  [formData]="userForm">
+  </xe-basic-form>
 
   <nb-card class="col-md-4">
     <nb-card-body>
@@ -61,3 +25,5 @@
   </nb-card>
 
 </div>
+
+

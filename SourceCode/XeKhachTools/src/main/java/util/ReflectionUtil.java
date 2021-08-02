@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class ReflectionUtil extends ReflectionUtils {
 
@@ -132,4 +133,17 @@ public class ReflectionUtil extends ReflectionUtils {
         return null;
     }
 
+
+    @SuppressWarnings("rawtypes")
+    public static Function newInstanceFromClass() {
+        return object -> {
+            Class clazz = (Class) object;
+            try {
+                return clazz.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return null;
+        };
+    }
 }

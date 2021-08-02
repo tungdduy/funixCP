@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.response.ErrorCode;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings({"rawtypes"})
 @Getter
@@ -22,15 +20,18 @@ public class EntityRepositoryModel extends AbstractEntityModel {
                     String.format("import net.timxekhach.operation.data.entity.%s;", this.entityClassName),
                     String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityClassName),
                     "import org.springframework.data.jpa.repository.JpaRepository;",
-                    String.format("import %s;", org.springframework.data.jpa.repository.JpaRepository.class.getName()),
-                    String.format("import %s;", org.springframework.stereotype.Repository.class.getName()),
-                    String.format("import %s;", ErrorCode.class.getName()),
-                    String.format("import %s;", java.util.Map.class.getName())
+                    String.format("import %s;", "org.springframework.data.jpa.repository.JpaRepository"),
+                    String.format("import %s;", "org.springframework.stereotype.Repository"),
+                    String.format("import %s;", "java.util.List"),
+                    String.format("import %s;", "org.springframework.data.jpa.repository.Query"),
+                    String.format("import %s;", "org.springframework.data.jpa.repository.Modifying")
             ));
         }
         return importRequireLines;
     }
 
+    private List<FindMethod> byPkMethods = new ArrayList<>();
+    private List<String> pkNames = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {

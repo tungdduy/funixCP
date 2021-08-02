@@ -13,4 +13,9 @@ public class Buss extends AbstractEntity {
         pk(BussType.class);
     }
     Column bussDesc = of(DESCRIPTION);
+
+    @Override
+    public boolean hasProfileImage() {
+        return true;
+    }
 }

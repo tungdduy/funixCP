@@ -10,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.Location;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Location_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Location_MAPPED extends XeEntity {
 
     @Id
@@ -22,6 +23,10 @@ public abstract class Location_MAPPED extends XeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long locationId;
+
+    protected Long getIncrementId() {
+        return this.locationId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -34,7 +39,7 @@ public abstract class Location_MAPPED extends XeEntity {
             Long locationIdLong = Long.parseLong(data.get("locationId"));
             if(NumberUtils.min(new long[]{locationIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new Location_MAPPED.Pk(locationIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -58,6 +63,8 @@ public abstract class Location_MAPPED extends XeEntity {
         this.parentLocationId = parent.getLocationId();
     }
 
+
+    
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long parentLocationId;
 
@@ -65,11 +72,17 @@ public abstract class Location_MAPPED extends XeEntity {
     protected String locationName;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("locationName")) {
                 this.locationName = String.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("locationId")) {
+                this.locationId = Long.valueOf(value);
+            }
+        }
     }
 
 

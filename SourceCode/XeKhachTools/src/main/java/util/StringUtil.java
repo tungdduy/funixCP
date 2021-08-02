@@ -134,6 +134,9 @@ public class StringUtil extends StringUtils {
     }
 
     public static String toIdName(Object obj) {
+        if(obj instanceof Class) {
+          return toCamel(((Class<?>) obj).getSimpleName()) + "Id";
+        }
         return toCamel(obj.getClass().getSimpleName()) + "Id";
     }
 

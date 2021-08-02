@@ -75,17 +75,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(securityResource.getPublicUrls()).permitAll()
             // ------ START OF IMPORT ROLES ------------------
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
-                .antMatchers("user").hasAnyAuthority("ROLE_USER")
-                .antMatchers("user/login").permitAll()
-                .antMatchers("user/register").permitAll()
-                .antMatchers("user/forgot-password").permitAll()
-                .antMatchers("user/forgot-password-secret-key").permitAll()
-                .antMatchers("user/change-password").permitAll()
-                .antMatchers("user/update-user").permitAll()
-                .antMatchers("user/update-password").permitAll()
-                .antMatchers("user/update-thumbnails").permitAll()
-                .antMatchers("caller-staff").permitAll()
-                .antMatchers("buss-staff").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/login/**").permitAll()
+                .antMatchers("/user/register/**").permitAll()
+                .antMatchers("/user/forgot-password/**").permitAll()
+                .antMatchers("/user/forgot-password-secret-key/**").permitAll()
+                .antMatchers("/user/change-password/**").permitAll()
+                .antMatchers("/user/update-password/**").permitAll()
+                .antMatchers("/trip/**").permitAll()
+                .antMatchers("/trip/available-seats/**").permitAll()
+                .antMatchers("/trip/available-trips/**").permitAll()
+                .antMatchers("/caller-staff/**").permitAll()
+                .antMatchers("/buss-staff/**").permitAll()
             // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
             // ------ END OF IMPORT ROLES ------------------
                 .anyRequest().authenticated()
@@ -96,6 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 
 
 }

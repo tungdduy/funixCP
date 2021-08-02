@@ -1,0 +1,83 @@
+<ng-template #formHeader>
+  <div *ngIf="!!formData.header" class="row">
+    <div class="col-sm-3 avatar-holder">
+      <img [src]="formData.share.entity?.profileImageUrl"
+           [alt]="formData.share.entity ? formData.share.entity[formData.header.titleKey] : ''"
+           class="d-inline border-info rounded-circle avatar w-100">
+      <label>
+        <button [disabled]="!isIdValid" class="btn btn-sm btn-info camera"
+                onclick="this.nextSibling.click()">
+          <nb-icon icon="camera" pack="fa"></nb-icon>
+        </button>
+        <input hidden type="file"
+               accept="image/*"
+               (change)="onProfileImageChange($event.target['files'][0])">
+      </label>
+    </div>
+    <div class="col-sm-9 avatar-content">
+      <div class="avatar-title">
+        <h4>{{formData.share.entity ? formData.share.entity[formData.header.titleKey] : ''}}</h4>
+        {{formData.share.entity ? formData.share.entity[formData.header.descKey] : ''}}
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ########################## END OF FORM HEADER #######################-->
+
+<div *ngIf="deleting">
+  <nb-card>
+    <nb-card-header>
+      <ng-container [ngTemplateOutlet]="formHeader"></ng-container>
+    </nb-card-header>
+    <nb-card-body>
+      <h3>Bạn có chắc chắn muốn xóa dữ liệu này?</h3>
+      <p>Sẽ không còn gì được lưu lại...</p>
+    </nb-card-body>
+    <nb-card-footer class="text-center">
+      <xe-btn type="back" (click)="turnBack()"></xe-btn>
+      <xe-btn type="ok" (click)="ref.close(); deleteCurrentEntity()"></xe-btn>
+    </nb-card-footer>
+  </nb-card>
+</div>
+
+<!-- ########################## END OF DELETE DIALOG #######################-->
+
+<div *ngIf="!deleting">
+  <nb-card>
+    <nb-card-header>
+      <ng-container
+        [ngTemplateOutlet]="formHeader"></ng-container>
+    </nb-card-header>
+    <nb-card-body>
+      <xe-form #submitContent
+               name="basicFormInfo"
+               [readonly]="!hasRef"
+               [addToSubmit]="entityIds">
+        <div *ngFor="let field of formData.fields">
+          <xe-input *ngIf="isIdValid ? !field.newOnly : true" [grid]="formData.grid"
+                    [hidden]="field.hidden"
+                    [name]="field.name"
+                    [required]="field.required"
+                    [(value)]="formData.share.entity[field.name]">
+          </xe-input>
+        </div>
+        <lbl class="text-right" #msg p></lbl>
+        <div class="float-left" *ngIf="hasRef">
+          <xe-btn type="delete" (click)="submitContent.reset(); deleting = true" *ngIf="!submitContent.readonly && isIdValid" hideText></xe-btn>
+          <xe-btn type="add" (click)="newEntity(); submitContent.unMute()" *ngIf="submitContent.readonly" hideText></xe-btn>
+        </div>
+        <div class="text-right">
+          <xe-btn *ngIf="hasRef" type="close" (click)="submitContent.reset(); ref.close();"></xe-btn>
+          <xe-btn type="edit" [hidden]="!submitContent.readonly" (click)="submitContent.unMute()"></xe-btn>
+          <span [hidden]="submitContent.readonly">
+          <xe-btn *ngIf="!hasRef" type="cancel" (click)="submitContent.reset(); submitContent.mute();"></xe-btn>
+          <xe-btn *ngIf="isIdValid" type="save" [disabled]="submitContent.isLoading"></xe-btn>
+          <xe-btn *ngIf="!isIdValid" type="add" [disabled]="submitContent.isLoading"></xe-btn>
+        </span>
+        </div>
+      </xe-form>
+    </nb-card-body>
+  </nb-card>
+</div>

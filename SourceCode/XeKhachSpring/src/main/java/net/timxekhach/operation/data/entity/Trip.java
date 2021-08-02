@@ -19,9 +19,7 @@ public class Trip extends Trip_MAPPED {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 public List<SeatType> availableSeats() {
-        Buss buss = this.buss;
-        BussType bussType = buss.getBussType();
-        List<SeatType> allSeatTypes = bussType.getAllSeatTypes();
+        List<SeatType> allSeatTypes = this.buss.getBussType().getAllSeatTypes();
         List<SeatType> myTripUserSeats = this.getAllTripUserSeats().stream()
                 .map(TripUserSeat_MAPPED::getSeatType)
                 .collect(Collectors.toList());

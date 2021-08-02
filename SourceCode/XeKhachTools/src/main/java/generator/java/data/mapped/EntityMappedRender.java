@@ -12,19 +12,24 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import util.ObjectUtil;
 import util.ReflectionUtil;
+import util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static util.StringUtil.toCamel;
+import static util.StringUtil.toCapitalizeEachWord;
 
 @SuppressWarnings("unused")
 public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> {
 
     public static final String NEW_ARRAY_LIST = " = new ArrayList<>()";
+
+    @Override
+    public void runBeforeRender() {
+        this.getModelFiles().forEach(EntityMappedModel::updateCountOnInsertDelete);
+    }
 
     @Override
     protected void handleModel(EntityMappedModel model) {
@@ -36,6 +41,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
 
     private void updateFieldsAbleAssignByString(EntityMappedModel model) {
         model.setFieldsAbleAssignByString(model.columns.stream()
+                .filter(Column.Core::getIsManualUpdatable)
                 .filter(column -> BeanUtils.isSimpleValueType(column.getDataType()))
                 .collect(Collectors.toList()));
     }
@@ -152,6 +158,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
                     MapColumn mapColumn = (MapColumn) colObject;
                     MapColumn.Core mapColumnCore = mapColumn.getCore();
                     mapColumnCore.setFieldName(fieldName);
+                    mapColumnCore.setFieldCapName(toCapitalizeEachWord(fieldName));
                     updateMapCore(mapColumnCore, model);
                     model.getMapColumns().add(mapColumnCore);
                 } else if (colObject instanceof Column) {
@@ -166,6 +173,8 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             }
         });
     }
+
+
 
     private void updateMapCore(MapColumn.Core mapCore, EntityMappedModel model) {
         AbstractEntity entityMapTo = mapCore.getMapTo().getEntity();
@@ -187,6 +196,9 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
 
         if (entityMapToHasPkToThis.isTrue()) {
             mapCore.setMappedBy(toCamel(thisEntity.getClass().getSimpleName()));
+            if (mapCore.getHasCountField()) {
+                model.addToAllCountOnInsertDeletes(mapCore);
+            }
         } else {
             mapCore.getJoins().forEach(join -> {
                 throwErrorIfColumnNameExisted(model, join);

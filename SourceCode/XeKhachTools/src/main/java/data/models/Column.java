@@ -18,6 +18,7 @@ public class Column {
                 isNotNull = false,
                 isUnique = false,
                 isEnumerated = false,
+                isManualUpdatable = true,
                 jsonIgnore = false;
         String regex, simpleClassName, fieldName, initialString;
 
@@ -45,13 +46,11 @@ public class Column {
     }
 
     public Column min(Number min) {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getMin() != null);
         core.setMin(min);
         return this;
     }
 
     public Column max(Number max) {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getMax() != null);
         core.setMax(max);
         return this;
     }
@@ -67,7 +66,6 @@ public class Column {
     }
 
     public Column minLen(int minLength) {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getMinSize() != null);
         core.setMinSize(minLength);
         return this;
     }
@@ -83,13 +81,11 @@ public class Column {
     }
 
     public Column regex(String regex) {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getRegex() != null);
         core.setRegex(regex);
         return this;
     }
 
     public Column maxLen(int maxSize) {
-        ErrorCode.ASSIGN_1_TIME_ONLY.throwIf(core.getMaxSize() != null);
         core.setMaxSize(maxSize);
         return this;
     }
@@ -99,5 +95,9 @@ public class Column {
         return this;
     }
 
+    public Column ignoreManualUpdate() {
+        core.isManualUpdatable = false;
+        return this;
+    }
 
 }

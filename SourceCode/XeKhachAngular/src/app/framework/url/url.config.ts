@@ -44,7 +44,7 @@ export class UrlConfig {
   }
 
   public hasPermission() {
-    return AuthUtil.isAllow(this._roles);
+    return AuthUtil.instance.isAllow(this._roles);
   }
   public forbidden() {
     return !this.hasPermission();

@@ -4,8 +4,7 @@ import data.entities.abstracts.AbstractEntity;
 import data.models.Column;
 import data.models.MapColumn;
 
-import static data.entities.abstracts.DataType.DESCRIPTION;
-import static data.entities.abstracts.DataType.FALSE;
+import static data.entities.abstracts.DataType.*;
 
 @SuppressWarnings("all")
 public class Company extends AbstractEntity {
@@ -13,5 +12,10 @@ public class Company extends AbstractEntity {
     Column companyName = of(DESCRIPTION);
     Column isLock = of(FALSE);
 
-    MapColumn employees = map(Employee.class);
+    MapColumn employees = map(Employee.class).count();
+
+    @Override
+    public boolean hasProfileImage() {
+        return true;
+    }
 }

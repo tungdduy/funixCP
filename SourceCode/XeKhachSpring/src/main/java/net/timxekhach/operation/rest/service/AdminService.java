@@ -12,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-	public void list (Long id) {
-		// TODO : service list method
-	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

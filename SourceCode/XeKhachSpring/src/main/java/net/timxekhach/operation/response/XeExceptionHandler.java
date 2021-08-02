@@ -6,6 +6,7 @@ import net.timxekhach.utility.XeResponseUtils;
 import net.timxekhach.utility.model.Message;
 import net.timxekhach.utility.model.XeHttpResponse;
 import net.timxekhach.utility.model.XeRuntimeException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,24 @@ public class XeExceptionHandler {
                 messages.add(message);
             }
         });
+        return XeResponseUtils.error(exception, messages);
+    }
+
+    public ResponseEntity<XeHttpResponse> dataIntegrityViolationException(DataIntegrityViolationException exception) {
+        List<Message> messages = new ArrayList<>();
+        return XeResponseUtils.error(exception, messages);
+    }
+
+    public ResponseEntity<XeHttpResponse> sQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException exception) {
+        List<Message> messages = new ArrayList<>();
+        String exMsg = exception.getMessage();
+        if (exMsg.contains("Duplicate")) {
+            String [] splitter =  exception.getMessage().substring("Duplicate entry '".length()).split("' for key '");
+            String fieldName = splitter[0];
+            String tableName = splitter[1].split("\\.")[0];
+            messages.add(ErrorCode.FIELD_EXISTED.createMessage(fieldName, tableName));
+        }
+
         return XeResponseUtils.error(exception, messages);
     }
 

@@ -2,6 +2,7 @@ import {Component, Input, EventEmitter, Output, AfterViewInit} from '@angular/co
 import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
 import {AppMessages, XeLbl} from "../../../business/i18n";
+import {StringUtil} from "../../util/string.util";
 
 
 @Component({
@@ -13,6 +14,11 @@ export class XeInputComponent implements AfterViewInit {
   _originValue;
   ngAfterViewInit(): void {
       this._originValue = this.value;
+      if (this.name?.includes("password")) {
+        setTimeout(() => {
+          this.type = "password";
+        }, 0);
+      }
   }
 
   get isChanged() {
@@ -44,7 +50,7 @@ export class XeInputComponent implements AfterViewInit {
     this._value = val;
     this.valueChange.emit(this._value);
   }
-  _value;
+  _value: string;
   @Output() valueChange = new EventEmitter<any>();
   @Input() icon?;
   public errorMessage?: string;
@@ -129,7 +135,7 @@ export class XeInputComponent implements AfterViewInit {
 
   isValidateSuccess(): boolean {
     if (this.isRequire &&
-      (!this.value || this.value.trim().length === 0)) {
+      (StringUtil.isBlank(this.value))) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
       return;
     }
@@ -187,7 +193,6 @@ export class XeInputComponent implements AfterViewInit {
         return this.icons[key];
       }
     }
-    console.log(this.getName());
     return 'book-open';
   }
 

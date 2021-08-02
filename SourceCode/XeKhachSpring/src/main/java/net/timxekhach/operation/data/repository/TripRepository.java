@@ -1,21 +1,26 @@
 package net.timxekhach.operation.data.repository;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import net.timxekhach.operation.data.entity.Trip;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.Trip_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Trip_MAPPED.Pk> {
+
+    @Modifying
+    @Query("delete from Trip e where e.tripId in ?1")
+    void deleteByTripId(Long... id);
+    Trip findByTripId(Long id);
+
     @SuppressWarnings("unused")
-    default void updateTrip(Map<String, String> data) {
-        Trip trip = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(Trip.pk(data)));
-        trip.setFieldByName(data);
-        this.save(trip);
-    }
+    void deleteByBussId(Long bussId);
+    @SuppressWarnings("unused")
+    List<Trip> findByBussId(Long bussId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

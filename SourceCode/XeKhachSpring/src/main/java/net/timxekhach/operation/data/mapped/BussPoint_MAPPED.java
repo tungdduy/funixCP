@@ -10,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.Location;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussPoint_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class BussPoint_MAPPED extends XeEntity {
 
     @Id
@@ -22,11 +23,16 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long locationId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussPointId;
+
+    protected Long getIncrementId() {
+        return this.bussPointId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -41,7 +47,7 @@ public abstract class BussPoint_MAPPED extends XeEntity {
             Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
             if(NumberUtils.min(new long[]{locationIdLong, bussPointIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new BussPoint_MAPPED.Pk(locationIdLong, bussPointIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -51,7 +57,7 @@ public abstract class BussPoint_MAPPED extends XeEntity {
 
     protected BussPoint_MAPPED(){}
     protected BussPoint_MAPPED(Location location) {
-        this.location = location;
+        this.setLocation(location);
     }
 
     @ManyToOne
@@ -70,15 +76,27 @@ public abstract class BussPoint_MAPPED extends XeEntity {
         this.locationId = location.getLocationId();
     }
 
+
+    
     @Size(max = 255)
     protected String bussPointDesc;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("bussPointDesc")) {
                 this.bussPointDesc = String.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("locationId")) {
+                this.locationId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussPointId")) {
+                this.bussPointId = Long.valueOf(value);
+            }
+        }
     }
 
 

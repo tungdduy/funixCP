@@ -65,12 +65,6 @@ public class UserApi {
 		return success();
 	}
 
-	@PostMapping("/update-user")
-	public ResponseEntity<Void> updateUser (@RequestBody Map<String, String> data) {
-		userService.updateUser(data);
-		return success();
-	}
-
 	@PostMapping("/update-profile-image")
 	public ResponseEntity<String> updateProfileImage(@RequestParam("username") String userId,
 												   @RequestParam(value = "profileImage") MultipartFile profileImage){

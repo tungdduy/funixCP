@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../../business/model/user";
 import {RegisterModel} from "../../business/model/register.model";
@@ -32,15 +32,9 @@ export class AuthService {
     return this.http.post<any>(Url.api.USER.CHANGE_PASSWORD.full, changePasswordInfo);
   }
 
-  updateUser(data): Observable<any> {
-    return this.http.post<any>(Url.api.USER.UPDATE_USER.full, data);
-  }
-
   updatePassword(data): Observable<any> {
     return this.http.post<any>(Url.api.USER.UPDATE_PASSWORD.full, data);
   }
 
-  updateProfileImage(formData: FormData) {
-    return this.http.post<any>(Url.api.USER.UPDATE_PROFILE_IMAGE.full, formData);
-  }
+
 }

@@ -24,7 +24,7 @@ export class Notifier {
       status: type,
       destroyByClick: false,
       duration: 5000,
-      position: NbGlobalPhysicalPosition.BOTTOM_LEFT,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
 
     };
     Notifier.toastService.show(body, title, toastConfig);
@@ -88,4 +88,11 @@ export class Notifier {
     }
   }
 
+  static warning(message: string) {
+    this.showToast('warning', message, new Date().toLocaleString());
+  }
+
+  static notify(msg: any) {
+    this.showToast(msg.state, msg.code, new Date().toLocaleString());
+  }
 }

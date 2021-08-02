@@ -12,15 +12,13 @@ public class UrlDeclaration {
     public static void startBuildUrl(){
         if(!UrlArchitect.apiUrls.isEmpty()) return;
         UrlArchitect
-                .startApi("user").roles(ROLE_USER)
+                .startApi("user")
                         .method("login").type(User.class).param("info", Map.class)
-                        .method("register").type(User.class).param("user", User.class)
+                        .method("register").type(User.class).param("user", Map.class)
                         .method("forgot-password").param("email", String.class)
                         .method("forgot-password-secret-key").param("secretKeyInfo", Map.class)
                         .method("change-password").param("secretKeyInfo", Map.class)
-                        .method("update-user").param("data", Map.class)
                         .method("update-password").param("data", Map.class)
-                        .method("update-thumbnails")
                 .create("trip")
                         .method("available-seats").type(List.class).param("data", Map.class)
                         .method("available-trips").type(List.class)
@@ -47,14 +45,6 @@ public class UrlDeclaration {
 
         ;
 
-        UrlArchitect
-                .startApi("buss-operation").roles(ROLE_USER)
-                .method("findBussPoint").type(List.class).param("desc", String.class)
-                .method("findBuss").type(List.class)
-                    .param("startPoint", Long.class)
-                    .param("endPoint", Long.class)
-                    .param("departureTime", Long.class)
-        ;
 
     }
 

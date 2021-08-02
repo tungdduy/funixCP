@@ -17,11 +17,12 @@ import net.timxekhach.operation.data.entity.BussPoint;
 import lombok.*;;
 import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.enumeration.TripStatus;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Trip_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Trip_MAPPED extends XeEntity {
 
     @Id
@@ -30,20 +31,27 @@ public abstract class Trip_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripId;
 
+    protected Long getIncrementId() {
+        return this.tripId;
+    }
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -62,7 +70,7 @@ public abstract class Trip_MAPPED extends XeEntity {
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new Trip_MAPPED.Pk(tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -72,7 +80,7 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     protected Trip_MAPPED(){}
     protected Trip_MAPPED(Buss buss) {
-        this.buss = buss;
+        this.setBuss(buss);
     }
 
     @ManyToOne
@@ -105,7 +113,7 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     @OneToMany(
         mappedBy = "trip",
-        cascade = {CascadeType.ALL},
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
@@ -157,12 +165,14 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     @OneToMany(
         mappedBy = "trip",
-        cascade = {CascadeType.ALL},
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
     protected List<TripUser> tripUsers = new ArrayList<>();
 
+
+    
     @Setter(AccessLevel.PRIVATE) //map join
     protected Long startPointLocationId;
 
@@ -186,23 +196,41 @@ public abstract class Trip_MAPPED extends XeEntity {
     protected Date startTime;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("price")) {
                 this.price = Long.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("status")) {
                 this.status = TripStatus.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("startTime")) {
                 try {
-                    this.startTime = DateUtils.parseDate(value);
+                this.startTime = DateUtils.parseDate(value);
                 } catch (Exception e) {
-                    ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
                 }
+                continue;
             }
-        });
+            if (fieldName.equals("tripId")) {
+                this.tripId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussId")) {
+                this.bussId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+            }
+        }
     }
 
 

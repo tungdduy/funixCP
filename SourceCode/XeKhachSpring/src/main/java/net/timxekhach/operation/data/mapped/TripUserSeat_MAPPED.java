@@ -11,11 +11,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUserSeat_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class TripUserSeat_MAPPED extends XeEntity {
 
     @Id
@@ -23,36 +24,46 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long userId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long seatTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long tripUserSeatId;
+
+    protected Long getIncrementId() {
+        return this.tripUserSeatId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -77,7 +88,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
             Long tripUserSeatIdLong = Long.parseLong(data.get("tripUserSeatId"));
             if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong, userIdLong, seatTypeIdLong, tripUserSeatIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new TripUserSeat_MAPPED.Pk(tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong, userIdLong, seatTypeIdLong, tripUserSeatIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -87,9 +98,9 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
 
     protected TripUserSeat_MAPPED(){}
     protected TripUserSeat_MAPPED(Trip trip, User user, SeatType seatType) {
-        this.trip = trip;
-        this.user = user;
-        this.seatType = seatType;
+        this.setTrip(trip);
+        this.setUser(user);
+        this.setSeatType(seatType);
     }
 
     @ManyToOne
@@ -164,9 +175,40 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
         this.seatTypeId = seatType.getSeatTypeId();
     }
 
+
+    
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
-        });
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
+            if (fieldName.equals("tripId")) {
+                this.tripId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussId")) {
+                this.bussId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("seatTypeId")) {
+                this.seatTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("tripUserSeatId")) {
+                this.tripUserSeatId = Long.valueOf(value);
+            }
+        }
     }
 
 

@@ -10,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.Buss;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussEmployee_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class BussEmployee_MAPPED extends XeEntity {
 
     @Id
@@ -23,25 +24,39 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussEmployeeId;
 
+    protected Long getIncrementId() {
+        return this.bussEmployeeId;
+    }
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussTypeId;
+
 
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long employeeId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long bussId;
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long userId;
+
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -51,6 +66,7 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         protected Long employeeId;
         protected Long bussId;
         protected Long companyId;
+        protected Long userId;
     }
 
     public static Pk pk(Map<String, String> data) {
@@ -60,20 +76,21 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
             Long employeeIdLong = Long.parseLong(data.get("employeeId"));
             Long bussIdLong = Long.parseLong(data.get("bussId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            if(NumberUtils.min(new long[]{bussEmployeeIdLong, bussTypeIdLong, employeeIdLong, bussIdLong, companyIdLong}) < 1) {
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            if(NumberUtils.min(new long[]{bussEmployeeIdLong, bussTypeIdLong, employeeIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
-            return new BussEmployee_MAPPED.Pk(bussEmployeeIdLong, bussTypeIdLong, employeeIdLong, bussIdLong, companyIdLong);
+            }
+            return new BussEmployee_MAPPED.Pk(bussEmployeeIdLong, bussTypeIdLong, employeeIdLong, bussIdLong, companyIdLong, userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new BussEmployee_MAPPED.Pk(0L, 0L, 0L, 0L, 0L);
+        return new BussEmployee_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L);
     }
 
     protected BussEmployee_MAPPED(){}
     protected BussEmployee_MAPPED(Buss buss, Employee employee) {
-        this.buss = buss;
-        this.employee = employee;
+        this.setBuss(buss);
+        this.setEmployee(employee);
     }
 
     @ManyToOne
@@ -115,6 +132,11 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         name = "employeeId",
         referencedColumnName = "employeeId",
         insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "userId",
+        referencedColumnName = "userId",
+        insertable = false,
         updatable = false)
     })
     @JsonIgnore
@@ -124,17 +146,46 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         this.employee = employee;
         this.companyId = employee.getCompanyId();
         this.employeeId = employee.getEmployeeId();
+        this.userId = employee.getUserId();
     }
 
+
+    
 
     protected Boolean isLock = false;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("isLock")) {
                 this.isLock = Boolean.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("bussEmployeeId")) {
+                this.bussEmployeeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("employeeId")) {
+                this.employeeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("bussId")) {
+                this.bussId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+            }
+        }
     }
 
 

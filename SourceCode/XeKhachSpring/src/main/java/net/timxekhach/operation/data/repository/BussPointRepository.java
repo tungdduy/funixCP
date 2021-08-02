@@ -1,21 +1,26 @@
 package net.timxekhach.operation.data.repository;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import net.timxekhach.operation.data.mapped.BussPoint_MAPPED;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import net.timxekhach.operation.data.entity.BussPoint;
+import org.springframework.data.jpa.repository.Modifying;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface BussPointRepository extends JpaRepository<BussPoint, BussPoint_MAPPED.Pk> {
+
+    @Modifying
+    @Query("delete from BussPoint e where e.bussPointId in ?1")
+    void deleteByBussPointId(Long... id);
+    BussPoint findByBussPointId(Long id);
+
     @SuppressWarnings("unused")
-    default void updateBussPoint(Map<String, String> data) {
-        BussPoint bussPoint = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(BussPoint.pk(data)));
-        bussPoint.setFieldByName(data);
-        this.save(bussPoint);
-    }
+    void deleteByLocationId(Long locationId);
+    @SuppressWarnings("unused")
+    List<BussPoint> findByLocationId(Long locationId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

@@ -5,6 +5,7 @@ import { Url } from '../../../framework/url/url.declare';
 export const ADMIN_MENU: NbMenuItem[] =
   [
     {title: 'Tài khoản của tôi', icon: {icon: 'user', pack: 'fa'}, link: Url.app.ADMIN.MY_ACCOUNT.noHost, home: true, hidden: Url.app.ADMIN.MY_ACCOUNT.forbidden()},
+    {title: 'Danh sách người dùng', icon: {icon: 'users', pack: 'fa'}, link: Url.app.ADMIN.ALL_USER.noHost, home: true, hidden: Url.app.ADMIN.ALL_USER.forbidden()},
     {title: 'Chuyến đi của tôi', icon: {icon: 'suitcase-rolling', pack: 'fa'}, link: Url.app.ADMIN.MY_TRIP.noHost, hidden: Url.app.ADMIN.MY_TRIP.forbidden()},
     {title: 'Quản lý nhà xe', icon: {icon: 'building', pack: 'fa'}, link: Url.app.ADMIN.COMPANY_MANAGER.noHost, hidden: Url.app.ADMIN.COMPANY_MANAGER.forbidden()},
     {title: 'Nhân viên tổng đài', icon: {icon: 'headset', pack: 'fa'}, link: Url.app.ADMIN.CALLER_EMPLOYEE.noHost, hidden: Url.app.ADMIN.CALLER_EMPLOYEE.forbidden()},

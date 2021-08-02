@@ -28,5 +28,20 @@ export const Label_vi = {
   SAVED_SUCCESSFULLY: 'Lưu thông tin thành công',
   CLICK_TO_CHANGE_PASSWORD: 'Click để đổi mật khẩu',
   DATA_NO_CHANGE: 'Không có gì thay đổi...',
-  ERROR_PLEASE_TRY_AGAIN: 'Lỗi! Vui lòng thử lại...'
+  ERROR_PLEASE_TRY_AGAIN: 'Lỗi! Vui lòng thử lại...',
+  EMPTY: '',
+  ADD: 'Thêm',
+  DELETE: 'Xóa',
+  COMPANY_ID: "Id",
+  COMPANY_NAME: "Tên",
+  COMPANY_DESC: "Mô tả",
+  DELETE_SUCCESS: "Xóa thông tin thành công!",
+  OK: "Đồng ý",
+  BACK: "Quay lại",
+  PROFILE_IMAGE_URL: "Ảnh",
+  ROLE_USER: "Thường",
+  ROLE_CALLER_STAFF: "Tổng đài",
+  ROLE_BUSS_STAFF: "Nhân viên xe",
+  ROLE_BUSS_MANAGER: "Quản lý nhà xe",
+  ROLE_SYSTEM_MANAGER: "Quản trị hệ thống"
 };

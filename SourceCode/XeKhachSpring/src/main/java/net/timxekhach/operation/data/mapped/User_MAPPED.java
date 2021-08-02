@@ -1,22 +1,24 @@
 package net.timxekhach.operation.data.mapped;
 
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
+import javax.persistence.*;;
+import net.timxekhach.operation.data.entity.TripUser;
+import net.timxekhach.operation.response.ErrorCode;;
+import java.util.ArrayList;
 import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
 import java.util.List;
+import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;;
 import java.util.Map;;
-import javax.persistence.*;;
-import net.timxekhach.operation.data.entity.TripUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
-import java.util.ArrayList;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(User_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class User_MAPPED extends XeEntity {
 
     @Id
@@ -24,6 +26,10 @@ public abstract class User_MAPPED extends XeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long userId;
+
+    protected Long getIncrementId() {
+        return this.userId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -36,7 +42,7 @@ public abstract class User_MAPPED extends XeEntity {
             Long userIdLong = Long.parseLong(data.get("userId"));
             if(NumberUtils.min(new long[]{userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new User_MAPPED.Pk(userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -46,14 +52,25 @@ public abstract class User_MAPPED extends XeEntity {
 
     @OneToMany(
         mappedBy = "user",
-        cascade = {CascadeType.ALL},
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
     protected List<TripUser> allMyTrips = new ArrayList<>();
 
+    @OneToOne(
+        mappedBy = "user",
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected Employee employee;
+
+
+    
 
     @Email
+    @Column(unique = true)
     protected String email;
 
 
@@ -83,39 +100,45 @@ public abstract class User_MAPPED extends XeEntity {
     protected String secretPasswordKey;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("email")) {
                 this.email = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("phoneNumber")) {
                 this.phoneNumber = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("password")) {
                 this.password = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("username")) {
                 this.username = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("fullName")) {
                 this.fullName = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("role")) {
                 this.role = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("nonLocked")) {
                 this.nonLocked = Boolean.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("secretPasswordKey")) {
                 this.secretPasswordKey = String.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+            }
+        }
     }
 
 

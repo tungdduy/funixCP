@@ -15,6 +15,9 @@ public class Buss extends Buss_MAPPED {
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
+public Buss getBuss() {
+        return null;
+    }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

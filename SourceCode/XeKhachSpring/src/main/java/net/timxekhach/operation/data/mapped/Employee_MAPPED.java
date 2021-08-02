@@ -10,11 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Employee_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Employee_MAPPED extends XeEntity {
 
     @Id
@@ -23,35 +24,49 @@ public abstract class Employee_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long employeeId;
 
+    protected Long getIncrementId() {
+        return this.employeeId;
+    }
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE) //id join
+    protected Long userId;
+
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long employeeId;
         protected Long companyId;
+        protected Long userId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
             Long employeeIdLong = Long.parseLong(data.get("employeeId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            if(NumberUtils.min(new long[]{employeeIdLong, companyIdLong}) < 1) {
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            if(NumberUtils.min(new long[]{employeeIdLong, companyIdLong, userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
-            return new Employee_MAPPED.Pk(employeeIdLong, companyIdLong);
+            }
+            return new Employee_MAPPED.Pk(employeeIdLong, companyIdLong, userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new Employee_MAPPED.Pk(0L, 0L);
+        return new Employee_MAPPED.Pk(0L, 0L, 0L);
     }
 
     protected Employee_MAPPED(){}
-    protected Employee_MAPPED(Company company) {
-        this.company = company;
+    protected Employee_MAPPED(Company company, User user) {
+        this.setCompany(company);
+        this.setUser(user);
     }
 
     @ManyToOne
@@ -65,15 +80,32 @@ public abstract class Employee_MAPPED extends XeEntity {
     @JsonIgnore
     protected Company company;
 
+    boolean isPersisted;
+    @PrePersist
+    public void prePersist() {
+        if (!this.isPersisted) {
+            this.company.totalEmployees++;
+            this.isPersisted = true;
+        }
+    }
+    boolean isRemoved;
+    @PreRemove
+    public void preRemove() {
+        if (!this.isRemoved) {
+            this.company.totalEmployees--;
+            this.isRemoved = true;
+        }
+    }
+
     public void setCompany(Company company) {
         this.company = company;
         this.companyId = company.getCompanyId();
     }
 
-    @OneToOne
+    @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "userUserId",
+        name = "userId",
         referencedColumnName = "userId",
         insertable = false,
         updatable = false)
@@ -83,22 +115,34 @@ public abstract class Employee_MAPPED extends XeEntity {
 
     public void setUser(User user) {
         this.user = user;
-        this.userUserId = user.getUserId();
+        this.userId = user.getUserId();
     }
 
-    @Column(unique = true)
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long userUserId;
 
+    
 
     protected Boolean isLock = false;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("isLock")) {
                 this.isLock = Boolean.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("employeeId")) {
+                this.employeeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+            }
+        }
     }
 
 

@@ -39,7 +39,9 @@ public enum ErrorCode {
     CURRENT_PASSWORD_WRONG,
     PASSWORD_NOT_MATCH,
     NOTHING_CHANGED,
-    TRIP_NOT_FOUND
+    TRIP_NOT_FOUND,
+    PASSWORD_MUST_MORE_THAN_3_CHARS,
+    FIELD_EXISTED("fieldName", "tableName")
     ;
 
 

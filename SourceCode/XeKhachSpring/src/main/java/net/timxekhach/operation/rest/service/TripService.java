@@ -18,12 +18,15 @@ import java.util.Map;
 public class TripService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
 	private final TripRepository tripRepository;
 
 	public List<SeatType> availableSeats (Map<String, String> data) {
 		Trip trip = ErrorCode.TRIP_NOT_FOUND.throwIfNull(tripRepository.getById(Trip.pk(data)));
 		return trip.availableSeats();
+	}
+	public List availableTrips () {
+		// TODO : service availableTrips method
+		return null;
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

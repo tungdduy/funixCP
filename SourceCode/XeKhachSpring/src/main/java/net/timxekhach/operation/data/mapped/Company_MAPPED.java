@@ -10,12 +10,13 @@ import java.util.Map;;
 import javax.persistence.*;;
 import lombok.*;;
 import net.timxekhach.operation.response.ErrorCode;;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.ArrayList;
-
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Company_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Company_MAPPED extends XeEntity {
 
     @Id
@@ -23,6 +24,10 @@ public abstract class Company_MAPPED extends XeEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE) //id join
     protected Long companyId;
+
+    protected Long getIncrementId() {
+        return this.companyId;
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -35,7 +40,7 @@ public abstract class Company_MAPPED extends XeEntity {
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             if(NumberUtils.min(new long[]{companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
+            }
             return new Company_MAPPED.Pk(companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
@@ -45,12 +50,24 @@ public abstract class Company_MAPPED extends XeEntity {
 
     @OneToMany(
         mappedBy = "company",
-        cascade = {CascadeType.ALL},
+        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
     protected List<Employee> employees = new ArrayList<>();
+    protected Integer totalEmployees;
+    public Integer getTotalEmployees() {
+        if (this.totalEmployees == null) {
+           this.updateTotalEmployees(); 
+        }
+        return this.totalEmployees;
+    }
+    public void updateTotalEmployees() {
+        this.totalEmployees = this.employees.size();
+    } 
 
+
+    
     @Size(max = 255)
     protected String companyDesc;
 
@@ -61,19 +78,25 @@ public abstract class Company_MAPPED extends XeEntity {
     protected Boolean isLock = false;
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("companyDesc")) {
                 this.companyDesc = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("companyName")) {
                 this.companyName = String.valueOf(value);
-                return;
+                continue;
             }
             if (fieldName.equals("isLock")) {
                 this.isLock = Boolean.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+            }
+        }
     }
 
 

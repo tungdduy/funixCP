@@ -16,6 +16,7 @@ import {XeLabelComponent} from "../xe-label/xe-label.component";
 })
 export class XeFormComponent implements OnDestroy, AfterViewInit {
 
+  @Input() addToSubmit: () => {};
   @Input() onSuccess: 'update' | 'reset';
   private get isResetOnSuccess() {
     return this.onSuccess === 'reset';
@@ -43,6 +44,17 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
   };
   @ContentChildren('msg', {descendants: true}) _msg: QueryList<XeLabelComponent>;
   msg: XeLabelComponent;
+
+  notify(message: string, state: State) {
+    const msg = {code: message, state};
+    if (this.msg) {
+      this.msg.setMessage(msg);
+    } else {
+      Notifier.notify(msg);
+    }
+  }
+
+
   protected subscriptions: Subscription[] = [];
   private _originalMute;
 
@@ -66,7 +78,6 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
     if (this._handler === undefined
       && this.ctrl
       && !!this.ctrl.handlers) {
-
       this._handler = this.ctrl.handlers.find(s => s.name === this.name);
       if (this._handler === undefined) {
         this._handler = this.ctrl.handlers[0];
@@ -82,6 +93,7 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
   public onSubmit() {
     if (!this.handler) {
       console.log("no FormHandler found!");
+      return;
     }
     let model = {};
     console.log("start submit form: " + this.name);
@@ -95,6 +107,13 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
     }).length;
 
     console.log("changedInputsNumber: " + changedInputsNumber);
+
+    if (this.addToSubmit) {
+      const addToModel = this.addToSubmit();
+      Object.keys(addToModel).forEach(key => {
+        model[key] = addToModel[key];
+      });
+    }
 
     if (Object.keys(model).length === 1) {
       model = this.formControls.first.value;
@@ -112,16 +131,14 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
       this.msg.setMessage(this.messages.noChange);
       return;
     }
-
     this.isLoading = true;
-
     this.subscriptions.push(
-      this.handler.processor(model).subscribe(
+      this.handler?.processor(model).subscribe(
         (response: any) => {
           this.isLoading = false;
           this.msg?.setMessage(this.messages.success);
-          this.handler.success?.call(response);
-          this.handler.callbackOnSuccess?.call(this);
+          this.handler?.success?.call(response);
+          this.handler?.callbackOnSuccess?.call(this);
           if (this.isResetOnSuccess) {
             this.formControls.forEach(input => input.reset());
           } else {

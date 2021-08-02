@@ -18,7 +18,7 @@ export class XeLinkComponent {
   @Input() xeUrl: UrlConfig;
 
   hideThis() {
-    return AuthUtil.isAllow(this.xeUrl.roles) ? "" : "d-none";
+    return AuthUtil.instance.isAllow(this.xeUrl.roles) ? "" : "d-none";
   }
 
 }

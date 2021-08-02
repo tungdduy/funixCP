@@ -34,8 +34,6 @@ export class XeLabelComponent implements OnInit {
     this._msg = val;
     if (!!val) {
       this.textValue = XeLbl(this._msg.code);
-      console.log(val);
-      console.log("set text value = " + this.textValue + " | code = " + this._msg.code);
       setTimeout(() => {
         this._msg = undefined;
         this.textValue = undefined;
@@ -44,7 +42,6 @@ export class XeLabelComponent implements OnInit {
   }
 
   setMessage(val: Message) {
-    console.log('setMessage');
     this.msg = val;
   }
 

@@ -51,11 +51,14 @@
       text-decoration: none;
     }
   }
-
+  .info-container {
+    display: none !important;
+  }
   @include media-breakpoint-down(sm) {
     .control-item {
       display: none;
     }
+
     .user-action {
       border: none;
       padding: 0;

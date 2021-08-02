@@ -36,15 +36,18 @@ export const Url = {
 // ----------------------------------------------------------- //
   api: {
     USER: {
-      _self: config().setRoles([r.ROLE_USER]),
+      _self: config(),
       LOGIN: config(),
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
       FORGOT_PASSWORD_SECRET_KEY: config(),
       CHANGE_PASSWORD: config(),
-      UPDATE_USER: config(),
       UPDATE_PASSWORD: config(),
-      UPDATE_PROFILE_IMAGE: config(),
+    },
+    TRIP: {
+      _self: config(),
+      AVAILABLE_SEATS: config(),
+      AVAILABLE_TRIPS: config(),
     },
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
@@ -68,6 +71,7 @@ export const Url = {
       BUSS_EMPLOYEE: config(),
       BUSS_STOP: config(),
       TICKET: config(),
+      ALL_USER: config()
     },
   }
 };
