@@ -83,7 +83,7 @@ package pos {
 }
 
 package trip.setup {
-	class Trip_Buss {
+	class Buss_Trip {
 		trip_id
 		buss_id
 		launch_time
@@ -151,7 +151,7 @@ Buss::buss_type_id --> Buss_Type::buss_type_id
 Buss_Employee::employee_id --> Employee::employee_id
 Buss_Employee::buss_id --> Buss::buss_id
 
-Trip_Buss::buss_id --> Buss::buss_id
+Buss_Trip::buss_id --> Buss::buss_id
 Buss_point::location_id --> Location::location_id
 
 ....

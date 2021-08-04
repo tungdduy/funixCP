@@ -64,7 +64,7 @@ export const Url = {
       _self: config(),
       MY_ACCOUNT: config(),
       ALL_USER: config(),
-      MY_TRIP: config().setRoles([r.ROLE_USER]),
+      MY_TRIP: config(),
       COMPANY_MANAGER: config(),
       CALLER_EMPLOYEE: config(),
       BUSS_TYPE: config(),
