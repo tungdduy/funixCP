@@ -20,10 +20,12 @@ import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
 import {XeTableComponent} from './xe-table/xe-table.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatTableModule} from "@angular/material/table";
-import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatPaginatorIntl, MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {CustomPaginator} from "./custom/CustomPaginatorConfiguration";
+import { UserTableComponent } from './user-table/user-table.component';
 
 
 @NgModule({
@@ -35,6 +37,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
         XeFormComponent,
         XeBasicFormComponent,
         XeTableComponent,
+        UserTableComponent,
     ],
   exports: [
     XeInputComponent,
@@ -44,6 +47,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     XeFormComponent,
     XeBasicFormComponent,
     XeTableComponent,
+    UserTableComponent,
   ],
   imports: [
     CommonModule,
@@ -62,6 +66,9 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     NbUserModule,
     MatCheckboxModule,
     NbCheckboxModule
+  ],
+  providers: [
+    {provide: MatPaginatorIntl, useValue: CustomPaginator()}
   ]
 })
 export class CommonComponentsModule {

@@ -1,17 +1,19 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.ArrayList;
 import javax.validation.constraints.*;
 import java.util.List;
 import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.ArrayList;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Company_MAPPED.Pk.class)
@@ -22,13 +24,12 @@ public abstract class Company_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long companyId;
 
     protected Long getIncrementId() {
         return this.companyId;
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -48,34 +49,31 @@ public abstract class Company_MAPPED extends XeEntity {
         return new Company_MAPPED.Pk(0L);
     }
 
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @OneToMany(
         mappedBy = "company",
-        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
+    @JsonIgnore
     protected List<Employee> employees = new ArrayList<>();
-    protected Integer totalEmployees;
     public Integer getTotalEmployees() {
-        if (this.totalEmployees == null) {
-           this.updateTotalEmployees(); 
-        }
-        return this.totalEmployees;
+        return CommonUpdateService.getEmployeeRepository().countEmployeeIdByCompanyId(this.companyId);
     }
-    public void updateTotalEmployees() {
-        this.totalEmployees = this.employees.size();
-    } 
-
-
-    
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
     @Size(max = 255)
     protected String companyDesc;
-
     @Size(max = 255)
     protected String companyName;
 
-
     protected Boolean isLock = false;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -98,7 +96,4 @@ public abstract class Company_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

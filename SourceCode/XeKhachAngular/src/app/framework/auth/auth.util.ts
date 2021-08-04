@@ -1,6 +1,6 @@
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {XeRole} from "../../business/constant/xe.role";
-import {User} from "../../business/model/user";
+import {User} from "../../business/entities/user";
 import {StringUtil} from "../util/string.util";
 import {StorageUtil} from "../util/storage.util";
 import {configConstant} from "../config.constant";
@@ -22,7 +22,7 @@ export class AuthUtil {
     if (StringUtil.isBlank(token)) return false;
     const tokenContent = this._jwtHelper.decodeToken(token);
     if (StringUtil.isNotBlank(tokenContent?.sub)) {
-      if (this._jwtHelper.isTokenExpired(token)) {
+      if (!this._jwtHelper.isTokenExpired(token)) {
         this.setRepoToken(token);
         this.setRoles(this.convertToAppRoles(tokenContent.authorities));
         return;

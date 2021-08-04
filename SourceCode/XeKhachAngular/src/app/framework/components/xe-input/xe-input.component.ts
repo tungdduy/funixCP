@@ -25,6 +25,10 @@ export class XeInputComponent implements AfterViewInit {
     return this._originValue !== this.value;
   }
 
+  @Input("disabledUpdate") _disabledUpdate?;
+  get disabledUpdate() {
+    return this._disabledUpdate === true || this._disabledUpdate === '';
+  }
   @Input() type: string = "text";
   @Input() lblKey: string;
   @Input() id: string;
@@ -87,6 +91,8 @@ export class XeInputComponent implements AfterViewInit {
   icons = {
     email: 'envelope',
     username: 'id-card',
+    "user.fullName": 'user',
+    "user.phoneNumber": 'mobile-alt',
     password: 'key',
     fullName: 'user',
     phoneNumber: 'mobile-alt',
@@ -197,10 +203,12 @@ export class XeInputComponent implements AfterViewInit {
   }
 
   reset() {
-    this.value = this._originValue;
+    this.value =  this._originValue;
   }
   update() {
-    this._originValue = this.value;
+    if (!this.disabledUpdate) {
+      this._originValue = this.value;
+    }
   }
 }
 

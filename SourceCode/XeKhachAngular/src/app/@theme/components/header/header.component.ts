@@ -41,7 +41,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.userPictureOnly = window.innerWidth < 500;
-    console.log(window.innerWidth);
   }
 
   ngOnDestroy() {

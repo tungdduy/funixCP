@@ -26,12 +26,15 @@ public class CommonUpdateApi {
     
         @PostMapping("/SeatType")
     public ResponseEntity<SeatType> updateSeatType (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateSeatType(data);
         return success(commonUpdateService.updateSeatType(data));
     }
     @PutMapping("/SeatType")
     public ResponseEntity<SeatType> insertSeatType(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertSeatType(data));
+    }
+    @PutMapping("/MultiSeatType")
+    public ResponseEntity<List<SeatType>> insertMultiSeatType(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiSeatType(data));
     }
     @DeleteMapping("/SeatType/{seatTypeIds}")
     public ResponseEntity<Void> deleteSeatTypeBySeatTypeIds(@PathVariable Long[] seatTypeIds) {
@@ -54,17 +57,20 @@ public class CommonUpdateApi {
         , @PathVariable Long bussTypeId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (seatTypeId != null && seatTypeId > 0) data.put("SeatTypeId", seatTypeId);
-        if (bussTypeId != null && bussTypeId > 0) data.put("bussTypeId", bussTypeId);
+        if (bussTypeId != null && bussTypeId > 0) data.put("BussTypeId", bussTypeId);
         return success(this.commonUpdateService.findSeatType(data));
     }
     @PostMapping("/BussTrip")
     public ResponseEntity<BussTrip> updateBussTrip (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateBussTrip(data);
         return success(commonUpdateService.updateBussTrip(data));
     }
     @PutMapping("/BussTrip")
     public ResponseEntity<BussTrip> insertBussTrip(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertBussTrip(data));
+    }
+    @PutMapping("/MultiBussTrip")
+    public ResponseEntity<List<BussTrip>> insertMultiBussTrip(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiBussTrip(data));
     }
     @DeleteMapping("/BussTrip/{bussTripIds}")
     public ResponseEntity<Void> deleteBussTripByBussTripIds(@PathVariable Long[] bussTripIds) {
@@ -87,17 +93,20 @@ public class CommonUpdateApi {
         , @PathVariable Long bussId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (bussTripId != null && bussTripId > 0) data.put("BussTripId", bussTripId);
-        if (bussId != null && bussId > 0) data.put("bussId", bussId);
+        if (bussId != null && bussId > 0) data.put("BussId", bussId);
         return success(this.commonUpdateService.findBussTrip(data));
     }
     @PostMapping("/User")
     public ResponseEntity<User> updateUser (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateUser(data);
         return success(commonUpdateService.updateUser(data));
     }
     @PutMapping("/User")
     public ResponseEntity<User> insertUser(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertUser(data));
+    }
+    @PutMapping("/MultiUser")
+    public ResponseEntity<List<User>> insertMultiUser(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiUser(data));
     }
     @PostMapping("/User-profile-image")
     public ResponseEntity<User> updateUserProfileImage(
@@ -120,12 +129,15 @@ public class CommonUpdateApi {
     }
     @PostMapping("/TripUserSeat")
     public ResponseEntity<TripUserSeat> updateTripUserSeat (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateTripUserSeat(data);
         return success(commonUpdateService.updateTripUserSeat(data));
     }
     @PutMapping("/TripUserSeat")
     public ResponseEntity<TripUserSeat> insertTripUserSeat(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertTripUserSeat(data));
+    }
+    @PutMapping("/MultiTripUserSeat")
+    public ResponseEntity<List<TripUserSeat>> insertMultiTripUserSeat(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiTripUserSeat(data));
     }
     @DeleteMapping("/TripUserSeat/{tripUserSeatIds}")
     public ResponseEntity<Void> deleteTripUserSeatByTripUserSeatIds(@PathVariable Long[] tripUserSeatIds) {
@@ -154,52 +166,62 @@ public class CommonUpdateApi {
         , @PathVariable Long userId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripUserSeatId != null && tripUserSeatId > 0) data.put("TripUserSeatId", tripUserSeatId);
-        if (seatTypeId != null && seatTypeId > 0) data.put("seatTypeId", seatTypeId);
-        if (tripId != null && tripId > 0) data.put("tripId", tripId);
-        if (userId != null && userId > 0) data.put("userId", userId);
+        if (seatTypeId != null && seatTypeId > 0) data.put("SeatTypeId", seatTypeId);
+        if (tripId != null && tripId > 0) data.put("TripId", tripId);
+        if (userId != null && userId > 0) data.put("UserId", userId);
         return success(this.commonUpdateService.findTripUserSeat(data));
     }
     @PostMapping("/Employee")
     public ResponseEntity<Employee> updateEmployee (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateEmployee(data);
         return success(commonUpdateService.updateEmployee(data));
     }
     @PutMapping("/Employee")
     public ResponseEntity<Employee> insertEmployee(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertEmployee(data));
     }
+    @PutMapping("/MultiEmployee")
+    public ResponseEntity<List<Employee>> insertMultiEmployee(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiEmployee(data));
+    }
     @DeleteMapping("/Employee/{employeeIds}")
     public ResponseEntity<Void> deleteEmployeeByEmployeeIds(@PathVariable Long[] employeeIds) {
         commonUpdateService.deleteEmployeeByEmployeeIds(employeeIds);
         return success();
     }
-    @DeleteMapping("/Employee/{employeeId}/{companyId}")
+    @DeleteMapping("/Employee/{employeeId}/{companyId}/{userId}")
     public ResponseEntity<Void> deleteEmployee(
         @PathVariable Long employeeId
-        , @PathVariable Long companyId) {
+        , @PathVariable Long companyId
+        , @PathVariable Long userId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (employeeId != null && employeeId > 0) data.put("EmployeeId", employeeId);
         if (companyId != null && companyId > 0) data.put("companyId", companyId);
+        if (userId != null && userId > 0) data.put("userId", userId);
         this.commonUpdateService.deleteEmployee(data);
         return success();
     }
-    @GetMapping("/Employee/{employeeId}/{companyId}")
+    @GetMapping("/Employee/{employeeId}/{companyId}/{userId}")
     public ResponseEntity<List<Employee>> findEmployee(
         @PathVariable Long employeeId
-        , @PathVariable Long companyId) {
+        , @PathVariable Long companyId
+        , @PathVariable Long userId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (employeeId != null && employeeId > 0) data.put("EmployeeId", employeeId);
-        if (companyId != null && companyId > 0) data.put("companyId", companyId);
+        if (companyId != null && companyId > 0) data.put("CompanyId", companyId);
+        if (userId != null && userId > 0) data.put("UserId", userId);
         return success(this.commonUpdateService.findEmployee(data));
     }
     @PostMapping("/Company")
     public ResponseEntity<Company> updateCompany (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateCompany(data);
         return success(commonUpdateService.updateCompany(data));
     }
     @PutMapping("/Company")
     public ResponseEntity<Company> insertCompany(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertCompany(data));
+    }
+    @PutMapping("/MultiCompany")
+    public ResponseEntity<List<Company>> insertMultiCompany(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiCompany(data));
     }
     @PostMapping("/Company-profile-image")
     public ResponseEntity<Company> updateCompanyProfileImage(
@@ -222,12 +244,15 @@ public class CommonUpdateApi {
     }
     @PostMapping("/TripPoint")
     public ResponseEntity<TripPoint> updateTripPoint (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateTripPoint(data);
         return success(commonUpdateService.updateTripPoint(data));
     }
     @PutMapping("/TripPoint")
     public ResponseEntity<TripPoint> insertTripPoint(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertTripPoint(data));
+    }
+    @PutMapping("/MultiTripPoint")
+    public ResponseEntity<List<TripPoint>> insertMultiTripPoint(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiTripPoint(data));
     }
     @DeleteMapping("/TripPoint/{tripPointIds}")
     public ResponseEntity<Void> deleteTripPointByTripPointIds(@PathVariable Long[] tripPointIds) {
@@ -250,17 +275,20 @@ public class CommonUpdateApi {
         , @PathVariable Long bussTripId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripPointId != null && tripPointId > 0) data.put("TripPointId", tripPointId);
-        if (bussTripId != null && bussTripId > 0) data.put("bussTripId", bussTripId);
+        if (bussTripId != null && bussTripId > 0) data.put("BussTripId", bussTripId);
         return success(this.commonUpdateService.findTripPoint(data));
     }
     @PostMapping("/BussEmployee")
     public ResponseEntity<BussEmployee> updateBussEmployee (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateBussEmployee(data);
         return success(commonUpdateService.updateBussEmployee(data));
     }
     @PutMapping("/BussEmployee")
     public ResponseEntity<BussEmployee> insertBussEmployee(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertBussEmployee(data));
+    }
+    @PutMapping("/MultiBussEmployee")
+    public ResponseEntity<List<BussEmployee>> insertMultiBussEmployee(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiBussEmployee(data));
     }
     @DeleteMapping("/BussEmployee/{bussEmployeeIds}")
     public ResponseEntity<Void> deleteBussEmployeeByBussEmployeeIds(@PathVariable Long[] bussEmployeeIds) {
@@ -286,18 +314,21 @@ public class CommonUpdateApi {
         , @PathVariable Long employeeId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (bussEmployeeId != null && bussEmployeeId > 0) data.put("BussEmployeeId", bussEmployeeId);
-        if (bussId != null && bussId > 0) data.put("bussId", bussId);
-        if (employeeId != null && employeeId > 0) data.put("employeeId", employeeId);
+        if (bussId != null && bussId > 0) data.put("BussId", bussId);
+        if (employeeId != null && employeeId > 0) data.put("EmployeeId", employeeId);
         return success(this.commonUpdateService.findBussEmployee(data));
     }
     @PostMapping("/Buss")
     public ResponseEntity<Buss> updateBuss (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateBuss(data);
         return success(commonUpdateService.updateBuss(data));
     }
     @PutMapping("/Buss")
     public ResponseEntity<Buss> insertBuss(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertBuss(data));
+    }
+    @PutMapping("/MultiBuss")
+    public ResponseEntity<List<Buss>> insertMultiBuss(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiBuss(data));
     }
     @PostMapping("/Buss-profile-image")
     public ResponseEntity<Buss> updateBussProfileImage(
@@ -332,18 +363,21 @@ public class CommonUpdateApi {
         , @PathVariable Long companyId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (bussId != null && bussId > 0) data.put("BussId", bussId);
-        if (bussTypeId != null && bussTypeId > 0) data.put("bussTypeId", bussTypeId);
-        if (companyId != null && companyId > 0) data.put("companyId", companyId);
+        if (bussTypeId != null && bussTypeId > 0) data.put("BussTypeId", bussTypeId);
+        if (companyId != null && companyId > 0) data.put("CompanyId", companyId);
         return success(this.commonUpdateService.findBuss(data));
     }
     @PostMapping("/Location")
     public ResponseEntity<Location> updateLocation (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateLocation(data);
         return success(commonUpdateService.updateLocation(data));
     }
     @PutMapping("/Location")
     public ResponseEntity<Location> insertLocation(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertLocation(data));
+    }
+    @PutMapping("/MultiLocation")
+    public ResponseEntity<List<Location>> insertMultiLocation(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiLocation(data));
     }
     @DeleteMapping("/Location/{locationIds}")
     public ResponseEntity<Void> deleteLocationByLocationIds(@PathVariable Long[] locationIds) {
@@ -359,12 +393,15 @@ public class CommonUpdateApi {
     }
     @PostMapping("/TripUser")
     public ResponseEntity<TripUser> updateTripUser (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateTripUser(data);
         return success(commonUpdateService.updateTripUser(data));
     }
     @PutMapping("/TripUser")
     public ResponseEntity<TripUser> insertTripUser(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertTripUser(data));
+    }
+    @PutMapping("/MultiTripUser")
+    public ResponseEntity<List<TripUser>> insertMultiTripUser(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiTripUser(data));
     }
     @DeleteMapping("/TripUser/{tripUserIds}")
     public ResponseEntity<Void> deleteTripUserByTripUserIds(@PathVariable Long[] tripUserIds) {
@@ -390,18 +427,21 @@ public class CommonUpdateApi {
         , @PathVariable Long userId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripUserId != null && tripUserId > 0) data.put("TripUserId", tripUserId);
-        if (tripId != null && tripId > 0) data.put("tripId", tripId);
-        if (userId != null && userId > 0) data.put("userId", userId);
+        if (tripId != null && tripId > 0) data.put("TripId", tripId);
+        if (userId != null && userId > 0) data.put("UserId", userId);
         return success(this.commonUpdateService.findTripUser(data));
     }
     @PostMapping("/BussType")
     public ResponseEntity<BussType> updateBussType (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateBussType(data);
         return success(commonUpdateService.updateBussType(data));
     }
     @PutMapping("/BussType")
     public ResponseEntity<BussType> insertBussType(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertBussType(data));
+    }
+    @PutMapping("/MultiBussType")
+    public ResponseEntity<List<BussType>> insertMultiBussType(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiBussType(data));
     }
     @DeleteMapping("/BussType/{bussTypeIds}")
     public ResponseEntity<Void> deleteBussTypeByBussTypeIds(@PathVariable Long[] bussTypeIds) {
@@ -417,12 +457,15 @@ public class CommonUpdateApi {
     }
     @PostMapping("/BussPoint")
     public ResponseEntity<BussPoint> updateBussPoint (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateBussPoint(data);
         return success(commonUpdateService.updateBussPoint(data));
     }
     @PutMapping("/BussPoint")
     public ResponseEntity<BussPoint> insertBussPoint(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertBussPoint(data));
+    }
+    @PutMapping("/MultiBussPoint")
+    public ResponseEntity<List<BussPoint>> insertMultiBussPoint(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiBussPoint(data));
     }
     @DeleteMapping("/BussPoint/{bussPointIds}")
     public ResponseEntity<Void> deleteBussPointByBussPointIds(@PathVariable Long[] bussPointIds) {
@@ -445,17 +488,20 @@ public class CommonUpdateApi {
         , @PathVariable Long locationId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (bussPointId != null && bussPointId > 0) data.put("BussPointId", bussPointId);
-        if (locationId != null && locationId > 0) data.put("locationId", locationId);
+        if (locationId != null && locationId > 0) data.put("LocationId", locationId);
         return success(this.commonUpdateService.findBussPoint(data));
     }
     @PostMapping("/Trip")
     public ResponseEntity<Trip> updateTrip (@RequestBody Map<String, String> data) {
-        commonUpdateService.updateTrip(data);
         return success(commonUpdateService.updateTrip(data));
     }
     @PutMapping("/Trip")
     public ResponseEntity<Trip> insertTrip(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insertTrip(data));
+    }
+    @PutMapping("/MultiTrip")
+    public ResponseEntity<List<Trip>> insertMultiTrip(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMultiTrip(data));
     }
     @DeleteMapping("/Trip/{tripIds}")
     public ResponseEntity<Void> deleteTripByTripIds(@PathVariable Long[] tripIds) {
@@ -478,7 +524,7 @@ public class CommonUpdateApi {
         , @PathVariable Long bussId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripId != null && tripId > 0) data.put("TripId", tripId);
-        if (bussId != null && bussId > 0) data.put("bussId", bussId);
+        if (bussId != null && bussId > 0) data.put("BussId", bussId);
         return success(this.commonUpdateService.findTrip(data));
     }
 

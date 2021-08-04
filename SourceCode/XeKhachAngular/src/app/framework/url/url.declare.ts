@@ -63,6 +63,7 @@ export const Url = {
     ADMIN: {
       _self: config(),
       MY_ACCOUNT: config(),
+      ALL_USER: config(),
       MY_TRIP: config().setRoles([r.ROLE_USER]),
       COMPANY_MANAGER: config(),
       CALLER_EMPLOYEE: config(),
@@ -71,7 +72,6 @@ export const Url = {
       BUSS_EMPLOYEE: config(),
       BUSS_STOP: config(),
       TICKET: config(),
-      ALL_USER: config()
     },
   }
 };

@@ -2,21 +2,19 @@ package net.timxekhach.operation.data.repository;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import java.util.List;
 import net.timxekhach.operation.data.entity.Buss;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.Buss_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface BussRepository extends JpaRepository<Buss, Buss_MAPPED.Pk> {
 
-    @Modifying
-    @Query("delete from Buss e where e.bussId in ?1")
-    void deleteByBussId(Long... id);
+    void deleteByBussId(Long id);
+    void deleteAllByBussIdIn(List<Long> ids);
     Buss findByBussId(Long id);
-
+    Integer countBussIdByBussTypeId(Long bussTypeId);
+    Integer countBussIdByCompanyId(Long companyId);
     @SuppressWarnings("unused")
     void deleteByBussTypeId(Long bussTypeId);
     @SuppressWarnings("unused")

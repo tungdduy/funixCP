@@ -1,18 +1,42 @@
-interface EntityField {
+import {XeFormComponent} from "../../framework/components/xe-form/xe-form.component";
+import {XeBasicFormComponent} from "../../framework/components/xe-basic-form/xe-basic-form.component";
+import {SelectionModel} from "@angular/cdk/collections";
+import {XeEntity} from "../entities/xe-entity";
+import {MatTableDataSource} from "@angular/material/table";
+
+export interface EntityField {
   name: string;
+  value?: any;
+  subEntities?: string[];
   required?: boolean;
   hidden?: boolean;
   newOnly?: boolean;
+  clearOnSuccess?: boolean;
+}
+
+export interface EntityIdentifier {
+  className?: string;
+  idFields?: () => EntityField[];
+}
+
+export interface ShareFormData {
+  tableSource?: MatTableDataSource<any>;
+  entity: any;
+  entities?: XeEntity[];
+  xeForm?: XeFormComponent;
+  xeBasicForm?: XeBasicFormComponent;
+  selection?: SelectionModel<any>;
 }
 
 export declare interface XeFormData {
-  share?: {entity: any};
-  className?: string;
-  idColumns?: {};
+  entityIdentifier: EntityIdentifier;
+  readonly ?: boolean;
+  share?: ShareFormData;
   grid?: boolean;
   header?: {
-    titleKey?: string,
-    descKey?: string,
+    profileImage?: EntityField,
+    titleField?: EntityField,
+    descField?: EntityField,
   };
   fields: EntityField[];
   onAvatarChange?: (entity) => void;

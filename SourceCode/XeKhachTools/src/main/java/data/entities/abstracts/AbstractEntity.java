@@ -2,6 +2,7 @@ package data.entities.abstracts;
 
 import data.models.Column;
 import data.models.MapColumn;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,10 +22,10 @@ import static util.StringUtil.toIdName;
 @Setter
 public abstract class AbstractEntity {
 
-    List<Class<?>> primaryKeyClasses = new ArrayList<>();
-    List<AbstractEntity> primaryKeyEntities;
-    Set<String> primaryKeyIdNames;
-    String capName, camelName;
+    protected List<Class<?>> primaryKeyClasses = new ArrayList<>();
+    protected List<AbstractEntity> primaryKeyEntities;
+    protected Set<String> primaryKeyIdNames;
+    protected String capName, camelName;
 
     public boolean hasProfileImage() {
         return false;
@@ -49,6 +50,7 @@ public abstract class AbstractEntity {
             primaryKeyClasses.forEach(clazz -> {
                 primaryKeyEntities.add((AbstractEntity) newInstance(clazz));
             });
+            primaryKeyEntities.sort((pk1, pk2) -> pk1.camelName.compareTo(pk2.camelName));
         }
         return primaryKeyEntities;
     }

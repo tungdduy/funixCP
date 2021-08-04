@@ -1,20 +1,25 @@
-import {XeFormData} from "./XeFormData";
+import {EntityField, XeFormData} from "./XeFormData";
+import {TemplateRef} from "@angular/core";
 
-interface TableColumn {
+export interface TableColumn {
   hiddenClass?: 'hidden-phone' | 'hidden-tablet';
   type: 'role' | 'avatar' | 'string' | 'money' | 'link' | 'boldString' | 'avatarRole' | 'boldStringRole' | 'avatarString';
-  name: string;
+  field: EntityField;
   link?: string;
 }
 
+export interface ManualColumn {
+  field: EntityField;
+  template: () => TemplateRef<any>;
+}
+
 export declare interface XeTableData {
-  share?: {entity: any};
-  className: string;
-  idColumns?: {};
-  table: {
-    basicColumns: TableColumn[]
-  };
   formData: XeFormData;
+  table: {
+    filterCondition?: (entity: any) => boolean
+    basicColumns: TableColumn[],
+    manualColumns?: ManualColumn[]
+  };
 }
 
 

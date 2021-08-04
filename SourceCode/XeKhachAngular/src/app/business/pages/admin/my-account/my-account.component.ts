@@ -3,7 +3,7 @@ import {FormAbstract} from "../../../abstract/form.abstract";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {AuthService} from "../../../../framework/auth/auth.service";
 import {XeFormData} from "../../../abstract/XeFormData";
-import {User} from "../../../model/user";
+import {User} from "../../../entities/user";
 
 @Component({
   selector: 'xe-my-account',
@@ -21,12 +21,17 @@ export class MyAccountComponent extends FormAbstract {
   ];
   userForm: XeFormData = {
     share: {entity: this.user},
+    entityIdentifier: {
+      className: "User",
+      idFields: () => [
+        {name: "userId", value: this.user.userId}
+      ]
+    },
     grid: true,
-    className: "User",
-    idColumns: {userId: this.user.userId},
     header: {
-      titleKey: 'fullName',
-      descKey: 'phoneNumber',
+      profileImage: {name: 'profileImageUrl'},
+      titleField: {name: 'fullName'},
+      descField: {name: 'phoneNumber'},
     },
     fields: [
       {name: "username"},
@@ -43,7 +48,6 @@ export class MyAccountComponent extends FormAbstract {
   };
 
   private updateUser(user) {
-    console.log(user);
     this.user = user;
     AuthUtil.instance.setRepoUser(user);
   }

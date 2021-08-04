@@ -124,13 +124,14 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
       console.log(model);
       return false;
     }
-    console.log("form valid, begin post...");
 
     if (changedInputsNumber === 0) {
       console.log("nothing changed");
-      this.msg.setMessage(this.messages.noChange);
+      this.msg?.setMessage(this.messages.noChange);
       return;
     }
+    console.log("form valid, begin post...");
+    console.log(model);
     this.isLoading = true;
     this.subscriptions.push(
       this.handler?.processor(model).subscribe(

@@ -1,22 +1,20 @@
 package net.timxekhach.operation.data.repository;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import java.util.List;
-import org.springframework.data.jpa.repository.Query;
 import net.timxekhach.operation.data.entity.TripUser;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAPPED.Pk> {
 
-    @Modifying
-    @Query("delete from TripUser e where e.tripUserId in ?1")
-    void deleteByTripUserId(Long... id);
+    void deleteByTripUserId(Long id);
+    void deleteAllByTripUserIdIn(List<Long> ids);
     TripUser findByTripUserId(Long id);
-
+    Integer countTripUserIdByTripId(Long tripId);
+    Integer countTripUserIdByUserId(Long userId);
     @SuppressWarnings("unused")
     void deleteByTripId(Long tripId);
     @SuppressWarnings("unused")

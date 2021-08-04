@@ -29,12 +29,15 @@ public class CommonUpdateApi {
     <#assign camelName = entity.camelName>
     @PostMapping("/${capName}")
     public ResponseEntity<${capName}> update${capName} (@RequestBody Map<String, String> data) {
-        commonUpdateService.update${capName}(data);
         return success(commonUpdateService.update${capName}(data));
     }
     @PutMapping("/${capName}")
     public ResponseEntity<${capName}> insert${capName}(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insert${capName}(data));
+    }
+    @PutMapping("/Multi${capName}")
+    public ResponseEntity<List<${capName}>> insertMulti${capName}(@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.insertMulti${capName}(data));
     }
     <#if entity.hasProfileImage()>
     @PostMapping("/${capName}-profile-image")
@@ -73,8 +76,8 @@ public class CommonUpdateApi {
         , @PathVariable Long ${pk}</#list>) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (${camelName}Id != null && ${camelName}Id > 0) data.put("${capName}Id", ${camelName}Id);
-        <#list entity.primaryKeyIdNames as pk>
-        if (${pk} != null && ${pk} > 0) data.put("${pk}", ${pk});
+        <#list entity.primaryKeyEntities as pk>
+        if (${pk.camelName}Id != null && ${pk.camelName}Id > 0) data.put("${pk.capName}Id", ${pk.camelName}Id);
         </#list>
         return success(this.commonUpdateService.find${capName}(data));
     }

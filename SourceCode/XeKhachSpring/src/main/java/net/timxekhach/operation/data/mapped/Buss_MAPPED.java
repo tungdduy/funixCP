@@ -1,15 +1,17 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
-import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import net.timxekhach.operation.response.ErrorCode;
+import javax.validation.constraints.*;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.entity.BussType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,25 +23,22 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussTypeId;
-
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussId;
 
     protected Long getIncrementId() {
         return this.bussId;
     }
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long companyId;
-
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -65,27 +64,13 @@ public abstract class Buss_MAPPED extends XeEntity {
     }
 
     protected Buss_MAPPED(){}
-    protected Buss_MAPPED(Company company, BussType bussType) {
-        this.setCompany(company);
+    protected Buss_MAPPED(BussType bussType, Company company) {
         this.setBussType(bussType);
+        this.setCompany(company);
     }
-
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "companyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIgnore
-    protected Company company;
-
-    public void setCompany(Company company) {
-        this.company = company;
-        this.companyId = company.getCompanyId();
-    }
-
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -94,18 +79,54 @@ public abstract class Buss_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "bussTypeId")
     protected BussType bussType;
+
+    public BussType getBussType(){
+        if (this.bussType == null) {
+            this.bussType = CommonUpdateService.getBussTypeRepository().findByBussTypeId(this.bussTypeId);
+        }
+        return this.bussType;
+    }
 
     public void setBussType(BussType bussType) {
         this.bussType = bussType;
         this.bussTypeId = bussType.getBussTypeId();
     }
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "companyId")
+    protected Company company;
 
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
+        }
+        return this.company;
+    }
 
-    
+    public void setCompany(Company company) {
+        this.company = company;
+        this.companyId = company.getCompanyId();
+    }
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
     @Size(max = 255)
     protected String bussDesc;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -128,7 +149,4 @@ public abstract class Buss_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

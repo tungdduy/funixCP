@@ -1,15 +1,16 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
 import net.timxekhach.operation.data.entity.Location;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.response.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
@@ -21,13 +22,12 @@ public abstract class Location_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long locationId;
 
     protected Long getIncrementId() {
         return this.locationId;
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -47,6 +47,9 @@ public abstract class Location_MAPPED extends XeEntity {
         return new Location_MAPPED.Pk(0L);
     }
 
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -55,7 +58,9 @@ public abstract class Location_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "parentId")
     protected Location parent;
 
     public void setParent(Location parent) {
@@ -63,13 +68,19 @@ public abstract class Location_MAPPED extends XeEntity {
         this.parentLocationId = parent.getLocationId();
     }
 
-
-    
-    @Setter(AccessLevel.PRIVATE) //map join
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
+    @Setter(AccessLevel.PRIVATE)
     protected Long parentLocationId;
-
+//====================================================================//
+//==================== END of JOIN ID COLUMNS ========================//
+//====================================================================//
     @Size(max = 255)
     protected String locationName;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -84,7 +95,4 @@ public abstract class Location_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

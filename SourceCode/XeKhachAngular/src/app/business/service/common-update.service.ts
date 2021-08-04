@@ -9,10 +9,45 @@ import {StringUtil} from "../../framework/util/string.util";
 })
 export class CommonUpdateService {
   constructor(private http: HttpClient) {}
+  oneParamIdValue = (id, className) => !id ? '0' : id[StringUtil.classNameToIdName(className)];
 
-  commonPath = (className) => Url.API_HOST + "/common-update/" + className;
-  paramIdPath = (data, className) => this.commonPath(className) + "/" + this.getParamValue(data, className);
-  getParamValue = (data, className) => !data ? '0' : data[StringUtil.lowercaseFirstLetter(className) + "Id"];
+  commonPath = (className) => {
+    const result = Url.API_HOST + "/common-update/" + className;
+    console.log(result);
+    return result;
+  }
+
+  commonMultiPath = (className) => {
+    const result = Url.API_HOST + "/common-update/Multi" + className;
+    console.log(result);
+    return result;
+  }
+
+  oneParamIdPath = (id, className) => {
+    const result = this.commonPath(className) + "/" + this.oneParamIdValue(id, className);
+    console.log(result);
+    return result;
+  }
+  manyParamIdPath = (ids, className) => {
+    const result = this.commonPath(className) + "/" + this.manyParamIdValue(ids, className);
+    console.log(result);
+    return result;
+  }
+
+  manyParamIdValue = (ids, className) => {
+
+    const mainIdName = StringUtil.classNameToIdName(className);
+    const mainIdValue = this.oneParamIdValue(ids, className);
+
+    const joiner = [];
+    joiner.push(mainIdValue);
+
+    const remainIdsSorted = Object.keys(ids).sort((a, b) => a.localeCompare(b))
+                                          .filter(s => s !== mainIdName)
+                                          .map(keySorted => ids[keySorted]);
+    remainIdsSorted.forEach(s => joiner.push(s));
+    return joiner.join("/");
+  }
   profileImagePath = (className) => this.commonPath(className) + "-profile-image";
 
   updateProfileImage(formData: FormData, className): Observable<any> {
@@ -24,16 +59,18 @@ export class CommonUpdateService {
   insert<T>(data, className): Observable<T> {
     return this.http.put<T>(this.commonPath(className), data);
   }
+  insertMulti<T>(data: any[], className): Observable<T[]> {
+    return this.http.put<T[]>(this.commonMultiPath(className), data);
+  }
   delete<T>(data, className): Observable<T> {
-    return this.http.delete<T>(this.paramIdPath(data, className));
+    return this.http.delete<T>(this.oneParamIdPath(data, className));
   }
   getOne<T>(data, className): Observable<T> {
-    return this.http.get<T>(this.paramIdPath(data, className));
+    return this.http.get<T>(this.oneParamIdPath(data, className));
   }
-  public getAll<T>(data, className): Observable<T[]> {
-    return this.http.get<T[]>(this.paramIdPath(data, className));
+  public getAll<T>(ids, className): Observable<T[]> {
+    return this.http.get<T[]>(this.manyParamIdPath(ids, className));
   }
-
   deleteAll(selected: any[], className: string) {
     const id = StringUtil.lowercaseFirstLetter(className) + "Id";
     const params =  selected.map(s => s[id]).join(",");

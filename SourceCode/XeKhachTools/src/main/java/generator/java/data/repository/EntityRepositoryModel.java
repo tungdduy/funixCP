@@ -4,7 +4,6 @@ import generator.GeneratorSetup;
 import generator.abstracts.models.AbstractEntityModel;
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.operation.response.ErrorCode;
 
 import java.util.*;
 
@@ -17,24 +16,21 @@ public class EntityRepositoryModel extends AbstractEntityModel {
     public Set<String> getImportRequireLines() {
         if(importRequireLines == null) {
             importRequireLines = new HashSet<>(Arrays.asList(
-                    String.format("import net.timxekhach.operation.data.entity.%s;", this.entityClassName),
-                    String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityClassName),
+                    String.format("import net.timxekhach.operation.data.entity.%s;", this.entityCapName),
+                    String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName),
                     "import org.springframework.data.jpa.repository.JpaRepository;",
                     String.format("import %s;", "org.springframework.data.jpa.repository.JpaRepository"),
                     String.format("import %s;", "org.springframework.stereotype.Repository"),
-                    String.format("import %s;", "java.util.List"),
-                    String.format("import %s;", "org.springframework.data.jpa.repository.Query"),
-                    String.format("import %s;", "org.springframework.data.jpa.repository.Modifying")
+                    String.format("import %s;", "java.util.List")
             ));
         }
         return importRequireLines;
     }
 
     private List<FindMethod> byPkMethods = new ArrayList<>();
-    private List<String> pkNames = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {
-        return GeneratorSetup.API_OPERATION_DATA_REPOSITORY_ROOT + this.entityClassName + "Repository.java";
+        return GeneratorSetup.API_OPERATION_DATA_REPOSITORY_ROOT + this.entityCapName + "Repository.java";
     }
 }

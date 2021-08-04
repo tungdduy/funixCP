@@ -10,8 +10,8 @@ import javax.persistence.Entity;
 public class TripUserSeat extends TripUserSeat_MAPPED {
 
     public TripUserSeat() {}
-    public TripUserSeat(Trip trip, User user, SeatType seatType) {
-        super(trip, user, seatType);
+    public TripUserSeat(SeatType seatType, Trip trip, User user) {
+        super(seatType, trip, user);
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

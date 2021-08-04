@@ -1,4 +1,5 @@
 import {XeEntity} from "./xe-entity";
+import {Employee} from "./employee";
 
 export class User extends XeEntity {
   userId: string;
@@ -8,6 +9,7 @@ export class User extends XeEntity {
   fullName: string;
   role: string;
   roles: string[];
+  employee: Employee;
 
   static setRole(user: any, roles: string[]) {
     if (!roles) {

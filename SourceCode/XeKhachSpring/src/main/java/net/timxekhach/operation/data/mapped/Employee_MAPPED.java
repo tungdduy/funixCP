@@ -1,14 +1,16 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -21,24 +23,21 @@ public abstract class Employee_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long employeeId;
 
     protected Long getIncrementId() {
         return this.employeeId;
     }
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long companyId;
 
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long userId;
-
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -68,7 +67,9 @@ public abstract class Employee_MAPPED extends XeEntity {
         this.setCompany(company);
         this.setUser(user);
     }
-
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -77,31 +78,22 @@ public abstract class Employee_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "companyId")
     protected Company company;
 
-    boolean isPersisted;
-    @PrePersist
-    public void prePersist() {
-        if (!this.isPersisted) {
-            this.company.totalEmployees++;
-            this.isPersisted = true;
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
         }
-    }
-    boolean isRemoved;
-    @PreRemove
-    public void preRemove() {
-        if (!this.isRemoved) {
-            this.company.totalEmployees--;
-            this.isRemoved = true;
-        }
+        return this.company;
     }
 
     public void setCompany(Company company) {
         this.company = company;
         this.companyId = company.getCompanyId();
     }
-
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -110,18 +102,30 @@ public abstract class Employee_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId")
     protected User user;
+
+    public User getUser(){
+        if (this.user == null) {
+            this.user = CommonUpdateService.getUserRepository().findByUserId(this.userId);
+        }
+        return this.user;
+    }
 
     public void setUser(User user) {
         this.user = user;
         this.userId = user.getUserId();
     }
-
-
-    
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
 
     protected Boolean isLock = false;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -144,7 +148,4 @@ public abstract class Employee_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

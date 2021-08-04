@@ -9,6 +9,7 @@ import static data.entities.abstracts.DataType.*;
 
 @Getter
 public class User extends AbstractEntity {
+
     Column email = of(EMAIL).unique();
     Column phoneNumber = of(PHONE);
     Column password = of(SECRET_TOKEN);

@@ -1,15 +1,17 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import net.timxekhach.operation.data.entity.Location;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.response.ErrorCode;
+import javax.validation.constraints.*;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
@@ -20,20 +22,18 @@ public abstract class BussPoint_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long locationId;
-
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussPointId;
 
     protected Long getIncrementId() {
         return this.bussPointId;
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -59,7 +59,9 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     protected BussPoint_MAPPED(Location location) {
         this.setLocation(location);
     }
-
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -68,18 +70,30 @@ public abstract class BussPoint_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "locationId")
     protected Location location;
+
+    public Location getLocation(){
+        if (this.location == null) {
+            this.location = CommonUpdateService.getLocationRepository().findByLocationId(this.locationId);
+        }
+        return this.location;
+    }
 
     public void setLocation(Location location) {
         this.location = location;
         this.locationId = location.getLocationId();
     }
-
-
-    
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
     @Size(max = 255)
     protected String bussPointDesc;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -98,7 +112,4 @@ public abstract class BussPoint_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

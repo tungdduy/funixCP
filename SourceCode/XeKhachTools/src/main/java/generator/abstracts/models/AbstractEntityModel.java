@@ -16,7 +16,7 @@ import static util.StringUtil.toCamel;
 public abstract class AbstractEntityModel<E extends AbstractEntity> extends AbstractModel{
 
     protected E entity;
-    protected String entityClassName;
+    protected String entityCapName;
     protected String entityCamelName;
     protected List<Param> constructorParams = new ArrayList<>();
 
@@ -26,8 +26,8 @@ public abstract class AbstractEntityModel<E extends AbstractEntity> extends Abst
     @Override
     protected void init() {
         this.entity = (E) entityHolder.value;
-        this.entityClassName = this.entity.getClass().getSimpleName();
-        this.entityCamelName = toCamel(this.entityClassName);
+        this.entityCapName = this.entity.getClass().getSimpleName();
+        this.entityCamelName = toCamel(this.entityCapName);
         super.init();
     }
 

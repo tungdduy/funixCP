@@ -4,9 +4,8 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CommonUpdateService} from "../../../business/service/common-update.service";
 import {EntityUtil} from "../../util/entity.util";
-import {XeTableData} from "../../../business/abstract/XeTableData";
+import {TableColumn, XeTableData} from "../../../business/abstract/XeTableData";
 import {NbDialogService} from "@nebular/theme";
-import {XeEntity} from "../../../business/model/xe-entity";
 import {SelectionModel} from "@angular/cdk/collections";
 import {Notifier} from "../../notify/notify.service";
 import {XeLabel} from "../../../business/i18n";
@@ -22,7 +21,7 @@ export class XeTableComponent implements OnInit, OnDestroy {
 
   @Input() tableData: XeTableData;
   displayedColumns: string[] = [];
-  dataSource: MatTableDataSource<any>;
+  tableSource: MatTableDataSource<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -30,6 +29,8 @@ export class XeTableComponent implements OnInit, OnDestroy {
   @ViewChild("deleteDirect") deleteDialog;
   selection: SelectionModel<any>;
   isSelected = true;
+
+  entityUtil = EntityUtil;
 
   constructor(private commonService: CommonUpdateService,
               private dialogService: NbDialogService) {
@@ -40,64 +41,76 @@ export class XeTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.tableData.formData.share = this.tableData.share;
-    this.tableData.formData.className = this.tableData.className;
-    this.tableData.formData.idColumns = this.tableData.idColumns;
-    Object.assign(this.displayedColumns, this.tableData.table.basicColumns.map(c => c.name));
+
+    Object.assign(this.displayedColumns, this.tableData.table.basicColumns.map(c => c.field.name));
+    this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
     this.displayedColumns.push("select");
-    this.subscriptions.push(this.commonService.getAll<any>(this.tableData.idColumns, this.tableData.className).subscribe(
+
+    this.subscriptions.push(this.commonService.getAll<any>(this.entityUtil.getIdFromIdentifier(this.tableData.formData.entityIdentifier), this.tableData.formData.entityIdentifier.className).subscribe(
       (result) => {
-        console.log(result);
-        this.dataSource = new MatTableDataSource<any>(result);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        if (this.tableData.table.filterCondition) {
+          result = result.filter(this.tableData.table.filterCondition);
+        }
+        this.tableData.formData.share.tableSource = this.tableSource;
+        this.tableData.formData.share.entities = result;
+        this.tableSource = new MatTableDataSource<any>(result);
+        this.tableData.formData.share.tableSource = this.tableSource;
+        this.tableSource.paginator = this.paginator;
+        this.tableSource.sort = this.sort;
       }
     ));
 
     const initialSelection = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<any>(allowMultiSelect, initialSelection);
+    this.tableData.formData.share.selection = this.selection;
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    this.tableSource.filter = filterValue.trim().toLowerCase();
+    if (this.tableSource.paginator) {
+      this.tableSource.paginator.firstPage();
     }
   }
 
   submitEntitySuccess = (entity, isNew: boolean) => {
     if (isNew) {
-      this.dataSource.data.unshift(entity);
-      this.dataSource.data = this.dataSource.data;
-      this.tableData.share.entity = this.dataSource.data[0];
+      this.tableSource.data.unshift(entity);
+      this.tableSource.data = this.tableSource.data;
+      this.tableData.formData.share.entity = this.tableSource.data[0];
     }
   }
 
   deleteEntitySuccess = (entity) => {
-    this.removeEntityFromArray(entity, this.dataSource.data);
+    this.removeEntityFromArray(entity, this.tableSource.data);
     this.removeEntityFromArray(entity, this.selection.selected);
-    this.dataSource.data = this.dataSource.data;
+    this.tableSource.data = this.tableSource.data;
   }
 
   removeEntityFromArray(entity, data: any[]) {
     for (let i = 0; i < data.length; i++) {
       const e = data[i];
-      if (XeEntity.isMatchingId(this.tableData.idColumns, e, entity)) {
+      if (this.entityUtil.isMatchingId(this.tableData.formData.entityIdentifier, e, entity)) {
         return data.splice(i, 1);
       }
     }
   }
 
-  editDialog(entity: any) {
-    this.tableData.share.entity = entity;
-    this.dialogService.open(this.basicFormDialog);
+  editEntityDialog(entity: any) {
+    if (this.tableData.formData.readonly) return;
+    this.tableData.formData.share.entity = entity;
+    this.openBasicFormDialog();
   }
 
-  newDialog() {
-    this.tableData.share.entity = EntityUtil.newByName(this.tableData.className);
-    this.dialogService.open(this.basicFormDialog);
+  newEntityDialog() {
+    this.tableData.formData.share.entity = this.entityUtil.newByEntityDefine(this.tableData.formData.entityIdentifier);
+    this.openBasicFormDialog();
+  }
+  openBasicFormDialog() {
+    this.dialogService.open(this.basicFormDialog).onClose.subscribe(() => {
+      this.tableData.formData?.share?.xeBasicForm?.restoreShareEntity();
+    });
   }
 
   openDeleteDialog() {
@@ -106,7 +119,7 @@ export class XeTableComponent implements OnInit, OnDestroy {
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.tableSource.data.length;
     return numSelected === numRows;
   }
 
@@ -115,19 +128,19 @@ export class XeTableComponent implements OnInit, OnDestroy {
       this.selection.clear();
     } else {
       this.selection.clear();
-      this.dataSource.data.forEach(row => this.selection.select(row));
+      this.tableSource.data.forEach(row => this.selection.select(row));
     }
   }
 
   subscriptions = [];
   deleteSelected() {
-    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.className).subscribe(
+    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.className).subscribe(
       () => {
         this.selection.selected.forEach(entity => {
-          this.removeEntityFromArray(entity, this.dataSource.data);
+          this.removeEntityFromArray(entity, this.tableSource.data);
         });
         this.selection.clear();
-        this.dataSource.data = this.dataSource.data;
+        this.tableSource.data = this.tableSource.data;
         Notifier.success(XeLabel.DELETE_SUCCESS);
       },
       (error: HttpErrorResponse) => {
@@ -156,7 +169,12 @@ export class XeTableComponent implements OnInit, OnDestroy {
     return this.stringColumn;
   }
 
-  getRoleIcons(role: []) {
-    return role.map(s => RoleUtil.roleIcon[s]).filter(s => s !== undefined);
+  getRoleIcons(role: string) {
+    if (!role) return [];
+    return role.split(",").map(s => RoleUtil.roleIcon[s]).filter(s => s !== undefined);
+  }
+
+  asTableColumn(tableColumn: any): TableColumn {
+    return tableColumn as TableColumn;
   }
 }

@@ -9,6 +9,17 @@ import {Message} from "../../model/message.model";
 })
 export class XeLabelComponent implements OnInit {
 
+  @Input() type: 'link' | 'text' = 'text';
+  _types = {
+    link: {
+      css: 'd-link'
+    },
+    text: {
+      css: ''
+    }
+  };
+
+  @Input() prepend = '';
 
   @Input("key") key;
   textValue: string;

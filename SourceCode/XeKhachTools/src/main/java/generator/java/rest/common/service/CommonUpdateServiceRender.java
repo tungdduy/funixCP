@@ -8,7 +8,6 @@ import static util.ReflectionUtil.newInstancesOfAllChildren;
 
 public class CommonUpdateServiceRender extends AbstractRender<CommonUpdateServiceModel> {
 
-
     @Override
     protected boolean isOverrideExistingFile() {
         return true;

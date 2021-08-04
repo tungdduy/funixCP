@@ -1,12 +1,13 @@
 package net.timxekhach.operation.data.mapped.abstracts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.security.model.SecurityResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -65,4 +66,52 @@ public abstract class XeEntity implements Serializable {
         }
         profileImage.transferTo(file);
     }
+    @Transient
+    @JsonIgnore
+    protected boolean isPrePersisted;
+    @PrePersist
+    private void _prePersist(){
+        if (!this.isPrePersisted) { //avoid call twice on persist
+            this.isPrePersisted = true;
+            this.prePersist();
+        }
+    }
+    protected void prePersist() {};
+
+    @Transient
+    @JsonIgnore
+    protected boolean isPostPersisted;
+    @PostPersist
+    private void _postPersist(){
+        if (!this.isPostPersisted) { //avoid call twice on persist
+            this.isPostPersisted = true;
+            this.postPersist();
+        }
+    }
+    protected void postPersist() {};
+
+
+    @Transient
+    @JsonIgnore
+    protected boolean isPreRemoved;
+    @PreRemove
+    private void _preRemove(){
+        if (!this.isPreRemoved) { //avoid call twice on removed
+            this.isPreRemoved = true;
+            this.preRemove();
+        }
+    }
+    protected void preRemove() {};
+
+    @Transient
+    @JsonIgnore
+    protected boolean isPostRemoved;
+    @PostRemove
+    private void _postRemove(){
+        if (!this.isPostRemoved) { //avoid call twice on removed
+            this.isPostRemoved = true;
+            this.postRemove();
+        }
+    }
+    protected void postRemove() {};
 }

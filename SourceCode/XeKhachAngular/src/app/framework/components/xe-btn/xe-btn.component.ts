@@ -27,7 +27,7 @@ export class XeBtnComponent implements AfterViewInit {
   @Input() left?;
   @Input() right?;
 
-  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete';
+  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default';
 
   @Input() hideText;
   get showText() {
@@ -36,6 +36,11 @@ export class XeBtnComponent implements AfterViewInit {
 
 
   _types = {
+    default: {
+      state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
     save: {
       icon: 'save',
       state: 'primary',
@@ -85,8 +90,15 @@ export class XeBtnComponent implements AfterViewInit {
       size: 'sm',
       type: 'button'
     },
+    selectFromList: {
+      icon: 'search-plus',
+      label: 'select-from-list',
+      state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
     back: {
-      icon: 'backspace',
+      icon: 'arrow-circle-left',
       label: 'back',
       state: 'secondary',
       size: 'sm',

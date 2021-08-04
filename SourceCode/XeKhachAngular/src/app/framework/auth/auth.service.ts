@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {User} from "../../business/model/user";
+import {User} from "../../business/entities/user";
 import {RegisterModel} from "../../business/model/register.model";
 import {Url} from "../url/url.declare";
 

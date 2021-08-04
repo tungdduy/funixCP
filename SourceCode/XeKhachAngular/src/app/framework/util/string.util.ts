@@ -30,8 +30,11 @@ export const StringUtil = {
       .join("_")
       .split(CAPITAL_REGEX)
       .join("_").toUpperCase();
+  },
+  lowercaseFirstLetter: (str: string) => str.charAt(0).toLowerCase() + str.slice(1),
+  upperFirstLetter: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
+  classNameToIdName(className) {
+    return this.lowercaseFirstLetter(className) + "Id";
   }
-  , lowercaseFirstLetter: (str: string) => str.charAt(0).toLowerCase() + str.slice(1)
-
 };
 

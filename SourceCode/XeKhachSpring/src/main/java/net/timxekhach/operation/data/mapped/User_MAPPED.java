@@ -1,18 +1,20 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import javax.persistence.*;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import net.timxekhach.operation.data.entity.TripUser;
-import net.timxekhach.operation.response.ErrorCode;;
+import net.timxekhach.operation.response.ErrorCode;
 import java.util.ArrayList;
-import org.apache.commons.lang3.math.NumberUtils;;
 import javax.validation.constraints.*;
 import java.util.List;
 import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
+import java.util.Map;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @MappedSuperclass @Getter @Setter
@@ -24,13 +26,12 @@ public abstract class User_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long userId;
 
     protected Long getIncrementId() {
         return this.userId;
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -50,54 +51,54 @@ public abstract class User_MAPPED extends XeEntity {
         return new User_MAPPED.Pk(0L);
     }
 
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @OneToMany(
         mappedBy = "user",
-        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
+    @JsonIgnore
     protected List<TripUser> allMyTrips = new ArrayList<>();
-
     @OneToOne(
         mappedBy = "user",
-        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "employeeId")
     protected Employee employee;
-
-
-    
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
 
     @Email
     @Column(unique = true)
     protected String email;
 
-
     @Pattern(regexp = "(03|05|07|08|09)+\\d{8,10}")
     protected String phoneNumber;
-
     @Size(max = 255)
     @JsonIgnore
     protected String password;
-
     @Size(max = 255)
     @Column(unique = true)
     protected String username;
-
     @Size(max = 30, min = 3)
     @NotBlank
     protected String fullName;
-
     @Size(max = 255)
     protected String role = "ROLE_USER";
 
-
     protected Boolean nonLocked = false;
-
     @Size(max = 255)
     @JsonIgnore
     protected String secretPasswordKey;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -140,7 +141,4 @@ public abstract class User_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

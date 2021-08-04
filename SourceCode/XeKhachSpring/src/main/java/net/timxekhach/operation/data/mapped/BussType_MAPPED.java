@@ -1,17 +1,18 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.ArrayList;
 import javax.validation.constraints.*;
 import java.util.List;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
+import java.util.Map;
 import net.timxekhach.operation.data.entity.SeatType;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.ArrayList;
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussType_MAPPED.Pk.class)
@@ -22,13 +23,12 @@ public abstract class BussType_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussTypeId;
 
     protected Long getIncrementId() {
         return this.bussTypeId;
     }
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -48,21 +48,26 @@ public abstract class BussType_MAPPED extends XeEntity {
         return new BussType_MAPPED.Pk(0L);
     }
 
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @OneToMany(
         mappedBy = "bussType",
-        cascade = {CascadeType.DETACH,CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
+    @JsonIgnore
     protected List<SeatType> allSeatTypes = new ArrayList<>();
-
-
-    
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
     @Size(max = 255)
     protected String bussTypeName;
-
     @Size(max = 255)
     protected String bussTypeDesc;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -81,7 +86,4 @@ public abstract class BussType_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -41,7 +42,8 @@ public enum ErrorCode {
     NOTHING_CHANGED,
     TRIP_NOT_FOUND,
     PASSWORD_MUST_MORE_THAN_3_CHARS,
-    FIELD_EXISTED("fieldName", "tableName")
+    FIELD_EXISTED("fieldName", "tableName"),
+    DATA_EXISTED
     ;
 
 
@@ -93,6 +95,13 @@ public enum ErrorCode {
             throwNow(paramValues);
         }
         return object;
+    }
+
+    public <T> List<T> throwIfNotEmpty(List<T> list, String... paramValues) {
+        if (list == null || !list.isEmpty()) {
+            throwNow(paramValues);
+        }
+        return list;
     }
 
     public <T> T throwIfNotPresent(Optional<T> optional, String... paramValues) {

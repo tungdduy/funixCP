@@ -6,6 +6,7 @@ import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.abstracts.render.AbstractEntityRender;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.time.DateUtils;
@@ -28,7 +29,6 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
 
     @Override
     public void runBeforeRender() {
-        this.getModelFiles().forEach(EntityMappedModel::updateCountOnInsertDelete);
     }
 
     @Override
@@ -49,7 +49,8 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
     private void updateImportClass(EntityMappedModel model) {
         if (anyNullMappedBy(model)
                 || !model.pkMaps.isEmpty()) {
-            model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+            model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIdentityInfo",
+                    "com.fasterxml.jackson.annotation.ObjectIdGenerators");
         }
 
         model.getEntity().getPrimaryKeyEntities()
@@ -68,7 +69,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             }
             updateJavaxValidationImports(model, columnCore);
             if (columnCore.getJsonIgnore()) {
-               model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+                model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
             }
             model.filterThenAddImport(columnCore.getDataType().getName());
 
@@ -77,6 +78,13 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             if (mapColumn.getMappedBy() != null) {
                 model.filterThenAddImport(List.class.getName());
                 model.filterThenAddImport(ArrayList.class.getName());
+                if (mapColumn.getIsUnique()){
+                    model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIdentityInfo",
+                            "com.fasterxml.jackson.annotation.ObjectIdGenerators");
+                } else {
+                    model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+                }
+
             }
 
             model.filterThenAddImport(mapColumn.getMapTo().getEntity().getFullOperationClassName());
@@ -85,6 +93,10 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         if (model.getFieldsAbleAssignByString().stream()
                 .anyMatch(column -> column.getDataType().isAssignableFrom(java.util.Date.class))){
             model.filterThenAddImport(DateUtils.class.getName());
+        }
+
+        if (model.mapColumns.stream().anyMatch(MapColumn.Core::getHasCountField) || model.pkMaps.size() > 0){
+            model.filterThenAddImport("net.timxekhach.operation.rest.service.CommonUpdateService");
         }
     }
 
@@ -196,9 +208,6 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
 
         if (entityMapToHasPkToThis.isTrue()) {
             mapCore.setMappedBy(toCamel(thisEntity.getClass().getSimpleName()));
-            if (mapCore.getHasCountField()) {
-                model.addToAllCountOnInsertDeletes(mapCore);
-            }
         } else {
             mapCore.getJoins().forEach(join -> {
                 throwErrorIfColumnNameExisted(model, join);

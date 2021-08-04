@@ -12,32 +12,149 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static net.timxekhach.operation.response.ErrorCode.DATA_EXISTED;
 import static net.timxekhach.operation.response.ErrorCode.DATA_NOT_FOUND;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class CommonUpdateService {
+    private final SeatTypeRepository seatTypeRepository;
+    private static SeatTypeRepository staticSeatTypeRepository;
+    public static SeatTypeRepository getSeatTypeRepository() {
+        return CommonUpdateService.staticSeatTypeRepository;
+    }
+    private final BussTripRepository bussTripRepository;
+    private static BussTripRepository staticBussTripRepository;
+    public static BussTripRepository getBussTripRepository() {
+        return CommonUpdateService.staticBussTripRepository;
+    }
+    private final UserRepository userRepository;
+    private static UserRepository staticUserRepository;
+    public static UserRepository getUserRepository() {
+        return CommonUpdateService.staticUserRepository;
+    }
+    private final TripUserSeatRepository tripUserSeatRepository;
+    private static TripUserSeatRepository staticTripUserSeatRepository;
+    public static TripUserSeatRepository getTripUserSeatRepository() {
+        return CommonUpdateService.staticTripUserSeatRepository;
+    }
+    private final EmployeeRepository employeeRepository;
+    private static EmployeeRepository staticEmployeeRepository;
+    public static EmployeeRepository getEmployeeRepository() {
+        return CommonUpdateService.staticEmployeeRepository;
+    }
+    private final CompanyRepository companyRepository;
+    private static CompanyRepository staticCompanyRepository;
+    public static CompanyRepository getCompanyRepository() {
+        return CommonUpdateService.staticCompanyRepository;
+    }
+    private final TripPointRepository tripPointRepository;
+    private static TripPointRepository staticTripPointRepository;
+    public static TripPointRepository getTripPointRepository() {
+        return CommonUpdateService.staticTripPointRepository;
+    }
+    private final BussEmployeeRepository bussEmployeeRepository;
+    private static BussEmployeeRepository staticBussEmployeeRepository;
+    public static BussEmployeeRepository getBussEmployeeRepository() {
+        return CommonUpdateService.staticBussEmployeeRepository;
+    }
+    private final BussRepository bussRepository;
+    private static BussRepository staticBussRepository;
+    public static BussRepository getBussRepository() {
+        return CommonUpdateService.staticBussRepository;
+    }
+    private final LocationRepository locationRepository;
+    private static LocationRepository staticLocationRepository;
+    public static LocationRepository getLocationRepository() {
+        return CommonUpdateService.staticLocationRepository;
+    }
+    private final TripUserRepository tripUserRepository;
+    private static TripUserRepository staticTripUserRepository;
+    public static TripUserRepository getTripUserRepository() {
+        return CommonUpdateService.staticTripUserRepository;
+    }
+    private final BussTypeRepository bussTypeRepository;
+    private static BussTypeRepository staticBussTypeRepository;
+    public static BussTypeRepository getBussTypeRepository() {
+        return CommonUpdateService.staticBussTypeRepository;
+    }
+    private final BussPointRepository bussPointRepository;
+    private static BussPointRepository staticBussPointRepository;
+    public static BussPointRepository getBussPointRepository() {
+        return CommonUpdateService.staticBussPointRepository;
+    }
+    private final TripRepository tripRepository;
+    private static TripRepository staticTripRepository;
+    public static TripRepository getTripRepository() {
+        return CommonUpdateService.staticTripRepository;
+    }
+    @PostConstruct
+    public void postConstruct() {
+        CommonUpdateService.staticSeatTypeRepository = seatTypeRepository;
+        CommonUpdateService.staticBussTripRepository = bussTripRepository;
+        CommonUpdateService.staticUserRepository = userRepository;
+        CommonUpdateService.staticTripUserSeatRepository = tripUserSeatRepository;
+        CommonUpdateService.staticEmployeeRepository = employeeRepository;
+        CommonUpdateService.staticCompanyRepository = companyRepository;
+        CommonUpdateService.staticTripPointRepository = tripPointRepository;
+        CommonUpdateService.staticBussEmployeeRepository = bussEmployeeRepository;
+        CommonUpdateService.staticBussRepository = bussRepository;
+        CommonUpdateService.staticLocationRepository = locationRepository;
+        CommonUpdateService.staticTripUserRepository = tripUserRepository;
+        CommonUpdateService.staticBussTypeRepository = bussTypeRepository;
+        CommonUpdateService.staticBussPointRepository = bussPointRepository;
+        CommonUpdateService.staticTripRepository = tripRepository;
+    }
 
-        private final SeatTypeRepository seatTypeRepository;
     public SeatType updateSeatType(Map<String, String> data) {
-        SeatType seatType = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(seatTypeRepository.findById(SeatType.pk(data)));
+        Long seatTypeId = Long.parseLong(data.get("seatTypeId"));
+        SeatType seatType = ErrorCode.DATA_NOT_FOUND.throwIfNull(seatTypeRepository.findBySeatTypeId(seatTypeId));
+
+        Map<String, String> bussTypeData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("bussType.")) {
+                bussTypeData.put(fieldName.substring("bussType.".length()), fieldValue);
+            }
+        });
+        if (!bussTypeData.isEmpty()) {
+            bussTypeData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBussType(bussTypeData);
+        }
+
         seatType.setFieldByName(data);
-        seatTypeRepository.save(seatType);
+        seatTypeRepository.saveAndFlush(seatType);
         return seatType;
     }
     public SeatType insertSeatType(Map<String, String> data) {
         SeatType seatType = new SeatType();
         seatType.setFieldByName(data);
-        return seatTypeRepository.save(seatType);
+        
+        if (seatType.getBussTypeId() == null || seatType.getBussTypeId() <= 0) {
+            Map<String, String> bussTypeData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("bussType."))
+                    .forEach(entry -> bussTypeData.put(entry.getKey().substring("bussType.".length()), entry.getValue()));
+            seatType.setBussType(this.insertBussType(bussTypeData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(seatTypeRepository.findByBussTypeId(seatType.getBussTypeId()));
+
+        seatType = seatTypeRepository.saveAndFlush(seatType);
+        return seatType;
+    }
+    public List<SeatType> insertMultiSeatType(List<Map<String, String>> data) {
+        List<SeatType> result = new ArrayList<>();
+        data.forEach(seatTypeData -> result.add(this.insertSeatType(seatTypeData)));
+        return result;
     }
     public void deleteSeatTypeBySeatTypeIds(Long[] seatTypeIds) {
-        if (seatTypeIds != null) {
-            seatTypeRepository.deleteBySeatTypeId(seatTypeIds);
-        }
+        seatTypeRepository.deleteAllBySeatTypeIdIn(Arrays.asList(seatTypeIds));
     }
     public void deleteSeatType(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -67,23 +184,50 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(seatTypeRepository, findMethodName, findMethodParams);
     }
-
-    private final BussTripRepository bussTripRepository;
+//=================== END OF SeatType ======================
     public BussTrip updateBussTrip(Map<String, String> data) {
-        BussTrip bussTrip = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(bussTripRepository.findById(BussTrip.pk(data)));
+        Long bussTripId = Long.parseLong(data.get("bussTripId"));
+        BussTrip bussTrip = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussTripRepository.findByBussTripId(bussTripId));
+
+        Map<String, String> bussData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("buss.")) {
+                bussData.put(fieldName.substring("buss.".length()), fieldValue);
+            }
+        });
+        if (!bussData.isEmpty()) {
+            bussData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBuss(bussData);
+        }
+
         bussTrip.setFieldByName(data);
-        bussTripRepository.save(bussTrip);
+        bussTripRepository.saveAndFlush(bussTrip);
         return bussTrip;
     }
     public BussTrip insertBussTrip(Map<String, String> data) {
         BussTrip bussTrip = new BussTrip();
         bussTrip.setFieldByName(data);
-        return bussTripRepository.save(bussTrip);
+        
+        if (bussTrip.getBussId() == null || bussTrip.getBussId() <= 0) {
+            Map<String, String> bussData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("buss."))
+                    .forEach(entry -> bussData.put(entry.getKey().substring("buss.".length()), entry.getValue()));
+            bussTrip.setBuss(this.insertBuss(bussData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(bussTripRepository.findByBussId(bussTrip.getBussId()));
+
+        bussTrip = bussTripRepository.saveAndFlush(bussTrip);
+        return bussTrip;
+    }
+    public List<BussTrip> insertMultiBussTrip(List<Map<String, String>> data) {
+        List<BussTrip> result = new ArrayList<>();
+        data.forEach(bussTripData -> result.add(this.insertBussTrip(bussTripData)));
+        return result;
     }
     public void deleteBussTripByBussTripIds(Long[] bussTripIds) {
-        if (bussTripIds != null) {
-            bussTripRepository.deleteByBussTripId(bussTripIds);
-        }
+        bussTripRepository.deleteAllByBussTripIdIn(Arrays.asList(bussTripIds));
     }
     public void deleteBussTrip(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -113,23 +257,31 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(bussTripRepository, findMethodName, findMethodParams);
     }
-
-    private final UserRepository userRepository;
+//=================== END OF BussTrip ======================
     public User updateUser(Map<String, String> data) {
-        User user = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(userRepository.findById(User.pk(data)));
+        Long userId = Long.parseLong(data.get("userId"));
+        User user = ErrorCode.DATA_NOT_FOUND.throwIfNull(userRepository.findByUserId(userId));
+
+
         user.setFieldByName(data);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         return user;
     }
     public User insertUser(Map<String, String> data) {
         User user = new User();
         user.setFieldByName(data);
-        return userRepository.save(user);
+        
+
+        user = userRepository.saveAndFlush(user);
+        return user;
+    }
+    public List<User> insertMultiUser(List<Map<String, String>> data) {
+        List<User> result = new ArrayList<>();
+        data.forEach(userData -> result.add(this.insertUser(userData)));
+        return result;
     }
     public void deleteUserByUserIds(Long[] userIds) {
-        if (userIds != null) {
-            userRepository.deleteByUserId(userIds);
-        }
+        userRepository.deleteAllByUserIdIn(Arrays.asList(userIds));
     }
     public List<User> findUser(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -152,23 +304,82 @@ public class CommonUpdateService {
         user.saveProfileImage(profileImage);
         return user;
     }
-
-    private final TripUserSeatRepository tripUserSeatRepository;
+//=================== END OF User ======================
     public TripUserSeat updateTripUserSeat(Map<String, String> data) {
-        TripUserSeat tripUserSeat = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(tripUserSeatRepository.findById(TripUserSeat.pk(data)));
+        Long tripUserSeatId = Long.parseLong(data.get("tripUserSeatId"));
+        TripUserSeat tripUserSeat = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripUserSeatRepository.findByTripUserSeatId(tripUserSeatId));
+
+        Map<String, String> seatTypeData = new HashMap<>();
+        Map<String, String> tripData = new HashMap<>();
+        Map<String, String> userData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("seatType.")) {
+                seatTypeData.put(fieldName.substring("seatType.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("trip.")) {
+                tripData.put(fieldName.substring("trip.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("user.")) {
+                userData.put(fieldName.substring("user.".length()), fieldValue);
+            }
+        });
+        if (!seatTypeData.isEmpty()) {
+            seatTypeData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateSeatType(seatTypeData);
+        }
+        if (!tripData.isEmpty()) {
+            tripData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateTrip(tripData);
+        }
+        if (!userData.isEmpty()) {
+            userData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateUser(userData);
+        }
+
         tripUserSeat.setFieldByName(data);
-        tripUserSeatRepository.save(tripUserSeat);
+        tripUserSeatRepository.saveAndFlush(tripUserSeat);
         return tripUserSeat;
     }
     public TripUserSeat insertTripUserSeat(Map<String, String> data) {
         TripUserSeat tripUserSeat = new TripUserSeat();
         tripUserSeat.setFieldByName(data);
-        return tripUserSeatRepository.save(tripUserSeat);
+        
+        if (tripUserSeat.getSeatTypeId() == null || tripUserSeat.getSeatTypeId() <= 0) {
+            Map<String, String> seatTypeData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("seatType."))
+                    .forEach(entry -> seatTypeData.put(entry.getKey().substring("seatType.".length()), entry.getValue()));
+            tripUserSeat.setSeatType(this.insertSeatType(seatTypeData));
+        }
+        if (tripUserSeat.getTripId() == null || tripUserSeat.getTripId() <= 0) {
+            Map<String, String> tripData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("trip."))
+                    .forEach(entry -> tripData.put(entry.getKey().substring("trip.".length()), entry.getValue()));
+            tripUserSeat.setTrip(this.insertTrip(tripData));
+        }
+        if (tripUserSeat.getUserId() == null || tripUserSeat.getUserId() <= 0) {
+            Map<String, String> userData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("user."))
+                    .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
+            tripUserSeat.setUser(this.insertUser(userData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(tripUserSeatRepository.findBySeatTypeIdAndTripIdAndUserId(tripUserSeat.getSeatTypeId(), tripUserSeat.getTripId(), tripUserSeat.getUserId()));
+
+        tripUserSeat = tripUserSeatRepository.saveAndFlush(tripUserSeat);
+        return tripUserSeat;
+    }
+    public List<TripUserSeat> insertMultiTripUserSeat(List<Map<String, String>> data) {
+        List<TripUserSeat> result = new ArrayList<>();
+        data.forEach(tripUserSeatData -> result.add(this.insertTripUserSeat(tripUserSeatData)));
+        return result;
     }
     public void deleteTripUserSeatByTripUserSeatIds(Long[] tripUserSeatIds) {
-        if (tripUserSeatIds != null) {
-            tripUserSeatRepository.deleteByTripUserSeatId(tripUserSeatIds);
-        }
+        tripUserSeatRepository.deleteAllByTripUserSeatIdIn(Arrays.asList(tripUserSeatIds));
     }
     public void deleteTripUserSeat(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -198,23 +409,69 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(tripUserSeatRepository, findMethodName, findMethodParams);
     }
-
-    private final EmployeeRepository employeeRepository;
+//=================== END OF TripUserSeat ======================
     public Employee updateEmployee(Map<String, String> data) {
-        Employee employee = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(employeeRepository.findById(Employee.pk(data)));
+        Long employeeId = Long.parseLong(data.get("employeeId"));
+        Employee employee = ErrorCode.DATA_NOT_FOUND.throwIfNull(employeeRepository.findByEmployeeId(employeeId));
+
+        Map<String, String> companyData = new HashMap<>();
+        Map<String, String> userData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("company.")) {
+                companyData.put(fieldName.substring("company.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("user.")) {
+                userData.put(fieldName.substring("user.".length()), fieldValue);
+            }
+        });
+        if (!companyData.isEmpty()) {
+            companyData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateCompany(companyData);
+        }
+        if (!userData.isEmpty()) {
+            userData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateUser(userData);
+        }
+
         employee.setFieldByName(data);
-        employeeRepository.save(employee);
+        employeeRepository.saveAndFlush(employee);
         return employee;
     }
     public Employee insertEmployee(Map<String, String> data) {
         Employee employee = new Employee();
         employee.setFieldByName(data);
-        return employeeRepository.save(employee);
+        
+        if (employee.getCompanyId() == null || employee.getCompanyId() <= 0) {
+            Map<String, String> companyData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("company."))
+                    .forEach(entry -> companyData.put(entry.getKey().substring("company.".length()), entry.getValue()));
+            employee.setCompany(this.insertCompany(companyData));
+        }
+        if (employee.getUserId() == null || employee.getUserId() <= 0) {
+            Map<String, String> userData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("user."))
+                    .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
+            employee.setUser(this.insertUser(userData));
+        }
+//        DATA_EXISTED.throwIfNotEmpty(employeeRepository.findByCompanyIdAndUserId(employee.getCompanyId(), employee.getUserId()));
+
+        employee = employeeRepository.saveAndFlush(employee);
+        return employee;
+    }
+    public List<Employee> insertMultiEmployee(List<Map<String, String>> data) {
+        List<Employee> result = new ArrayList<>();
+        List<Long> userIds = data.stream().map(e -> e.get("userId")).map(Long::parseLong).collect(Collectors.toList());
+        List<Employee> test = employeeRepository.findByUserIdIn(userIds);
+        DATA_EXISTED.throwIf(employeeRepository.existsByUserIdIn(userIds));
+        data.forEach(employeeData -> result.add(this.insertEmployee(employeeData)));
+        return result;
     }
     public void deleteEmployeeByEmployeeIds(Long[] employeeIds) {
-        if (employeeIds != null) {
-            employeeRepository.deleteByEmployeeId(employeeIds);
-        }
+        employeeRepository.deleteAllByEmployeeIdIn(Arrays.asList(employeeIds));
     }
     public void deleteEmployee(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -244,23 +501,31 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(employeeRepository, findMethodName, findMethodParams);
     }
-
-    private final CompanyRepository companyRepository;
+//=================== END OF Employee ======================
     public Company updateCompany(Map<String, String> data) {
-        Company company = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(companyRepository.findById(Company.pk(data)));
+        Long companyId = Long.parseLong(data.get("companyId"));
+        Company company = ErrorCode.DATA_NOT_FOUND.throwIfNull(companyRepository.findByCompanyId(companyId));
+
+
         company.setFieldByName(data);
-        companyRepository.save(company);
+        companyRepository.saveAndFlush(company);
         return company;
     }
     public Company insertCompany(Map<String, String> data) {
         Company company = new Company();
         company.setFieldByName(data);
-        return companyRepository.save(company);
+        
+
+        company = companyRepository.saveAndFlush(company);
+        return company;
+    }
+    public List<Company> insertMultiCompany(List<Map<String, String>> data) {
+        List<Company> result = new ArrayList<>();
+        data.forEach(companyData -> result.add(this.insertCompany(companyData)));
+        return result;
     }
     public void deleteCompanyByCompanyIds(Long[] companyIds) {
-        if (companyIds != null) {
-            companyRepository.deleteByCompanyId(companyIds);
-        }
+        companyRepository.deleteAllByCompanyIdIn(Arrays.asList(companyIds));
     }
     public List<Company> findCompany(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -283,23 +548,50 @@ public class CommonUpdateService {
         company.saveProfileImage(profileImage);
         return company;
     }
-
-    private final TripPointRepository tripPointRepository;
+//=================== END OF Company ======================
     public TripPoint updateTripPoint(Map<String, String> data) {
-        TripPoint tripPoint = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(tripPointRepository.findById(TripPoint.pk(data)));
+        Long tripPointId = Long.parseLong(data.get("tripPointId"));
+        TripPoint tripPoint = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripPointRepository.findByTripPointId(tripPointId));
+
+        Map<String, String> bussTripData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("bussTrip.")) {
+                bussTripData.put(fieldName.substring("bussTrip.".length()), fieldValue);
+            }
+        });
+        if (!bussTripData.isEmpty()) {
+            bussTripData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBussTrip(bussTripData);
+        }
+
         tripPoint.setFieldByName(data);
-        tripPointRepository.save(tripPoint);
+        tripPointRepository.saveAndFlush(tripPoint);
         return tripPoint;
     }
     public TripPoint insertTripPoint(Map<String, String> data) {
         TripPoint tripPoint = new TripPoint();
         tripPoint.setFieldByName(data);
-        return tripPointRepository.save(tripPoint);
+        
+        if (tripPoint.getBussTripId() == null || tripPoint.getBussTripId() <= 0) {
+            Map<String, String> bussTripData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("bussTrip."))
+                    .forEach(entry -> bussTripData.put(entry.getKey().substring("bussTrip.".length()), entry.getValue()));
+            tripPoint.setBussTrip(this.insertBussTrip(bussTripData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(tripPointRepository.findByBussTripId(tripPoint.getBussTripId()));
+
+        tripPoint = tripPointRepository.saveAndFlush(tripPoint);
+        return tripPoint;
+    }
+    public List<TripPoint> insertMultiTripPoint(List<Map<String, String>> data) {
+        List<TripPoint> result = new ArrayList<>();
+        data.forEach(tripPointData -> result.add(this.insertTripPoint(tripPointData)));
+        return result;
     }
     public void deleteTripPointByTripPointIds(Long[] tripPointIds) {
-        if (tripPointIds != null) {
-            tripPointRepository.deleteByTripPointId(tripPointIds);
-        }
+        tripPointRepository.deleteAllByTripPointIdIn(Arrays.asList(tripPointIds));
     }
     public void deleteTripPoint(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -329,23 +621,66 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(tripPointRepository, findMethodName, findMethodParams);
     }
-
-    private final BussEmployeeRepository bussEmployeeRepository;
+//=================== END OF TripPoint ======================
     public BussEmployee updateBussEmployee(Map<String, String> data) {
-        BussEmployee bussEmployee = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(bussEmployeeRepository.findById(BussEmployee.pk(data)));
+        Long bussEmployeeId = Long.parseLong(data.get("bussEmployeeId"));
+        BussEmployee bussEmployee = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussEmployeeRepository.findByBussEmployeeId(bussEmployeeId));
+
+        Map<String, String> bussData = new HashMap<>();
+        Map<String, String> employeeData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("buss.")) {
+                bussData.put(fieldName.substring("buss.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("employee.")) {
+                employeeData.put(fieldName.substring("employee.".length()), fieldValue);
+            }
+        });
+        if (!bussData.isEmpty()) {
+            bussData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBuss(bussData);
+        }
+        if (!employeeData.isEmpty()) {
+            employeeData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateEmployee(employeeData);
+        }
+
         bussEmployee.setFieldByName(data);
-        bussEmployeeRepository.save(bussEmployee);
+        bussEmployeeRepository.saveAndFlush(bussEmployee);
         return bussEmployee;
     }
     public BussEmployee insertBussEmployee(Map<String, String> data) {
         BussEmployee bussEmployee = new BussEmployee();
         bussEmployee.setFieldByName(data);
-        return bussEmployeeRepository.save(bussEmployee);
+        
+        if (bussEmployee.getBussId() == null || bussEmployee.getBussId() <= 0) {
+            Map<String, String> bussData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("buss."))
+                    .forEach(entry -> bussData.put(entry.getKey().substring("buss.".length()), entry.getValue()));
+            bussEmployee.setBuss(this.insertBuss(bussData));
+        }
+        if (bussEmployee.getEmployeeId() == null || bussEmployee.getEmployeeId() <= 0) {
+            Map<String, String> employeeData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("employee."))
+                    .forEach(entry -> employeeData.put(entry.getKey().substring("employee.".length()), entry.getValue()));
+            bussEmployee.setEmployee(this.insertEmployee(employeeData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(bussEmployeeRepository.findByBussIdAndEmployeeId(bussEmployee.getBussId(), bussEmployee.getEmployeeId()));
+
+        bussEmployee = bussEmployeeRepository.saveAndFlush(bussEmployee);
+        return bussEmployee;
+    }
+    public List<BussEmployee> insertMultiBussEmployee(List<Map<String, String>> data) {
+        List<BussEmployee> result = new ArrayList<>();
+        data.forEach(bussEmployeeData -> result.add(this.insertBussEmployee(bussEmployeeData)));
+        return result;
     }
     public void deleteBussEmployeeByBussEmployeeIds(Long[] bussEmployeeIds) {
-        if (bussEmployeeIds != null) {
-            bussEmployeeRepository.deleteByBussEmployeeId(bussEmployeeIds);
-        }
+        bussEmployeeRepository.deleteAllByBussEmployeeIdIn(Arrays.asList(bussEmployeeIds));
     }
     public void deleteBussEmployee(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -375,23 +710,66 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(bussEmployeeRepository, findMethodName, findMethodParams);
     }
-
-    private final BussRepository bussRepository;
+//=================== END OF BussEmployee ======================
     public Buss updateBuss(Map<String, String> data) {
-        Buss buss = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(bussRepository.findById(Buss.pk(data)));
+        Long bussId = Long.parseLong(data.get("bussId"));
+        Buss buss = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussRepository.findByBussId(bussId));
+
+        Map<String, String> bussTypeData = new HashMap<>();
+        Map<String, String> companyData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("bussType.")) {
+                bussTypeData.put(fieldName.substring("bussType.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("company.")) {
+                companyData.put(fieldName.substring("company.".length()), fieldValue);
+            }
+        });
+        if (!bussTypeData.isEmpty()) {
+            bussTypeData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBussType(bussTypeData);
+        }
+        if (!companyData.isEmpty()) {
+            companyData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateCompany(companyData);
+        }
+
         buss.setFieldByName(data);
-        bussRepository.save(buss);
+        bussRepository.saveAndFlush(buss);
         return buss;
     }
     public Buss insertBuss(Map<String, String> data) {
         Buss buss = new Buss();
         buss.setFieldByName(data);
-        return bussRepository.save(buss);
+        
+        if (buss.getBussTypeId() == null || buss.getBussTypeId() <= 0) {
+            Map<String, String> bussTypeData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("bussType."))
+                    .forEach(entry -> bussTypeData.put(entry.getKey().substring("bussType.".length()), entry.getValue()));
+            buss.setBussType(this.insertBussType(bussTypeData));
+        }
+        if (buss.getCompanyId() == null || buss.getCompanyId() <= 0) {
+            Map<String, String> companyData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("company."))
+                    .forEach(entry -> companyData.put(entry.getKey().substring("company.".length()), entry.getValue()));
+            buss.setCompany(this.insertCompany(companyData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(bussRepository.findByBussTypeIdAndCompanyId(buss.getBussTypeId(), buss.getCompanyId()));
+
+        buss = bussRepository.saveAndFlush(buss);
+        return buss;
+    }
+    public List<Buss> insertMultiBuss(List<Map<String, String>> data) {
+        List<Buss> result = new ArrayList<>();
+        data.forEach(bussData -> result.add(this.insertBuss(bussData)));
+        return result;
     }
     public void deleteBussByBussIds(Long[] bussIds) {
-        if (bussIds != null) {
-            bussRepository.deleteByBussId(bussIds);
-        }
+        bussRepository.deleteAllByBussIdIn(Arrays.asList(bussIds));
     }
     public void deleteBuss(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -426,23 +804,31 @@ public class CommonUpdateService {
         buss.saveProfileImage(profileImage);
         return buss;
     }
-
-    private final LocationRepository locationRepository;
+//=================== END OF Buss ======================
     public Location updateLocation(Map<String, String> data) {
-        Location location = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(locationRepository.findById(Location.pk(data)));
+        Long locationId = Long.parseLong(data.get("locationId"));
+        Location location = ErrorCode.DATA_NOT_FOUND.throwIfNull(locationRepository.findByLocationId(locationId));
+
+
         location.setFieldByName(data);
-        locationRepository.save(location);
+        locationRepository.saveAndFlush(location);
         return location;
     }
     public Location insertLocation(Map<String, String> data) {
         Location location = new Location();
         location.setFieldByName(data);
-        return locationRepository.save(location);
+        
+
+        location = locationRepository.saveAndFlush(location);
+        return location;
+    }
+    public List<Location> insertMultiLocation(List<Map<String, String>> data) {
+        List<Location> result = new ArrayList<>();
+        data.forEach(locationData -> result.add(this.insertLocation(locationData)));
+        return result;
     }
     public void deleteLocationByLocationIds(Long[] locationIds) {
-        if (locationIds != null) {
-            locationRepository.deleteByLocationId(locationIds);
-        }
+        locationRepository.deleteAllByLocationIdIn(Arrays.asList(locationIds));
     }
     public List<Location> findLocation(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -460,23 +846,66 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(locationRepository, findMethodName, findMethodParams);
     }
-
-    private final TripUserRepository tripUserRepository;
+//=================== END OF Location ======================
     public TripUser updateTripUser(Map<String, String> data) {
-        TripUser tripUser = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(tripUserRepository.findById(TripUser.pk(data)));
+        Long tripUserId = Long.parseLong(data.get("tripUserId"));
+        TripUser tripUser = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripUserRepository.findByTripUserId(tripUserId));
+
+        Map<String, String> tripData = new HashMap<>();
+        Map<String, String> userData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("trip.")) {
+                tripData.put(fieldName.substring("trip.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("user.")) {
+                userData.put(fieldName.substring("user.".length()), fieldValue);
+            }
+        });
+        if (!tripData.isEmpty()) {
+            tripData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateTrip(tripData);
+        }
+        if (!userData.isEmpty()) {
+            userData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateUser(userData);
+        }
+
         tripUser.setFieldByName(data);
-        tripUserRepository.save(tripUser);
+        tripUserRepository.saveAndFlush(tripUser);
         return tripUser;
     }
     public TripUser insertTripUser(Map<String, String> data) {
         TripUser tripUser = new TripUser();
         tripUser.setFieldByName(data);
-        return tripUserRepository.save(tripUser);
+        
+        if (tripUser.getTripId() == null || tripUser.getTripId() <= 0) {
+            Map<String, String> tripData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("trip."))
+                    .forEach(entry -> tripData.put(entry.getKey().substring("trip.".length()), entry.getValue()));
+            tripUser.setTrip(this.insertTrip(tripData));
+        }
+        if (tripUser.getUserId() == null || tripUser.getUserId() <= 0) {
+            Map<String, String> userData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("user."))
+                    .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
+            tripUser.setUser(this.insertUser(userData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(tripUserRepository.findByTripIdAndUserId(tripUser.getTripId(), tripUser.getUserId()));
+
+        tripUser = tripUserRepository.saveAndFlush(tripUser);
+        return tripUser;
+    }
+    public List<TripUser> insertMultiTripUser(List<Map<String, String>> data) {
+        List<TripUser> result = new ArrayList<>();
+        data.forEach(tripUserData -> result.add(this.insertTripUser(tripUserData)));
+        return result;
     }
     public void deleteTripUserByTripUserIds(Long[] tripUserIds) {
-        if (tripUserIds != null) {
-            tripUserRepository.deleteByTripUserId(tripUserIds);
-        }
+        tripUserRepository.deleteAllByTripUserIdIn(Arrays.asList(tripUserIds));
     }
     public void deleteTripUser(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -506,23 +935,31 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(tripUserRepository, findMethodName, findMethodParams);
     }
-
-    private final BussTypeRepository bussTypeRepository;
+//=================== END OF TripUser ======================
     public BussType updateBussType(Map<String, String> data) {
-        BussType bussType = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(bussTypeRepository.findById(BussType.pk(data)));
+        Long bussTypeId = Long.parseLong(data.get("bussTypeId"));
+        BussType bussType = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussTypeRepository.findByBussTypeId(bussTypeId));
+
+
         bussType.setFieldByName(data);
-        bussTypeRepository.save(bussType);
+        bussTypeRepository.saveAndFlush(bussType);
         return bussType;
     }
     public BussType insertBussType(Map<String, String> data) {
         BussType bussType = new BussType();
         bussType.setFieldByName(data);
-        return bussTypeRepository.save(bussType);
+        
+
+        bussType = bussTypeRepository.saveAndFlush(bussType);
+        return bussType;
+    }
+    public List<BussType> insertMultiBussType(List<Map<String, String>> data) {
+        List<BussType> result = new ArrayList<>();
+        data.forEach(bussTypeData -> result.add(this.insertBussType(bussTypeData)));
+        return result;
     }
     public void deleteBussTypeByBussTypeIds(Long[] bussTypeIds) {
-        if (bussTypeIds != null) {
-            bussTypeRepository.deleteByBussTypeId(bussTypeIds);
-        }
+        bussTypeRepository.deleteAllByBussTypeIdIn(Arrays.asList(bussTypeIds));
     }
     public List<BussType> findBussType(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -540,23 +977,50 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(bussTypeRepository, findMethodName, findMethodParams);
     }
-
-    private final BussPointRepository bussPointRepository;
+//=================== END OF BussType ======================
     public BussPoint updateBussPoint(Map<String, String> data) {
-        BussPoint bussPoint = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(bussPointRepository.findById(BussPoint.pk(data)));
+        Long bussPointId = Long.parseLong(data.get("bussPointId"));
+        BussPoint bussPoint = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussPointRepository.findByBussPointId(bussPointId));
+
+        Map<String, String> locationData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("location.")) {
+                locationData.put(fieldName.substring("location.".length()), fieldValue);
+            }
+        });
+        if (!locationData.isEmpty()) {
+            locationData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateLocation(locationData);
+        }
+
         bussPoint.setFieldByName(data);
-        bussPointRepository.save(bussPoint);
+        bussPointRepository.saveAndFlush(bussPoint);
         return bussPoint;
     }
     public BussPoint insertBussPoint(Map<String, String> data) {
         BussPoint bussPoint = new BussPoint();
         bussPoint.setFieldByName(data);
-        return bussPointRepository.save(bussPoint);
+        
+        if (bussPoint.getLocationId() == null || bussPoint.getLocationId() <= 0) {
+            Map<String, String> locationData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("location."))
+                    .forEach(entry -> locationData.put(entry.getKey().substring("location.".length()), entry.getValue()));
+            bussPoint.setLocation(this.insertLocation(locationData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(bussPointRepository.findByLocationId(bussPoint.getLocationId()));
+
+        bussPoint = bussPointRepository.saveAndFlush(bussPoint);
+        return bussPoint;
+    }
+    public List<BussPoint> insertMultiBussPoint(List<Map<String, String>> data) {
+        List<BussPoint> result = new ArrayList<>();
+        data.forEach(bussPointData -> result.add(this.insertBussPoint(bussPointData)));
+        return result;
     }
     public void deleteBussPointByBussPointIds(Long[] bussPointIds) {
-        if (bussPointIds != null) {
-            bussPointRepository.deleteByBussPointId(bussPointIds);
-        }
+        bussPointRepository.deleteAllByBussPointIdIn(Arrays.asList(bussPointIds));
     }
     public void deleteBussPoint(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -586,23 +1050,50 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(bussPointRepository, findMethodName, findMethodParams);
     }
-
-    private final TripRepository tripRepository;
+//=================== END OF BussPoint ======================
     public Trip updateTrip(Map<String, String> data) {
-        Trip trip = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(tripRepository.findById(Trip.pk(data)));
+        Long tripId = Long.parseLong(data.get("tripId"));
+        Trip trip = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripRepository.findByTripId(tripId));
+
+        Map<String, String> bussData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("buss.")) {
+                bussData.put(fieldName.substring("buss.".length()), fieldValue);
+            }
+        });
+        if (!bussData.isEmpty()) {
+            bussData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateBuss(bussData);
+        }
+
         trip.setFieldByName(data);
-        tripRepository.save(trip);
+        tripRepository.saveAndFlush(trip);
         return trip;
     }
     public Trip insertTrip(Map<String, String> data) {
         Trip trip = new Trip();
         trip.setFieldByName(data);
-        return tripRepository.save(trip);
+        
+        if (trip.getBussId() == null || trip.getBussId() <= 0) {
+            Map<String, String> bussData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("buss."))
+                    .forEach(entry -> bussData.put(entry.getKey().substring("buss.".length()), entry.getValue()));
+            trip.setBuss(this.insertBuss(bussData));
+        }
+        DATA_EXISTED.throwIfNotEmpty(tripRepository.findByBussId(trip.getBussId()));
+
+        trip = tripRepository.saveAndFlush(trip);
+        return trip;
+    }
+    public List<Trip> insertMultiTrip(List<Map<String, String>> data) {
+        List<Trip> result = new ArrayList<>();
+        data.forEach(tripData -> result.add(this.insertTrip(tripData)));
+        return result;
     }
     public void deleteTripByTripIds(Long[] tripIds) {
-        if (tripIds != null) {
-            tripRepository.deleteByTripId(tripIds);
-        }
+        tripRepository.deleteAllByTripIdIn(Arrays.asList(tripIds));
     }
     public void deleteTrip(TreeMap<String, Long> data) {
         if (data.isEmpty()) {
@@ -632,6 +1123,6 @@ public class CommonUpdateService {
         Object[] findMethodParams = data.values().toArray(new Long[0]);
         return XeReflectionUtils.invokeMethodByName(tripRepository, findMethodName, findMethodParams);
     }
-
+//=================== END OF Trip ======================
 
 }

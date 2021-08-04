@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {FormAbstract} from "../../../abstract/form.abstract";
-import {User} from "../../../model/user";
+import {User} from "../../../entities/user";
 import {XeTableData} from "../../../abstract/XeTableData";
-import {RoleIcon, RoleUtil} from "../../../../framework/util/role.util";
 
 @Component({
   selector: 'xe-all-user',
@@ -10,66 +9,37 @@ import {RoleIcon, RoleUtil} from "../../../../framework/util/role.util";
   styleUrls: ['./all-user.component.scss']
 })
 export class AllUserComponent extends FormAbstract {
-
+  user = () => this.userTable.formData.share.entity;
   userTable: XeTableData = {
-    share: {entity: User},
-    className: "User",
-    idColumns: {userId: 0},
     table: {
       basicColumns: [
-        {name: 'profileImageUrl', type: "avatar"},
-        {name: 'username', type: "boldStringRole"},
-        {name: 'fullName', type: "string"},
-        {name: 'email', type: "string"},
+        {field: {name: 'profileImageUrl'}, type: "avatar"},
+        {field: {name: 'username'}, type: "boldStringRole"},
+        {field: {name: 'fullName'}, type: "string"},
+        {field: {name: 'email'}, type: "string"},
       ],
     },
     formData: {
+      entityIdentifier: {
+        className: "User",
+        idFields: () => [
+          {name: "userId", value: 0}
+        ],
+      },
       share: {entity: User},
       header: {
-        titleKey: 'fullName',
-        descKey: 'phoneNumber',
+        profileImage: {name: 'profileImageUrl'},
+        titleField: {name: 'fullName'},
+        descField: {name: 'phoneNumber'},
       },
       fields: [
         {name: "username", required: true},
         {name: "phoneNumber", required: true},
         {name: "fullName", required: true},
         {name: "email", required: true},
-        {name: "password", required: true, newOnly: true},
+        {name: "password", clearOnSuccess: true},
         {name: "role", hidden: true},
       ]
     }
   };
-
-  private _roleIcons: RoleIcon[];
-  get roleIcons(): RoleIcon[] {
-    if (this._roleIcons === undefined) {
-      this._roleIcons = RoleUtil.allRoleToIcons();
-    }
-    return this._roleIcons;
-  }
-
-  getRoleActiveClass(roleName) {
-    return this.getSharingUserRoles()?.includes(roleName) ? 'active' : 'inactive';
-  }
-
-  getSharingUserRoles() {
-    return User.getRoles(this.userTable.share.entity?.role);
-  }
-
-  toggleRole(role: RoleIcon) {
-    const userRoles = this.getSharingUserRoles();
-    if (!!userRoles) {
-      for (let i = 0; i < userRoles.length; i++) {
-        if (userRoles[i] === role.name) {
-          userRoles.splice(i, 1);
-          role.activeClass = 'inactive';
-          User.setRole(this.userTable.share.entity, userRoles);
-          return;
-        }
-      }
-      role.activeClass = 'active';
-      userRoles.push(role.name);
-      User.setRole(this.userTable.share.entity, userRoles);
-    }
-  }
 }

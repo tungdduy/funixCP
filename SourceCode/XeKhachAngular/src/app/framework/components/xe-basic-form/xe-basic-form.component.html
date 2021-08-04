@@ -1,8 +1,9 @@
 <ng-template #formHeader>
   <div *ngIf="!!formData.header" class="row">
     <div class="col-sm-3 avatar-holder">
-      <img [src]="formData.share.entity?.profileImageUrl"
-           [alt]="formData.share.entity ? formData.share.entity[formData.header.titleKey] : ''"
+      <img *ngIf="formData.header.profileImage"
+           [src]="entityUtil.getProfileImageUrl(formData.share.entity, formData.header.profileImage)"
+           [alt]="entityUtil.getFieldValue(formData.share.entity, formData.header.titleField)"
            class="d-inline border-info rounded-circle avatar w-100">
       <label>
         <button [disabled]="!isIdValid" class="btn btn-sm btn-info camera"
@@ -16,8 +17,8 @@
     </div>
     <div class="col-sm-9 avatar-content">
       <div class="avatar-title">
-        <h4>{{formData.share.entity ? formData.share.entity[formData.header.titleKey] : ''}}</h4>
-        {{formData.share.entity ? formData.share.entity[formData.header.descKey] : ''}}
+        <h4>{{entityUtil.getFieldValue(formData.share.entity, formData.header.titleField)}}</h4>
+        {{entityUtil.getFieldValue(formData.share.entity, formData.header.descField)}}
         <ng-content></ng-content>
       </div>
     </div>
@@ -32,12 +33,12 @@
       <ng-container [ngTemplateOutlet]="formHeader"></ng-container>
     </nb-card-header>
     <nb-card-body>
-      <h3>Bạn có chắc chắn muốn xóa dữ liệu này?</h3>
-      <p>Sẽ không còn gì được lưu lại...</p>
+      <h3><lbl key="ARE_YOU_SURE_TO_DELETE_THIS_DATA"></lbl>?</h3>
+      <p><lbl key="NOTHING_BE_KEEP"></lbl>...</p>
     </nb-card-body>
     <nb-card-footer class="text-center">
       <xe-btn type="back" (click)="turnBack()"></xe-btn>
-      <xe-btn type="ok" (click)="ref.close(); deleteCurrentEntity()"></xe-btn>
+      <xe-btn type="ok" (click)="dialog.close(); deleteCurrentEntity()"></xe-btn>
     </nb-card-footer>
   </nb-card>
 </div>
@@ -58,9 +59,10 @@
         <div *ngFor="let field of formData.fields">
           <xe-input *ngIf="isIdValid ? !field.newOnly : true" [grid]="formData.grid"
                     [hidden]="field.hidden"
-                    [name]="field.name"
+                    [disabledUpdate]="field.clearOnSuccess"
+                    [name]="entityUtil.getFieldsChain(field)"
                     [required]="field.required"
-                    [(value)]="formData.share.entity[field.name]">
+                    [(value)]="entityUtil.getFieldOwnerEntity(formData.share.entity, field)[field.name]">
           </xe-input>
         </div>
         <lbl class="text-right" #msg p></lbl>
@@ -69,7 +71,7 @@
           <xe-btn type="add" (click)="newEntity(); submitContent.unMute()" *ngIf="submitContent.readonly" hideText></xe-btn>
         </div>
         <div class="text-right">
-          <xe-btn *ngIf="hasRef" type="close" (click)="submitContent.reset(); ref.close();"></xe-btn>
+          <xe-btn *ngIf="hasRef" type="close" (click)="dialog.close();"></xe-btn>
           <xe-btn type="edit" [hidden]="!submitContent.readonly" (click)="submitContent.unMute()"></xe-btn>
           <span [hidden]="submitContent.readonly">
           <xe-btn *ngIf="!hasRef" type="cancel" (click)="submitContent.reset(); submitContent.mute();"></xe-btn>

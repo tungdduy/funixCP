@@ -34,6 +34,7 @@ public class UrlDeclaration {
                         .sibling("logout")
                 .create("admin")
                         .child("my-account")
+                        .sibling("all-user")
                         .sibling("my-trip").roles(ROLE_USER)
                         .sibling("company-manager")
                         .sibling("caller-employee")

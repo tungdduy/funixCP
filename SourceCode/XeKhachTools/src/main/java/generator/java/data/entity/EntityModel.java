@@ -17,12 +17,12 @@ public class EntityModel extends AbstractEntityModel {
             "import lombok.Getter;",
             "import lombok.Setter;",
             "import javax.persistence.Entity;",
-            String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityClassName)
+            String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName)
     ));
 
     @Override
     public String buildRenderFilePath() {
-        return API_OPERATION_DATA_ENTITY_ROOT + this.entityClassName + ".java";
+        return API_OPERATION_DATA_ENTITY_ROOT + this.entityCapName + ".java";
     }
 
 }

@@ -1,16 +1,18 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
 import net.timxekhach.operation.data.entity.Trip;
-import javax.persistence.*;;
-import net.timxekhach.operation.response.ErrorCode;;
-import org.apache.commons.lang3.math.NumberUtils;;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import java.util.Map;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;;
+import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,43 +24,37 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long tripId;
-
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussTypeId;
-
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long tripUserId;
 
     protected Long getIncrementId() {
         return this.tripUserId;
     }
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long bussId;
 
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long companyId;
 
-
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long userId;
-
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -94,7 +90,9 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.setTrip(trip);
         this.setUser(user);
     }
-
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -118,8 +116,17 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "tripId")
     protected Trip trip;
+
+    public Trip getTrip(){
+        if (this.trip == null) {
+            this.trip = CommonUpdateService.getTripRepository().findByTripId(this.tripId);
+        }
+        return this.trip;
+    }
 
     public void setTrip(Trip trip) {
         this.trip = trip;
@@ -128,7 +135,6 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.tripId = trip.getTripId();
         this.bussId = trip.getBussId();
     }
-
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -137,14 +143,25 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId")
     protected User user;
+
+    public User getUser(){
+        if (this.user == null) {
+            this.user = CommonUpdateService.getUserRepository().findByUserId(this.userId);
+        }
+        return this.user;
+    }
 
     public void setUser(User user) {
         this.user = user;
         this.userId = user.getUserId();
     }
-
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -163,7 +180,9 @@ public abstract class TripUser_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "confirmedById")
     protected Employee confirmedBy;
 
     public void setConfirmedBy(Employee confirmedBy) {
@@ -173,23 +192,26 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.confirmedByCompanyId = confirmedBy.getCompanyId();
     }
 
-
-    
-    @Setter(AccessLevel.PRIVATE) //map join
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
+    @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByUserId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
+    @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByEmployeeId;
-
-    @Setter(AccessLevel.PRIVATE) //map join
+    @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByCompanyId;
-
+//====================================================================//
+//==================== END of JOIN ID COLUMNS ========================//
+//====================================================================//
 
     protected Long totalPrice;
 
-
     @Enumerated(EnumType.STRING)
     protected TripUserStatus status = net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
@@ -228,7 +250,4 @@ public abstract class TripUser_MAPPED extends XeEntity {
             }
         }
     }
-
-
-
 }
