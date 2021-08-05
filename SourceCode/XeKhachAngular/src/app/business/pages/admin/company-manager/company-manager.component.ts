@@ -69,38 +69,39 @@ export class CompanyManagerComponent extends FormAbstract {
     }
   };
 
-
   employeeTable: XeTableData = {
     table: {
       basicColumns: [
-        {field: {name: 'fullName', subEntities: ['user']}, type: "avatarString"},
-        {field: {name: 'username', subEntities: ['user']}, type: "boldStringRole"},
-        {field: {name: 'phoneNumber', subEntities: ['user']}, type: "string"},
-        {field: {name: 'email', subEntities: ['user']}, type: "string"},
+        {field: {name: 'user.fullName'}, type: "avatarString"},
+        {field: {name: 'user.username'}, type: "boldStringRole"},
+        {field: {name: 'user.email'}, type: "string", iconAfter: 'mobile-alt',
+          subColumns: [{
+          field: {name: 'user.phoneNumber', css: 'd-block text-info'}, type: 'string'
+          }]},
       ],
     },
     formData: {
       entityIdentifier: {
         className: "Employee",
         idFields: () => [
-          {name: "companyId", subEntities: ["company"], value: this.currentCompany.companyId},
-          {name: "userId", subEntities: ["user"], value: 0},
+          {name: "company.companyId", value: this.currentCompany.companyId},
+          {name: "user.userId", value: 0},
           {name: "employeeId", value: 0},
         ]
       },
       share: {entity: new Employee()},
       header: {
-        profileImage: {name: 'profileImageUrl', subEntities: ['user']},
-        titleField: {name: 'fullName', subEntities: ['user']},
-        descField: {name: 'phoneNumber', subEntities: ['user']},
+        profileImage: {name: 'user.profileImageUrl'},
+        titleField: {name: 'user.fullName'},
+        descField: {name: 'user.phoneNumber'},
       },
       fields: [
-        {name: "username", subEntities: ['user'], required: true},
-        {name: "phoneNumber", subEntities: ['user'], required: true},
-        {name: "fullName", subEntities: ['user'], required: true},
-        {name: "email", subEntities: ['user'], required: true},
-        {name: "role", subEntities: ['user'], hidden: true},
-        {name: "password", subEntities: ['user'], required: false, clearOnSuccess: true},
+        {name: "user.username", required: true},
+        {name: "user.phoneNumber", required: true},
+        {name: "user.fullName", required: true},
+        {name: "user.email", required: true},
+        {name: "user.role", hidden: true},
+        {name: "user.password", required: false, clearOnSuccess: true},
       ]
     }
   };
@@ -153,7 +154,7 @@ export class CompanyManagerComponent extends FormAbstract {
       employee['userId'] = user.userId;
       return employee;
     });
-    this.commonService.insertMulti<Employee>(employees, "Employee").subscribe(
+    this.subscriptions.push(this.commonService.insertMulti<Employee>(employees, "Employee").subscribe(
       returnedEmployees => {
         console.log(this.userTable.formData.share.tableSource);
         const selectedUserIds = returnedEmployees.map(e => e.user.userId);
@@ -165,6 +166,6 @@ export class CompanyManagerComponent extends FormAbstract {
         console.log(error);
         Notifier.httpErrorResponse(error);
       }
-    );
+    ));
   }
 }

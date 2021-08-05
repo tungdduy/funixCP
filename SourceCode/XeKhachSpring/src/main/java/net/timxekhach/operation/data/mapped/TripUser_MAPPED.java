@@ -195,6 +195,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByUserId;
     @Setter(AccessLevel.PRIVATE)

@@ -24,7 +24,7 @@ export class MyAccountComponent extends FormAbstract {
     entityIdentifier: {
       className: "User",
       idFields: () => [
-        {name: "userId", value: this.user.userId}
+        {name: "userId", value: this.user?.userId}
       ]
     },
     grid: true,

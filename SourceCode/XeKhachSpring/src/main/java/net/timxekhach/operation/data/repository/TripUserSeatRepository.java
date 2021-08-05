@@ -13,9 +13,6 @@ public interface TripUserSeatRepository extends JpaRepository<TripUserSeat, Trip
     void deleteByTripUserSeatId(Long id);
     void deleteAllByTripUserSeatIdIn(List<Long> ids);
     TripUserSeat findByTripUserSeatId(Long id);
-    Integer countTripUserSeatIdBySeatTypeId(Long seatTypeId);
-    Integer countTripUserSeatIdByTripId(Long tripId);
-    Integer countTripUserSeatIdByUserId(Long userId);
     @SuppressWarnings("unused")
     void deleteBySeatTypeId(Long seatTypeId);
     @SuppressWarnings("unused")

@@ -13,11 +13,19 @@ public interface BussTripRepository extends JpaRepository<BussTrip, BussTrip_MAP
     void deleteByBussTripId(Long id);
     void deleteAllByBussTripIdIn(List<Long> ids);
     BussTrip findByBussTripId(Long id);
-    Integer countBussTripIdByBussId(Long bussId);
+    Integer countBussTripIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByBussId(Long bussId);
     @SuppressWarnings("unused")
     List<BussTrip> findByBussId(Long bussId);
+    @SuppressWarnings("unused")
+    void deleteByBussIdAndCompanyId(Long bussId, Long companyId);
+    @SuppressWarnings("unused")
+    List<BussTrip> findByBussIdAndCompanyId(Long bussId, Long companyId);
+    @SuppressWarnings("unused")
+    void deleteByCompanyId(Long companyId);
+    @SuppressWarnings("unused")
+    List<BussTrip> findByCompanyId(Long companyId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

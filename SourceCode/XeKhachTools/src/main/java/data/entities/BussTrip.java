@@ -12,6 +12,7 @@ import static data.entities.abstracts.DataType.*;
 public class BussTrip extends AbstractEntity {
     {
         pk(Buss.class);
+        pk(Company.class);
     }
     Column launchTime = of(TIME_ONLY);
     Column effectiveDateFrom = of(DATE_ONLY);

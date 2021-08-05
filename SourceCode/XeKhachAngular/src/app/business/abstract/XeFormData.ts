@@ -7,11 +7,11 @@ import {MatTableDataSource} from "@angular/material/table";
 export interface EntityField {
   name: string;
   value?: any;
-  subEntities?: string[];
   required?: boolean;
   hidden?: boolean;
   newOnly?: boolean;
   clearOnSuccess?: boolean;
+  css?: string;
 }
 
 export interface EntityIdentifier {

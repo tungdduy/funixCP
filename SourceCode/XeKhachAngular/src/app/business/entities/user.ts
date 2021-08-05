@@ -11,6 +11,10 @@ export class User extends XeEntity {
   roles: string[];
   employee: Employee;
 
+  constructor() {
+    super();
+  }
+
   static setRole(user: any, roles: string[]) {
     if (!roles) {
       user.role = undefined;

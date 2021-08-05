@@ -1,9 +1,10 @@
 import {AfterViewInit, Directive, QueryList, ViewChildren} from "@angular/core";
 import {XeFormComponent} from "../../framework/components/xe-form/xe-form.component";
 import {FormHandler} from "./formHandler";
+import {XeSubscriber} from "./XeSubscriber";
 
 @Directive()
-export abstract class FormAbstract  implements AfterViewInit {
+export abstract class FormAbstract extends XeSubscriber implements AfterViewInit {
 
   @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
 

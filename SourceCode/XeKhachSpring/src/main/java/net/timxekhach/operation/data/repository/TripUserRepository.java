@@ -13,8 +13,6 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     void deleteByTripUserId(Long id);
     void deleteAllByTripUserIdIn(List<Long> ids);
     TripUser findByTripUserId(Long id);
-    Integer countTripUserIdByTripId(Long tripId);
-    Integer countTripUserIdByUserId(Long userId);
     @SuppressWarnings("unused")
     void deleteByTripId(Long tripId);
     @SuppressWarnings("unused")

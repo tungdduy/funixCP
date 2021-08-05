@@ -61,6 +61,7 @@ public abstract class BussType_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Size(max = 255)
     protected String bussTypeName;
     @Size(max = 255)

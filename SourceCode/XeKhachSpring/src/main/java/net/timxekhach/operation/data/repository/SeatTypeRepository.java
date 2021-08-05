@@ -13,7 +13,6 @@ public interface SeatTypeRepository extends JpaRepository<SeatType, SeatType_MAP
     void deleteBySeatTypeId(Long id);
     void deleteAllBySeatTypeIdIn(List<Long> ids);
     SeatType findBySeatTypeId(Long id);
-    Integer countSeatTypeIdByBussTypeId(Long bussTypeId);
     @SuppressWarnings("unused")
     void deleteByBussTypeId(Long bussTypeId);
     @SuppressWarnings("unused")

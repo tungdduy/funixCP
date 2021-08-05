@@ -1,5 +1,4 @@
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {XeRole} from "../../business/constant/xe.role";
 import {User} from "../../business/entities/user";
 import {StringUtil} from "../util/string.util";
 import {StorageUtil} from "../util/storage.util";
@@ -7,11 +6,14 @@ import {configConstant} from "../config.constant";
 import {HttpResponse} from "@angular/common/http";
 import {AuthConfig} from "./auth.config";
 import {XeRouter} from "../../business/service/xe-router";
+import {Role} from "../../business/xe.role";
+import {RoleUtil} from "../util/role.util";
 
 export class AuthUtil {
   private _jwtHelper = new JwtHelperService();
   private _token: string | null | undefined;
-  private _roles: XeRole[] = [];
+  private _roles: Role[] = [];
+  private _flatRoles: Role[] = [];
   private _user: User;
 
   private isExpired(): boolean {
@@ -31,18 +33,19 @@ export class AuthUtil {
     this.logout();
   }
 
-  private convertToAppRoles(apiAuthorities: string[]): XeRole[] {
-    const roles: XeRole[] = [];
+  private convertToAppRoles(apiAuthorities: string[]): Role[] {
+    const roles: Role[] = [];
     apiAuthorities.forEach(authority => {
       if (authority.startsWith("ROLE_")) {
-        roles.push(XeRole[authority]);
+        roles.push(Role[authority]);
       }
     });
     return roles;
   }
 
-  private setRoles = (xeRoles: XeRole[]) => {
-    this._roles = xeRoles;
+  private setRoles = (roles: Role[]) => {
+    this._roles = roles;
+    this._flatRoles = RoleUtil.flatRoles(roles);
   }
 
   private static _instance: AuthUtil;
@@ -83,14 +86,20 @@ export class AuthUtil {
     StorageUtil.setItem(configConstant.TOKEN, token);
   }
 
-  isAllow(userRoles: XeRole[]): boolean {
-    return userRoles.every(r => this._roles.includes(r));
+  isAllow(userRoles: Role[]): boolean {
+    for (const role of userRoles) {
+      if (this.flatRoles.includes(role)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   logout(url: any = '/check-in/login') {
-    this._roles = [];
+    this.setRoles([]);
     this.setRepoToken(null);
     this.setRepoUser(null);
+    AuthUtil._instance = undefined;
     XeRouter.navigate(url);
   }
 
@@ -98,7 +107,10 @@ export class AuthUtil {
     return !this.isExpired();
   }
 
-  get roles(): XeRole[] {
+  get roles(): Role[] {
     return this._roles;
+  }
+  get flatRoles(): Role[] {
+    return this._flatRoles;
   }
 }

@@ -13,7 +13,7 @@ public interface TripRepository extends JpaRepository<Trip, Trip_MAPPED.Pk> {
     void deleteByTripId(Long id);
     void deleteAllByTripIdIn(List<Long> ids);
     Trip findByTripId(Long id);
-    Integer countTripIdByBussId(Long bussId);
+    Integer countTripIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByBussId(Long bussId);
     @SuppressWarnings("unused")

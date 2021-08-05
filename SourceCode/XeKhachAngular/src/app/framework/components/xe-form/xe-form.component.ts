@@ -1,5 +1,4 @@
 import {AfterViewInit, Component, ContentChildren, Input, OnDestroy, QueryList} from '@angular/core';
-import {Subscription} from "rxjs";
 import {XeInputComponent} from "../xe-input/xe-input.component";
 import {FormAbstract} from "../../../business/abstract/form.abstract";
 import {Notifier} from "../../notify/notify.service";
@@ -8,13 +7,14 @@ import {FormHandler} from "../../../business/abstract/formHandler";
 import {XeLabel} from "../../../business/i18n";
 import {State} from "../../model/message.model";
 import {XeLabelComponent} from "../xe-label/xe-label.component";
+import {XeSubscriber} from "../../../business/abstract/XeSubscriber";
 
 @Component({
   selector: 'xe-form',
   templateUrl: './xe-form.component.html',
   styleUrls: ['./xe-form.component.scss']
 })
-export class XeFormComponent implements OnDestroy, AfterViewInit {
+export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterViewInit {
 
   @Input() addToSubmit: () => {};
   @Input() onSuccess: 'update' | 'reset';
@@ -55,7 +55,6 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
   }
 
 
-  protected subscriptions: Subscription[] = [];
   private _originalMute;
 
   get show() {
@@ -155,10 +154,6 @@ export class XeFormComponent implements OnDestroy, AfterViewInit {
       )
     );
     return false;
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngAfterViewInit(): void {

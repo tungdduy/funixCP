@@ -167,6 +167,7 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
 
+
     protected Boolean isLock = false;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//

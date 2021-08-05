@@ -13,8 +13,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Employee_MAP
     void deleteByEmployeeId(Long id);
     void deleteAllByEmployeeIdIn(List<Long> ids);
     Employee findByEmployeeId(Long id);
-    Integer countEmployeeIdByCompanyId(Long companyId);
-    Integer countEmployeeIdByUserId(Long userId);
+    Integer countEmployeeIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByCompanyId(Long companyId);
     @SuppressWarnings("unused")
@@ -27,12 +26,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Employee_MAP
     void deleteByUserId(Long userId);
     @SuppressWarnings("unused")
     List<Employee> findByUserId(Long userId);
-
-    boolean existsByUserIdIn(List<Long> userIds);
-
-    List<Employee> findByEmployeeIdIn(List<Long> userIds);
-
-    List<Employee> findByUserIdIn(List<Long> userIds);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

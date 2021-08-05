@@ -60,9 +60,9 @@
           <xe-input *ngIf="isIdValid ? !field.newOnly : true" [grid]="formData.grid"
                     [hidden]="field.hidden"
                     [disabledUpdate]="field.clearOnSuccess"
-                    [name]="entityUtil.getFieldsChain(field)"
+                    [name]="field.name"
                     [required]="field.required"
-                    [(value)]="entityUtil.getFieldOwnerEntity(formData.share.entity, field)[field.name]">
+                    [(value)]="entityUtil.getFieldOwnerEntity(formData.share.entity, field)[entityUtil.getLastFieldName(field)]">
           </xe-input>
         </div>
         <lbl class="text-right" #msg p></lbl>

@@ -200,6 +200,7 @@ public abstract class TripUserSeat_MAPPED extends XeEntity {
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
 
+
     public void setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();

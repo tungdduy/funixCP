@@ -13,8 +13,7 @@ public interface BussEmployeeRepository extends JpaRepository<BussEmployee, Buss
     void deleteByBussEmployeeId(Long id);
     void deleteAllByBussEmployeeIdIn(List<Long> ids);
     BussEmployee findByBussEmployeeId(Long id);
-    Integer countBussEmployeeIdByBussId(Long bussId);
-    Integer countBussEmployeeIdByEmployeeId(Long employeeId);
+    Integer countBussEmployeeIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByBussId(Long bussId);
     @SuppressWarnings("unused")

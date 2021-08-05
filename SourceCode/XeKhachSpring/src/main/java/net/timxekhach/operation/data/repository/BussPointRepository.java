@@ -13,7 +13,6 @@ public interface BussPointRepository extends JpaRepository<BussPoint, BussPoint_
     void deleteByBussPointId(Long id);
     void deleteAllByBussPointIdIn(List<Long> ids);
     BussPoint findByBussPointId(Long id);
-    Integer countBussPointIdByLocationId(Long locationId);
     @SuppressWarnings("unused")
     void deleteByLocationId(Long locationId);
     @SuppressWarnings("unused")

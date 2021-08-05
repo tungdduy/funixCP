@@ -5,6 +5,7 @@ import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
 import generator.abstracts.interfaces.AuthConfig;
 import generator.abstracts.render.AbstractRender;
+import net.timxekhach.security.constant.RoleEnum;
 import net.timxekhach.utility.XeFileUtils;
 
 import java.util.List;
@@ -67,7 +68,8 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     }
 
     static String buildConfig(AuthConfig authConfig) {
-        return  "config()"
+        String config = authConfig.getRoles().contains(RoleEnum.ROLE_USER) ? "uConfig()" : "config()";
+        return  config
                 + buildPublicConfig(authConfig)
                 + buildAuthsRolesConfig(authConfig);
     }
@@ -78,6 +80,7 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
      */
     static String buildAuthsRolesConfig(AuthConfig authConfig) {
         List<String> roles = authConfig.getRoles().stream()
+                .filter(roleEnum -> roleEnum != RoleEnum.ROLE_USER)
                 .map(r -> "r." + r.name())
                 .collect(Collectors.toList());
         String rolesJoin = String.join(", ", roles);

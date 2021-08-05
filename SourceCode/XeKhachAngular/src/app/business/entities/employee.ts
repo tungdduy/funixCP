@@ -12,7 +12,5 @@ export class Employee extends XeEntity {
 
   constructor() {
     super();
-    this.user = new User();
-    this.company = new Company();
   }
 }

@@ -188,6 +188,7 @@ public abstract class Trip_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointLocationId;
     @Setter(AccessLevel.PRIVATE)

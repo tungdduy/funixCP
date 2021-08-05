@@ -1,7 +1,7 @@
 package architect;
 
 import architect.urls.UrlArchitect;
-import net.timxekhach.operation.data.entity.User;
+import data.entities.User;
 
 import java.util.List;
 import java.util.Map;
@@ -33,16 +33,16 @@ public class UrlDeclaration {
                         .sibling("forgot-password")
                         .sibling("logout")
                 .create("admin")
-                        .child("my-account")
-                        .sibling("all-user")
+                        .child("my-account").roles(ROLE_USER)
+                        .sibling("all-user").roles(ROLE_SYS_ADMIN)
                         .sibling("my-trip").roles(ROLE_USER)
-                        .sibling("company-manager")
-                        .sibling("caller-employee")
-                        .sibling("buss-type")
-                        .sibling("buss")
-                        .sibling("buss-employee")
-                        .sibling("buss-stop")
-                        .sibling("ticket")
+                        .sibling("company-manager").roles(ROLE_SYS_ADMIN)
+                        .sibling("caller-employee").roles(ROLE_BUSS_ADMIN)
+                        .sibling("buss-type").roles(ROLE_SYS_ADMIN)
+                        .sibling("buss").roles(ROLE_BUSS_STAFF)
+                        .sibling("buss-employee").roles(ROLE_BUSS_ADMIN)
+                        .sibling("buss-stop").roles(ROLE_BUSS_ADMIN)
+                        .sibling("ticket").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
 
         ;
 

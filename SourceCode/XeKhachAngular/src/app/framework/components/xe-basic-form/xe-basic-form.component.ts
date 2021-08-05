@@ -22,7 +22,6 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
   @Input("onSuccess") onSuccess: (data, isNew) => void;
   @Input("onDelete") onDelete: (data) => void;
   @Input("formData") formData: XeFormData;
-  subscriptions = [];
   handlers = [
     {
       name: "basicFormInfo",
@@ -129,10 +128,6 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
 
   get isIdValid(): boolean {
     return this.entityUtil.isIdValid(this.formData.share.entity, this.formData.entityIdentifier);
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   turnBack() {

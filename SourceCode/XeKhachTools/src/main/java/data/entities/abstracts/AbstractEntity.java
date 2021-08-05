@@ -1,17 +1,16 @@
 package data.entities.abstracts;
 
 import data.models.Column;
+import data.models.CountMethod;
 import data.models.MapColumn;
+import generator.java.data.repository.CapCamel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import static util.ReflectionUtil.newInstance;
 import static util.StringUtil.toCamel;
@@ -80,6 +79,17 @@ public abstract class AbstractEntity {
 
     protected <E extends AbstractEntity> MapColumn map(Class<E> e) {
         return new MapColumn(e);
+    }
+
+    public static Map<String, List<CapCamel>> whoCountMe = new HashMap<>();
+    protected <E extends AbstractEntity>CountMethod count(Class<E> countEntity) {
+        List<CapCamel> countMe = whoCountMe.getOrDefault(countEntity.getSimpleName(), new ArrayList<>());
+        CapCamel counter = new CapCamel(this.capName);
+        if(countMe.stream().noneMatch(me -> me.getCapName().equalsIgnoreCase(counter.getCapName()))){
+            countMe.add(counter);
+            whoCountMe.put(countEntity.getSimpleName(), countMe);
+        }
+        return new CountMethod(this.getClass().getSimpleName(), countEntity.getSimpleName());
     }
 
 }

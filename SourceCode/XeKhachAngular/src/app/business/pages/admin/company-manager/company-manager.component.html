@@ -20,7 +20,6 @@
 <!-- ########### END OF NAVIGATOR ##############-->
 
 <xe-table *ngIf="screen.isCompany()" [tableData]="companyTable">
-  <div tableFooter>table footer here</div>
   <ng-template #totalEmployees let-company="entity">
     <div class="wrapper-digit" (click)="openEmployees(company)">
       <span class="employee-no">{{company['totalEmployees']}}</span>

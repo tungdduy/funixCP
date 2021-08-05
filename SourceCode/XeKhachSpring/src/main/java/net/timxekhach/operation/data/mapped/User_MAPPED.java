@@ -74,6 +74,7 @@ public abstract class User_MAPPED extends XeEntity {
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
 
+
     @Email
     @Column(unique = true)
     protected String email;

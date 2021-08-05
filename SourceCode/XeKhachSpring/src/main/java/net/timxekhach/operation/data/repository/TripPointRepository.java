@@ -13,7 +13,6 @@ public interface TripPointRepository extends JpaRepository<TripPoint, TripPoint_
     void deleteByTripPointId(Long id);
     void deleteAllByTripPointIdIn(List<Long> ids);
     TripPoint findByTripPointId(Long id);
-    Integer countTripPointIdByBussTripId(Long bussTripId);
     @SuppressWarnings("unused")
     void deleteByBussTripId(Long bussTripId);
     @SuppressWarnings("unused")

@@ -1,5 +1,6 @@
 package net.timxekhach.operation.data.mapped;
 
+import net.timxekhach.operation.data.entity.Company;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import java.util.Date;
@@ -76,8 +77,9 @@ public abstract class BussTrip_MAPPED extends XeEntity {
     }
 
     protected BussTrip_MAPPED(){}
-    protected BussTrip_MAPPED(Buss buss) {
+    protected BussTrip_MAPPED(Buss buss, Company company) {
         this.setBuss(buss);
+        this.setCompany(company);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -117,6 +119,30 @@ public abstract class BussTrip_MAPPED extends XeEntity {
         this.companyId = buss.getCompanyId();
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
+    }
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "companyId")
+    protected Company company;
+
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
+        }
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+        this.companyId = company.getCompanyId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
@@ -179,6 +205,7 @@ public abstract class BussTrip_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointLocationId;
     @Setter(AccessLevel.PRIVATE)

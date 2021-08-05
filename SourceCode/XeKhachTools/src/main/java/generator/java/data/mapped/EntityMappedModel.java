@@ -1,6 +1,7 @@
 package generator.java.data.mapped;
 
 import data.models.Column;
+import data.models.CountMethod;
 import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.abstracts.models.AbstractEntityModel;
@@ -34,6 +35,7 @@ public class EntityMappedModel extends AbstractEntityModel {
     Set<PrimaryKey> primaryKeys = new HashSet<>();
     List<PkMap> pkMaps = new ArrayList<>();
     List<Column.Core> fieldsAbleAssignByString = new ArrayList<>();
+    List<CountMethod> countMethods = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {

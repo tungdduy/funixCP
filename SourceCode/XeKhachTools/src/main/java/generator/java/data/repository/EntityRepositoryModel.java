@@ -27,7 +27,8 @@ public class EntityRepositoryModel extends AbstractEntityModel {
         return importRequireLines;
     }
 
-    private List<FindMethod> byPkMethods = new ArrayList<>();
+    private List<FindMethod> findByPks = new ArrayList<>();
+    private List<CapCamel> entitiesCountMe = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {

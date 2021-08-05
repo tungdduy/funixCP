@@ -152,11 +152,6 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
     }
 
     </#if>
-    <#if map.hasCountField>
-    public Integer getTotal${map.fieldCapName}() {
-        return CommonUpdateService.get${map.mapTo.simpleClassName}Repository().count${map.mapTo.simpleClassName}IdBy${root.entityCapName}Id(this.${root.entityCamelName}Id);
-    }
-    </#if>
 </#list>
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
@@ -165,6 +160,20 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 <#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <#-- +++++++++++++++++++NEWSECION+++++++++++++++++++++++ -->
 <#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<#if root.countMethods?size gt 0>
+<#list root.countMethods as counter>
+    public Integer get${counter.fieldCapName}() {
+        return CommonUpdateService.get${counter.countCapName}Repository().count${counter.countCapName}IdBy${counter.thisCapName}Id(this.${root.entityCamelName}Id);
+    }
+</#list>
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
+//====================================================================//
+</#if>
+<#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<#-- +++++++++++++++++++NEWSECION+++++++++++++++++++++++ -->
+<#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
 <#if root.joinIdColumns?size gt 0>
 <#list root.joinIdColumns as idColumn>
     <#if idColumn.isUnique>
