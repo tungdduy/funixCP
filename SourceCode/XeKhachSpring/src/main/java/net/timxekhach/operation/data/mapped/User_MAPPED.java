@@ -1,21 +1,26 @@
 package net.timxekhach.operation.data.mapped;
 
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.TripUser;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import net.timxekhach.operation.data.entity.TripUser;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.ArrayList;
-import javax.validation.constraints.*;
-import java.util.List;
-import net.timxekhach.operation.data.entity.Employee;
-import java.util.Map;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
-import lombok.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import javax.validation.constraints.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.entity.Employee;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(User_MAPPED.Pk.class)

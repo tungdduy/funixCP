@@ -115,6 +115,7 @@ public class CommonUpdateService {
         CommonUpdateService.staticBussPointRepository = bussPointRepository;
         CommonUpdateService.staticTripRepository = tripRepository;
     }
+
     public SeatType updateSeatType(Map<String, String> data) {
         Long seatTypeId = Long.parseLong(data.get("seatTypeId"));
         SeatType seatType = ErrorCode.DATA_NOT_FOUND.throwIfNull(seatTypeRepository.findBySeatTypeId(seatTypeId));

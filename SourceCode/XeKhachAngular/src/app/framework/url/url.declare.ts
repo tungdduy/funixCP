@@ -65,7 +65,7 @@ export const Url = {
     },
     ADMIN: {
       _self: config(),
-      MY_ACCOUNT: uConfig(),
+      MY_ACCOUNT: config().setRoles([r.ROLE_SYS_ADMIN]),
       ALL_USER: config().setRoles([r.ROLE_SYS_ADMIN]),
       MY_TRIP: uConfig(),
       COMPANY_MANAGER: config().setRoles([r.ROLE_SYS_ADMIN]),

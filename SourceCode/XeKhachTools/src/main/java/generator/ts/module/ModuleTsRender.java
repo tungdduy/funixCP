@@ -16,7 +16,7 @@ public class ModuleTsRender extends AbstractAppUrlRender<ModuleTsModel> {
 
     @Override
     protected void handleModel(ModuleTsModel model) {
-        model.setCapitalizeName(model.getUrlNode().getBuilder().buildCapitalizeName());
+        model.setCapName(model.getUrlNode().getBuilder().buildCapName());
         model.setUrl(model.getUrlNode().getUrl());
         model.getUrlNode()
                 .getChildren()

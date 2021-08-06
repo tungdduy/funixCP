@@ -1,20 +1,25 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.entity.Trip;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.enumeration.TripUserStatus;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
-import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.entity.User;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import net.timxekhach.operation.data.entity.Employee;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUser_MAPPED.Pk.class)
@@ -209,7 +214,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
     protected Long totalPrice;
 
     @Enumerated(EnumType.STRING)
-    protected TripUserStatus status = net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
+    protected TripUserStatus status = TripUserStatus.PENDING;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//

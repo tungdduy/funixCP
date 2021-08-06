@@ -1,13 +1,5 @@
 package net.timxekhach.operation.data.entity;
-${root.importSeparator}
-<#compress>
-<#if root.importContent?has_content>
-${root.importContent}
-<#else>
-</#if>
-</#compress>
-
-${root.importSeparator}
+${root.separators.import.all}
 
 @Entity @Getter @Setter
 public class ${root.entityCapName} extends ${root.entityCapName}_MAPPED {
@@ -18,14 +10,8 @@ public class ${root.entityCapName} extends ${root.entityCapName}_MAPPED {
         super(<#list root.constructorParams as param>${param.name}<#if param_has_next>, </#if></#list>);
     }
     </#if>
-${root.bodySeparator}
 
-<#if root.bodyContent?has_content>
-${root.bodyContent}
-</#if>
-
-${root.bodySeparator}
-
+${root.separators.body.all}
 
 }
 

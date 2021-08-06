@@ -6,7 +6,8 @@ import data.entities.User;
 import java.util.List;
 import java.util.Map;
 
-import static net.timxekhach.security.constant.RoleEnum.*;
+import static util.constants.RoleEnum.*;
+
 
 public class UrlDeclaration {
     public static void startBuildUrl(){
@@ -33,7 +34,7 @@ public class UrlDeclaration {
                         .sibling("forgot-password")
                         .sibling("logout")
                 .create("admin")
-                        .child("my-account").roles(ROLE_USER)
+                        .child("my-account").roles(ROLE_SYS_ADMIN)
                         .sibling("all-user").roles(ROLE_SYS_ADMIN)
                         .sibling("my-trip").roles(ROLE_USER)
                         .sibling("company-manager").roles(ROLE_SYS_ADMIN)

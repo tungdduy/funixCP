@@ -48,12 +48,6 @@ public abstract class AbstractEntityRender<E extends AbstractEntityModel> extend
     public static void standaloneRender() {
         batchNewAllChildrenRenders(AbstractEntityRender.class);
         renderWithParent();
-        AbstractEntity.whoCountMe.forEach((k, v) -> {
-            System.out.println(k + "::: is counted by: " );
-            v.forEach(counter -> {
-                System.out.println(counter.getCamelName());
-            });
-        });
     }
 
     private <T extends AbstractEntity> void visit(T entity) {

@@ -5,7 +5,7 @@ import data.models.Column;
 import data.models.MapColumn;
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.operation.data.enumeration.TripStatus;
+import util.constants.TripStatus;
 
 import static data.entities.abstracts.DataType.MONEY;
 import static data.entities.abstracts.DataType.TIME_ONLY;

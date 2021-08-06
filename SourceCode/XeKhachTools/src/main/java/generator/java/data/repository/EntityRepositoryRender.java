@@ -2,7 +2,6 @@ package generator.java.data.repository;
 
 import data.entities.abstracts.AbstractEntity;
 import generator.abstracts.render.AbstractEntityRender;
-import generator.java.data.mapped.EntityMappedRender;
 
 import java.util.ArrayList;
 import java.util.List;

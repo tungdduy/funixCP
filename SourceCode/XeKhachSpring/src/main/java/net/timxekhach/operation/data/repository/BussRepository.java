@@ -1,10 +1,13 @@
 package net.timxekhach.operation.data.repository;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import java.util.List;
 import net.timxekhach.operation.data.entity.Buss;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.Buss_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
@@ -28,6 +31,7 @@ public interface BussRepository extends JpaRepository<Buss, Buss_MAPPED.Pk> {
     List<Buss> findByCompanyId(Long companyId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

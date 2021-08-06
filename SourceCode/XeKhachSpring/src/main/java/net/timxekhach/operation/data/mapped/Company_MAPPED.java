@@ -1,15 +1,20 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
-import org.apache.commons.lang3.math.NumberUtils;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import javax.validation.constraints.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Company_MAPPED.Pk.class)

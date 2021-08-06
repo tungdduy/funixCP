@@ -1,25 +1,30 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.entity.Company;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.Buss;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import java.util.Date;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.ArrayList;
-import org.apache.commons.lang3.time.DateUtils;
-import java.util.List;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
+import net.timxekhach.operation.data.entity.TripPoint;
 import org.apache.commons.lang3.math.NumberUtils;
+import net.timxekhach.operation.data.entity.Company;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import org.apache.commons.lang3.time.DateUtils;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussPoint;
-import net.timxekhach.operation.data.entity.TripPoint;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.entity.Buss;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussTrip_MAPPED.Pk.class)

@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ClassUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -26,12 +23,39 @@ public class StringUtil extends StringUtils {
 
     public static String fetchSeparatorContent(String separator, String content) {
         try {
-            return content.split(separator)[1].trim();
+            return content.split(separator)[1];
         } catch (Exception ignored) {
 //            logger.error("content is null or has no separator!");
         }
         return "";
     }
+
+    public static void addIfNotContainsTrim(Collection<String> collection, String e) {
+        if (isBlank(e)) return;
+        if(collection.stream().map(String::trim).anyMatch(s -> s.equals(e.trim()))){
+            collection.add(e);
+        }
+    }
+
+    public static String trimTopBottomBlankLines(String content) {
+        if(content == null || isBlank(content)) return "";
+        String[] allLines = content.split("\n");
+        List<String> result = new ArrayList<>(Arrays.asList(allLines));
+        for (String allLine : allLines) {
+            if (!isBlank(allLine)) {
+                break;
+            }
+            result.remove(0);
+        }
+        for (int i = allLines.length - 1; i > 0; i--) {
+            if (!isBlank(allLines[i])) {
+                break;
+            }
+            result.remove(result.size() - 1);
+        }
+        return String.join("\n", result);
+    }
+
     public static String[] fetchSplitter(String separator, String content) {
         try {
             String[] result = content.split(separator);
@@ -149,13 +173,13 @@ public class StringUtil extends StringUtils {
         return value.split("(?=\\p{Upper})");
     }
 
-    public static String capitalizeEachWordToLowerDotChain(String CapitalizeNameLikeThis) {
-        String[] words = splitByCapital(CapitalizeNameLikeThis);
+    public static String capitalizeEachWordToLowerDotChain(String CapNameLikeThis) {
+        String[] words = splitByCapital(CapNameLikeThis);
         return Arrays.stream(words).map(String::toLowerCase).collect(Collectors.joining("."));
     }
 
     public static String buildSeparator(String name) {
-        return String.format("// ____________________ ::%s_SEPARATOR:: ____________________ //", name);
+        return String.format("// ____________________ ::%s_SEPARATOR:: ____________________ //", toUPPER_UNDERLINE(name));
     }
 
     public static List<String> toImportFormat(List<String> importClasses) {

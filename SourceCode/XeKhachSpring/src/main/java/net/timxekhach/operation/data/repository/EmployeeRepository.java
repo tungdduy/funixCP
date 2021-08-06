@@ -1,10 +1,13 @@
 package net.timxekhach.operation.data.repository;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.Employee_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import net.timxekhach.operation.data.entity.Employee;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
@@ -28,6 +31,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Employee_MAP
     List<Employee> findByUserId(Long userId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

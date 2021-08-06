@@ -2,7 +2,7 @@ package generator;
 
 import generator.abstracts.interfaces.RenderGroup;
 import generator.abstracts.render.AbstractRender;
-import net.timxekhach.utility.Xe;
+import util.Xe;
 
 public class OtherGenerator extends Xe {
 

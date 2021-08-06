@@ -1,26 +1,26 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.security.handler.SecurityConfig;
+
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import javax.persistence.Entity;
+import lombok.Getter;
 import java.util.List;
+import lombok.Setter;
+import net.timxekhach.operation.response.ErrorCode;
 import java.util.Map;
+import net.timxekhach.security.handler.SecurityConfig;
 import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
+import javax.persistence.Entity;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
 public class User extends User_MAPPED {
+
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
@@ -87,7 +87,6 @@ public class User extends User_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
 
 }
 

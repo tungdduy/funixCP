@@ -1,18 +1,23 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.ArrayList;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Map;
-import net.timxekhach.operation.data.entity.SeatType;
-import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import org.apache.commons.lang3.math.NumberUtils;
+import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.SeatType;
+import java.util.List;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import javax.validation.constraints.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussType_MAPPED.Pk.class)

@@ -1,14 +1,6 @@
 package net.timxekhach.operation.data.mapped;
 
-<#compress>
-<#list root.imports as import>
-import ${import};
-</#list>
-
-<#list root.staticImports as import>
-import static ${import};
-</#list>
-</#compress>
+${root.separators.import.all}
 
 
 @MappedSuperclass @Getter @Setter

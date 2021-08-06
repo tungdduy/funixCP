@@ -1,18 +1,23 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.entity.Company;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import org.apache.commons.lang3.math.NumberUtils;
+import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.entity.User;
+import javax.persistence.*;
+import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
-import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.*;
-import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Employee_MAPPED.Pk.class)

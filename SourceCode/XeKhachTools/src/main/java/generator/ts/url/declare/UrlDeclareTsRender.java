@@ -5,14 +5,14 @@ import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
 import generator.abstracts.interfaces.AuthConfig;
 import generator.abstracts.render.AbstractRender;
-import net.timxekhach.security.constant.RoleEnum;
-import net.timxekhach.utility.XeFileUtils;
+import util.constants.RoleEnum;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static architect.urls.UrlArchitect.apiUrls;
 import static architect.urls.UrlArchitect.appUrls;
+import static util.FileUtil.readAsString;
 
 
 public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
@@ -24,7 +24,7 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     @Override
     protected void handleModel(UrlDeclareTsModel model) {
         UrlDeclaration.startBuildUrl();
-        model.setContentBeforeImport(XeFileUtils.readAsString(
+        model.setContentBeforeImport(readAsString(
                 model.getRenderFile().getAbsolutePath()).split(model.getIMPORT_SPLITTER())[0]);
 
         apiUrls.forEach(api -> buildRootModel(model.getApiUrls(), api));

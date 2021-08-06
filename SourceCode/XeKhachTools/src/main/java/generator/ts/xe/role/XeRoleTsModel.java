@@ -2,7 +2,7 @@ package generator.ts.xe.role;
 
 import generator.abstracts.models.AbstractModel;
 import lombok.Getter;
-import net.timxekhach.security.constant.RoleEnum;
+import util.constants.RoleEnum;
 
 import static util.AppUtil.BUSINESS_DIR;
 

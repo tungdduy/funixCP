@@ -3,7 +3,6 @@
 </#list>
 import {${root.capitalizeName}Component} from './${root.url}.component';
 ${root.headerImportSeparator}
-
 <#if root.headerImportContent?has_content>
 ${root.headerImportContent}
 <#else>

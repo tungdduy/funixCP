@@ -23,7 +23,8 @@ import static net.timxekhach.utility.XeResponseUtils.success;
 public class CommonUpdateApi {
 
     private final CommonUpdateService commonUpdateService;
-    @PostMapping("/SeatType")
+    
+        @PostMapping("/SeatType")
     public ResponseEntity<SeatType> updateSeatType (@RequestBody Map<String, String> data) {
         return success(commonUpdateService.updateSeatType(data));
     }

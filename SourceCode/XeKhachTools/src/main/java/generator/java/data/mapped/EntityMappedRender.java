@@ -6,17 +6,15 @@ import data.models.CountMethod;
 import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.abstracts.render.AbstractEntityRender;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import util.ObjectUtil;
 import util.ReflectionUtil;
-import util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,8 +53,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         }
 
         model.getEntity().getPrimaryKeyEntities()
-                .forEach(entity -> model.getImports()
-                        .add(entity.getFullOperationClassName()));
+                .forEach(entity -> model.filterThenAddImport(entity.getFullOperationClassName()));
 
         model.getColumns().forEach(columnCore -> {
             if (columnCore.getDefaultValue() == null) {
@@ -242,7 +239,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             core.setInitialString(String.format(" = %b", core.getDefaultValue()));
         } else if (core.getDefaultValue() instanceof Enum<?>) {
             model.filterThenAddImport(core.getDefaultValue().getClass().getName());
-            String className = core.getDefaultValue().getClass().getName();
+            String className = core.getDefaultValue().getClass().getSimpleName();
             String name = ((Enum<?>) core.getDefaultValue()).name();
             core.setInitialString(String.format(" = %s.%s", className, name));
         }

@@ -1,14 +1,8 @@
 package net.timxekhach.operation.data.repository;
 <#assign camelName = root.entityCamelName>
 <#assign capName = root.entityCapName>
-${root.importSeparator}
-<#compress>
-<#if root.importContent?has_content>
-${root.importContent}
-</#if>
-</#compress>
 
-${root.importSeparator}
+${root.separators.import.all}
 
 @Repository
 public interface ${capName}Repository extends JpaRepository<${capName}, ${capName}_MAPPED.Pk> {
@@ -26,12 +20,6 @@ public interface ${capName}Repository extends JpaRepository<${capName}, ${capNam
     List<${capName}> findBy${pkFinder.name}(<#list pkFinder.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
     </#list>
 
-${root.bodySeparator}
-
-<#if root.bodyContent?has_content>
-    ${root.bodyContent}
-</#if>
-
-${root.bodySeparator}
+${root.separators.body.all}
 
 }

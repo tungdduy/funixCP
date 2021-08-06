@@ -4,16 +4,13 @@ import generator.abstracts.models.AbstractUrlModel;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static util.AppUtil.PAGES_DIR;
 
 @Getter
 @Setter
 public class RouterComponentTsModel extends AbstractUrlModel {
 
-    private String url, capitalizeName;
+    private String url, capName;
 
     @Override
     public String buildRenderFilePath() {

@@ -1,19 +1,24 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.entity.Trip;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
-import net.timxekhach.operation.data.entity.SeatType;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.data.entity.SeatType;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripUserSeat_MAPPED.Pk.class)
