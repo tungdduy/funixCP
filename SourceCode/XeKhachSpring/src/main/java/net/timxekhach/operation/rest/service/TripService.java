@@ -2,9 +2,6 @@ package net.timxekhach.operation.rest.service;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-import java.util.List;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.BussPoint;
 import net.timxekhach.operation.data.entity.BussTrip;
@@ -13,14 +10,12 @@ import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.repository.BussPointRepository;
 import net.timxekhach.operation.data.repository.BussTripRepository;
 import net.timxekhach.operation.data.repository.TripRepository;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.XeDateUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import net.timxekhach.operation.data.entity.SeatType;
-import net.timxekhach.operation.data.repository.TripRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.ArrayList;
