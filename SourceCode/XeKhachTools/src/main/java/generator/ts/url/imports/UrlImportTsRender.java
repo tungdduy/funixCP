@@ -1,8 +1,8 @@
 package generator.ts.url.imports;
 
 import architect.urls.UrlNode;
-import generator.builders.UrlNodeBuilder;
 import generator.abstracts.render.AbstractAppUrlRender;
+import generator.builders.UrlNodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,8 +14,8 @@ export class AllUserComponent extends FormAbstract {
     table: {
       basicColumns: [
         {field: {name: 'profileImageUrl'}, type: "avatar"},
-        {field: {name: 'username'}, type: "boldStringRole"},
-        {field: {name: 'fullName'}, type: "string"},
+        {field: {name: 'fullName'}, type: "boldStringRole"},
+        {field: {name: 'phoneNumber'}, type: "string"},
         {field: {name: 'email'}, type: "string"},
       ],
     },

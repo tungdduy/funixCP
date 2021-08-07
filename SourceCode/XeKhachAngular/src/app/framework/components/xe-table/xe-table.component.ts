@@ -11,13 +11,14 @@ import {Notifier} from "../../notify/notify.service";
 import {XeLabel} from "../../../business/i18n";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RoleUtil} from "../../util/role.util";
+import {XeSubscriber} from "../../../business/abstract/XeSubscriber";
 
 @Component({
   selector: 'xe-table',
   templateUrl: './xe-table.component.html',
   styleUrls: ['./xe-table.component.scss']
 })
-export class XeTableComponent implements OnInit, OnDestroy {
+export class XeTableComponent extends XeSubscriber implements OnInit {
 
   @Input() tableData: XeTableData;
   displayedColumns: string[] = [];
@@ -34,6 +35,7 @@ export class XeTableComponent implements OnInit, OnDestroy {
 
   constructor(private commonService: CommonUpdateService,
               private dialogService: NbDialogService) {
+    super();
   }
 
   get hasRowSelected() {
@@ -51,12 +53,7 @@ export class XeTableComponent implements OnInit, OnDestroy {
         if (this.tableData.table.filterCondition) {
           result = result.filter(this.tableData.table.filterCondition);
         }
-        this.tableData.formData.share.tableSource = this.tableSource;
-        this.tableData.formData.share.entities = result;
-        this.tableSource = new MatTableDataSource<any>(result);
-        this.tableData.formData.share.tableSource = this.tableSource;
-        this.tableSource.paginator = this.paginator;
-        this.tableSource.sort = this.sort;
+        this.updateTableSource(result);
       }
     ));
 
@@ -132,7 +129,6 @@ export class XeTableComponent implements OnInit, OnDestroy {
     }
   }
 
-  subscriptions = [];
   deleteSelected() {
     this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.className).subscribe(
       () => {
@@ -149,9 +145,6 @@ export class XeTableComponent implements OnInit, OnDestroy {
     ));
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
 
   @ViewChild("string") stringColumn;
   @ViewChild("avatarString") avatarStringColumn;
@@ -176,5 +169,17 @@ export class XeTableComponent implements OnInit, OnDestroy {
 
   asTableColumn(tableColumn: any): TableColumn {
     return tableColumn as TableColumn;
+  }
+
+  private updateTableSource(result: any[]) {
+    this.tableData.formData.share.tableSource = this.tableSource;
+    this.tableData.formData.share.entities = result;
+    this.tableSource = new MatTableDataSource<any>(result);
+    this.tableData.formData.share.tableSource = this.tableSource;
+    this.tableSource.paginator = this.paginator;
+    this.tableSource.sort = this.sort;
+    this.tableSource.sortingDataAccessor = (item, property) => {
+      return this.entityUtil.getFieldValue(item, {name: property}).toLowerCase();
+    };
   }
 }

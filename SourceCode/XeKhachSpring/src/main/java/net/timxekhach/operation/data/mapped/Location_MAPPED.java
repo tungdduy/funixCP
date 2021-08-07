@@ -1,17 +1,22 @@
 package net.timxekhach.operation.data.mapped;
 
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import java.util.Map;
-import org.apache.commons.lang3.math.NumberUtils;
-import net.timxekhach.operation.data.entity.Location;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import javax.validation.constraints.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import net.timxekhach.operation.data.entity.Location;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Location_MAPPED.Pk.class)
@@ -71,6 +76,7 @@ public abstract class Location_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long parentLocationId;
 //====================================================================//

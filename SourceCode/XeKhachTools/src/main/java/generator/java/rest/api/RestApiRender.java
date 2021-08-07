@@ -29,16 +29,6 @@ public class RestApiRender extends AbstractRestRender<RestApiModel> {
         return urlNode.getBuilder().buildControllerPackagePath();
     }
 
-    @Override
-    protected String initialImportContent(UrlNode urlNode) {
-        return join("\n", toImportFormat(
-                RequiredArgsConstructor.class.getName(),
-                "org.springframework.web.bind.annotation.*",
-                urlNode.getBuilder().buildFullServiceClassName(),
-                "static net.timxekhach.utility.XeResponseUtils.success",
-                ResponseEntity.class.getName()
-        ));
-    }
 
     @Override
     protected String buildMethodString(ApiMethod method) {

@@ -1,7 +1,5 @@
 import {UrlConfig} from "./url.config";
-import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {Url} from "./url.declare";
-import {XeRouter} from "../../business/service/xe-router";
 import {AuthUtil} from "../auth/auth.util";
 
 export class UrlBuilder {
@@ -24,19 +22,19 @@ export class UrlBuilder {
     config.key = key;
     config.keyChane = !!parent.keyChane ? parent.keyChane + "." + key : key;
     config.short = key.replace(/_/g, "-").toLowerCase();
-    if (config.roles.length > 0) {
+    if (config.flatRoles.length > 0) {
       const activateProvider = {
         provide: config.keyChane,
-        useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-           if (!AuthUtil.instance.isAllow(config.roles)) {
-             XeRouter.navigate(Url.app.CHECK_IN.LOGIN.noHost);
+        useValue: () => {
+           if (!AuthUtil.instance.isAllow(config.flatRoles)) {
+             Url.app.CHECK_IN.LOGIN.go();
              return false;
            }
            return true;
         }
 
       };
-      config.parent.activateProviders.push(activateProvider);
+      config.parent._activateProviders.push(activateProvider);
     }
   }
 

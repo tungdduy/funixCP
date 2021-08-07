@@ -1,3 +1,7 @@
-<span class="{{_types[type]['css']}} {{msgClass}} {{isParagraph ? 'd-block pb-3' : ''}}">{{prepend}}{{textValue}}<br *ngIf="breakLine">
+<span class="{{_types[type]['css']}} {{msgClass}} {{isParagraph ? 'd-block pb-3' : ''}}">{{prepend}}
+  <nb-icon *ngIf="iconPre" [icon]="iconPre" pack="fa" class="pr-1 {{_types[type]['css']}} {{msgClass}}"></nb-icon>
+  {{iconOnly? '' : textValue}}<br *ngIf="breakLine">
+  <nb-icon *ngIf="iconAfter" [icon]="iconAfter" pack="fa" class="pl-1 {{_types[type]['css']}} {{msgClass}}"></nb-icon>
+  <nb-icon *ngIf="iconOnly" [icon]="iconOnly" pack="fa" class="{{_types[type]['css']}} {{msgClass}}"></nb-icon>
   <ng-content></ng-content>
 </span>

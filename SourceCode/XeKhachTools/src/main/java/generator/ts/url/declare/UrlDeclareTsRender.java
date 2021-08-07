@@ -5,13 +5,14 @@ import architect.urls.UrlNode;
 import architect.urls.UrlTypeEnum;
 import generator.abstracts.interfaces.AuthConfig;
 import generator.abstracts.render.AbstractRender;
-import net.timxekhach.utility.XeFileUtils;
+import util.constants.RoleEnum;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static architect.urls.UrlArchitect.apiUrls;
 import static architect.urls.UrlArchitect.appUrls;
+import static util.FileUtil.readAsString;
 
 
 public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
@@ -23,7 +24,7 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     @Override
     protected void handleModel(UrlDeclareTsModel model) {
         UrlDeclaration.startBuildUrl();
-        model.setContentBeforeImport(XeFileUtils.readAsString(
+        model.setContentBeforeImport(readAsString(
                 model.getRenderFile().getAbsolutePath()).split(model.getIMPORT_SPLITTER())[0]);
 
         apiUrls.forEach(api -> buildRootModel(model.getApiUrls(), api));
@@ -67,7 +68,8 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
     }
 
     static String buildConfig(AuthConfig authConfig) {
-        return  "config()"
+        String config = authConfig.getRoles().contains(RoleEnum.ROLE_USER) ? "uConfig()" : "config()";
+        return  config
                 + buildPublicConfig(authConfig)
                 + buildAuthsRolesConfig(authConfig);
     }
@@ -78,6 +80,7 @@ public class UrlDeclareTsRender extends AbstractRender<UrlDeclareTsModel> {
      */
     static String buildAuthsRolesConfig(AuthConfig authConfig) {
         List<String> roles = authConfig.getRoles().stream()
+                .filter(roleEnum -> roleEnum != RoleEnum.ROLE_USER)
                 .map(r -> "r." + r.name())
                 .collect(Collectors.toList());
         String rolesJoin = String.join(", ", roles);

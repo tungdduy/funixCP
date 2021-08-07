@@ -3,7 +3,6 @@ package data.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.operation.response.ErrorCode;
 
 @Getter
 public class Column {

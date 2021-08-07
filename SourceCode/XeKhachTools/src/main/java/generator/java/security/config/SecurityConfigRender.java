@@ -6,7 +6,7 @@ import generator.abstracts.render.AbstractApiUrlRender;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.timxekhach.utility.XeFileUtils.readAsString;
+import static util.FileUtil.readAsString;
 import static util.StringUtil.fetchSplitter;
 
 public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigModel> {
@@ -29,12 +29,6 @@ public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigMod
     @Override
     public void runBeforeRender() {
         SecurityConfigModel source = this.getModelFiles().get(0);
-        String oldContent = readAsString(source.buildRenderFilePath());
-        String[] separatorContent = fetchSplitter(source.getUrlAuthorizationSplitter(), oldContent);
-        if (separatorContent != null) {
-            source.setContentBeforeAuthorization(separatorContent[0]);
-            source.setContentAfterAuthorization(separatorContent[2]);
-        }
         source.setAuthorities(authorities);
         this.getModelFiles().clear();
         this.getModelFiles().add(source);

@@ -1,9 +1,9 @@
 package architect.urls;
 
-import generator.builders.UrlNodeBuilder;
 import generator.abstracts.interfaces.AuthConfig;
+import generator.builders.UrlNodeBuilder;
 import lombok.Getter;
-import net.timxekhach.security.constant.RoleEnum;
+import util.constants.RoleEnum;
 
 import java.util.ArrayList;
 import java.util.Arrays;

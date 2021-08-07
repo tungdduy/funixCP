@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.Serializable;
 
 @Getter
-public abstract class AbstractModel implements SeparatorContent, Serializable {
+public abstract class AbstractModel extends SeparatorContent implements Serializable {
     protected File renderFile;
 
     public File getRenderFile() {
@@ -22,7 +22,7 @@ public abstract class AbstractModel implements SeparatorContent, Serializable {
     }
 
     protected void init() {
-        updateSeparatorContent();
+//        updateSeparatorContent();
     }
 
 }

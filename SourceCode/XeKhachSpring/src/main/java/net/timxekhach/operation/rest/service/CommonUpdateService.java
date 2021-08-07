@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static net.timxekhach.operation.response.ErrorCode.DATA_EXISTED;
 import static net.timxekhach.operation.response.ErrorCode.DATA_NOT_FOUND;
 
 @Service
@@ -38,6 +36,11 @@ public class CommonUpdateService {
     private static UserRepository staticUserRepository;
     public static UserRepository getUserRepository() {
         return CommonUpdateService.staticUserRepository;
+    }
+    private final CallerRepository callerRepository;
+    private static CallerRepository staticCallerRepository;
+    public static CallerRepository getCallerRepository() {
+        return CommonUpdateService.staticCallerRepository;
     }
     private final TripUserSeatRepository tripUserSeatRepository;
     private static TripUserSeatRepository staticTripUserSeatRepository;
@@ -99,6 +102,7 @@ public class CommonUpdateService {
         CommonUpdateService.staticSeatTypeRepository = seatTypeRepository;
         CommonUpdateService.staticBussTripRepository = bussTripRepository;
         CommonUpdateService.staticUserRepository = userRepository;
+        CommonUpdateService.staticCallerRepository = callerRepository;
         CommonUpdateService.staticTripUserSeatRepository = tripUserSeatRepository;
         CommonUpdateService.staticEmployeeRepository = employeeRepository;
         CommonUpdateService.staticCompanyRepository = companyRepository;
@@ -129,7 +133,7 @@ public class CommonUpdateService {
         }
 
         seatType.setFieldByName(data);
-        seatTypeRepository.saveAndFlush(seatType);
+        seatTypeRepository.save(seatType);
         return seatType;
     }
     public SeatType insertSeatType(Map<String, String> data) {
@@ -143,9 +147,9 @@ public class CommonUpdateService {
                     .forEach(entry -> bussTypeData.put(entry.getKey().substring("bussType.".length()), entry.getValue()));
             seatType.setBussType(this.insertBussType(bussTypeData));
         }
-        DATA_EXISTED.throwIfNotEmpty(seatTypeRepository.findByBussTypeId(seatType.getBussTypeId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(seatTypeRepository.findByBussTypeId(seatType.getBussTypeId()));
 
-        seatType = seatTypeRepository.saveAndFlush(seatType);
+        seatType = seatTypeRepository.save(seatType);
         return seatType;
     }
     public List<SeatType> insertMultiSeatType(List<Map<String, String>> data) {
@@ -190,9 +194,13 @@ public class CommonUpdateService {
         BussTrip bussTrip = ErrorCode.DATA_NOT_FOUND.throwIfNull(bussTripRepository.findByBussTripId(bussTripId));
 
         Map<String, String> bussData = new HashMap<>();
+        Map<String, String> companyData = new HashMap<>();
         data.forEach((fieldName, fieldValue) -> {
             if (fieldName.startsWith("buss.")) {
                 bussData.put(fieldName.substring("buss.".length()), fieldValue);
+            }
+            if (fieldName.startsWith("company.")) {
+                companyData.put(fieldName.substring("company.".length()), fieldValue);
             }
         });
         if (!bussData.isEmpty()) {
@@ -200,9 +208,14 @@ public class CommonUpdateService {
 
             this.updateBuss(bussData);
         }
+        if (!companyData.isEmpty()) {
+            companyData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateCompany(companyData);
+        }
 
         bussTrip.setFieldByName(data);
-        bussTripRepository.saveAndFlush(bussTrip);
+        bussTripRepository.save(bussTrip);
         return bussTrip;
     }
     public BussTrip insertBussTrip(Map<String, String> data) {
@@ -216,9 +229,16 @@ public class CommonUpdateService {
                     .forEach(entry -> bussData.put(entry.getKey().substring("buss.".length()), entry.getValue()));
             bussTrip.setBuss(this.insertBuss(bussData));
         }
-        DATA_EXISTED.throwIfNotEmpty(bussTripRepository.findByBussId(bussTrip.getBussId()));
+        if (bussTrip.getCompanyId() == null || bussTrip.getCompanyId() <= 0) {
+            Map<String, String> companyData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("company."))
+                    .forEach(entry -> companyData.put(entry.getKey().substring("company.".length()), entry.getValue()));
+            bussTrip.setCompany(this.insertCompany(companyData));
+        }
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(bussTripRepository.findByBussIdAndCompanyId(bussTrip.getBussId(), bussTrip.getCompanyId()));
 
-        bussTrip = bussTripRepository.saveAndFlush(bussTrip);
+        bussTrip = bussTripRepository.save(bussTrip);
         return bussTrip;
     }
     public List<BussTrip> insertMultiBussTrip(List<Map<String, String>> data) {
@@ -264,7 +284,7 @@ public class CommonUpdateService {
 
 
         user.setFieldByName(data);
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
         return user;
     }
     public User insertUser(Map<String, String> data) {
@@ -272,7 +292,7 @@ public class CommonUpdateService {
         user.setFieldByName(data);
         
 
-        user = userRepository.saveAndFlush(user);
+        user = userRepository.save(user);
         return user;
     }
     public List<User> insertMultiUser(List<Map<String, String>> data) {
@@ -305,6 +325,79 @@ public class CommonUpdateService {
         return user;
     }
 //=================== END OF User ======================
+    public Caller updateCaller(Map<String, String> data) {
+        Long callerId = Long.parseLong(data.get("callerId"));
+        Caller caller = ErrorCode.DATA_NOT_FOUND.throwIfNull(callerRepository.findByCallerId(callerId));
+
+        Map<String, String> companyData = new HashMap<>();
+        data.forEach((fieldName, fieldValue) -> {
+            if (fieldName.startsWith("company.")) {
+                companyData.put(fieldName.substring("company.".length()), fieldValue);
+            }
+        });
+        if (!companyData.isEmpty()) {
+            companyData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
+
+            this.updateCompany(companyData);
+        }
+
+        caller.setFieldByName(data);
+        callerRepository.save(caller);
+        return caller;
+    }
+    public Caller insertCaller(Map<String, String> data) {
+        Caller caller = new Caller();
+        caller.setFieldByName(data);
+        
+        if (caller.getCompanyId() == null || caller.getCompanyId() <= 0) {
+            Map<String, String> companyData = new HashMap<>();
+            data.entrySet().stream()
+                    .filter(entry -> entry.getKey().startsWith("company."))
+                    .forEach(entry -> companyData.put(entry.getKey().substring("company.".length()), entry.getValue()));
+            caller.setCompany(this.insertCompany(companyData));
+        }
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(callerRepository.findByCompanyId(caller.getCompanyId()));
+
+        caller = callerRepository.save(caller);
+        return caller;
+    }
+    public List<Caller> insertMultiCaller(List<Map<String, String>> data) {
+        List<Caller> result = new ArrayList<>();
+        data.forEach(callerData -> result.add(this.insertCaller(callerData)));
+        return result;
+    }
+    public void deleteCallerByCallerIds(Long[] callerIds) {
+        callerRepository.deleteAllByCallerIdIn(Arrays.asList(callerIds));
+    }
+    public void deleteCaller(TreeMap<String, Long> data) {
+        if (data.isEmpty()) {
+            return;
+        }
+        if (data.size() == 1 && data.containsKey("CallerId")) {
+            callerRepository.deleteByCallerId(data.get("CallerId"));
+            return;
+        }
+        String deleteMethodName = String.format("deleteBy%s", String.join("And", data.keySet()));
+        Object[] deleteMethodParams = data.values().toArray(new Long[0]);
+        XeReflectionUtils.invokeMethodByName(callerRepository, deleteMethodName, deleteMethodParams);
+    }
+    public List<Caller> findCaller(TreeMap<String, Long> data) {
+        if (data.isEmpty()) {
+            return callerRepository.findAll();
+        }
+        if (data.size() == 1 && data.containsKey("CallerId")) {
+            Caller caller = callerRepository.findByCallerId(data.get("CallerId"));
+            if(caller == null) {
+                return new ArrayList<>();
+            } else {
+                return Collections.singletonList(caller);
+            }
+        }
+        String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
+        Object[] findMethodParams = data.values().toArray(new Long[0]);
+        return XeReflectionUtils.invokeMethodByName(callerRepository, findMethodName, findMethodParams);
+    }
+//=================== END OF Caller ======================
     public TripUserSeat updateTripUserSeat(Map<String, String> data) {
         Long tripUserSeatId = Long.parseLong(data.get("tripUserSeatId"));
         TripUserSeat tripUserSeat = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripUserSeatRepository.findByTripUserSeatId(tripUserSeatId));
@@ -340,7 +433,7 @@ public class CommonUpdateService {
         }
 
         tripUserSeat.setFieldByName(data);
-        tripUserSeatRepository.saveAndFlush(tripUserSeat);
+        tripUserSeatRepository.save(tripUserSeat);
         return tripUserSeat;
     }
     public TripUserSeat insertTripUserSeat(Map<String, String> data) {
@@ -368,9 +461,9 @@ public class CommonUpdateService {
                     .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
             tripUserSeat.setUser(this.insertUser(userData));
         }
-        DATA_EXISTED.throwIfNotEmpty(tripUserSeatRepository.findBySeatTypeIdAndTripIdAndUserId(tripUserSeat.getSeatTypeId(), tripUserSeat.getTripId(), tripUserSeat.getUserId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(tripUserSeatRepository.findBySeatTypeIdAndTripIdAndUserId(tripUserSeat.getSeatTypeId(), tripUserSeat.getTripId(), tripUserSeat.getUserId()));
 
-        tripUserSeat = tripUserSeatRepository.saveAndFlush(tripUserSeat);
+        tripUserSeat = tripUserSeatRepository.save(tripUserSeat);
         return tripUserSeat;
     }
     public List<TripUserSeat> insertMultiTripUserSeat(List<Map<String, String>> data) {
@@ -436,7 +529,7 @@ public class CommonUpdateService {
         }
 
         employee.setFieldByName(data);
-        employeeRepository.saveAndFlush(employee);
+        employeeRepository.save(employee);
         return employee;
     }
     public Employee insertEmployee(Map<String, String> data) {
@@ -457,16 +550,13 @@ public class CommonUpdateService {
                     .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
             employee.setUser(this.insertUser(userData));
         }
-//        DATA_EXISTED.throwIfNotEmpty(employeeRepository.findByCompanyIdAndUserId(employee.getCompanyId(), employee.getUserId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(employeeRepository.findByCompanyIdAndUserId(employee.getCompanyId(), employee.getUserId()));
 
-        employee = employeeRepository.saveAndFlush(employee);
+        employee = employeeRepository.save(employee);
         return employee;
     }
     public List<Employee> insertMultiEmployee(List<Map<String, String>> data) {
         List<Employee> result = new ArrayList<>();
-        List<Long> userIds = data.stream().map(e -> e.get("userId")).map(Long::parseLong).collect(Collectors.toList());
-        List<Employee> test = employeeRepository.findByUserIdIn(userIds);
-        DATA_EXISTED.throwIf(employeeRepository.existsByUserIdIn(userIds));
         data.forEach(employeeData -> result.add(this.insertEmployee(employeeData)));
         return result;
     }
@@ -508,7 +598,7 @@ public class CommonUpdateService {
 
 
         company.setFieldByName(data);
-        companyRepository.saveAndFlush(company);
+        companyRepository.save(company);
         return company;
     }
     public Company insertCompany(Map<String, String> data) {
@@ -516,7 +606,7 @@ public class CommonUpdateService {
         company.setFieldByName(data);
         
 
-        company = companyRepository.saveAndFlush(company);
+        company = companyRepository.save(company);
         return company;
     }
     public List<Company> insertMultiCompany(List<Map<String, String>> data) {
@@ -566,7 +656,7 @@ public class CommonUpdateService {
         }
 
         tripPoint.setFieldByName(data);
-        tripPointRepository.saveAndFlush(tripPoint);
+        tripPointRepository.save(tripPoint);
         return tripPoint;
     }
     public TripPoint insertTripPoint(Map<String, String> data) {
@@ -580,9 +670,9 @@ public class CommonUpdateService {
                     .forEach(entry -> bussTripData.put(entry.getKey().substring("bussTrip.".length()), entry.getValue()));
             tripPoint.setBussTrip(this.insertBussTrip(bussTripData));
         }
-        DATA_EXISTED.throwIfNotEmpty(tripPointRepository.findByBussTripId(tripPoint.getBussTripId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(tripPointRepository.findByBussTripId(tripPoint.getBussTripId()));
 
-        tripPoint = tripPointRepository.saveAndFlush(tripPoint);
+        tripPoint = tripPointRepository.save(tripPoint);
         return tripPoint;
     }
     public List<TripPoint> insertMultiTripPoint(List<Map<String, String>> data) {
@@ -648,7 +738,7 @@ public class CommonUpdateService {
         }
 
         bussEmployee.setFieldByName(data);
-        bussEmployeeRepository.saveAndFlush(bussEmployee);
+        bussEmployeeRepository.save(bussEmployee);
         return bussEmployee;
     }
     public BussEmployee insertBussEmployee(Map<String, String> data) {
@@ -669,9 +759,9 @@ public class CommonUpdateService {
                     .forEach(entry -> employeeData.put(entry.getKey().substring("employee.".length()), entry.getValue()));
             bussEmployee.setEmployee(this.insertEmployee(employeeData));
         }
-        DATA_EXISTED.throwIfNotEmpty(bussEmployeeRepository.findByBussIdAndEmployeeId(bussEmployee.getBussId(), bussEmployee.getEmployeeId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(bussEmployeeRepository.findByBussIdAndEmployeeId(bussEmployee.getBussId(), bussEmployee.getEmployeeId()));
 
-        bussEmployee = bussEmployeeRepository.saveAndFlush(bussEmployee);
+        bussEmployee = bussEmployeeRepository.save(bussEmployee);
         return bussEmployee;
     }
     public List<BussEmployee> insertMultiBussEmployee(List<Map<String, String>> data) {
@@ -737,7 +827,7 @@ public class CommonUpdateService {
         }
 
         buss.setFieldByName(data);
-        bussRepository.saveAndFlush(buss);
+        bussRepository.save(buss);
         return buss;
     }
     public Buss insertBuss(Map<String, String> data) {
@@ -758,9 +848,9 @@ public class CommonUpdateService {
                     .forEach(entry -> companyData.put(entry.getKey().substring("company.".length()), entry.getValue()));
             buss.setCompany(this.insertCompany(companyData));
         }
-        DATA_EXISTED.throwIfNotEmpty(bussRepository.findByBussTypeIdAndCompanyId(buss.getBussTypeId(), buss.getCompanyId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(bussRepository.findByBussTypeIdAndCompanyId(buss.getBussTypeId(), buss.getCompanyId()));
 
-        buss = bussRepository.saveAndFlush(buss);
+        buss = bussRepository.save(buss);
         return buss;
     }
     public List<Buss> insertMultiBuss(List<Map<String, String>> data) {
@@ -811,7 +901,7 @@ public class CommonUpdateService {
 
 
         location.setFieldByName(data);
-        locationRepository.saveAndFlush(location);
+        locationRepository.save(location);
         return location;
     }
     public Location insertLocation(Map<String, String> data) {
@@ -819,7 +909,7 @@ public class CommonUpdateService {
         location.setFieldByName(data);
         
 
-        location = locationRepository.saveAndFlush(location);
+        location = locationRepository.save(location);
         return location;
     }
     public List<Location> insertMultiLocation(List<Map<String, String>> data) {
@@ -873,7 +963,7 @@ public class CommonUpdateService {
         }
 
         tripUser.setFieldByName(data);
-        tripUserRepository.saveAndFlush(tripUser);
+        tripUserRepository.save(tripUser);
         return tripUser;
     }
     public TripUser insertTripUser(Map<String, String> data) {
@@ -894,9 +984,9 @@ public class CommonUpdateService {
                     .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
             tripUser.setUser(this.insertUser(userData));
         }
-        DATA_EXISTED.throwIfNotEmpty(tripUserRepository.findByTripIdAndUserId(tripUser.getTripId(), tripUser.getUserId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(tripUserRepository.findByTripIdAndUserId(tripUser.getTripId(), tripUser.getUserId()));
 
-        tripUser = tripUserRepository.saveAndFlush(tripUser);
+        tripUser = tripUserRepository.save(tripUser);
         return tripUser;
     }
     public List<TripUser> insertMultiTripUser(List<Map<String, String>> data) {
@@ -942,7 +1032,7 @@ public class CommonUpdateService {
 
 
         bussType.setFieldByName(data);
-        bussTypeRepository.saveAndFlush(bussType);
+        bussTypeRepository.save(bussType);
         return bussType;
     }
     public BussType insertBussType(Map<String, String> data) {
@@ -950,7 +1040,7 @@ public class CommonUpdateService {
         bussType.setFieldByName(data);
         
 
-        bussType = bussTypeRepository.saveAndFlush(bussType);
+        bussType = bussTypeRepository.save(bussType);
         return bussType;
     }
     public List<BussType> insertMultiBussType(List<Map<String, String>> data) {
@@ -995,7 +1085,7 @@ public class CommonUpdateService {
         }
 
         bussPoint.setFieldByName(data);
-        bussPointRepository.saveAndFlush(bussPoint);
+        bussPointRepository.save(bussPoint);
         return bussPoint;
     }
     public BussPoint insertBussPoint(Map<String, String> data) {
@@ -1009,9 +1099,9 @@ public class CommonUpdateService {
                     .forEach(entry -> locationData.put(entry.getKey().substring("location.".length()), entry.getValue()));
             bussPoint.setLocation(this.insertLocation(locationData));
         }
-        DATA_EXISTED.throwIfNotEmpty(bussPointRepository.findByLocationId(bussPoint.getLocationId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(bussPointRepository.findByLocationId(bussPoint.getLocationId()));
 
-        bussPoint = bussPointRepository.saveAndFlush(bussPoint);
+        bussPoint = bussPointRepository.save(bussPoint);
         return bussPoint;
     }
     public List<BussPoint> insertMultiBussPoint(List<Map<String, String>> data) {
@@ -1068,7 +1158,7 @@ public class CommonUpdateService {
         }
 
         trip.setFieldByName(data);
-        tripRepository.saveAndFlush(trip);
+        tripRepository.save(trip);
         return trip;
     }
     public Trip insertTrip(Map<String, String> data) {
@@ -1082,9 +1172,9 @@ public class CommonUpdateService {
                     .forEach(entry -> bussData.put(entry.getKey().substring("buss.".length()), entry.getValue()));
             trip.setBuss(this.insertBuss(bussData));
         }
-        DATA_EXISTED.throwIfNotEmpty(tripRepository.findByBussId(trip.getBussId()));
+        ErrorCode.DATA_EXISTED.throwIfNotEmpty(tripRepository.findByBussId(trip.getBussId()));
 
-        trip = tripRepository.saveAndFlush(trip);
+        trip = tripRepository.save(trip);
         return trip;
     }
     public List<Trip> insertMultiTrip(List<Map<String, String>> data) {

@@ -1,14 +1,14 @@
 package generator.ts.api.messages;
 
 import generator.abstracts.render.AbstractRender;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.utility.XeFileUtils;
+import util.constants.ErrorCode;
 import util.StringUtil;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 import static util.AppUtil.MESSAGE_PATH;
+import static util.FileUtil.readByLine;
 
 public class ApiMessagesTsRender extends AbstractRender<ApiMessagesTsModel> {
 
@@ -28,7 +28,7 @@ public class ApiMessagesTsRender extends AbstractRender<ApiMessagesTsModel> {
 
     @Override
     protected void handleModel(ApiMessagesTsModel model) {
-        XeFileUtils.readByLine(MESSAGE_PATH, message -> {
+        readByLine(MESSAGE_PATH, message -> {
             message = message.trim();
             String[] messageMap = message.split(":");
             if(messageMap.length > 1) {

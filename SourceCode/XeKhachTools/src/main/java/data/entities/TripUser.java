@@ -5,10 +5,10 @@ import data.models.Column;
 import data.models.MapColumn;
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.operation.data.enumeration.TripUserStatus;
+import util.constants.TripUserStatus;
 
 import static data.entities.abstracts.DataType.MONEY;
-import static net.timxekhach.operation.data.enumeration.TripUserStatus.PENDING;
+import static util.constants.TripUserStatus.PENDING;
 
 @Getter
 @Setter

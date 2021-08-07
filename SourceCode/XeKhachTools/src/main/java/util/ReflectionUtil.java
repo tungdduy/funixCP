@@ -1,6 +1,5 @@
 package util;
 
-import generator.abstracts.interfaces.SeparatorContent;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;

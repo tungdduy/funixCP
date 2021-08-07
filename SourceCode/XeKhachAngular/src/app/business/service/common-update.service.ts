@@ -9,8 +9,10 @@ import {StringUtil} from "../../framework/util/string.util";
 })
 export class CommonUpdateService {
   constructor(private http: HttpClient) {}
-  oneParamIdValue = (id, className) => !id ? '0' : id[StringUtil.classNameToIdName(className)];
-
+  oneParamIdValue = (id, className) => {
+    const idName = id ? id[StringUtil.classNameToIdName(className)] : "0";
+    return idName ? idName : "0";
+  }
   commonPath = (className) => {
     const result = Url.API_HOST + "/common-update/" + className;
     console.log(result);
@@ -38,13 +40,14 @@ export class CommonUpdateService {
 
     const mainIdName = StringUtil.classNameToIdName(className);
     const mainIdValue = this.oneParamIdValue(ids, className);
-
+    console.log("main ID: " + mainIdValue);
     const joiner = [];
     joiner.push(mainIdValue);
 
     const remainIdsSorted = Object.keys(ids).sort((a, b) => a.localeCompare(b))
                                           .filter(s => s !== mainIdName)
-                                          .map(keySorted => ids[keySorted]);
+                                          .map(keySorted => ids[keySorted])
+                                          .map(s => !s ? "0" : s);
     remainIdsSorted.forEach(s => joiner.push(s));
     return joiner.join("/");
   }

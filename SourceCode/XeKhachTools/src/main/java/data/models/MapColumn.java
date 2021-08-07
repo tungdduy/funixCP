@@ -19,7 +19,7 @@ public class MapColumn {
     @Getter @Setter
     public static class Core {
         String fieldName, mappedBy, fieldCapName;
-        Boolean isUnique = false, hasCountField = false;
+        Boolean isUnique = false;
         Set<Join> joins = new HashSet<>();
         MapTo mapTo;
         PrimaryKey primaryKey;
@@ -32,16 +32,10 @@ public class MapColumn {
         return this;
     }
 
-    public MapColumn count() {
-        core.hasCountField = true;
-        return this;
-    }
-
     public <E extends AbstractEntity> MapColumn(Class<E> entityClass) {
         core = new Core();
         core.setMapTo(new MapTo(entityClass));
     }
-
 
 
     @Getter @Setter

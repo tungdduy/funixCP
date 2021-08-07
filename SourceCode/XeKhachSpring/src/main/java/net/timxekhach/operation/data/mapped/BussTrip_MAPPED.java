@@ -1,24 +1,30 @@
 package net.timxekhach.operation.data.mapped;
 
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.Buss;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import java.util.Date;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.ArrayList;
-import org.apache.commons.lang3.time.DateUtils;
-import java.util.List;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
+import net.timxekhach.operation.data.entity.TripPoint;
 import org.apache.commons.lang3.math.NumberUtils;
+import net.timxekhach.operation.data.entity.Company;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import org.apache.commons.lang3.time.DateUtils;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussPoint;
-import net.timxekhach.operation.data.entity.TripPoint;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import javax.persistence.*;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
-import net.timxekhach.operation.data.entity.Buss;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(BussTrip_MAPPED.Pk.class)
@@ -76,8 +82,9 @@ public abstract class BussTrip_MAPPED extends XeEntity {
     }
 
     protected BussTrip_MAPPED(){}
-    protected BussTrip_MAPPED(Buss buss) {
+    protected BussTrip_MAPPED(Buss buss, Company company) {
         this.setBuss(buss);
+        this.setCompany(company);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -117,6 +124,30 @@ public abstract class BussTrip_MAPPED extends XeEntity {
         this.companyId = buss.getCompanyId();
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
+    }
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "companyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "companyId")
+    protected Company company;
+
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
+        }
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+        this.companyId = company.getCompanyId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
@@ -179,6 +210,7 @@ public abstract class BussTrip_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointLocationId;
     @Setter(AccessLevel.PRIVATE)

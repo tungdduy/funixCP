@@ -3,18 +3,16 @@ package generator.abstracts.render;
 import architect.urls.ApiMethod;
 import architect.urls.UrlNode;
 import com.sun.istack.internal.NotNull;
-import generator.builders.UrlNodeBuilder;
 import generator.abstracts.models.AbstractRestModel;
+import generator.builders.UrlNodeBuilder;
+import util.FileUtil;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static util.PredicateUtil.negate;
 import static util.StringUtil.toImportFormat;
 
 public abstract class AbstractRestRender<E extends AbstractRestModel> extends AbstractApiUrlRender<E> {
@@ -36,59 +34,34 @@ public abstract class AbstractRestRender<E extends AbstractRestModel> extends Ab
         buildBodyContent(model);
         buildImportContent(model);
         model.setPackagePath(buildPackagePath(urlNode));
-        model.setCapitalizeName(builder.buildCapitalizeName());
+        model.setCapName(builder.buildCapName());
         this.secondHandleModel(model);
     }
 
     protected abstract String buildPackagePath(UrlNode urlNode);
 
     private void buildImportContent(E model) {
-        List<String> importContents = new ArrayList<>();
-        String currentImportContent = model.getImportContent();
-        if(currentImportContent.isEmpty()) {
-            currentImportContent = initialImportContent(model.getUrlNode());
-        }
         String fetchingImportContent = fetchingImportContents.stream()
-                .filter(negate(currentImportContent::contains))
                 .filter(s -> !s.startsWith("import java.lang"))
                 .distinct()
                 .collect(joining("\n"));
-        importContents.add(currentImportContent);
-        if (!fetchingImportContent.isEmpty()) {
-            importContents.add(fetchingImportContent);
-        }
-        model.setImportContent(join("\n", importContents).trim());
+        model.separator("import").unique(fetchingImportContent);
     }
 
-    abstract protected String initialImportContent(UrlNode urlNode);
-
     private void buildBodyContent(E model) {
-        List<String> bodyContents = new ArrayList<>();
-        String currentBodyContent = model.getBodyContent();
-        if(!currentBodyContent.isEmpty()) {
-            bodyContents.add(currentBodyContent);
-        }
         List<ApiMethod> methodsToBuilder = filterMethodToBuilder(model);
         String newBodyContent = buildMethodContents(methodsToBuilder);
-        if(!newBodyContent.isEmpty()) {
-            bodyContents.add(newBodyContent);
-        }
-        model.setBodyContent("\t".concat(join("\n", bodyContents).trim()));
+        model.separator("body").append(newBodyContent);
     }
 
     @NotNull
     private List<ApiMethod> filterMethodToBuilder(E source) {
         try {
+
+            String sourceText = FileUtil.readAsString(source.buildRenderFilePath());
             Class<?> clazz = getBuilderClass(source.getUrlNode());
             return source.getUrlNode().getMethods().stream()
-                    .filter(method -> {
-                        for (Method clazzMethod : clazz.getMethods()) {
-                            if(clazzMethod.getName().equalsIgnoreCase(method.getBuilder().buildCamelName())){
-                                return false;
-                            }
-                        }
-                        return true;
-                    })
+                    .filter(method -> !sourceText.contains(method.getBuilder().buildCamelName()))
                     .collect(toList());
         } catch (Exception ex) {
             logger.debug("Rest class not exist. will create!");

@@ -30,6 +30,10 @@ export class XeLabelComponent implements OnInit {
   @Input() p: any;
   isParagraph: boolean;
 
+  @Input() iconPre: string;
+  @Input() iconAfter: string;
+  @Input() iconOnly: string;
+
   constructor() {
   }
 

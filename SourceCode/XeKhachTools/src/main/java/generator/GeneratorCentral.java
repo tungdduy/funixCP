@@ -1,8 +1,8 @@
 package generator;
 
-import net.timxekhach.utility.Xe;
-import generator.abstracts.render.AbstractRender;
 import generator.abstracts.interfaces.RenderGroup;
+import generator.abstracts.render.AbstractRender;
+import util.Xe;
 
 public class GeneratorCentral extends Xe {
 

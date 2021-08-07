@@ -1,18 +1,19 @@
 package generator.java.data.repository;
 
+import data.entities.abstracts.AbstractEntity;
 import generator.abstracts.render.AbstractEntityRender;
-import util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EntityRepositoryRender extends AbstractEntityRender<EntityRepositoryModel> {
 
-
     @Override
     protected void handleModel(EntityRepositoryModel model) {
+        updateFindByPks(model);
+    }
 
+    private void updateFindByPks(EntityRepositoryModel model) {
         List<String> ids = new ArrayList<>(model.getEntity().getPrimaryKeyIdNames());
         int size = ids.size();
         List<FindMethod> byPkMethods = new ArrayList<>();
@@ -27,7 +28,19 @@ public class EntityRepositoryRender extends AbstractEntityRender<EntityRepositor
                 }
             }
         }
-        model.setByPkMethods(byPkMethods);
+        model.setFindByPks(byPkMethods);
     }
 
+
+
+    @Override
+    public void runBeforeRender() {
+
+        this.getModelFiles().forEach(model -> {
+            List<CapCamel> whoCountMe = AbstractEntity.whoCountMe.get(model.getEntityCapName());
+            if (whoCountMe != null) {
+                model.getEntitiesCountMe().addAll(whoCountMe);
+            }
+        });
+    }
 }

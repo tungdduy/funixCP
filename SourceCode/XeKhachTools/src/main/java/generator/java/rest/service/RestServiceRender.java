@@ -4,7 +4,6 @@ import architect.urls.ApiMethod;
 import architect.urls.UrlNode;
 import generator.abstracts.render.AbstractRestRender;
 import lombok.RequiredArgsConstructor;
-import net.timxekhach.operation.response.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,16 +25,6 @@ public class RestServiceRender extends AbstractRestRender<RestServiceModel> {
     @Override
     protected String buildPackagePath(UrlNode urlNode) {
         return urlNode.getBuilder().buildServicePackagePath();
-    }
-
-    @Override
-    protected String initialImportContent(UrlNode urlNode) {
-        return join("\n", toImportFormat(
-                RequiredArgsConstructor.class.getName(),
-                Transactional.class.getName(),
-                Service.class.getName(),
-                ErrorCode.class.getName()
-        ));
     }
 
     @Override

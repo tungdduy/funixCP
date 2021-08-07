@@ -1,11 +1,14 @@
 import {environment} from "../../../environments/environment";
-import {XeRole} from "../../business/constant/xe.role";
 import {UrlConfig} from "./url.config";
+import {Role} from "../../business/xe.role";
 
 export const config = () => {
   return new UrlConfig();
 };
-const r = XeRole;
+export const uConfig = () => {
+  return new UrlConfig().setRoles([r.ROLE_USER]);
+};
+const r = Role;
 
 export const Url = {
   publicApi : [],
@@ -62,16 +65,16 @@ export const Url = {
     },
     ADMIN: {
       _self: config(),
-      MY_ACCOUNT: config(),
-      ALL_USER: config(),
-      MY_TRIP: config(),
-      COMPANY_MANAGER: config(),
-      CALLER_EMPLOYEE: config(),
-      BUSS_TYPE: config(),
-      BUSS: config(),
-      BUSS_EMPLOYEE: config(),
-      BUSS_STOP: config(),
-      TICKET: config(),
+      MY_ACCOUNT: config().setRoles([r.ROLE_SYS_ADMIN]),
+      ALL_USER: config().setRoles([r.ROLE_SYS_ADMIN]),
+      MY_TRIP: uConfig(),
+      COMPANY_MANAGER: config().setRoles([r.ROLE_SYS_ADMIN]),
+      CALLER_EMPLOYEE: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
+      BUSS: config().setRoles([r.ROLE_BUSS_STAFF]),
+      BUSS_EMPLOYEE: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      BUSS_STOP: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      TICKET: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
   }
 };

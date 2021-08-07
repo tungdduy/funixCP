@@ -1,18 +1,23 @@
 package net.timxekhach.operation.data.mapped;
 
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.data.entity.BussTrip;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
 import org.apache.commons.lang3.math.NumberUtils;
-import net.timxekhach.operation.data.entity.BussPoint;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.BussTrip;
 import javax.persistence.*;
-import lombok.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import net.timxekhach.operation.data.entity.BussPoint;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(TripPoint_MAPPED.Pk.class)
@@ -155,6 +160,7 @@ public abstract class TripPoint_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+
     @Setter(AccessLevel.PRIVATE)
     protected Long stopPointLocationId;
     @Setter(AccessLevel.PRIVATE)

@@ -2,7 +2,7 @@ package generator.java.security.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.security.constant.RoleEnum;
+import util.constants.RoleEnum;
 import util.StringUtil;
 
 import java.util.List;

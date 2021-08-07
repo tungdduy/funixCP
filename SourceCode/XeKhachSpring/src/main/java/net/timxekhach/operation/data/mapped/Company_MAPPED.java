@@ -1,19 +1,20 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.ArrayList;
-import javax.validation.constraints.*;
-import java.util.List;
-import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import java.util.Map;
-import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import javax.validation.constraints.*;
 import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Company_MAPPED.Pk.class)
@@ -52,19 +53,28 @@ public abstract class Company_MAPPED extends XeEntity {
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
 //====================================================================//
-    @OneToMany(
-        mappedBy = "company",
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    @JsonIgnore
-    protected List<Employee> employees = new ArrayList<>();
     public Integer getTotalEmployees() {
         return CommonUpdateService.getEmployeeRepository().countEmployeeIdByCompanyId(this.companyId);
     }
+    public Integer getTotalBusses() {
+        return CommonUpdateService.getBussRepository().countBussIdByCompanyId(this.companyId);
+    }
+    public Integer getTotalBussEmployees() {
+        return CommonUpdateService.getBussEmployeeRepository().countBussEmployeeIdByCompanyId(this.companyId);
+    }
+    public Integer getTotalCallers() {
+        return CommonUpdateService.getCallerRepository().countCallerIdByCompanyId(this.companyId);
+    }
+    public Integer getTotalTrips() {
+        return CommonUpdateService.getTripRepository().countTripIdByCompanyId(this.companyId);
+    }
+    public Integer getTotalBussTrips() {
+        return CommonUpdateService.getBussTripRepository().countBussTripIdByCompanyId(this.companyId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
 //====================================================================//
-//==================== END of MAP COLUMN ENTITY ======================//
-//====================================================================//
+
     @Size(max = 255)
     protected String companyDesc;
     @Size(max = 255)

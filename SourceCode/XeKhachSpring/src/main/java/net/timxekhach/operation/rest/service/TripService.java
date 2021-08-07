@@ -1,5 +1,10 @@
 package net.timxekhach.operation.rest.service;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import java.util.List;
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.BussPoint;
 import net.timxekhach.operation.data.entity.BussTrip;
@@ -13,7 +18,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.data.entity.SeatType;
+import net.timxekhach.operation.data.repository.TripRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -28,6 +35,7 @@ import java.util.Map;
 public class TripService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 	private final TripRepository tripRepository;
 	private final BussTripRepository bussTripRepository;
 	private final BussPointRepository bussPointRepository;
@@ -86,6 +94,7 @@ public class TripService {
 		}
 		return availableTrips;
 	}
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

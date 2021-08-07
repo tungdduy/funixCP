@@ -12,9 +12,12 @@ import java.util.List;
 @Getter @Setter
 public class SecurityConfigModel extends AbstractUrlModel {
 
-    private String urlAuthorizationSplitter = StringUtil.buildSeparator("AUTHORIZATION");
+    @Override
+    public void prepareSeparator() {
+        separator("beforeAuthorization");
+        separator("afterAuthorization");
+    }
     private List<Authority> authorities = new ArrayList<>();
-    private String contentBeforeAuthorization, contentAfterAuthorization;
 
     @Override
     public String buildRenderFilePath() {

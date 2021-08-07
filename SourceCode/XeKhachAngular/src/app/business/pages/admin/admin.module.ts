@@ -1,4 +1,5 @@
 import {MyAccountComponent} from "./my-account/my-account.component";
+import {AllUserComponent} from "./all-user/all-user.component";
 import {MyTripComponent} from "./my-trip/my-trip.component";
 import {CompanyManagerComponent} from "./company-manager/company-manager.component";
 import {CallerEmployeeComponent} from "./caller-employee/caller-employee.component";
@@ -31,7 +32,6 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
-import { AllUserComponent } from './all-user/all-user.component';
 
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
 
@@ -65,6 +65,7 @@ imports: [
   declarations: [
     AdminComponent,
     MyAccountComponent,
+    AllUserComponent,
     MyTripComponent,
     CompanyManagerComponent,
     CallerEmployeeComponent,
@@ -73,7 +74,6 @@ imports: [
     BussEmployeeComponent,
     BussStopComponent,
     TicketComponent,
-    AllUserComponent,
   ],
   exports: [
     AdminComponent

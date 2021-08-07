@@ -5,7 +5,12 @@ export interface TableColumn {
   hiddenClass?: 'hidden-phone' | 'hidden-tablet';
   type: 'role' | 'avatar' | 'string' | 'money' | 'link' | 'boldString' | 'avatarRole' | 'boldStringRole' | 'avatarString';
   field: EntityField;
+  subColumns?: TableColumn[];
   link?: string;
+  icon?: string;
+  iconOnly?: string;
+  iconPre?: string;
+  iconAfter?: string;
 }
 
 export interface ManualColumn {

@@ -11,23 +11,23 @@ import java.util.*;
 @Getter
 @Setter
 public class EntityRepositoryModel extends AbstractEntityModel {
-    private Set<String> importRequireLines;
-    @SuppressWarnings({"unused"})
-    public Set<String> getImportRequireLines() {
-        if(importRequireLines == null) {
-            importRequireLines = new HashSet<>(Arrays.asList(
-                    String.format("import net.timxekhach.operation.data.entity.%s;", this.entityCapName),
-                    String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName),
-                    "import org.springframework.data.jpa.repository.JpaRepository;",
-                    String.format("import %s;", "org.springframework.data.jpa.repository.JpaRepository"),
-                    String.format("import %s;", "org.springframework.stereotype.Repository"),
-                    String.format("import %s;", "java.util.List")
-            ));
-        }
-        return importRequireLines;
+
+    @Override
+    public void prepareSeparator() {
+        this.separator("import").unique(
+                String.format("import net.timxekhach.operation.data.entity.%s;", this.entityCapName),
+                String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName),
+                "import org.springframework.data.jpa.repository.JpaRepository;",
+                String.format("import %s;", "org.springframework.data.jpa.repository.JpaRepository"),
+                String.format("import %s;", "org.springframework.stereotype.Repository"),
+                String.format("import %s;", "java.util.List")
+        );
+
+        this.separator("body");
     }
 
-    private List<FindMethod> byPkMethods = new ArrayList<>();
+    private List<FindMethod> findByPks = new ArrayList<>();
+    private List<CapCamel> entitiesCountMe = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {
