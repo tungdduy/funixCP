@@ -21,7 +21,7 @@ public class UrlDeclaration {
                         .method("update-password").param("data", Map.class)
                 .create("trip")
                         .method("available-seats").type(List.class).param("data", Map.class)
-                        .method("available-trips").type(List.class)
+                        .method("available-trips").type(List.class).param("data", Map.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;

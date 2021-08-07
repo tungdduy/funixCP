@@ -23,8 +23,14 @@ public class TripApi {
 		return success(tripService.availableSeats(data));
 	}
 	@PostMapping("/available-trips")
-	public ResponseEntity<List> availableTrips () {
-		return success(tripService.availableTrips());
+	/**
+	 * Map contains:
+	 * departureDate : departure date in string
+	 * departurePoint : buss point id in string
+	 * destinationPoint : buss point id in string
+	 */
+	public ResponseEntity<List> availableTrips (@RequestBody Map<String, String> data) {
+		return success(tripService.availableTrips(data));
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
