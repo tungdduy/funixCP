@@ -12,11 +12,15 @@ xekhach:
     expirationTime: 432000000 # 5 days in milliseconds
     authorities: "authorities"
     httpMethodOption: "OPTIONS"
-    publicUrls: ["/user/login", "/user/list", "/user/register", "/user/**"]
+    publicUrls: ["/images/**", "/resource/**", "/common-update/**"]
     maximumNumberOfLoginAttempts: 5
     jwtIssuer: "TimXeKhach"
     jwtAudience: "TimXeKhachAdministration"
     allowedOrigins: ["http://localhost:4200"]
+    resourcePath: "${APPDATA}/xekhach/"
+    resourceUrl: "${xekhach.security.apiUrl}resource/"
+    apiUrl: "http://localhost:8081/"
+
 
 
 server:
@@ -38,10 +42,11 @@ spring:
     open-in-view: true
   mvc:
     throw-exception-if-no-handler-found: true
+    static-path-pattern: "/resource/**"
   web:
     resources:
-      add-mappings: false
+      static-locations:  file:/${xekhach.security.resourcePath}/
+
   freemarker:
     enabled: true
     check-template-location: false
-

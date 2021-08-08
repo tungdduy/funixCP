@@ -16,11 +16,7 @@ public class AdminApi {
     private final AdminService adminService;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-	@GetMapping("/list/{id}")
-	public ResponseEntity<Void> list (@PathVariable("id") Long id) {
-		adminService.list(id);
-		return success();
-	}
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

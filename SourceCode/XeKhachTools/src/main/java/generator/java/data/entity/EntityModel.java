@@ -13,16 +13,19 @@ import static generator.GeneratorSetup.API_OPERATION_DATA_ENTITY_ROOT;
 @SuppressWarnings("all") @Getter @Setter
 public class EntityModel extends AbstractEntityModel {
 
-    Set<String> importRequireLines = new HashSet<>(Arrays.asList(
-            "import lombok.Getter;",
-            "import lombok.Setter;",
-            "import javax.persistence.Entity;",
-            String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityClassName)
-    ));
+    @Override
+    public void prepareSeparator() {
+        separator("body");
+        separator("import").unique(
+                "import lombok.Getter;",
+                "import lombok.Setter;",
+                "import javax.persistence.Entity;",
+                String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName));
+    }
 
     @Override
     public String buildRenderFilePath() {
-        return API_OPERATION_DATA_ENTITY_ROOT + this.entityClassName + ".java";
+        return API_OPERATION_DATA_ENTITY_ROOT + this.entityCapName + ".java";
     }
 
 }

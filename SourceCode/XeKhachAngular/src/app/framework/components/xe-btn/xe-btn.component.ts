@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {AfterViewInit, Component, HostBinding, Input} from '@angular/core';
 import {XeLbl} from "../../../business/i18n";
 import {Message} from "../../model/message.model";
 
@@ -11,16 +11,36 @@ export class XeBtnComponent implements AfterViewInit {
   @Input() lbl;
 
   @Input() disabled: boolean = false;
+  @HostBinding('style.pointer-events') get pEvents(): string {
+    if (this.disabled) {
+      return 'none';
+    }
+    return 'auto';
+  }
+
   @Input() icon: string;
   private _label: string;
+
+  @Input("state") _state: 'success' | 'primary' | 'secondary' | 'warning';
 
   @Input() center?;
   @Input() left?;
   @Input() right?;
 
-  @Input() type: 'save' | 'submit' | 'cancel' | 'edit' | 'close';
+  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default';
+
+  @Input() hideText;
+  get showText() {
+    return this.hideText === undefined;
+  }
+
 
   _types = {
+    default: {
+      state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
     save: {
       icon: 'save',
       state: 'primary',
@@ -56,6 +76,48 @@ export class XeBtnComponent implements AfterViewInit {
       size: 'sm',
       type: 'button'
     },
+    add: {
+      icon: 'plus',
+      label: 'add',
+      state: 'primary',
+      size: 'sm',
+      type: 'submit'
+    },
+    ok: {
+      icon: 'thumbs-up',
+      label: 'ok',
+      state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
+    selectFromList: {
+      icon: 'search-plus',
+      label: 'select-from-list',
+      state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
+    back: {
+      icon: 'arrow-circle-left',
+      label: 'back',
+      state: 'secondary',
+      size: 'sm',
+      type: 'button'
+    },
+    delete: {
+      icon: 'trash',
+      label: 'delete',
+      state: 'secondary',
+      size: 'sm',
+      type: 'button'
+    },
+    dangerDelete: {
+      icon: 'trash',
+      label: 'delete',
+      state: 'danger',
+      size: 'sm',
+      type: 'button'
+    },
     userEdit: {
       icon: 'user-edit',
       label: 'edit',
@@ -72,8 +134,6 @@ export class XeBtnComponent implements AfterViewInit {
 
   constructor() {
   }
-
-  private _state;
 
   get state() {
     return this._state;
@@ -99,16 +159,19 @@ export class XeBtnComponent implements AfterViewInit {
   }
 
   btnType;
+  btn;
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      const btnType = this._types[this.type];
-      this._state = btnType.state;
-      const size = btnType.size;
+      this.btn = this._types[this.type];
+      const size = this.btn.size;
       this._btnSize = size ? 'btn-' + size : '';
-      this.lbl = this.lbl ? this.lbl : btnType.label;
-      this.icon = this.icon ? this.icon : btnType.icon;
-      this.btnType = btnType.type;
+      this.lbl = this.lbl ? this.lbl : this.btn.label;
+      this.icon = this.icon ? this.icon : this.btn.icon;
+      this.btnType = this.btn.type;
+      if (this.state === undefined) {
+        this._state = this.btn.state;
+      }
     }, 0);
   }
 }

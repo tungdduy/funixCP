@@ -9,6 +9,17 @@ import {Message} from "../../model/message.model";
 })
 export class XeLabelComponent implements OnInit {
 
+  @Input() type: 'link' | 'text' = 'text';
+  _types = {
+    link: {
+      css: 'd-link'
+    },
+    text: {
+      css: ''
+    }
+  };
+
+  @Input() prepend = '';
 
   @Input("key") key;
   textValue: string;
@@ -18,6 +29,10 @@ export class XeLabelComponent implements OnInit {
 
   @Input() p: any;
   isParagraph: boolean;
+
+  @Input() iconPre: string;
+  @Input() iconAfter: string;
+  @Input() iconOnly: string;
 
   constructor() {
   }
@@ -34,8 +49,6 @@ export class XeLabelComponent implements OnInit {
     this._msg = val;
     if (!!val) {
       this.textValue = XeLbl(this._msg.code);
-      console.log(val);
-      console.log("set text value = " + this.textValue + " | code = " + this._msg.code);
       setTimeout(() => {
         this._msg = undefined;
         this.textValue = undefined;
@@ -44,7 +57,6 @@ export class XeLabelComponent implements OnInit {
   }
 
   setMessage(val: Message) {
-    console.log('setMessage');
     this.msg = val;
   }
 

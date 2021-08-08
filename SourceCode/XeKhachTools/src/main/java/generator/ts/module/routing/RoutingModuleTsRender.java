@@ -23,7 +23,7 @@ public class RoutingModuleTsRender extends AbstractAppUrlRender<RoutingModuleTsM
         int level = model.getUrlNode().getBuilder().getLevel();
         model.setPathToFramework(AppUtil.getPathToFramework(level));
         model.setUrlKeyChain(model.getUrlNode().getBuilder().buildKeyChain());
-        model.setCapitalizeName(model.getUrlNode().getBuilder().buildCapitalizeName());
+        model.setCapName(model.getUrlNode().getBuilder().buildCapName());
         model.setUrl(model.getUrlNode().getUrl());
 
         List<RoutingModuleTsModel.Component> components = new ArrayList<>();

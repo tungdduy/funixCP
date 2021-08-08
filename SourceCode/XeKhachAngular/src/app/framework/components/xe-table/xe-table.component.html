@@ -1,0 +1,150 @@
+<ng-template #basicFormDirect let-basicFormDialog="dialogRef">
+  <div class="basic-form-dialog">
+    <xe-basic-form [dialog]="basicFormDialog"
+                   [onDelete]="deleteEntitySuccess"
+                   [onSuccess]="submitEntitySuccess"
+                   [formData]="tableData.formData">
+      <ng-content select="[belowBasicFormHeader]"></ng-content>
+    </xe-basic-form>
+  </div>
+</ng-template>
+<!-- ########### END OF BASIC FORM ##############-->
+
+<ng-template #deleteDirect let-deleteDialog="dialogRef">
+  <div class="basic-form-dialog text-center">
+    <nb-card>
+      <nb-card-header>
+        <lbl key="ALERT_DELETE_DATA_NO_RESTORE"></lbl>
+        :
+      </nb-card-header>
+      <nb-card-body>
+        <h3><span class="text-danger">{{selection.selected.length}} <lbl key="RECORD_LOWER"></lbl></span>  <lbl class="pl-2" key="IS_SELECTED">!</lbl></h3>
+        <p>
+          <lbl key="WILL_BE_DELETED_ABSOLUTELY_ARE_YOU_SURE"></lbl>
+        </p>
+      </nb-card-body>
+      <nb-card-footer class="text-center">
+        <xe-btn type="back" (click)="deleteDialog.close()"></xe-btn>
+        <xe-btn type="ok" (click)="deleteDialog.close(); deleteSelected()"></xe-btn>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</ng-template>
+<!-- ########### END OF DELETE DIALOG ##############-->
+
+<nb-card>
+  <nb-card-body>
+    <ng-content select="[tableHeader]"></ng-content>
+    <mat-form-field appearance="legacy">
+      <mat-label>Gõ để tìm...</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="gõ..." #input>
+    </mat-form-field>
+    <div class="float-right">
+      <ng-content select="[top-right-buttons]"></ng-content>
+      <span *ngIf="!tableData.formData.readonly">
+        <xe-btn type="add" (click)="newEntityDialog()" hideText></xe-btn>
+        <xe-btn type="dangerDelete" [disabled]="!hasRowSelected" (click)="openDeleteDialog()" hideText></xe-btn>
+      </span>
+    </div>
+    <!-- ########### END OF TABLE HEADER ##############-->
+
+    <table mat-table matSort [dataSource]="tableSource">
+
+      <!-- ------------- BASIC columns ------------------->
+      <ng-container *ngFor="let tableColumn of tableData.table.basicColumns" [matColumnDef]="tableColumn.field.name">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef class="{{tableColumn.hiddenClass}}">
+          <lbl [iconPre]="tableColumn.iconPre"
+               [iconAfter]="tableColumn.iconAfter"
+               [iconOnly]="tableColumn.iconOnly"
+               [key]="tableColumn.field.name">
+          </lbl>
+
+        </th>
+        <td mat-cell *matCellDef="let entity" (click)="editEntityDialog(entity)">
+          <ng-container
+            *ngTemplateOutlet="getColumn(tableColumn.type); context:{tableColumn: tableColumn, entity:entity}"></ng-container>
+          <ng-container *ngFor="let subColumn of tableColumn.subColumns">
+            <ng-container
+              *ngTemplateOutlet="getColumn(subColumn.type); context:{tableColumn: subColumn, entity:entity}"></ng-container>
+          </ng-container>
+
+        </td>
+      </ng-container>
+
+      <!-- ------------- MANUAL columns ------------------->
+      <ng-container *ngIf="tableData.table.manualColumns">
+        <ng-container *ngFor="let manualColumn of tableData.table.manualColumns" [matColumnDef]="manualColumn.field.name">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>
+            <lbl [key]="manualColumn.field.name"></lbl>
+          </th>
+          <td mat-cell *matCellDef="let entity">
+            <ng-container
+              *ngTemplateOutlet="manualColumn.template(); context:{manualColumn: manualColumn, entity: entity}"></ng-container>
+          </td>
+
+        </ng-container>
+      </ng-container>
+
+      <!-- ------------- SELECT column ------------------->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <nb-checkbox *ngIf="tableSource?.data?.length > 0" (change)="$event ? toggleSelectAll() : null"
+                       [checked]="selection.hasValue() && isAllSelected()"
+                       [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </nb-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let entity">
+          <nb-checkbox (click)="$event.stopPropagation()"
+                       (change)="$event ? selection.toggle(entity) : null"
+                       [checked]="selection.isSelected(entity)">
+          </nb-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Row shown when there is no matching data. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">
+          <lbl key="NOT_FOUND_DATA"></lbl>
+          ... {{input.value}}</td>
+      </tr>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <div class="d-block">
+      <mat-paginator [pageSizeOptions]="[5, 10, 20, 50]"
+                     showFirstLastButtons>
+      </mat-paginator>
+    </div>
+
+    <div class="d-block">
+      <ng-content select="[tableFooter]"></ng-content>
+    </div>
+
+
+  </nb-card-body>
+</nb-card>
+
+
+<ng-template #string let-tableColumn="tableColumn" let-entity="entity">
+  <span class="{{asTableColumn(tableColumn).field.css}}"> {{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</span>
+</ng-template>
+
+<ng-template #avatarString let-tableColumn="tableColumn" let-entity="entity">
+  <img class="thumbnail-small" [src]="entityUtil.getProfileImageUrl(entity, asTableColumn(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)">
+  {{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}
+</ng-template>
+
+<ng-template #boldString let-tableColumn="tableColumn" let-entity="entity">
+  <b>{{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</b>
+</ng-template>
+
+<ng-template #avatar let-tableColumn="tableColumn" let-entity="entity">
+  <img class="thumbnail-small" [src]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)">
+</ng-template>
+
+<ng-template #boldStringRole let-tableColumn="tableColumn" let-entity="entity">
+  <b class="pr-1">{{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</b>
+  <nb-icon class="role-icon" status="{{icon.status}}" *ngFor="let icon of getRoleIcons(entityUtil.getFieldOwnerEntity(entity, tableColumn.field)['role'])"
+           icon="{{icon.icon}}" pack="fa"></nb-icon>
+</ng-template>

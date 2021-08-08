@@ -2,12 +2,11 @@ package generator.java.data.mapped;
 
 import data.entities.abstracts.AbstractEntity;
 import data.models.Column;
+import data.models.CountMethod;
 import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.abstracts.render.AbstractEntityRender;
-import net.timxekhach.operation.response.ErrorCode;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import util.ObjectUtil;
@@ -20,11 +19,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static util.StringUtil.toCamel;
+import static util.StringUtil.toCapitalizeEachWord;
 
 @SuppressWarnings("unused")
 public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> {
 
     public static final String NEW_ARRAY_LIST = " = new ArrayList<>()";
+
+    @Override
+    public void runBeforeRender() {
+    }
 
     @Override
     protected void handleModel(EntityMappedModel model) {
@@ -36,6 +40,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
 
     private void updateFieldsAbleAssignByString(EntityMappedModel model) {
         model.setFieldsAbleAssignByString(model.columns.stream()
+                .filter(Column.Core::getIsManualUpdatable)
                 .filter(column -> BeanUtils.isSimpleValueType(column.getDataType()))
                 .collect(Collectors.toList()));
     }
@@ -43,12 +48,12 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
     private void updateImportClass(EntityMappedModel model) {
         if (anyNullMappedBy(model)
                 || !model.pkMaps.isEmpty()) {
-            model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+            model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIdentityInfo",
+                    "com.fasterxml.jackson.annotation.ObjectIdGenerators");
         }
 
         model.getEntity().getPrimaryKeyEntities()
-                .forEach(entity -> model.getImports()
-                        .add(entity.getFullOperationClassName()));
+                .forEach(entity -> model.filterThenAddImport(entity.getFullOperationClassName()));
 
         model.getColumns().forEach(columnCore -> {
             if (columnCore.getDefaultValue() == null) {
@@ -62,7 +67,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             }
             updateJavaxValidationImports(model, columnCore);
             if (columnCore.getJsonIgnore()) {
-               model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+                model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
             }
             model.filterThenAddImport(columnCore.getDataType().getName());
 
@@ -71,14 +76,23 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             if (mapColumn.getMappedBy() != null) {
                 model.filterThenAddImport(List.class.getName());
                 model.filterThenAddImport(ArrayList.class.getName());
+                if (mapColumn.getIsUnique()){
+                    model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIdentityInfo",
+                            "com.fasterxml.jackson.annotation.ObjectIdGenerators");
+                } else {
+                    model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
+                }
             }
-
             model.filterThenAddImport(mapColumn.getMapTo().getEntity().getFullOperationClassName());
         });
 
         if (model.getFieldsAbleAssignByString().stream()
                 .anyMatch(column -> column.getDataType().isAssignableFrom(java.util.Date.class))){
             model.filterThenAddImport(DateUtils.class.getName());
+        }
+
+        if (!model.getCountMethods().isEmpty() || !model.pkMaps.isEmpty()){
+            model.filterThenAddImport("net.timxekhach.operation.rest.service.CommonUpdateService");
         }
     }
 
@@ -135,7 +149,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         });
     }
 
-    private void fetchAllIds(AbstractEntity pkEntity, Function<String, Boolean> consumer) {
+    public static void fetchAllIds(AbstractEntity pkEntity, Function<String, Boolean> consumer) {
         if (!consumer.apply(pkEntity.idName())){
            return;
         }
@@ -152,6 +166,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
                     MapColumn mapColumn = (MapColumn) colObject;
                     MapColumn.Core mapColumnCore = mapColumn.getCore();
                     mapColumnCore.setFieldName(fieldName);
+                    mapColumnCore.setFieldCapName(toCapitalizeEachWord(fieldName));
                     updateMapCore(mapColumnCore, model);
                     model.getMapColumns().add(mapColumnCore);
                 } else if (colObject instanceof Column) {
@@ -160,6 +175,11 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
                     columnCore.setFieldName(fieldName);
                     updateColumnCoreInitialString(columnCore, model);
                     model.getColumns().add(columnCore);
+                } else if (colObject instanceof CountMethod) {
+                    CountMethod counter = (CountMethod) colObject;
+                    counter.setFieldCamelName(fieldName);
+                    counter.setFieldCapName(toCapitalizeEachWord(fieldName));
+                    model.getCountMethods().add(counter);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -167,27 +187,22 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         });
     }
 
+
     private void updateMapCore(MapColumn.Core mapCore, EntityMappedModel model) {
         AbstractEntity entityMapTo = mapCore.getMapTo().getEntity();
         AbstractEntity thisEntity = model.getEntity();
 
-        MutableBoolean entityMapToHasPkToThis = new MutableBoolean(false);
-
-        fetchAllIds(entityMapTo, referenceIdName -> {
-            if(referenceIdName.equals(thisEntity.idName())
-             && !thisEntity.idName().equals(entityMapTo.idName()) ) {
-                entityMapToHasPkToThis.setValue(true);
-                return false;
-            }
-            String thisName = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
-            Join join = new Join(thisName, referenceIdName);
-            mapCore.getJoins().add(join);
-            return true;
-        });
-
-        if (entityMapToHasPkToThis.isTrue()) {
+        if (entityMapTo.getPrimaryKeyIdNames()
+                .stream()
+                .anyMatch(id -> id.equalsIgnoreCase(thisEntity.idName()))){
             mapCore.setMappedBy(toCamel(thisEntity.getClass().getSimpleName()));
         } else {
+            fetchAllIds(entityMapTo, referenceIdName -> {
+                String thisName = toCamel(String.format("%s-%s", mapCore.getFieldName(), referenceIdName));
+                Join join = new Join(thisName, referenceIdName);
+                mapCore.getJoins().add(join);
+                return true;
+            });
             mapCore.getJoins().forEach(join -> {
                 throwErrorIfColumnNameExisted(model, join);
 
@@ -224,7 +239,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             core.setInitialString(String.format(" = %b", core.getDefaultValue()));
         } else if (core.getDefaultValue() instanceof Enum<?>) {
             model.filterThenAddImport(core.getDefaultValue().getClass().getName());
-            String className = core.getDefaultValue().getClass().getName();
+            String className = core.getDefaultValue().getClass().getSimpleName();
             String name = ((Enum<?>) core.getDefaultValue()).name();
             core.setInitialString(String.format(" = %s.%s", className, name));
         }

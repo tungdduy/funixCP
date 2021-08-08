@@ -1,6 +1,6 @@
 package generator.abstracts.interfaces;
 
-import net.timxekhach.security.constant.RoleEnum;
+import util.constants.RoleEnum;
 
 import java.util.List;
 

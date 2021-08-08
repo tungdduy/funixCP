@@ -18,7 +18,7 @@ public class MapColumn {
 
     @Getter @Setter
     public static class Core {
-        String fieldName, mappedBy;
+        String fieldName, mappedBy, fieldCapName;
         Boolean isUnique = false;
         Set<Join> joins = new HashSet<>();
         MapTo mapTo;
@@ -36,6 +36,7 @@ public class MapColumn {
         core = new Core();
         core.setMapTo(new MapTo(entityClass));
     }
+
 
     @Getter @Setter
     public static class MapTo {

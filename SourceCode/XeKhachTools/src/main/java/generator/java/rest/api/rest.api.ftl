@@ -1,16 +1,12 @@
 package ${root.packagePath};
-${root.importSeparator}
-${root.importContent}
-${root.importSeparator}
+${root.separators.import.all}
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path={"/${root.url}"})
-public class ${root.capitalizeName}Api {
+public class ${root.capName}Api {
 
-    private final ${root.capitalizeName}Service ${root.camelName}Service;
+    private final ${root.capName}Service ${root.camelName}Service;
 
-${root.bodySeparator}
-${root.bodyContent}
-${root.bodySeparator}
+${root.separators.body.all}
 
 }

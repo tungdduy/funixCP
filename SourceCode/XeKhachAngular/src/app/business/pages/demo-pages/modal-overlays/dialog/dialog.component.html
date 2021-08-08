@@ -58,12 +58,12 @@
   </div>
 </div>
 
-<ng-template #dialog let-data let-ref="dialogRef">
+<ng-template #dialog let-data let-dialog="dialogRef">
   <nb-card>
     <nb-card-header>Template Dialog</nb-card-header>
     <nb-card-body>{{ data }}</nb-card-body>
     <nb-card-footer>
-      <button nbButton matRipple (click)="ref.close()">Close Dialog</button>
+      <button nbButton matRipple (click)="dialog.close()">Close Dialog</button>
     </nb-card-footer>
   </nb-card>
 </ng-template>

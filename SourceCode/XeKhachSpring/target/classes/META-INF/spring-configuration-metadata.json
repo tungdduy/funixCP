@@ -4,6 +4,11 @@
       "name": "xekhach.security",
       "type": "net.timxekhach.security.model.SecurityResource",
       "sourceType": "net.timxekhach.security.model.SecurityResource"
+    },
+    {
+      "name": "xekhach.security.-instance",
+      "type": "net.timxekhach.security.model.SecurityResource",
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
     }
   ],
   "properties": [
@@ -20,6 +25,11 @@
     {
       "name": "xekhach.security.allowed-origins",
       "type": "java.util.List<java.lang.String>",
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
+    },
+    {
+      "name": "xekhach.security.api-url",
+      "type": "java.lang.String",
       "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
@@ -68,17 +78,22 @@
       "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
+      "name": "xekhach.security.resource-path",
+      "type": "java.lang.String",
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
+    },
+    {
+      "name": "xekhach.security.resource-url",
+      "type": "java.lang.String",
+      "sourceType": "net.timxekhach.security.model.SecurityResource"
+    },
+    {
       "name": "xekhach.security.token-header",
       "type": "java.lang.String",
       "sourceType": "net.timxekhach.security.model.SecurityResource"
     },
     {
       "name": "xekhach.security.token-prefix",
-      "type": "java.lang.String",
-      "sourceType": "net.timxekhach.security.model.SecurityResource"
-    },
-    {
-      "name": "xekhach.security.user-folder",
       "type": "java.lang.String",
       "sourceType": "net.timxekhach.security.model.SecurityResource"
     }

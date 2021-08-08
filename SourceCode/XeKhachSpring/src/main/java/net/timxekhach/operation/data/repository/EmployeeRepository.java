@@ -1,23 +1,37 @@
 package net.timxekhach.operation.data.repository;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
+
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.Employee_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import net.timxekhach.operation.data.entity.Employee;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Employee_MAPPED.Pk> {
+
+    void deleteByEmployeeId(Long id);
+    void deleteAllByEmployeeIdIn(List<Long> ids);
+    Employee findByEmployeeId(Long id);
+    Integer countEmployeeIdByCompanyId(Long company);
     @SuppressWarnings("unused")
-    default void updateEmployee(Map<String, String> data) {
-        Employee employee = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(Employee.pk(data)));
-        employee.setFieldByName(data);
-        this.save(employee);
-    }
+    void deleteByCompanyId(Long companyId);
+    @SuppressWarnings("unused")
+    List<Employee> findByCompanyId(Long companyId);
+    @SuppressWarnings("unused")
+    void deleteByCompanyIdAndUserId(Long companyId, Long userId);
+    @SuppressWarnings("unused")
+    List<Employee> findByCompanyIdAndUserId(Long companyId, Long userId);
+    @SuppressWarnings("unused")
+    void deleteByUserId(Long userId);
+    @SuppressWarnings("unused")
+    List<Employee> findByUserId(Long userId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

@@ -1,0 +1,32 @@
+table {
+  width: 100%;
+}
+
+@media (max-width: 599px) {
+  .hidden-phone {
+    display: none;
+  }
+}
+
+.basic-form-dialog {
+  width: 500px !important;
+  max-width: 90vw !important;
+  max-height: 100vh !important;
+  display: block !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+}
+
+.mat-column-select {
+  overflow: initial;
+}
+
+nb-layout { .scrollable-container { overflow-y: scroll !important; } }
+
+.role-icon {
+  border: 1px solid rgb(208 208 208);
+  padding: 4px;
+  display: inline;
+  border-radius: 13px;
+  font-size: small;
+}

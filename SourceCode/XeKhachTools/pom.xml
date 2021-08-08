@@ -10,13 +10,7 @@
     <description>Convenient way to book a buss</description>
 
     <dependencies>
-        <dependency>
-            <groupId>net.timxekhach</groupId>
-            <artifactId>XeKhachSpring</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/XeKhachSpring.jar</systemPath>
-        </dependency>
+
 
 
         <dependency>

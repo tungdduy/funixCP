@@ -1,23 +1,28 @@
 package net.timxekhach.operation.data.repository;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
+
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.SeatType_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import net.timxekhach.operation.data.entity.SeatType;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
 public interface SeatTypeRepository extends JpaRepository<SeatType, SeatType_MAPPED.Pk> {
+
+    void deleteBySeatTypeId(Long id);
+    void deleteAllBySeatTypeIdIn(List<Long> ids);
+    SeatType findBySeatTypeId(Long id);
     @SuppressWarnings("unused")
-    default void updateSeatType(Map<String, String> data) {
-        SeatType seatType = ErrorCode.DATA_NOT_FOUND.throwIfNotPresent(this.findById(SeatType.pk(data)));
-        seatType.setFieldByName(data);
-        this.save(seatType);
-    }
+    void deleteByBussTypeId(Long bussTypeId);
+    @SuppressWarnings("unused")
+    List<SeatType> findByBussTypeId(Long bussTypeId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

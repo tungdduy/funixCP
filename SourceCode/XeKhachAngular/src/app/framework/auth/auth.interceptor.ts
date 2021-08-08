@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
   private needHandle = (request: HttpRequest<any>) => !Url.isPublicApi(request.url);
 
   private static handle(request: HttpRequest<any>): HttpRequest<any> {
-    const token = AuthUtil.token;
+    const token = AuthUtil.instance.token;
     return request.clone({setHeaders: {Authorization: `${AuthConfig.tokenPrefix}${token}`}});
   }
 }

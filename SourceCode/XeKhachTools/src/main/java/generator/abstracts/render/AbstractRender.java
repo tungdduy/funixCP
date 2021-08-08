@@ -1,8 +1,8 @@
 package generator.abstracts.render;
 
-import net.timxekhach.utility.Xe;
 import freemarker.template.Template;
 import generator.abstracts.interfaces.RenderGroup;
+import generator.abstracts.interfaces.SeparatorContent;
 import generator.abstracts.models.AbstractModel;
 import generator.java.rest.api.RestApiRender;
 import generator.java.rest.service.RestServiceRender;
@@ -10,16 +10,20 @@ import generator.java.security.config.SecurityConfigRender;
 import generator.ts.api.messages.ApiMessagesTsRender;
 import generator.ts.url.declare.UrlDeclareTsRender;
 import lombok.Getter;
-import net.timxekhach.utility.XeFileUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import util.StringUtil;
+import util.Xe;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static generator.GeneratorSetup.*;
-import static util.ObjectUtil.newInstanceFromClass;
+import static util.FileUtil.fetchAllPossibleFiles;
+import static util.ReflectionUtil.newInstanceFromClass;
 
 public abstract class AbstractRender<E extends AbstractModel> extends Xe {
 
@@ -76,8 +80,8 @@ public abstract class AbstractRender<E extends AbstractModel> extends Xe {
 
     public void executeRenders() {
         this.runBeforeRender();
-        logger.info("execute Render");
         this.getModelFiles().forEach(root -> {
+            root.updateSeparatorContent();
             Map<String, E> input = new HashMap<>();
             input.put("root", root);
             if (isOverrideExistingFile()) {
@@ -139,7 +143,7 @@ public abstract class AbstractRender<E extends AbstractModel> extends Xe {
 
     @SuppressWarnings("rawtypes")
     protected static List<? extends AbstractRender> batchNewAllChildrenRenders(Class<? extends AbstractRender> parentClass) {
-        return XeFileUtils.fetchAllPossibleFiles(TOOL_GENERATOR_ROOT,
+        return fetchAllPossibleFiles(TOOL_GENERATOR_ROOT,
                 getChildrenRender(parentClass),
                 newInstanceFromClass());
     }

@@ -18,6 +18,7 @@ public class XeMailUtils {
         mail.setToEmail(user.getEmail());
         mail.getParams().put("username", user.getPossibleLoginName());
         mail.getParams().put("fullName", user.getFullName());
+        mail.getParams().put("password", user.getPassword());
         mail.send();
     }
 

@@ -1,1 +1,64 @@
-CompanyManager worked!
+<ng-template #navigator>
+  <div class="navigator">
+
+    <xe-btn icon="building" (click)="screen.company()" hideText></xe-btn>
+
+    <span *ngIf="currentCompany">
+    <lbl class="text-primary" prepend="/ ">{{currentCompany.companyName}}</lbl>
+    <lbl prepend="/ "
+         key="EMPLOYEE_LIST"
+         (click)="screen.employees()"
+         [type]="screen.isUserSelection() ? 'link' : 'text'"></lbl>
+  </span>
+
+
+    <lbl *ngIf="screen.isUserSelection()" prepend="/ "
+         key="ADD_FROM_LIST"></lbl>
+  </div>
+</ng-template>
+
+<!-- ########### END OF NAVIGATOR ##############-->
+
+<xe-table *ngIf="screen.isCompany()" [tableData]="companyTable">
+  <ng-template #totalEmployees let-company="entity">
+    <div class="wrapper-digit" (click)="openEmployees(company)">
+      <span class="employee-no">{{company['totalEmployees']}}</span>
+      <nb-icon icon="users" pack="fa"></nb-icon>
+    </div>
+  </ng-template>
+</xe-table>
+
+<!-- ########### END OF COMPANY ##############-->
+<xe-user-table *ngIf="screen.isEmployees()"
+               [userTable]="employeeTable"
+               [user]="user">
+  <div tableHeader>
+    <ng-container *ngTemplateOutlet="navigator"></ng-container>
+  </div>
+
+  <div top-right-buttons class="d-inline-block">
+    <xe-btn type="back" hideText (click)="screen.company()"></xe-btn>
+    <xe-btn type="selectFromList" hideText (click)="screen.userSelection()"></xe-btn>
+  </div>
+</xe-user-table>
+
+<!-- ########### END OF EMPLOYEES ##############-->
+
+<xe-table *ngIf="screen.isUserSelection()" [tableData]="userTable">
+  <div tableHeader>
+    <ng-container *ngTemplateOutlet="navigator"></ng-container>
+  </div>
+
+  <div top-right-buttons class="d-inline-block">
+    <xe-btn type="back" hideText (click)="screen.employees()"></xe-btn>
+    <xe-btn [disabled]="userTable.formData.share.selection.isEmpty()"
+            icon="user-plus" lbl="SELECT"
+            (click)="addSelectedUsersToCompany()"></xe-btn>
+  </div>
+
+
+</xe-table>
+<!-- ########### END OF USER SELECTION ##############-->
+
+
+

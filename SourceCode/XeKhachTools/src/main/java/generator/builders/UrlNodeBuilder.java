@@ -18,7 +18,7 @@ public class UrlNodeBuilder {
         this.urlNode = urlNode;
     }
 
-    public String buildCapitalizeName() {
+    public String buildCapName() {
         return StringUtil.toCapitalizeEachWord(this.urlNode.getUrl());
     }
 
@@ -39,11 +39,11 @@ public class UrlNodeBuilder {
 //    }
 
     public String buildFullControllerClassName() {
-        return StringUtil.joinByDot(this.buildControllerPackagePath(), this.buildCapitalizeName() + "Api");
+        return StringUtil.joinByDot(this.buildControllerPackagePath(), this.buildCapName() + "Api");
     }
 
     public String buildFullServiceClassName() {
-        return StringUtil.joinByDot(this.buildServicePackagePath(), this.buildCapitalizeName() + "Service");
+        return StringUtil.joinByDot(this.buildServicePackagePath(), this.buildCapName() + "Service");
     }
 
     public String buildServicePackagePath() {

@@ -1,7 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
-import {UrlConfig} from "../../framework/url/url.config";
-import {ObjectUtil} from "../../framework/util/object.util";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +17,7 @@ export class XeRouter {
   }
 
   public static navigate(url: any): void {
+    console.log("navigate...");
     if (typeof url === "string") {
       XeRouter.go(url);
     } else if (url.hasOwnProperty("_self")) {

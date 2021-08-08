@@ -2,7 +2,7 @@ package generator.java.security.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.security.constant.RoleEnum;
+import util.constants.RoleEnum;
 import util.StringUtil;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class Authority {
     private final String url, authorities;
 
     public Authority(String url, List<RoleEnum> roles) {
-        this.url = url;
+        this.url = "/" + url + "/**";
         if(roles.isEmpty()) {
             authorities = ".permitAll()";
         } else {

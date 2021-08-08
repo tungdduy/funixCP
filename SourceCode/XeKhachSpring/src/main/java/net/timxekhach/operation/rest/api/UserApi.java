@@ -1,21 +1,21 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.RequiredArgsConstructor;
+
 import net.timxekhach.operation.data.entity.Buss;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
+import org.springframework.web.multipart.MultipartFile;
 import net.timxekhach.operation.data.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.UserService;
-import static net.timxekhach.utility.XeResponseUtils.success;
-import static org.springframework.http.HttpStatus.OK;
-
-import org.springframework.http.ResponseEntity;
-
-import java.io.IOException;
-import java.util.Map;
 import net.timxekhach.operation.data.entity.User;
-import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
+import static org.springframework.http.HttpStatus.OK;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import static net.timxekhach.utility.XeResponseUtils.success;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
+import java.io.IOException;
+import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +25,7 @@ public class UserApi {
     private final UserService userService;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 	@PostMapping("/login")
 	public ResponseEntity<User> login (@RequestBody Map<String, String> info) {
 		return userService.login(info);
@@ -65,17 +66,12 @@ public class UserApi {
 		return success();
 	}
 
-	@PostMapping("/update-user")
-	public ResponseEntity<Void> updateUser (@RequestBody Map<String, String> data) {
-		userService.updateUser(data);
-		return success();
-	}
-
 	@PostMapping("/update-profile-image")
 	public ResponseEntity<String> updateProfileImage(@RequestParam("username") String userId,
 												   @RequestParam(value = "profileImage") MultipartFile profileImage){
 		return success(userService.updateProfileImage(userId, profileImage));
 	}
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

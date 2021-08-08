@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
   styleUrls: ['./${root.url}.component.scss'],
   templateUrl: './${root.url}.component.html'
 })
-export class ${root.capitalizeName}Component {
+export class ${root.capName}Component {
   constructor() {}
 }
 

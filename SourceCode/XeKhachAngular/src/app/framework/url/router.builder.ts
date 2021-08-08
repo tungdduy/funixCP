@@ -1,7 +1,7 @@
 import {UrlConfig} from "./url.config";
 import {UrlImport} from "./url.import";
-import {XeRole} from "../../business/constant/xe.role";
 import {AuthUtil} from "../auth/auth.util";
+import {Role} from "../../business/xe.role";
 
 export class RouterBuilder {
 
@@ -9,8 +9,8 @@ export class RouterBuilder {
     if (!Object.keys(module).includes("_self")) {
       return;
     }
-    const config = module['_self'];
-    const roles: XeRole[] = AuthUtil.roles;
+    const config: UrlConfig = module['_self'];
+    const roles: Role[] = AuthUtil.instance.roles;
     const routes = {
       path: '', component: RouterBuilder.requireComponent(config)
     };
@@ -35,7 +35,7 @@ export class RouterBuilder {
     return UrlImport[config.keyChane + "-module"]();
   }
 
-  private static buildRoutes(config: UrlConfig, roles: XeRole[]) {
+  private static buildRoutes(config: UrlConfig, roles: Role[]) {
     const path = {path: config.short};
     if (config.isModule()) {
       path['loadChildren'] = RouterBuilder.importModule(config);

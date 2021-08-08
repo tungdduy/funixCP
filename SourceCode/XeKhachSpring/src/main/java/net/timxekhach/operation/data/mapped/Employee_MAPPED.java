@@ -1,59 +1,80 @@
 package net.timxekhach.operation.data.mapped;
 
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;;
-import org.apache.commons.lang3.math.NumberUtils;;
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import org.apache.commons.lang3.math.NumberUtils;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;;
-import java.util.Map;;
-import javax.persistence.*;;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;;
-import net.timxekhach.operation.response.ErrorCode;;
 import net.timxekhach.operation.data.entity.User;
+import javax.persistence.*;
+import java.util.Map;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+// ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
 @MappedSuperclass @Getter @Setter
 @IdClass(Employee_MAPPED.Pk.class)
 @SuppressWarnings("unused")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Employee_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.PRIVATE) //id join
+    @Setter(AccessLevel.PRIVATE)
     protected Long employeeId;
+
+    protected Long getIncrementId() {
+        return this.employeeId;
+    }
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long companyId;
 
     @Id
     @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE) //id join
-    protected Long companyId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long userId;
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
         protected Long employeeId;
         protected Long companyId;
+        protected Long userId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
             Long employeeIdLong = Long.parseLong(data.get("employeeId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            if(NumberUtils.min(new long[]{employeeIdLong, companyIdLong}) < 1) {
+            Long userIdLong = Long.parseLong(data.get("userId"));
+            if(NumberUtils.min(new long[]{employeeIdLong, companyIdLong, userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
-            };
-            return new Employee_MAPPED.Pk(employeeIdLong, companyIdLong);
+            }
+            return new Employee_MAPPED.Pk(employeeIdLong, companyIdLong, userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new Employee_MAPPED.Pk(0L, 0L);
+        return new Employee_MAPPED.Pk(0L, 0L, 0L);
     }
 
     protected Employee_MAPPED(){}
-    protected Employee_MAPPED(Company company) {
-        this.company = company;
+    protected Employee_MAPPED(Company company, User user) {
+        this.setCompany(company);
+        this.setUser(user);
     }
-
+//====================================================================//
+//======================== END of PRIMARY KEY ========================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -62,45 +83,75 @@ public abstract class Employee_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "companyId")
     protected Company company;
+
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
+        }
+        return this.company;
+    }
 
     public void setCompany(Company company) {
         this.company = company;
         this.companyId = company.getCompanyId();
     }
-
-    @OneToOne
+    @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "userUserId",
+        name = "userId",
         referencedColumnName = "userId",
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId")
     protected User user;
+
+    public User getUser(){
+        if (this.user == null) {
+            this.user = CommonUpdateService.getUserRepository().findByUserId(this.userId);
+        }
+        return this.user;
+    }
 
     public void setUser(User user) {
         this.user = user;
-        this.userUserId = user.getUserId();
+        this.userId = user.getUserId();
     }
-
-    @Column(unique = true)
-    @Setter(AccessLevel.PRIVATE) //map join
-    protected Long userUserId;
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
 
 
     protected Boolean isLock = false;
+//====================================================================//
+//====================== END of BASIC COLUMNS ========================//
+//====================================================================//
 
     public void setFieldByName(Map<String, String> data) {
-        data.forEach((fieldName, value) -> {
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String fieldName = entry.getKey();
+            String value = entry.getValue();
             if (fieldName.equals("isLock")) {
                 this.isLock = Boolean.valueOf(value);
+                continue;
             }
-        });
+            if (fieldName.equals("employeeId")) {
+                this.employeeId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("userId")) {
+                this.userId = Long.valueOf(value);
+            }
+        }
     }
-
-
-
 }

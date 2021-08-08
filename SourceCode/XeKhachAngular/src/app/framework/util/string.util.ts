@@ -24,11 +24,17 @@ export const StringUtil = {
     str.split("-")
       .map(s => `${s.slice(0, 1).toUpperCase()}${s.substring(1)}`)
       .join("")
-  , toUPPER_UNDERLINE: (str: string) => str
-          .split(NONE_ALPHA_DIGIT_REGEX)
-          .join("_")
-          .split(CAPITAL_REGEX)
-          .join("_").toUpperCase()
-
+  , toUPPER_UNDERLINE: (str: string) => {
+    if (typeof str !== 'string') return "";
+    return str.split(NONE_ALPHA_DIGIT_REGEX)
+      .join("_")
+      .split(CAPITAL_REGEX)
+      .join("_").toUpperCase();
+  },
+  lowercaseFirstLetter: (str: string) => str.charAt(0).toLowerCase() + str.slice(1),
+  upperFirstLetter: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
+  classNameToIdName(className) {
+    return this.lowercaseFirstLetter(className) + "Id";
+  }
 };
 

@@ -1,29 +1,28 @@
 package architect;
 
 import architect.urls.UrlArchitect;
-import net.timxekhach.operation.data.entity.User;
+import data.entities.User;
 
 import java.util.List;
 import java.util.Map;
 
-import static net.timxekhach.security.constant.RoleEnum.*;
+import static util.constants.RoleEnum.*;
+
 
 public class UrlDeclaration {
     public static void startBuildUrl(){
         if(!UrlArchitect.apiUrls.isEmpty()) return;
         UrlArchitect
-                .startApi("user").roles(ROLE_USER)
+                .startApi("user")
                         .method("login").type(User.class).param("info", Map.class)
-                        .method("register").type(User.class).param("user", User.class)
+                        .method("register").type(User.class).param("user", Map.class)
                         .method("forgot-password").param("email", String.class)
                         .method("forgot-password-secret-key").param("secretKeyInfo", Map.class)
                         .method("change-password").param("secretKeyInfo", Map.class)
-                        .method("update-user").param("data", Map.class)
                         .method("update-password").param("data", Map.class)
-                        .method("update-thumbnails")
                 .create("trip")
                         .method("available-seats").type(List.class).param("data", Map.class)
-                        .method("available-trips").type(List.class)
+                        .method("available-trips").type(List.class).param("data", Map.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;
@@ -35,26 +34,19 @@ public class UrlDeclaration {
                         .sibling("forgot-password")
                         .sibling("logout")
                 .create("admin")
-                        .child("my-account")
+                        .child("my-account").roles(ROLE_SYS_ADMIN)
+                        .sibling("all-user").roles(ROLE_SYS_ADMIN)
                         .sibling("my-trip").roles(ROLE_USER)
-                        .sibling("company-manager")
-                        .sibling("caller-employee")
-                        .sibling("buss-type")
-                        .sibling("buss")
-                        .sibling("buss-employee")
-                        .sibling("buss-stop")
-                        .sibling("ticket")
+                        .sibling("company-manager").roles(ROLE_SYS_ADMIN)
+                        .sibling("caller-employee").roles(ROLE_BUSS_ADMIN)
+                        .sibling("buss-type").roles(ROLE_SYS_ADMIN)
+                        .sibling("buss").roles(ROLE_BUSS_STAFF)
+                        .sibling("buss-employee").roles(ROLE_BUSS_ADMIN)
+                        .sibling("buss-stop").roles(ROLE_BUSS_ADMIN)
+                        .sibling("ticket").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
 
         ;
 
-        UrlArchitect
-                .startApi("buss-operation").roles(ROLE_USER)
-                .method("findBussPoint").type(List.class).param("desc", String.class)
-                .method("findBuss").type(List.class)
-                    .param("startPoint", Long.class)
-                    .param("endPoint", Long.class)
-                    .param("departureTime", Long.class)
-        ;
 
     }
 

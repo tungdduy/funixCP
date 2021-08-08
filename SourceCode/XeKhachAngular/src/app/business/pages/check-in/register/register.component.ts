@@ -18,7 +18,7 @@ export class RegisterComponent extends FormAbstract implements OnInit {
   }
 
   ngOnInit(): void {
-    if (AuthUtil.isUserLoggedIn()) {
+    if (AuthUtil.instance.isUserLoggedIn) {
       Url.DEFAULT_URL_AFTER_LOGIN().go();
     }
   }
@@ -27,10 +27,10 @@ export class RegisterComponent extends FormAbstract implements OnInit {
   handlers = [{
     name: "register",
     processor: (data) => this.authService.register(data),
-    success: (response) => {
+    success: {call: (response) => {
       this.successMessage = AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email);
       this.showForm('success');
-    }
+    }}
   }];
 
   gotoLogin() {

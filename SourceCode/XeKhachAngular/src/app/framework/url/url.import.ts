@@ -24,6 +24,8 @@ export const UrlImport = {
     // @ts-ignore
     "CHECK_IN.LOGIN-component": () => require('app/business/pages/check-in/login/login.component').LoginComponent,
     // @ts-ignore
+    "ADMIN.ALL_USER-component": () => require('app/business/pages/admin/all-user/all-user.component').AllUserComponent,
+    // @ts-ignore
     "CHECK_IN-module": () => import('app/business/pages/check-in/check-in.module').then(m => m.CheckInModule),
     // @ts-ignore
     "ADMIN-module": () => import('app/business/pages/admin/admin.module').then(m => m.AdminModule),

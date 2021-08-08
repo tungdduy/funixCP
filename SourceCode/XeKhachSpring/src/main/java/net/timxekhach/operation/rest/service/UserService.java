@@ -1,24 +1,25 @@
 package net.timxekhach.operation.rest.service;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import lombok.RequiredArgsConstructor;
-import net.timxekhach.operation.data.entity.User;
-import net.timxekhach.operation.data.repository.UserRepository;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.security.jwt.JwtTokenProvider;
-import net.timxekhach.utility.XeResponseUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
-
 import static net.timxekhach.operation.response.ErrorCode.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.authentication.AuthenticationManager;
+import net.timxekhach.operation.data.repository.UserRepository;
+import net.timxekhach.utility.XeResponseUtils;
+import net.timxekhach.operation.data.entity.User;
+import org.springframework.http.HttpHeaders;
 import static net.timxekhach.utility.XeMailUtils.sendEmailPasswordSecretKey;
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.Map;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import net.timxekhach.security.jwt.JwtTokenProvider;
+import org.springframework.http.ResponseEntity;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
+import lombok.RequiredArgsConstructor;
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service
@@ -27,6 +28,7 @@ import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 public class UserService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
 	private final UserRepository userRepository;
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
@@ -46,9 +48,7 @@ public class UserService {
 
 	public User register (User user) {
 		EMAIL_EXISTED.throwIf(userRepository.existsByEmail(user.getEmail()));
-		user.encodePassword();
 		userRepository.save(user);
-		sendEmailRegisterSuccessFully(user);
 		return user;
 	}
 
@@ -79,10 +79,6 @@ public class UserService {
 		userRepository.save(user);
 	}
 
-	public void updateUser(Map<String, String> user) {
-		userRepository.updateUser(user);
-	}
-
 	public void updatePassword (Map<String, String> data) {
 		User user = ErrorCode.DATA_NOT_FOUND
 				.throwIfNotPresent(userRepository.findById(User.pk(data)));
@@ -98,6 +94,7 @@ public class UserService {
 	public String updateProfileImage(String userId, MultipartFile profileImage) {
 		return null;
 	}
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

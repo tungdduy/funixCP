@@ -1,10 +1,11 @@
+// ____________________ ::BEFORE_AUTHORIZATION_SEPARATOR:: ____________________ //
+
 package net.timxekhach.security.handler;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.security.jwt.JwtFilter;
 import net.timxekhach.security.model.SecurityResource;
 import net.timxekhach.security.user.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -73,21 +74,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers(securityResource.getPublicUrls()).permitAll()
-            // ------ START OF IMPORT ROLES ------------------
-            // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
-                .antMatchers("user").hasAnyAuthority("ROLE_USER")
-                .antMatchers("user/login").permitAll()
-                .antMatchers("user/register").permitAll()
-                .antMatchers("user/forgot-password").permitAll()
-                .antMatchers("user/forgot-password-secret-key").permitAll()
-                .antMatchers("user/change-password").permitAll()
-                .antMatchers("user/update-user").permitAll()
-                .antMatchers("user/update-password").permitAll()
-                .antMatchers("user/update-thumbnails").permitAll()
-                .antMatchers("caller-staff").permitAll()
-                .antMatchers("buss-staff").permitAll()
-            // ____________________ ::AUTHORIZATION_SEPARATOR:: ____________________ //
-            // ------ END OF IMPORT ROLES ------------------
+
+// ____________________ ::BEFORE_AUTHORIZATION_SEPARATOR:: ____________________ //
+
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/login/**").permitAll()
+                .antMatchers("/user/register/**").permitAll()
+                .antMatchers("/user/forgot-password/**").permitAll()
+                .antMatchers("/user/forgot-password-secret-key/**").permitAll()
+                .antMatchers("/user/change-password/**").permitAll()
+                .antMatchers("/user/update-password/**").permitAll()
+                .antMatchers("/trip/**").permitAll()
+                .antMatchers("/trip/available-seats/**").permitAll()
+                .antMatchers("/trip/available-trips/**").permitAll()
+                .antMatchers("/caller-staff/**").permitAll()
+                .antMatchers("/buss-staff/**").permitAll()
+
+// ____________________ ::AFTER_AUTHORIZATION_SEPARATOR:: ____________________ //
+
                 .anyRequest().authenticated()
             .and()
                 .exceptionHandling()
@@ -96,6 +100,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
-
-
 }
+
+// ____________________ ::AFTER_AUTHORIZATION_SEPARATOR:: ____________________ //

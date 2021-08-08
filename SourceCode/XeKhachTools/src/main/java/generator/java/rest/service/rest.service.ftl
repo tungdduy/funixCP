@@ -1,16 +1,13 @@
 package ${root.packagePath};
-${root.importSeparator}
-${root.importContent}
-${root.importSeparator}
 
-<#assign capName = root.capitalizeName>
+${root.separators.import.all}
+
+<#assign capName = root.capName>
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ${capName}Service {
 
-${root.bodySeparator}
-${root.bodyContent}
-${root.bodySeparator}
+${root.separators.body.all}
 
 }

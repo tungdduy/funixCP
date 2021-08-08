@@ -12,7 +12,7 @@ import static data.entities.abstracts.DataType.FALSE;
 public class Employee extends AbstractEntity {
    {
       pk(Company.class);
+      pk(User.class);
    }
    Column isLock = of(FALSE);
-   MapColumn user = map(User.class).unique();
 }

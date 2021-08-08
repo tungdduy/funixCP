@@ -1,0 +1,30 @@
+.wrapper-digit {
+  border-radius: 5px;
+  border: 1px solid gray;
+  width: fit-content;
+  padding: 5px 12px 0px 7px;
+  cursor: pointer;
+  color: #585858;
+}
+
+.wrapper-digit.active {
+  color: #007bff;
+}
+
+.wrapper-digit:hover, .wrapper-digit:hover nb-icon{
+  color: #007bff !important;
+  opacity: 1;
+  background: lightyellow;
+}
+
+.employee-no {
+  margin-right: 0.25rem;
+  font-size: 1.3rem;
+}
+
+.navigator {
+  border-bottom: 1px solid gray;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  width: fit-content;
+}

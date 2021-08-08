@@ -1,6 +1,6 @@
-import {XeRole} from "../../business/constant/xe.role";
 import {AuthUtil} from "../auth/auth.util";
 import {XeRouter} from "../../business/service/xe-router";
+import {Role} from "../../business/xe.role";
 
 export class UrlConfig {
   private _short: string;
@@ -12,9 +12,10 @@ export class UrlConfig {
   private _root: UrlConfig;
   private _key: string;
   private _keyChane: string;
-  private _activateProviders: {}[] = [];
-  private _roles: XeRole[] = [];
-  public get roles(): XeRole[] {
+  _activateProviders: {}[] = [];
+  private _roles: Role[] = [];
+  private _flatRoles: Role[] = [];
+  public get roles(): Role[] {
     return this._roles;
   }
 
@@ -38,13 +39,9 @@ export class UrlConfig {
     return this._noHost;
   }
 
-  public setRoles(roles: XeRole[]) {
-    this._roles = roles;
-    return this;
-  }
 
   public hasPermission() {
-    return AuthUtil.isAllow(this._roles);
+    return AuthUtil.instance.isAllow(this.flatRoles);
   }
   public forbidden() {
     return !this.hasPermission();
@@ -110,6 +107,25 @@ export class UrlConfig {
     XeRouter.navigate(this.noHost);
   }
 
+  public setRoles(roles: Role[]) {
+    this._roles = roles;
+    return this;
+  }
 
+  public get flatRoles() {
+    if (this._flatRoles.length === 0) {
+      this.buildFlatRoles();
+    }
+    return this._flatRoles;
+  }
+
+  buildFlatRoles() {
+    let iter: UrlConfig = this;
+    this._flatRoles = this._roles;
+    while (iter.parent) {
+      iter = iter.parent;
+      this._flatRoles = this._flatRoles.concat(iter.roles);
+    }
+  }
 }
 
