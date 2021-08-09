@@ -1,10 +1,11 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.rest.service.TripService;
 import static net.timxekhach.utility.XeResponseUtils.success;
 import org.springframework.http.ResponseEntity;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
@@ -18,7 +19,7 @@ public class TripApi {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 	@PostMapping("/available-seats")
 	public ResponseEntity<List> availableSeats (@RequestBody Map<String, String> data) {
-		return success(tripService.availableSeats(data));
+		return success(new ArrayList());
 	}
 
 	@PostMapping("/available-trips")
@@ -30,6 +31,10 @@ public class TripApi {
 	 */
 	public ResponseEntity<List> availableTrips (@RequestBody Map<String, String> data) {
 		return success(tripService.availableTrips(data));
+	}
+	@PostMapping("/search-buss")
+	public ResponseEntity<List> searchBuss (@RequestParam("description") String description) {
+		return success(tripService.searchBuss(description));
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

@@ -28,6 +28,7 @@ public interface BussPointRepository extends JpaRepository<BussPoint, BussPoint_
     List<BussPoint> findByXeLocationId(Long xeLocationId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    List<BussPoint> findAllByBussPointDescLike(String description);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

@@ -23,6 +23,7 @@ public class UrlDeclaration {
                 .create("trip")
                         .method("available-seats").type(List.class).param("data", Map.class)
                         .method("available-trips").type(List.class).param("data", Map.class)
+                        .method("search-buss").type(List.class).param("description", String.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;

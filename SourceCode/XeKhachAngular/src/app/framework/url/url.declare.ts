@@ -51,6 +51,7 @@ export const Url = {
       _self: config(),
       AVAILABLE_SEATS: config(),
       AVAILABLE_TRIPS: config(),
+      SEARCH_BUSS: config(),
     },
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
