@@ -1,10 +1,10 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {NbMenuService, NbSidebarService, NbThemeService} from '@nebular/theme';
 
-import {UserData} from '../../../@core/data/users';
 import {LayoutService} from '../../../@core/utils';
 import {Observable, Subject} from 'rxjs';
 import {AuthUtil} from "../../../framework/auth/auth.util";
+import {XeLbl} from "../../../business/i18n";
 
 @Component({
   selector: 'ngx-header',
@@ -18,13 +18,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPictureOnly: boolean = false;
   user = AuthUtil.instance.user;
 
-  userMenu = [ { title: 'Đăng xuất', data: () => AuthUtil.instance.logout()}];
+  userMenu = [ { title: XeLbl("LOG_OUT"), data: () => AuthUtil.instance.logout()}];
 
   public constructor(
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
-    private userService: UserData,
     private layoutService: LayoutService,
   ) {
     menuService.onItemClick().subscribe((menu) => {
