@@ -17,7 +17,7 @@ export class XeRouter {
   }
 
   public static navigate(url: any): void {
-    console.log("navigate...");
+    console.log("navigate...", url);
     if (typeof url === "string") {
       XeRouter.go(url);
     } else if (url.hasOwnProperty("_self")) {

@@ -25,6 +25,7 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   @Input() readonly;
   @Input() class;
   @Input() name;
+
   @Input() hide;
   @ContentChildren(XeInputComponent, {descendants: true}) formControls: QueryList<XeInputComponent>;
   ctrl: FormAbstract;

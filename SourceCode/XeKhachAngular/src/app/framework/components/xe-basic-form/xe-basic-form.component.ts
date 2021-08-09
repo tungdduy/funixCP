@@ -21,6 +21,24 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
   @Input("dialog") dialog: {close()};
   @Input("onSuccess") onSuccess: (data, isNew) => void;
   @Input("onDelete") onDelete: (data) => void;
+  @Input() editBtn = () => {};
+  @Input() cancelBtn = () => {};
+
+  @Input("hideBody") _hideBody;
+  oriHideBody;
+  get isHideBody() {
+    return this._hideBody === '' || this._hideBody;
+  }
+  hideHeader = false;
+  showBodyOnly() {
+    this.hideHeader = true;
+    this._hideBody = false;
+  }
+  resetHideBody() {
+    this.hideHeader = false;
+    this._hideBody = this.oriHideBody;
+  }
+
   @Input("formData") formData: XeFormData;
   handlers = [
     {
@@ -63,6 +81,7 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
+    this.oriHideBody = this._hideBody;
     this.formData.share.xeBasicForm = this;
     this.formData.share.xeForm = this.submitForm;
     this.backupSelfEntity();

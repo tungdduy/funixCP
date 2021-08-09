@@ -17,6 +17,7 @@ export interface EntityField {
   css?: string;
   selectOneMenu?: () => SelectItem<any>[];
   newIfNull?: string;
+  pipe?: any;
 }
 
 export interface EntityIdentifier {
@@ -32,6 +33,7 @@ export interface ShareFormData {
   xeForm?: XeFormComponent;
   xeBasicForm?: XeBasicFormComponent;
   selection?: SelectionModel<any> | any;
+  custom?: any;
 }
 
 export declare interface XeFormData {

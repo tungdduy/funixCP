@@ -8,6 +8,7 @@ import {AuthConfig} from "./auth.config";
 import {XeRouter} from "../../business/service/xe-router";
 import {Role} from "../../business/xe.role";
 import {RoleUtil} from "../util/role.util";
+import {ObjectUtil} from "../util/object.util";
 
 export class AuthUtil {
   private _jwtHelper = new JwtHelperService();
@@ -54,7 +55,7 @@ export class AuthUtil {
       this._instance = new AuthUtil();
       const token = StorageUtil.getString(configConstant.TOKEN);
       this._instance.decodeAndSaveToken(token);
-      this._instance._user = StorageUtil.getFromJson(configConstant.USER);
+      this._instance.setRepoUser(StorageUtil.getFromJson(configConstant.USER));
     }
     return this._instance;
   }
@@ -73,11 +74,14 @@ export class AuthUtil {
   }
 
   get user() {
+    if (!ObjectUtil.isObject(this._user)) {
+      this._user = new User();
+    }
     return this._user;
   }
 
   public setRepoUser(user: User) {
-    this._user = user;
+    Object.assign(this.user, user);
     StorageUtil.setItem(configConstant.USER, user);
   }
 

@@ -183,6 +183,7 @@ export class EntityUtil {
   }
 
   static getFieldValue(entity: any, field: EntityField) {
+    if (!field || !entity) return undefined;
     let result = entity[field.name];
     if (this.hasSubEntity(field)) {
       const allSubNames = field.name.split(".");
@@ -192,7 +193,7 @@ export class EntityUtil {
       }
       result = entity[fieldNameOnly];
     }
-    return result;
+    return field.pipe ? field.pipe.transform(result) : result;
   }
 
   static getProfileImageUrl(oriEntity: any, otherField: EntityField): string {

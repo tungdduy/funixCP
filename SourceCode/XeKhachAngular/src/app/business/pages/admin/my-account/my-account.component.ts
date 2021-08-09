@@ -6,6 +6,8 @@ import {User} from "../../../entities/User";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {RoleInfo, RoleUtil} from "../../../../framework/util/role.util";
+import {Company} from "../../../entities/Company";
+import {PhonePipe} from "../../../../framework/components/pipes/phone-pipe";
 
 @Component({
   selector: 'xe-my-account',
@@ -30,34 +32,49 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
       processor: (data) => this.authService.updatePassword(data),
     }
   ];
-  userForm: XeFormData = {
-    share: {entity: this.user},
-    entityIdentifier: {
-      className: "User",
-      idFields: () => [
-        {name: "userId", value: this.user?.userId}
-      ]
-    },
-    grid: true,
-    header: {
-      profileImage: {name: 'profileImageUrl'},
-      titleField: {name: 'fullName'},
-      descField: {name: 'phoneNumber'},
-    },
-    fields: [
-      {name: "username"},
-      {name: "fullName", required: true},
-      {name: "email", required: true},
-      {name: "phoneNumber", required: true}
-    ],
-    onAvatarChange: (user) => {
-      this.updateUser(user);
-    },
-    onSuccess: (user) => {
-      this.updateUser(user);
-    }
-  };
 
+  userForm: XeFormData = User.userTable({
+    formData: {
+      header: {
+        descField: undefined
+      },
+      share: {entity: this.user},
+      fields: {
+        4: {hidden: true}
+      },
+      onAvatarChange: (user) => {
+        this.updateUser(user);
+      },
+      onSuccess: (user) => {
+        this.updateUser(user);
+      }
+    }
+  }).formData;
+  companyForm = Company.companyTable({
+    formData: {
+      share: {entity: this.company}
+    }
+  }).formData;
+  userFormClass = "col-md-6";
+  companyFormClass = this.userFormClass;
+  userBodyInfoClass;
+  companyBodyInfoClass;
+  startEditUser = () => {
+    this.userFormClass = "col-md-8";
+    this.companyFormClass = "col-md-4";
+    this.userBodyInfoClass = "d-none";
+  }
+  startEditCompany = () => {
+    this.userFormClass = "col-md-4";
+    this.companyFormClass = "col-md-8";
+    this.companyBodyInfoClass = "d-none";
+  }
+  cancelEdit = () => {
+    this.userFormClass = "col-md-6";
+    this.companyFormClass = "col-md-6";
+    this.userBodyInfoClass = "";
+    this.companyBodyInfoClass = "";
+  }
   private updateUser(user) {
     this.user = user;
     AuthUtil.instance.setRepoUser(user);

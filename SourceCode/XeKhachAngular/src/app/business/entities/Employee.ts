@@ -4,6 +4,7 @@ import {Company} from "./Company";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {XeScreen} from "../../framework/components/xe-nav/xe-nav.component";
 import {ObjectUtil} from "../../framework/util/object.util";
+import {PhonePipe} from "../../framework/components/pipes/phone-pipe";
 
 export class Employee extends XeEntity {
   companyId: number;
@@ -30,7 +31,7 @@ export class Employee extends XeEntity {
         { // 2
           field: {name: 'user.email'}, type: "string", icon: {iconOnly: 'at'}, inline: true,
           subColumns: [{
-            field: {name: 'user.phoneNumber', css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'mobile-alt'}
+            field: {name: 'user.phoneNumber', pipe: PhonePipe.instance, css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'mobile-alt'}
           }]
         },
       ],
