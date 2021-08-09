@@ -3,17 +3,28 @@
   <div class="{{isGrid ? 'col-sm-9' : 'w-100'}}">
     <nb-form-field class="w-100">
       <nb-icon nbPrefix [icon]="getIcon()" pack="fa"></nb-icon>
-      <input
-        class="{{disabled ? 'disabled': ''}}"
-        [(ngModel)]="value"
-        [disabled]="disabled"
-        [type]="type"
-        (change)="isValidateSuccess()"
-        [id]="getId()"
-        nbInput fullWidth
-        [name]="getName()"
-        [placeholder]="isGrid?placeHolder:label"
-      >
+        <input
+          [hidden]="!displayInputText"
+          class="{{disabled ? 'disabled': ''}}"
+          [(ngModel)]="value"
+          [disabled]="disabled"
+          [type]="type"
+          (change)="isValidateSuccess()"
+          [id]="getId()"
+          nbInput fullWidth
+          [name]="getName()"
+          [placeholder]="isGrid?placeHolder:label">
+
+        <nb-select *ngIf="displaySelectOneMenu"
+                   fullWidth
+                   class="selectOneMenu w-100"
+                   [(ngModel)]="value"
+                   [placeholder]="isGrid?placeHolder:label">
+          <nb-option *ngFor="let item of selectOneMenu()" [value]="item.value">
+            <lbl [key]="item.label"></lbl>
+          </nb-option>
+        </nb-select>
+
     </nb-form-field>
     <span *ngIf="isShowError" class="text-danger badge text-right d-block"
           style="width: 100%">{{errorMessage}}</span>

@@ -2,9 +2,9 @@ package generator;
 
 import generator.abstracts.interfaces.RenderGroup;
 import generator.abstracts.render.AbstractRender;
-import util.Xe;
+import util.XeTools;
 
-public class OtherGenerator extends Xe {
+public class OtherGenerator extends XeTools {
 
     private void renderOther(){
         AbstractRender.renderByGroup(RenderGroup.OTHER);

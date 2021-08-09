@@ -233,6 +233,8 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         }
         if (core.getDefaultValue() instanceof String) {
             core.setInitialString(String.format(" = \"%s\"", core.getDefaultValue()));
+        } else if (core.getDefaultValue() instanceof Long) {
+            core.setInitialString(String.format(" = %sL", core.getDefaultValue()));
         } else if (core.getDefaultValue() instanceof Number) {
             core.setInitialString(String.format(" = %s", core.getDefaultValue()));
         } else if (core.getDefaultValue() instanceof Boolean) {

@@ -27,5 +27,8 @@ public class XeStringUtils extends StringUtils {
                 .toString();
     }
 
+    public static String getStringBetween(String source, String open, String end) {
+        return StringUtils.substringBetween(source, open, end);
+    }
 
 }

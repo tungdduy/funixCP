@@ -27,17 +27,28 @@ export class XeBtnComponent implements AfterViewInit {
   @Input() left?;
   @Input() right?;
 
-  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default';
+  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank';
 
   @Input() hideText;
   get showText() {
-    return this.hideText === undefined;
+    return this.hideText === undefined
+      && (this._label !== undefined || this.lbl !== undefined);
   }
 
 
   _types = {
     default: {
       state: 'primary',
+      size: 'sm',
+      type: 'button'
+    },
+    blank: {
+      state: 'blank',
+      size: 'xs',
+      type: 'button'
+    },
+    secondary: {
+      state: 'secondary',
       size: 'sm',
       type: 'button'
     },

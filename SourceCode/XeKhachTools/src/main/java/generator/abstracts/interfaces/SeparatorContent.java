@@ -5,6 +5,7 @@ import util.StringUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static util.FileUtil.readAsString;
 import static util.StringUtil.fetchSeparatorContent;
@@ -17,13 +18,9 @@ public abstract class SeparatorContent implements RenderFilePath {
         @Getter
         private String appendContent = "";
         boolean isUnique;
-        Set<String> uniqueLines = new HashSet<>();
+        List<String> uniqueLines = new ArrayList<>();
 
         Separator(String name, String... requireLines) {
-            if (requireLines != null) {
-                this.isUnique = true;
-                this.uniqueLines.addAll(Arrays.asList(requireLines));
-            }
             this.splitter = StringUtil.buildSeparator(name);
         }
 
@@ -77,12 +74,11 @@ public abstract class SeparatorContent implements RenderFilePath {
         }
 
         public String getAll() {
-            if (this.isUnique) {
-                return String.join("\n", splitter, top, StringUtil.trimTopBottomBlankLines(getUniqueContent()), bottom, splitter);
-            } else {
-                return String.join("\n\n", splitter, top, StringUtil.trimTopBottomBlankLines(appendContent), bottom, splitter);
-            }
-
+            String content = isUnique ? getUniqueContent() : appendContent;
+            return  Stream.of(splitter, top, content, bottom, splitter)
+                    .filter(StringUtil::isNotBlank)
+                    .map(StringUtil::trimTopBottomBlankLines)
+                    .collect(Collectors.joining("\n"));
         }
 
         public Separator append(List<String> appendContent) {
@@ -95,12 +91,10 @@ public abstract class SeparatorContent implements RenderFilePath {
 
         private String top = "", bottom = "";
         public Separator top(String... topLines) {
-            isUnique = true;
             top = String.join("\n", topLines);
             return this;
         }
         public Separator bottom(String... bottomLines) {
-            isUnique = true;
             bottom = String.join("\n", bottomLines);
             return this;
         }

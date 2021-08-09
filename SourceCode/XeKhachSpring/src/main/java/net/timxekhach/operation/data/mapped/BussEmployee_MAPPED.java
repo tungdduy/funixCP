@@ -1,21 +1,19 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Buss;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
+import net.timxekhach.operation.data.entity.Employee;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.timxekhach.operation.data.entity.Employee;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 

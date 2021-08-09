@@ -1,17 +1,28 @@
-import {Component} from '@angular/core';
-import {FormAbstract} from "../../../abstract/form.abstract";
+import {AfterViewInit, Component} from '@angular/core';
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {AuthService} from "../../../../framework/auth/auth.service";
-import {XeFormData} from "../../../abstract/XeFormData";
-import {User} from "../../../entities/user";
+import {XeFormData} from "../../../../framework/model/XeFormData";
+import {User} from "../../../entities/User";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
+import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
+import {RoleInfo, RoleUtil} from "../../../../framework/util/role.util";
 
 @Component({
   selector: 'xe-my-account',
   styleUrls: ['my-account.component.scss'],
   templateUrl: 'my-account.component.html',
 })
-export class MyAccountComponent extends FormAbstract {
-  public user = AuthUtil.instance.user;
+export class MyAccountComponent extends FormAbstract implements AfterViewInit {
+  user: User = AuthUtil.instance.user;
+  company = this.user?.employee?.company;
+  initMe = () => this;
+  roleInfos: RoleInfo[] = RoleUtil.getRolesInfo(this.user.role);
+
+  screens = {
+    account: 'account',
+    password: 'password'
+  };
+  screen = new XeScreen(this.screens.account, 'user', undefined);
 
   handlers = [
     {
@@ -56,4 +67,8 @@ export class MyAccountComponent extends FormAbstract {
     super();
   }
 
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    this.refresh(this.user, "User");
+  }
 }

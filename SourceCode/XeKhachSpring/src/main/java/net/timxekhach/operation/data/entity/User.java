@@ -1,21 +1,19 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import net.timxekhach.utility.XeStringUtils;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import lombok.Getter;
-import java.util.List;
 import lombok.Setter;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
-import net.timxekhach.security.handler.SecurityConfig;
-import java.util.stream.Collectors;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
 import javax.persistence.Entity;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.utility.XeStringUtils;
+import java.util.Map;
+import java.util.stream.Collectors;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
-
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import net.timxekhach.security.handler.SecurityConfig;
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
@@ -23,7 +21,6 @@ public class User extends User_MAPPED {
 
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
 @JsonIgnore
     public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);
@@ -85,7 +82,6 @@ public class User extends User_MAPPED {
            this.encodePassword();
         }
     }
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

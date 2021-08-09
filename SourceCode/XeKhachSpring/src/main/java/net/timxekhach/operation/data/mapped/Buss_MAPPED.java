@@ -1,22 +1,20 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.BussType;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
 import net.timxekhach.operation.data.entity.Company;
+import javax.validation.constraints.*;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -127,7 +125,15 @@ public abstract class Buss_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
+    public Integer getTotalBussEmployees() {
+        return CommonUpdateService.getBussEmployeeRepository().countBussEmployeeIdByBussId(this.bussId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
+//====================================================================//
 
+    @Size(max = 30)
+    protected String bussLicense;
     @Size(max = 255)
     protected String bussDesc;
 //====================================================================//
@@ -138,6 +144,10 @@ public abstract class Buss_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
+            if (fieldName.equals("bussLicense")) {
+                this.bussLicense = String.valueOf(value);
+                continue;
+            }
             if (fieldName.equals("bussDesc")) {
                 this.bussDesc = String.valueOf(value);
                 continue;

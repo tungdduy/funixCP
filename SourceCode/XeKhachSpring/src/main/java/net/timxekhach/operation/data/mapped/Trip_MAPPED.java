@@ -1,29 +1,28 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.Buss;
-import net.timxekhach.operation.data.entity.TripUser;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
-import net.timxekhach.operation.data.entity.TripUserSeat;
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.BussSchedule;
+import net.timxekhach.operation.data.enumeration.TripStatus;
 import java.util.Date;
+import net.timxekhach.operation.data.entity.TripUserSeat;
+import net.timxekhach.operation.data.entity.BussPoint;
 import java.util.List;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.entity.TripUser;
+import org.apache.commons.lang3.time.DateUtils;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import org.apache.commons.lang3.time.DateUtils;
-import net.timxekhach.operation.data.enumeration.TripStatus;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.timxekhach.operation.data.entity.BussPoint;
-
+import net.timxekhach.operation.data.entity.Buss;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -32,6 +31,11 @@ import net.timxekhach.operation.data.entity.BussPoint;
 @SuppressWarnings("unused")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class Trip_MAPPED extends XeEntity {
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long bussScheduleId;
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -60,6 +64,7 @@ public abstract class Trip_MAPPED extends XeEntity {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
+        protected Long bussScheduleId;
         protected Long tripId;
         protected Long bussTypeId;
         protected Long bussId;
@@ -68,23 +73,24 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     public static Pk pk(Map<String, String> data) {
         try {
+            Long bussScheduleIdLong = Long.parseLong(data.get("bussScheduleId"));
             Long tripIdLong = Long.parseLong(data.get("tripId"));
             Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
             Long bussIdLong = Long.parseLong(data.get("bussId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{bussScheduleIdLong, tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new Trip_MAPPED.Pk(tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong);
+            return new Trip_MAPPED.Pk(bussScheduleIdLong, tripIdLong, bussTypeIdLong, bussIdLong, companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new Trip_MAPPED.Pk(0L, 0L, 0L, 0L);
+        return new Trip_MAPPED.Pk(0L, 0L, 0L, 0L, 0L);
     }
 
     protected Trip_MAPPED(){}
-    protected Trip_MAPPED(Buss buss) {
-        this.setBuss(buss);
+    protected Trip_MAPPED(BussSchedule bussSchedule) {
+        this.setBussSchedule(bussSchedule);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -102,6 +108,11 @@ public abstract class Trip_MAPPED extends XeEntity {
         insertable = false,
         updatable = false), 
         @JoinColumn(
+        name = "bussScheduleId",
+        referencedColumnName = "bussScheduleId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
         name = "bussId",
         referencedColumnName = "bussId",
         insertable = false,
@@ -109,42 +120,101 @@ public abstract class Trip_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussId")
-    protected Buss buss;
+        property = "bussScheduleId")
+    protected BussSchedule bussSchedule;
 
-    public Buss getBuss(){
-        if (this.buss == null) {
-            this.buss = CommonUpdateService.getBussRepository().findByBussId(this.bussId);
+    public BussSchedule getBussSchedule(){
+        if (this.bussSchedule == null) {
+            this.bussSchedule = CommonUpdateService.getBussScheduleRepository().findByBussScheduleId(this.bussScheduleId);
         }
-        return this.buss;
+        return this.bussSchedule;
     }
 
-    public void setBuss(Buss buss) {
-        this.buss = buss;
-        this.companyId = buss.getCompanyId();
-        this.bussTypeId = buss.getBussTypeId();
-        this.bussId = buss.getBussId();
+    public void setBussSchedule(BussSchedule bussSchedule) {
+        this.bussSchedule = bussSchedule;
+        this.companyId = bussSchedule.getCompanyId();
+        this.bussTypeId = bussSchedule.getBussTypeId();
+        this.bussScheduleId = bussSchedule.getBussScheduleId();
+        this.bussId = bussSchedule.getBussId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
-    @OneToMany(
-        mappedBy = "trip",
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    @JsonIgnore
-    protected List<TripUserSeat> allTripUserSeats = new ArrayList<>();
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "startPointLocationId",
-        referencedColumnName = "locationId",
+        name = "allTripUserSeatsBussId",
+        referencedColumnName = "bussId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsUserId",
+        referencedColumnName = "userId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsBussTypeId",
+        referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsCompanyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsTripId",
+        referencedColumnName = "tripId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsTripUserId",
+        referencedColumnName = "tripUserId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsTripUserSeatId",
+        referencedColumnName = "tripUserSeatId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "allTripUserSeatsBussScheduleId",
+        referencedColumnName = "bussScheduleId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "allTripUserSeatsId")
+    protected TripUserSeat allTripUserSeats;
+
+    public void setAllTripUserSeats(TripUserSeat allTripUserSeats) {
+        this.allTripUserSeats = allTripUserSeats;
+        this.allTripUserSeatsBussId = allTripUserSeats.getBussId();
+        this.allTripUserSeatsUserId = allTripUserSeats.getUserId();
+        this.allTripUserSeatsBussTypeId = allTripUserSeats.getBussTypeId();
+        this.allTripUserSeatsCompanyId = allTripUserSeats.getCompanyId();
+        this.allTripUserSeatsTripId = allTripUserSeats.getTripId();
+        this.allTripUserSeatsTripUserId = allTripUserSeats.getTripUserId();
+        this.allTripUserSeatsTripUserSeatId = allTripUserSeats.getTripUserSeatId();
+        this.allTripUserSeatsBussScheduleId = allTripUserSeats.getBussScheduleId();
+    }
+
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "startPointXeLocationId",
+        referencedColumnName = "xeLocationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
         name = "startPointBussPointId",
         referencedColumnName = "bussPointId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "startPointCompanyId",
+        referencedColumnName = "companyId",
         insertable = false,
         updatable = false)
     })
@@ -155,8 +225,9 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     public void setStartPoint(BussPoint startPoint) {
         this.startPoint = startPoint;
-        this.startPointLocationId = startPoint.getLocationId();
+        this.startPointXeLocationId = startPoint.getXeLocationId();
         this.startPointBussPointId = startPoint.getBussPointId();
+        this.startPointCompanyId = startPoint.getCompanyId();
     }
 
     @ManyToOne
@@ -167,8 +238,13 @@ public abstract class Trip_MAPPED extends XeEntity {
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "endPointLocationId",
-        referencedColumnName = "locationId",
+        name = "endPointXeLocationId",
+        referencedColumnName = "xeLocationId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "endPointCompanyId",
+        referencedColumnName = "companyId",
         insertable = false,
         updatable = false)
     })
@@ -180,7 +256,8 @@ public abstract class Trip_MAPPED extends XeEntity {
     public void setEndPoint(BussPoint endPoint) {
         this.endPoint = endPoint;
         this.endPointBussPointId = endPoint.getBussPointId();
-        this.endPointLocationId = endPoint.getLocationId();
+        this.endPointXeLocationId = endPoint.getXeLocationId();
+        this.endPointCompanyId = endPoint.getCompanyId();
     }
 
     @OneToMany(
@@ -195,18 +272,38 @@ public abstract class Trip_MAPPED extends XeEntity {
 //====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
-    protected Long startPointLocationId;
+    protected Long allTripUserSeatsBussId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsUserId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsBussTypeId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsCompanyId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsTripId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsTripUserId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsTripUserSeatId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long allTripUserSeatsBussScheduleId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long startPointXeLocationId;
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointBussPointId;
     @Setter(AccessLevel.PRIVATE)
+    protected Long startPointCompanyId;
+    @Setter(AccessLevel.PRIVATE)
     protected Long endPointBussPointId;
     @Setter(AccessLevel.PRIVATE)
-    protected Long endPointLocationId;
+    protected Long endPointXeLocationId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long endPointCompanyId;
 //====================================================================//
 //==================== END of JOIN ID COLUMNS ========================//
 //====================================================================//
 
-    protected Long price;
+    protected Long price = 0L;
 
     @Enumerated(EnumType.STRING)
     protected TripStatus status;
@@ -235,6 +332,10 @@ public abstract class Trip_MAPPED extends XeEntity {
                 ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
                 }
                 continue;
+            }
+            if (fieldName.equals("bussScheduleId")) {
+                this.bussScheduleId = Long.valueOf(value);
+                    continue;
             }
             if (fieldName.equals("tripId")) {
                 this.tripId = Long.valueOf(value);

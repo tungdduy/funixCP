@@ -18,7 +18,8 @@ public class Column {
                 isUnique = false,
                 isEnumerated = false,
                 isManualUpdatable = true,
-                jsonIgnore = false;
+                jsonIgnore = false,
+                upperOnly = false;
         String regex, simpleClassName, fieldName, initialString;
 
         public String getSimpleClassName(){
@@ -76,6 +77,11 @@ public class Column {
 
     public Column phone() {
         core.setIsPhone(true);
+        return this;
+    }
+
+    public Column upperOnly() {
+        core.setUpperOnly(true);
         return this;
     }
 

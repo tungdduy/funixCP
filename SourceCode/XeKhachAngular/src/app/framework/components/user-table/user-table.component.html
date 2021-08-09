@@ -1,14 +1,9 @@
 <xe-table [tableData]="userTable">
   <div tableFooter class="mt-3">
-    <div class="users-group">
-      <div *ngFor="let role of roleIcons">
-        <nb-icon *ngIf="role.icon" [status]="role.icon?.status" [icon]="role.icon?.icon" pack="fa"></nb-icon>
-        <lbl [key]="role.name"></lbl>
-      </div>
-    </div>
+    <role-info [roleInfos]="roleIcons"></role-info>
   </div>
 
-  <div belowBasicFormHeader>
+  <div bsForm_BelowHeaderTitle>
     <div class="text-right pr-3">
       <div *ngFor="let role of roleIcons" (click)="toggleRole(role)" class="role-item {{getRoleActiveClass(role.name)}}" [hidden]="!role.icon">
         <nb-icon *ngIf="role.icon" [status]="role.icon?.status" [icon]="role.icon?.icon" pack="fa"></nb-icon>

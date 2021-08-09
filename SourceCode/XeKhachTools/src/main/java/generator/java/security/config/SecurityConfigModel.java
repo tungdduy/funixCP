@@ -14,8 +14,8 @@ public class SecurityConfigModel extends AbstractUrlModel {
 
     @Override
     public void prepareSeparator() {
-        separator("beforeAuthorization");
-        separator("afterAuthorization");
+        separator("beforeAuthorization").append();
+        separator("afterAuthorization").append();
     }
     private List<Authority> authorities = new ArrayList<>();
 
