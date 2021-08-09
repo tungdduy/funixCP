@@ -32,7 +32,13 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
   };
   screen = new XeScreen(this.screens.busses, 'bus', () => `${this.currentBuss.bussLicense} (${this.currentBuss.bussDesc})`);
 
-  currentBuss: Buss;
+  _currentBuss: Buss = new Buss();
+  get currentBuss() {
+    return this._currentBuss;
+  }
+  set currentBuss(buss: Buss) {
+    Object.assign(this.currentBuss, buss);
+  }
   myCompany: Company = AuthUtil.instance.user?.employee?.company;
   bussTable = Buss.bussTableData({
     xeScreen: this.screen,
@@ -63,14 +69,26 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     formData: {
       entityIdentifier: {
         idFields: () => [
-          {name: "buss.bussId", value: (() => this.currentBuss)()?.bussId}
+          {name: "buss.bussId", value: this.currentBuss.bussId},
+          {name: "buss.bussType.bussTypeId", value: this.currentBuss.bussTypeId},
+
+          {name: "employee.employeeId", value: 0, newIfNull: 'Employee'},
+          {name: "employee.companyId", value: this.currentBuss.companyId},
+
+          {name: "employee.user.userId", value: 0, newIfNull: 'User'},
         ]
+      },
+      share: {
+        custom: {
+          buss: () => this.currentBuss
+        }
       }
     }
   });
 
   private viewBussEmployees(buss: Buss) {
-    this.currentBuss = buss;
+    Object.assign(this.currentBuss, buss);
+    console.log(buss);
     this.screen.go(this.screens.bussEmployees);
   }
 
@@ -117,3 +135,4 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     ));
   }
 }
+

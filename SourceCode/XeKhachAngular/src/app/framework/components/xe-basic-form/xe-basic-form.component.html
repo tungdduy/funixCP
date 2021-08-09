@@ -7,9 +7,9 @@
            class="d-inline border-info rounded-circle avatar w-100">
       <div>
         <button
-          *ngIf="!formData.header.profileImage.readonly"
+          *ngIf="!formData.header?.profileImage?.readonly"
           [disabled]="!isIdValid" class="btn btn-sm btn-info camera"
-          onclick="this.parentNode.getElementsByClassName('hidden-input-camera-file')[0].click()">
+          onclick="this.parentNode?.getElementsByClassName('hidden-input-camera-file')[0].click()">
           <nb-icon icon="camera" pack="fa"></nb-icon>
         </button>
         <input class="hidden-input-camera-file"
@@ -56,17 +56,18 @@
 
 <div *ngIf="!deleting">
   <nb-card>
-    <nb-card-header>
+    <nb-card-header class="{{hideHeader ? 'd-none' : ''}}">
+      <ng-content select="[headerTopMost]"></ng-content>
       <ng-container
         [ngTemplateOutlet]="formHeader"></ng-container>
     </nb-card-header>
     <nb-card-body>
-      <ng-content></ng-content>
+      <ng-content select="[bodyTopMost]"></ng-content>
       <xe-form #submitContent
                [addToSubmit]="entityIds"
                [readonly]="!hasRef"
                name="basicFormInfo">
-        <div *ngFor="let field of formData.fields">
+        <div *ngFor="let field of formData.fields" class="{{isHideBody ? 'd-none' : ''}}">
           <xe-input *ngIf="isIdValid ? !field.newOnly : true"
                     [(value)]="entityUtil.getFieldOwnerEntity(formData.share.entity, field)[entityUtil.getLastFieldName(field)]"
                     [disabledUpdate]="field.clearOnSuccess"
@@ -83,16 +84,16 @@
           <ng-content select="[bottomLeftButtons]"></ng-content>
         </div>
         <div *ngIf="hasRef" class="float-left">
-          <xe-btn (click)="submitContent.reset(); deleting = true" *ngIf="!submitContent.readonly && isIdValid"
+          <xe-btn (click)="resetHideBody(); submitContent.reset(); deleting = true" *ngIf="!submitContent.readonly && isIdValid"
                   hideText type="delete"></xe-btn>
           <xe-btn (click)="newEntity(); submitContent.unMute()" *ngIf="submitContent.readonly" hideText
                   type="add"></xe-btn>
         </div>
         <div class="text-right">
-          <xe-btn (click)="dialog.close();" *ngIf="hasRef" type="close"></xe-btn>
-          <xe-btn (click)="submitContent.unMute()" [hidden]="!submitContent.readonly" type="edit"></xe-btn>
+          <xe-btn (click)="resetHideBody(); dialog.close(); cancelBtn()" *ngIf="hasRef" type="close"></xe-btn>
+          <xe-btn (click)="showBodyOnly(); submitContent.unMute(); editBtn()" [hidden]="!submitContent.readonly" type="edit"></xe-btn>
           <span [hidden]="submitContent.readonly">
-          <xe-btn (click)="submitContent.reset(); submitContent.mute();" *ngIf="!hasRef" type="cancel"></xe-btn>
+          <xe-btn (click)="resetHideBody(); submitContent.reset(); submitContent.mute(); cancelBtn()" *ngIf="!hasRef" type="cancel"></xe-btn>
           <xe-btn *ngIf="isIdValid" [disabled]="submitContent.isLoading" type="save"></xe-btn>
           <xe-btn *ngIf="!isIdValid" [disabled]="submitContent.isLoading" type="add"></xe-btn>
         </span>

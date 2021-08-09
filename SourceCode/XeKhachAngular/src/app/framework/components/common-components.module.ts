@@ -7,14 +7,17 @@ import {XeBtnComponent} from "./xe-btn/xe-btn.component";
 import {RouterModule} from "@angular/router";
 import {XeFormComponent} from './xe-form/xe-form.component';
 import {FormsModule} from "@angular/forms";
+import {PhonePipe} from "./pipes/phone-pipe";
 import {
-    NbButtonModule,
-    NbCardModule, NbCheckboxModule,
-    NbFormFieldModule,
-    NbIconLibraries,
-    NbIconModule,
-    NbInputModule, NbSelectModule,
-    NbUserModule
+  NbButtonModule,
+  NbCardModule,
+  NbCheckboxModule,
+  NbFormFieldModule,
+  NbIconLibraries,
+  NbIconModule,
+  NbInputModule,
+  NbSelectModule,
+  NbUserModule
 } from "@nebular/theme";
 import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
 import {XeTableComponent} from './xe-table/xe-table.component';
@@ -25,28 +28,29 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {CustomPaginator} from "./custom/CustomPaginatorConfiguration";
-import { UserTableComponent } from './user-table/user-table.component';
-import { XeNavComponent } from './xe-nav/xe-nav.component';
-import { BasicBussSchemeComponent } from './basic-buss-scheme/basic-buss-scheme.component';
-import { RoleInfoComponent } from './role-info/role-info.component';
-import { IconWrapComponent } from './details/icon-wrap/icon-wrap.component';
+import {UserTableComponent} from './user-table/user-table.component';
+import {XeNavComponent} from './xe-nav/xe-nav.component';
+import {BasicBussSchemeComponent} from './basic-buss-scheme/basic-buss-scheme.component';
+import {RoleInfoComponent} from './role-info/role-info.component';
+import {IconWrapComponent} from './details/icon-wrap/icon-wrap.component';
 
 
 @NgModule({
-    declarations: [
-        XeInputComponent,
-        XeLabelComponent,
-        XeLinkComponent,
-        XeBtnComponent,
-        XeFormComponent,
-        XeBasicFormComponent,
-        XeTableComponent,
-        UserTableComponent,
-        XeNavComponent,
-        BasicBussSchemeComponent,
-        RoleInfoComponent,
-        IconWrapComponent,
-    ],
+  declarations: [
+    XeInputComponent,
+    XeLabelComponent,
+    XeLinkComponent,
+    XeBtnComponent,
+    XeFormComponent,
+    XeBasicFormComponent,
+    XeTableComponent,
+    UserTableComponent,
+    XeNavComponent,
+    BasicBussSchemeComponent,
+    RoleInfoComponent,
+    IconWrapComponent,
+    PhonePipe,
+  ],
   exports: [
     XeInputComponent,
     XeLabelComponent,
@@ -60,33 +64,34 @@ import { IconWrapComponent } from './details/icon-wrap/icon-wrap.component';
     BasicBussSchemeComponent,
     RoleInfoComponent,
     IconWrapComponent,
+    PhonePipe
   ],
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        NbInputModule,
-        NbButtonModule,
-        NbIconModule,
-        NbFormFieldModule,
-        NbCardModule,
-        MatFormFieldModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatInputModule,
-        NbUserModule,
-        MatCheckboxModule,
-        NbCheckboxModule,
-        NbSelectModule
-    ],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    NbInputModule,
+    NbButtonModule,
+    NbIconModule,
+    NbFormFieldModule,
+    NbCardModule,
+    MatFormFieldModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatInputModule,
+    NbUserModule,
+    MatCheckboxModule,
+    NbCheckboxModule,
+    NbSelectModule
+  ],
   providers: [
     {provide: MatPaginatorIntl, useValue: CustomPaginator()}
   ]
 })
 export class CommonComponentsModule {
   constructor(iconsLibrary: NbIconLibraries) {
-    iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
-    iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'fa' });
+    iconsLibrary.registerFontPack('fa', {packClass: 'fa', iconClassPrefix: 'fa'});
+    iconsLibrary.registerFontPack('far', {packClass: 'far', iconClassPrefix: 'fa'});
   }
 }

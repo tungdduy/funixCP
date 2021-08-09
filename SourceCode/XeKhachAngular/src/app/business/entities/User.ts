@@ -2,6 +2,7 @@ import {XeEntity} from "./XeEntity";
 import {Employee} from "./Employee";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {ObjectUtil} from "../../framework/util/object.util";
+import {PhonePipe} from "../../framework/components/pipes/phone-pipe";
 
 export class User extends XeEntity {
   userId: string;
@@ -41,9 +42,17 @@ export class User extends XeEntity {
       table: {
         basicColumns: [
           {field: {name: 'profileImageUrl'}, type: "avatar"},
-          {field: {name: 'fullName'}, type: "boldStringRole"},
-          {field: {name: 'phoneNumber'}, type: "string"},
-          {field: {name: 'email'}, type: "string"},
+          {field: {name: 'fullName'}, type: "boldStringRole", inline: true,
+            subColumns: [{
+              field: {name: 'username', css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'id-card'}
+            }]
+          },
+          { // 2
+            field: {name: 'email'}, type: "string", icon: {iconOnly: 'at'}, inline: true,
+            subColumns: [{
+              field: {name: 'phoneNumber', pipe: PhonePipe.instance, css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'mobile-alt'}
+            }]
+          },
         ],
       },
       formData: {
@@ -60,11 +69,17 @@ export class User extends XeEntity {
           descField: {name: 'phoneNumber'},
         },
         fields: [
+          // 0
           {name: "username", required: true},
+          // 1
           {name: "phoneNumber", required: true},
+          // 2
           {name: "fullName", required: true},
+          // 3
           {name: "email", required: true},
-          {name: "password", clearOnSuccess: true},
+          // 4
+          {name: "password", clearOnSuccess: true, hidden: true},
+          // 5
           {name: "role", hidden: true},
         ]
       }
