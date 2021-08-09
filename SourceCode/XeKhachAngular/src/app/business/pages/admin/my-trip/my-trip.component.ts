@@ -1,49 +1,28 @@
-import {Component} from '@angular/core';
-import {XeTableData} from "../../../abstract/XeTableData";
-import {Employee} from "../../../entities/employee";
+import {AfterViewInit, Component} from '@angular/core';
+import {XeTableData} from "../../../../framework/model/XeTableData";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
+import {TripUser} from "../../../entities/TripUser";
+import {XeSubscriber} from "../../../../framework/model/XeSubscriber";
 
 @Component({
   selector: 'xe-my-trip',
   styles: [],
   templateUrl: 'my-trip.component.html',
 })
-export class MyTripComponent  {
+export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   user = AuthUtil.instance.user;
 
-  tripUserTable: XeTableData = {
-    table: {
-      basicColumns: [
-        {field: {name: 'startPoint.location.locationName'}, type: "boldString",
-          subColumns: [
-            {field: {name: 'startPoint.location.locationParentAddresses'}, type: "string"}
-          ]
-        },
-        {field: {name: 'endPoint.location.locationName'}, type: "string",
-          subColumns: [
-            {field: {name: 'endPoint.location.locationParentAddresses'}, type: "string"}
-          ]
-        },
-        {field: {name: 'user.phoneNumber'}, type: "string"},
-        {field: {name: 'user.email'}, type: "string"},
-      ],
-    },
+  tripUserTable: XeTableData = TripUser.tripUserTable({
     formData: {
       entityIdentifier: {
-        className: "TripUser",
-        idFields: () => [
-          {name: "user.userId", value: this.user.userId},
-          {name: "trip.tripId", value: 0},
-          {name: "tripUserId", value: 0},
-        ]
-      },
-      share: {entity: new Employee()},
-      header: {
-        titleField: {name: 'user.fullName'},
-        descField: {name: 'user.phoneNumber'},
-      },
-      fields: [
-      ]
+        idFields: () => [{name: "user.userId", value: 0}]
+      }
     }
-  };
+  });
+
+  ngAfterViewInit(): void {
+    this.refresh(this.user, "User");
+  }
+
+
 }

@@ -2,7 +2,6 @@ package generator.abstracts.render;
 
 import freemarker.template.Template;
 import generator.abstracts.interfaces.RenderGroup;
-import generator.abstracts.interfaces.SeparatorContent;
 import generator.abstracts.models.AbstractModel;
 import generator.java.rest.api.RestApiRender;
 import generator.java.rest.service.RestServiceRender;
@@ -12,7 +11,7 @@ import generator.ts.url.declare.UrlDeclareTsRender;
 import lombok.Getter;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import util.StringUtil;
-import util.Xe;
+import util.XeTools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import static generator.GeneratorSetup.*;
 import static util.FileUtil.fetchAllPossibleFiles;
 import static util.ReflectionUtil.newInstanceFromClass;
 
-public abstract class AbstractRender<E extends AbstractModel> extends Xe {
+public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
 
     protected abstract boolean isOverrideExistingFile();
 

@@ -3,9 +3,9 @@ import {CommonUpdateService} from "../../../business/service/common-update.servi
 import {Notifier} from "../../notify/notify.service";
 import {XeLabel} from "../../../business/i18n";
 import {HttpErrorResponse} from "@angular/common/http";
-import {XeFormData} from "../../../business/abstract/XeFormData";
-import {FormAbstract} from "../../../business/abstract/form.abstract";
-import {XeEntity} from "../../../business/entities/xe-entity";
+import {XeFormData} from "../../model/XeFormData";
+import {FormAbstract} from "../../model/form.abstract";
+import {XeEntity} from "../../../business/entities/XeEntity";
 import {EntityUtil} from "../../util/entity.util";
 import {XeFormComponent} from "../xe-form/xe-form.component";
 import {State} from "../../model/message.model";
@@ -51,14 +51,14 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
   backupEntity = {};
   backupShareEntity(entity) {
     this.formData.share.entity = entity;
-    this.backupEntity = ObjectUtil.deepCopy(entity, {});
+    this.backupEntity = ObjectUtil.deepCopyForEntityBackUpOnly(entity, {});
   }
   backupSelfEntity() {
-    this.backupEntity = ObjectUtil.deepCopy(this.formData.share.entity, {});
+    this.backupEntity = ObjectUtil.deepCopyForEntityBackUpOnly(this.formData.share.entity, {});
   }
 
   restoreShareEntity() {
-    ObjectUtil.deepCopy(this.backupEntity, this.formData.share.entity);
+    ObjectUtil.deepCopyForEntityBackUpOnly(this.backupEntity, this.formData.share.entity);
   }
 
   ngAfterViewInit() {
@@ -122,7 +122,7 @@ export class XeBasicFormComponent extends FormAbstract implements OnDestroy, Aft
   }
 
   entityIds = () => {
-    return this.entityUtil.fetchAndFlatAllPossibleId(this.formData.share.entity, this.formData.entityIdentifier);
+    return this.entityUtil.getIdInEntity(this.formData.share.entity, this.formData.entityIdentifier);
   }
   deleting = false;
 

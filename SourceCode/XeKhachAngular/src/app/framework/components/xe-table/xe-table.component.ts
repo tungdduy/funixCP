@@ -1,17 +1,18 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CommonUpdateService} from "../../../business/service/common-update.service";
 import {EntityUtil} from "../../util/entity.util";
-import {TableColumn, XeTableData} from "../../../business/abstract/XeTableData";
+import {ManualColumn, TableColumn, XeTableData} from "../../model/XeTableData";
 import {NbDialogService} from "@nebular/theme";
 import {SelectionModel} from "@angular/cdk/collections";
 import {Notifier} from "../../notify/notify.service";
-import {XeLabel} from "../../../business/i18n";
+import {XeLabel, XeLbl} from "../../../business/i18n";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RoleUtil} from "../../util/role.util";
-import {XeSubscriber} from "../../../business/abstract/XeSubscriber";
+import {XeSubscriber} from "../../model/XeSubscriber";
+import {Stream} from "stream";
 
 @Component({
   selector: 'xe-table',
@@ -19,7 +20,6 @@ import {XeSubscriber} from "../../../business/abstract/XeSubscriber";
   styleUrls: ['./xe-table.component.scss']
 })
 export class XeTableComponent extends XeSubscriber implements OnInit {
-
   @Input() tableData: XeTableData;
   displayedColumns: string[] = [];
   tableSource: MatTableDataSource<any>;
@@ -48,11 +48,15 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
     this.displayedColumns.push("select");
 
-    this.subscriptions.push(this.commonService.getAll<any>(this.entityUtil.getIdFromIdentifier(this.tableData.formData.entityIdentifier), this.tableData.formData.entityIdentifier.className).subscribe(
+    this.subscriptions.push(this.commonService.getAll<any>(this.entityUtil.getMainIdFromIdentifier(this.tableData.formData.entityIdentifier), this.tableData.formData.entityIdentifier.className).subscribe(
       (result) => {
-        if (this.tableData.table.filterCondition) {
-          result = result.filter(this.tableData.table.filterCondition);
-        }
+        const filterCondition = this.tableData.table.filterCondition
+                                    ? this.tableData.table.filterCondition
+                                    : (e) => true;
+        result = result.filter(entity => {
+          EntityUtil.cache(entity, this.tableData.formData.entityIdentifier.className);
+          return filterCondition(entity);
+        });
         this.updateTableSource(result);
       }
     ));
@@ -63,12 +67,41 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     this.tableData.formData.share.selection = this.selection;
   }
 
+  filterTableColumn(entity, column: TableColumn, value) {
+    const columnCheck = this.isValueContains(entity, column, value);
+    if (columnCheck || !column.subColumns) {
+      return columnCheck;
+    } else {
+      for (const subColumn of column.subColumns) {
+        if (this.isValueContains(entity, subColumn, value)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+    this.tableSource.filterPredicate = (data, inputValue) => {
+      const value = inputValue.trim().toLowerCase();
+      const manual = this.tableData.table.manualColumns?.findIndex(column => {
+          return this.isValueContains(data, column, value);
+      }) > -1;
+      if (manual) return true;
+      const basicFilter = this.tableData.table.basicColumns?.filter(column => {
+        return this.filterTableColumn(data, column, value);
+      });
+      return basicFilter && basicFilter.length > 0;
+    };
     this.tableSource.filter = filterValue.trim().toLowerCase();
     if (this.tableSource.paginator) {
       this.tableSource.paginator.firstPage();
     }
+  }
+
+  private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
+    return String(this.entityUtil.getFieldValue(data, column.field)).toLowerCase().includes(value);
   }
 
   submitEntitySuccess = (entity, isNew: boolean) => {
@@ -130,6 +163,7 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
   }
 
   deleteSelected() {
+
     this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.className).subscribe(
       () => {
         this.selection.selected.forEach(entity => {
@@ -152,34 +186,39 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
   @ViewChild("boldString") boldStringColumn;
   @ViewChild("boldStringRole") boldStringRoleColumn;
   @ViewChild("role") roleColumn;
+  @ViewChild("iconOption") iconOptionColumn;
   getColumn(name: string) {
-    if (name === 'string') return this.stringColumn;
-    if (name === 'avatar') return this.avatarColumn;
-    if (name === 'role') return this.roleColumn;
-    if (name === 'boldString') return this.boldStringColumn;
-    if (name === 'boldStringRole') return this.boldStringRoleColumn;
-    if (name === 'avatarString') return this.avatarStringColumn;
+      if (name === 'string') return this.stringColumn;
+      if (name === 'avatar') return this.avatarColumn;
+      if (name === 'role') return this.roleColumn;
+      if (name === 'boldString') return this.boldStringColumn;
+      if (name === 'boldStringRole') return this.boldStringRoleColumn;
+      if (name === 'avatarString') return this.avatarStringColumn;
+      if (name === 'iconOption') return this.iconOptionColumn;
+
     return this.stringColumn;
   }
 
   getRoleIcons(role: string) {
     if (!role) return [];
-    return role.split(",").map(s => RoleUtil.roleIcon[s]).filter(s => s !== undefined);
+    return role.split(",").map(s => RoleUtil.roleInfo[s]).filter(s => s !== undefined);
   }
 
-  asTableColumn(tableColumn: any): TableColumn {
+  asCol(tableColumn: any): TableColumn {
     return tableColumn as TableColumn;
   }
 
   private updateTableSource(result: any[]) {
     this.tableData.formData.share.tableSource = this.tableSource;
-    this.tableData.formData.share.entities = result;
+    this.tableData.formData.share.tableEntities = result;
     this.tableSource = new MatTableDataSource<any>(result);
     this.tableData.formData.share.tableSource = this.tableSource;
     this.tableSource.paginator = this.paginator;
     this.tableSource.sort = this.sort;
     this.tableSource.sortingDataAccessor = (item, property) => {
-      return this.entityUtil.getFieldValue(item, {name: property}).toLowerCase();
+      return this.entityUtil.getFieldValue(item, {name: property});
     };
   }
+
+  xeLbl = XeLbl;
 }

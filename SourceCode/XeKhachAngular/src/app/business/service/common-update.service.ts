@@ -3,12 +3,19 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Url} from "../../framework/url/url.declare";
 import {StringUtil} from "../../framework/util/string.util";
+import {XeEntity} from "../entities/XeEntity";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUpdateService {
-  constructor(private http: HttpClient) {}
+  static _instance: CommonUpdateService;
+  static get instance() {
+    return CommonUpdateService._instance;
+  }
+  constructor(private http: HttpClient) {
+    CommonUpdateService._instance = this;
+  }
   oneParamIdValue = (id, className) => {
     const idName = id ? id[StringUtil.classNameToIdName(className)] : "0";
     return idName ? idName : "0";
@@ -37,10 +44,8 @@ export class CommonUpdateService {
   }
 
   manyParamIdValue = (ids, className) => {
-
     const mainIdName = StringUtil.classNameToIdName(className);
     const mainIdValue = this.oneParamIdValue(ids, className);
-    console.log("main ID: " + mainIdValue);
     const joiner = [];
     joiner.push(mainIdValue);
 
@@ -71,7 +76,7 @@ export class CommonUpdateService {
   getOne<T>(data, className): Observable<T> {
     return this.http.get<T>(this.oneParamIdPath(data, className));
   }
-  public getAll<T>(ids, className): Observable<T[]> {
+  public getAll<T>(ids: {}, className: string): Observable<T[]> {
     return this.http.get<T[]>(this.manyParamIdPath(ids, className));
   }
   deleteAll(selected: any[], className: string) {

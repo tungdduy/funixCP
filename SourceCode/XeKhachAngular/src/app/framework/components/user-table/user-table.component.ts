@@ -1,8 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {XeTableData} from "../../../business/abstract/XeTableData";
-import {RoleIcon, RoleUtil} from "../../util/role.util";
-import {User} from "../../../business/entities/user";
-import {FormAbstract} from "../../../business/abstract/form.abstract";
+import {Component, Input} from '@angular/core';
+import {XeTableData} from "../../model/XeTableData";
+import {RoleInfo, RoleUtil} from "../../util/role.util";
+import {User} from "../../../business/entities/User";
+import {FormAbstract} from "../../model/form.abstract";
+import {XeScreen} from "../xe-nav/xe-nav.component";
 
 @Component({
   selector: 'xe-user-table',
@@ -11,13 +12,26 @@ import {FormAbstract} from "../../../business/abstract/form.abstract";
 })
 export class UserTableComponent extends FormAbstract {
 
+  @Input() xeScreen: XeScreen;
   @Input() userTable: XeTableData;
-  @Input() user: () => User;
+  @Input() user: () => User = () => {
+    const entity = () => this.userTable.formData.share.entity;
+    switch (this.userTable.formData.entityIdentifier.className) {
+      case 'User':
+        return entity();
+      case 'Employee':
+        return entity().user;
+      case 'BussEmployee':
+        return entity()?.employee?.user;
+      default: return entity();
+    }
+  }
+  @Input() excludeRoles: string[] = ['ROLE_SYS_ADMIN'];
 
-  private _roleIcons: RoleIcon[];
-  get roleIcons(): RoleIcon[] {
+  private _roleIcons: RoleInfo[];
+  get roleIcons(): RoleInfo[] {
     if (this._roleIcons === undefined) {
-      this._roleIcons = RoleUtil.allRoleToIcons();
+      this._roleIcons = RoleUtil.allRolesInfo(this.excludeRoles);
     }
     return this._roleIcons;
   }
@@ -30,7 +44,7 @@ export class UserTableComponent extends FormAbstract {
     return User.getRoles(this.user()?.role);
   }
 
-  toggleRole(role: RoleIcon) {
+  toggleRole(role: RoleInfo) {
     const userRoles = this.getSharingUserRoles();
     if (!!userRoles) {
       for (let i = 0; i < userRoles.length; i++) {

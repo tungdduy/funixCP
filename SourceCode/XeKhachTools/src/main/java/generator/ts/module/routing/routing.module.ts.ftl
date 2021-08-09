@@ -5,10 +5,8 @@ import {Url} from "${root.pathToFramework}framework/url/url.declare";
 <#list root.components as component>
 import {${component.name}} from "./${component.path}/${component.path}.component";
 </#list>
--->
 import {${root.capName}Component} from "./${root.url}.component";
 import {RouterBuilder} from "${root.pathToFramework}framework/url/router.builder";
-<#--
 const routes = [{
   path: '', component: ${root.capName}Component,
   children: [
@@ -23,8 +21,10 @@ const routes = [{
 }];
 -->
 import {RouterBuilder} from "../../../framework/url/router.builder";
+
+const routes = RouterBuilder.build(Url.app.${root.urlKeyChain});
 @NgModule({
-  imports: [RouterModule.forChild(RouterBuilder.build(Url.app.${root.urlKeyChain}))],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
   providers: Url.app.${root.urlKeyChain}._self.activateProviders
 })

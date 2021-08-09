@@ -30,3 +30,7 @@ nb-layout { .scrollable-container { overflow-y: scroll !important; } }
   border-radius: 13px;
   font-size: small;
 }
+
+.d-grid {
+  display: grid !important;
+}

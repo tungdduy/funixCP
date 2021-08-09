@@ -10,11 +10,10 @@ import util.constants.TripStatus;
 import static data.entities.abstracts.DataType.MONEY;
 import static data.entities.abstracts.DataType.TIME_ONLY;
 
-@Getter
-@Setter
 public class Trip extends AbstractEntity {
     {
-        pk(Buss.class);
+        pk(BussSchedule.class);
+
     }
 
     Column price = of(MONEY);

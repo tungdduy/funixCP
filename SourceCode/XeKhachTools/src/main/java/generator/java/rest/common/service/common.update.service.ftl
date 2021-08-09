@@ -2,11 +2,13 @@ package net.timxekhach.operation.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.*;
+import net.timxekhach.operation.data.mapped.BussType_MAPPED;
 import net.timxekhach.operation.data.mapped.Buss_MAPPED;
 import net.timxekhach.operation.data.mapped.Company_MAPPED;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.repository.*;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.utility.XeBooleanUtils;
 import net.timxekhach.utility.XeReflectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +74,7 @@ public class CommonUpdateService {
         ${camelName}.setFieldByName(data);
         
         <#list entity.primaryKeyEntities as pkEntity>
-        if (${camelName}.get${pkEntity.capName}Id() == null || ${camelName}.get${pkEntity.capName}Id() <= 0) {
+        if (XeBooleanUtils.isTrue(data.get("new${pkEntity.capName}IfNull")) && (${camelName}.get${pkEntity.capName}Id() == null || ${camelName}.get${pkEntity.capName}Id() <= 0)) {
             Map<String, String> ${pkEntity.camelName}Data = new HashMap<>();
             data.entrySet().stream()
                     .filter(entry -> entry.getKey().startsWith("${pkEntity.camelName}."))
@@ -80,11 +82,6 @@ public class CommonUpdateService {
             ${camelName}.set${pkEntity.capName}(this.insert${pkEntity.capName}(${pkEntity.camelName}Data));
         }
         </#list>
-        <#if entity.primaryKeyEntities?size gt 0>
-        ErrorCode.DATA_EXISTED.throwIfNotEmpty(${camelName}Repository.findBy<#list entity.primaryKeyEntities as pk
-            >${pk.capName}Id<#if pk_has_next>And</#if></#list>(<#list
-            entity.primaryKeyEntities as pk>${camelName}.get${pk.capName}Id()<#if pk_has_next>, </#if></#list>));
-        </#if>
 
         ${camelName} = ${camelName}Repository.save(${camelName});
         return ${camelName};

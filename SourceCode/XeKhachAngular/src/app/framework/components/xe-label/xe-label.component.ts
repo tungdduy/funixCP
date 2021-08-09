@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {XeLbl} from "../../../business/i18n";
 import {Message} from "../../model/message.model";
+import {IconOption} from "../../model/XeTableData";
 
 @Component({
   selector: 'lbl',
@@ -30,9 +31,7 @@ export class XeLabelComponent implements OnInit {
   @Input() p: any;
   isParagraph: boolean;
 
-  @Input() iconPre: string;
-  @Input() iconAfter: string;
-  @Input() iconOnly: string;
+  @Input() icon: IconOption;
 
   constructor() {
   }

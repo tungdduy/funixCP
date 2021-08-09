@@ -1,13 +1,13 @@
 import {AfterViewInit, Component, ContentChildren, Input, OnDestroy, QueryList} from '@angular/core';
 import {XeInputComponent} from "../xe-input/xe-input.component";
-import {FormAbstract} from "../../../business/abstract/form.abstract";
+import {FormAbstract} from "../../model/form.abstract";
 import {Notifier} from "../../notify/notify.service";
 import {HttpErrorResponse} from "@angular/common/http";
-import {FormHandler} from "../../../business/abstract/formHandler";
+import {FormHandler} from "../../model/FormHandler";
 import {XeLabel} from "../../../business/i18n";
 import {State} from "../../model/message.model";
 import {XeLabelComponent} from "../xe-label/xe-label.component";
-import {XeSubscriber} from "../../../business/abstract/XeSubscriber";
+import {XeSubscriber} from "../../model/XeSubscriber";
 
 @Component({
   selector: 'xe-form',
@@ -21,6 +21,7 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   private get isResetOnSuccess() {
     return this.onSuccess === 'reset';
   }
+  @Input() initCtrl?: () => {};
   @Input() readonly;
   @Input() class;
   @Input() name;
@@ -99,9 +100,13 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     let changedInputsNumber = 0;
     const invalidNumber = this.formControls.filter(control => {
       model[control.name] = control.value;
+      if (control.displaySelectOneMenu && control.selectOneMenu().length === 1)
+        control.value = control.selectOneMenu()[0].value;
+
       if (control.isChanged) {
         changedInputsNumber++;
       }
+
       return control.validateFailed();
     }).length;
 
@@ -157,6 +162,9 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   }
 
   ngAfterViewInit(): void {
+    if (this.initCtrl) {
+      this.ctrl = this.initCtrl() as FormAbstract;
+    }
     this.msg = this._msg.first;
     this._originalMute = this.readonly;
     this.updateMute();

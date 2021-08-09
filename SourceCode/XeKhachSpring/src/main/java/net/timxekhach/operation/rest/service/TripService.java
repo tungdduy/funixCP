@@ -1,17 +1,13 @@
 package net.timxekhach.operation.rest.service;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import java.util.List;
-import net.timxekhach.operation.response.ErrorCode;
-import java.util.Map;
-import net.timxekhach.operation.data.entity.Trip;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import net.timxekhach.operation.data.entity.SeatType;
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.Map;
 import net.timxekhach.operation.data.repository.TripRepository;
-import lombok.RequiredArgsConstructor;
-
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service
@@ -20,18 +16,17 @@ import lombok.RequiredArgsConstructor;
 public class TripService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
 	private final TripRepository tripRepository;
 
-	public List<SeatType> availableSeats (Map<String, String> data) {
-		Trip trip = ErrorCode.TRIP_NOT_FOUND.throwIfNull(tripRepository.getById(Trip.pk(data)));
-		return trip.availableSeats();
+	public List availableSeats (Map<String, String> data) {
+		// TODO : service availableSeats method
+		return null;
 	}
+
 	public List availableTrips () {
 		// TODO : service availableTrips method
 		return null;
 	}
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

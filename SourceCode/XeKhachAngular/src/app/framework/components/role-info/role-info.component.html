@@ -1,0 +1,8 @@
+<div class="roles-group {{clazz}} pt-2">
+  <div *ngFor="let info of roleInfos">
+    <nb-icon *ngIf="info.icon"
+             [status]="info.icon?.status"
+             [icon]="info.icon?.icon" pack="fa"></nb-icon>
+    <lbl [key]="info.name"></lbl>
+  </div>
+</div>

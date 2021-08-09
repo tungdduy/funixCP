@@ -1,1 +1,32 @@
-Buss worked!
+<div *ngIf="screen.current === screens.busses">
+  <xe-table [tableData]="bussTable"></xe-table>
+</div>
+<!-- ########### END OF BUSSES ##############-->
+
+<div *ngIf="screen.current === screens.bussScheme">
+  <basic-buss-scheme [scheme]="bussScheme"></basic-buss-scheme>
+</div>
+<!-- ########### END OF SCHEME ##############-->
+
+
+<xe-user-table *ngIf="screen.current === screens.bussEmployees"
+               [userTable]="bussEmployeeTable">
+  <div class="d-inline-block" top-right-buttons>
+    <xe-btn (click)="screen.back()" hideText type="back"></xe-btn>
+    <xe-btn (click)="screen.go(screens.employeeSelection)" hideText type="selectFromList"></xe-btn>
+  </div>
+</xe-user-table>
+
+<!-- ########### END OF BUSS EMPLOYEES ##############-->
+
+<xe-user-table *ngIf="screen.current === screens.employeeSelection"
+          [userTable]="employeeTable">
+  <div class="d-inline-block" top-right-buttons>
+    <xe-btn (click)="screen.back()" hideText type="back"></xe-btn>
+    <xe-btn (click)="addSelectedEmployeesToBuss()"
+            [disabled]="employeeTable.formData?.share?.selection?.isEmpty()"
+            icon="user-plus"
+            lbl="SELECT"></xe-btn>
+  </div>
+</xe-user-table>
+<!-- ########### END OF EMPLOYEES SELECTION ##############-->

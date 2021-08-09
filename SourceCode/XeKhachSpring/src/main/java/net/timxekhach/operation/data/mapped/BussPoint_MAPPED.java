@@ -1,21 +1,21 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.entity.XeLocation;
+import javax.validation.constraints.*;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import net.timxekhach.operation.data.entity.Location;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -28,7 +28,12 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE)
-    protected Long locationId;
+    protected Long xeLocationId;
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long companyId;
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -42,27 +47,30 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
-        protected Long locationId;
+        protected Long xeLocationId;
+        protected Long companyId;
         protected Long bussPointId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
-            Long locationIdLong = Long.parseLong(data.get("locationId"));
+            Long xeLocationIdLong = Long.parseLong(data.get("xeLocationId"));
+            Long companyIdLong = Long.parseLong(data.get("companyId"));
             Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
-            if(NumberUtils.min(new long[]{locationIdLong, bussPointIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{xeLocationIdLong, companyIdLong, bussPointIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new BussPoint_MAPPED.Pk(locationIdLong, bussPointIdLong);
+            return new BussPoint_MAPPED.Pk(xeLocationIdLong, companyIdLong, bussPointIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new BussPoint_MAPPED.Pk(0L, 0L);
+        return new BussPoint_MAPPED.Pk(0L, 0L, 0L);
     }
 
     protected BussPoint_MAPPED(){}
-    protected BussPoint_MAPPED(Location location) {
-        this.setLocation(location);
+    protected BussPoint_MAPPED(Company company, XeLocation xeLocation) {
+        this.setCompany(company);
+        this.setXeLocation(xeLocation);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -70,26 +78,50 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "locationId",
-        referencedColumnName = "locationId",
+        name = "companyId",
+        referencedColumnName = "companyId",
         insertable = false,
         updatable = false)
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "locationId")
-    protected Location location;
+        property = "companyId")
+    protected Company company;
 
-    public Location getLocation(){
-        if (this.location == null) {
-            this.location = CommonUpdateService.getLocationRepository().findByLocationId(this.locationId);
+    public Company getCompany(){
+        if (this.company == null) {
+            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
         }
-        return this.location;
+        return this.company;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-        this.locationId = location.getLocationId();
+    public void setCompany(Company company) {
+        this.company = company;
+        this.companyId = company.getCompanyId();
+    }
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
+        name = "xeLocationId",
+        referencedColumnName = "xeLocationId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "xeLocationId")
+    protected XeLocation xeLocation;
+
+    public XeLocation getXeLocation(){
+        if (this.xeLocation == null) {
+            this.xeLocation = CommonUpdateService.getXeLocationRepository().findByXeLocationId(this.xeLocationId);
+        }
+        return this.xeLocation;
+    }
+
+    public void setXeLocation(XeLocation xeLocation) {
+        this.xeLocation = xeLocation;
+        this.xeLocationId = xeLocation.getXeLocationId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
@@ -109,8 +141,12 @@ public abstract class BussPoint_MAPPED extends XeEntity {
                 this.bussPointDesc = String.valueOf(value);
                 continue;
             }
-            if (fieldName.equals("locationId")) {
-                this.locationId = Long.valueOf(value);
+            if (fieldName.equals("xeLocationId")) {
+                this.xeLocationId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("companyId")) {
+                this.companyId = Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussPointId")) {

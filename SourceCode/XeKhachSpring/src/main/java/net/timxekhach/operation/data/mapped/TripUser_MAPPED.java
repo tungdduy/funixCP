@@ -1,23 +1,23 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.User;
+import java.util.Date;
+import net.timxekhach.operation.data.entity.Employee;
+import org.apache.commons.lang3.time.DateUtils;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.operation.data.entity.Trip;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.timxekhach.operation.data.entity.Employee;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -26,6 +26,11 @@ import net.timxekhach.operation.data.entity.Employee;
 @SuppressWarnings("unused")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public abstract class TripUser_MAPPED extends XeEntity {
+
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long bussScheduleId;
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -64,6 +69,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
+        protected Long bussScheduleId;
         protected Long tripId;
         protected Long bussTypeId;
         protected Long tripUserId;
@@ -74,20 +80,21 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public static Pk pk(Map<String, String> data) {
         try {
+            Long bussScheduleIdLong = Long.parseLong(data.get("bussScheduleId"));
             Long tripIdLong = Long.parseLong(data.get("tripId"));
             Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
             Long tripUserIdLong = Long.parseLong(data.get("tripUserId"));
             Long bussIdLong = Long.parseLong(data.get("bussId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             Long userIdLong = Long.parseLong(data.get("userId"));
-            if(NumberUtils.min(new long[]{tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new TripUser_MAPPED.Pk(tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong);
+            return new TripUser_MAPPED.Pk(bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new TripUser_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L);
+        return new TripUser_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L, 0L);
     }
 
     protected TripUser_MAPPED(){}
@@ -108,6 +115,11 @@ public abstract class TripUser_MAPPED extends XeEntity {
         @JoinColumn(
         name = "bussTypeId",
         referencedColumnName = "bussTypeId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "bussScheduleId",
+        referencedColumnName = "bussScheduleId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -137,6 +149,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.trip = trip;
         this.companyId = trip.getCompanyId();
         this.bussTypeId = trip.getBussTypeId();
+        this.bussScheduleId = trip.getBussScheduleId();
         this.tripId = trip.getTripId();
         this.bussId = trip.getBussId();
     }
@@ -200,6 +213,12 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+    public Integer getTotalSeats() {
+        return CommonUpdateService.getTripUserSeatRepository().countTripUserSeatIdByTripUserId(this.tripUserId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
+//====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByUserId;
@@ -211,10 +230,12 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //==================== END of JOIN ID COLUMNS ========================//
 //====================================================================//
 
-    protected Long totalPrice;
-
     @Enumerated(EnumType.STRING)
     protected TripUserStatus status = TripUserStatus.PENDING;
+
+    protected Long totalPrice = 0L;
+
+    protected Date confirmedDateTime;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -223,13 +244,25 @@ public abstract class TripUser_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
+            if (fieldName.equals("status")) {
+                this.status = TripUserStatus.valueOf(value);
+                continue;
+            }
             if (fieldName.equals("totalPrice")) {
                 this.totalPrice = Long.valueOf(value);
                 continue;
             }
-            if (fieldName.equals("status")) {
-                this.status = TripUserStatus.valueOf(value);
+            if (fieldName.equals("confirmedDateTime")) {
+                try {
+                this.confirmedDateTime = DateUtils.parseDate(value);
+                } catch (Exception e) {
+                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
+                }
                 continue;
+            }
+            if (fieldName.equals("bussScheduleId")) {
+                this.bussScheduleId = Long.valueOf(value);
+                    continue;
             }
             if (fieldName.equals("tripId")) {
                 this.tripId = Long.valueOf(value);

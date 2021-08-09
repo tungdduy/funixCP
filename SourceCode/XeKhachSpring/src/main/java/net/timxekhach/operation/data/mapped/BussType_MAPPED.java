@@ -1,21 +1,16 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import org.apache.commons.lang3.math.NumberUtils;
-import java.util.ArrayList;
-import net.timxekhach.operation.data.entity.SeatType;
-import java.util.List;
+import javax.validation.constraints.*;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -56,21 +51,21 @@ public abstract class BussType_MAPPED extends XeEntity {
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
 //====================================================================//
-    @OneToMany(
-        mappedBy = "bussType",
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    @JsonIgnore
-    protected List<SeatType> allSeatTypes = new ArrayList<>();
-//====================================================================//
-//==================== END of MAP COLUMN ENTITY ======================//
+    public Integer getTotalBusses() {
+        return CommonUpdateService.getBussRepository().countBussIdByBussTypeId(this.bussTypeId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
 //====================================================================//
 
+    @Size(max = 30)
+    protected String bussTypeCode;
     @Size(max = 255)
     protected String bussTypeName;
     @Size(max = 255)
     protected String bussTypeDesc;
+
+    protected Integer totalSeats = 0;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -79,12 +74,20 @@ public abstract class BussType_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
+            if (fieldName.equals("bussTypeCode")) {
+                this.bussTypeCode = String.valueOf(value);
+                continue;
+            }
             if (fieldName.equals("bussTypeName")) {
                 this.bussTypeName = String.valueOf(value);
                 continue;
             }
             if (fieldName.equals("bussTypeDesc")) {
                 this.bussTypeDesc = String.valueOf(value);
+                continue;
+            }
+            if (fieldName.equals("totalSeats")) {
+                this.totalSeats = Integer.valueOf(value);
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {

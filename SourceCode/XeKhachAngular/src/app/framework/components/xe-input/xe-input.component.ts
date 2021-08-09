@@ -3,6 +3,7 @@ import {ObjectUtil} from "../../util/object.util";
 import {RegexUtil} from "../../util/regex.util";
 import {AppMessages, XeLbl} from "../../../business/i18n";
 import {StringUtil} from "../../util/string.util";
+import { SelectItem } from '../../model/SelectItem';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class XeInputComponent implements AfterViewInit {
   _originValue;
   ngAfterViewInit(): void {
       this._originValue = this.value;
-      if (this.name?.includes("password")) {
+      if (this.name?.toLowerCase().includes("password")) {
         setTimeout(() => {
           this.type = "password";
         }, 0);
@@ -29,7 +30,7 @@ export class XeInputComponent implements AfterViewInit {
   get disabledUpdate() {
     return this._disabledUpdate === true || this._disabledUpdate === '';
   }
-  @Input() type: string = "text";
+  @Input() type: "text" | "email" | "password" = "text";
   @Input() lblKey: string;
   @Input() id: string;
   @Input() required: any;
@@ -47,14 +48,14 @@ export class XeInputComponent implements AfterViewInit {
     this._disabled = val;
   }
   @Input() grid?: any;
-  @Input() get value() {
+  @Input() get value(): string | number {
     return this._value;
   }
   set value(val) {
     this._value = val;
     this.valueChange.emit(this._value);
   }
-  _value: string;
+  _value: string | number;
   @Output() valueChange = new EventEmitter<any>();
   @Input() icon?;
   public errorMessage?: string;
@@ -98,6 +99,14 @@ export class XeInputComponent implements AfterViewInit {
     phoneNumber: 'mobile-alt',
   };
 
+  @Input() selectOneMenu: () => SelectItem<any>[];
+  get displaySelectOneMenu() {
+    return this.selectOneMenu !== undefined;
+  }
+  get displayInputText() {
+    return this.selectOneMenu === undefined;
+  }
+
   getIcon() {
     if (!this.icon) {
       this.icon = this.icons[this.type] ? this.icons[this.type]
@@ -124,10 +133,13 @@ export class XeInputComponent implements AfterViewInit {
     }
     return this.name;
   }
+  get valueStringLength() {
+    return typeof this.value === 'string' ? this.value.length : 0;
+  }
 
   labelHiddenClass() {
-    return this.value
-    && this.value.length > 0
+    return this.valueStringLength > 0
+    || this.value > 0
     || this.isGrid ? '' : 'd-none';
   }
 
@@ -141,22 +153,27 @@ export class XeInputComponent implements AfterViewInit {
 
   isValidateSuccess(): boolean {
     if (this.isRequire &&
-      (StringUtil.isBlank(this.value))) {
+      (StringUtil.isBlank(String(this.value)))) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
       return;
     }
 
-    if (this.minLength && this.value.length < this.minLength) {
+    if (this.getName().endsWith("Id") && (this.value as unknown as number) <= 0) {
+      this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
+      return;
+    }
+
+    if (this.minLength && this.valueStringLength < this.minLength) {
       this.errorMessage = AppMessages.FIELD_MUST_HAS_AT_LEAST_CHAR(this.label, this.minLength);
       return;
     }
 
-    if (this.maxLength && this.value.length > this.maxLength) {
+    if (this.maxLength && this.valueStringLength > this.maxLength) {
       this.errorMessage = AppMessages.MAXIMUM_LENGTH_OF_FIELD(this.label, this.maxLength);
       return;
     }
 
-    if (this.type === 'email' && !RegexUtil.isValidEmail(this.value)) {
+    if (this.getName().toLowerCase().includes('email') && !RegexUtil.isValidEmail(this.value)) {
       this.errorMessage = AppMessages.EMAIL_NOT_VALID;
       return;
     }
@@ -173,7 +190,7 @@ export class XeInputComponent implements AfterViewInit {
         return;
       }
 
-      if (this.matching instanceof RegExp && !this.matching.test(this.value)) {
+      if (this.matching instanceof RegExp && !this.matching.test(String(this.value))) {
         this.errorMessage = AppMessages.INVALID_FIELD(this.label);
         return;
       }

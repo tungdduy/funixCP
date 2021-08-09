@@ -4,7 +4,12 @@
                    [onDelete]="deleteEntitySuccess"
                    [onSuccess]="submitEntitySuccess"
                    [formData]="tableData.formData">
-      <ng-content select="[belowBasicFormHeader]"></ng-content>
+      <ng-container belowHeaderTitle>
+        <ng-content select="[bsForm_BelowHeaderTitle]"></ng-content>
+      </ng-container>
+      <ng-container bottomLeftButtons>
+        <ng-content select="[bsForm_BottomLeftButtons]"></ng-content>
+      </ng-container>
     </xe-basic-form>
   </div>
 </ng-template>
@@ -34,10 +39,11 @@
 
 <nb-card>
   <nb-card-body>
+    <xe-nav [screen]="tableData.xeScreen"></xe-nav>
     <ng-content select="[tableHeader]"></ng-content>
     <mat-form-field appearance="legacy">
-      <mat-label>Gõ để tìm...</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="gõ..." #input>
+      <mat-label>{{xeLbl('tabToFind')}}</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="{{xeLbl('typeTextHere')}}..." #input>
     </mat-form-field>
     <div class="float-right">
       <ng-content select="[top-right-buttons]"></ng-content>
@@ -53,21 +59,20 @@
       <!-- ------------- BASIC columns ------------------->
       <ng-container *ngFor="let tableColumn of tableData.table.basicColumns" [matColumnDef]="tableColumn.field.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="{{tableColumn.hiddenClass}}">
-          <lbl [iconPre]="tableColumn.iconPre"
-               [iconAfter]="tableColumn.iconAfter"
-               [iconOnly]="tableColumn.iconOnly"
-               [key]="tableColumn.field.name">
-          </lbl>
-
+          <div class="{{tableColumn['inline'] ? '' : 'd-grid'}} ">
+            <lbl [icon]="tableColumn.icon" [key]="tableColumn.field.name"></lbl>
+            <ng-container *ngFor="let subColumn of tableColumn.subColumns">
+              <lbl [icon]="subColumn.icon" [key]="subColumn.field.name"></lbl>
+            </ng-container>
+          </div>
         </th>
-        <td mat-cell *matCellDef="let entity" (click)="editEntityDialog(entity)">
+        <td mat-cell *matCellDef="let entity" (click)="tableColumn.action ? tableColumn.action(entity) : editEntityDialog(entity)">
           <ng-container
             *ngTemplateOutlet="getColumn(tableColumn.type); context:{tableColumn: tableColumn, entity:entity}"></ng-container>
           <ng-container *ngFor="let subColumn of tableColumn.subColumns">
             <ng-container
               *ngTemplateOutlet="getColumn(subColumn.type); context:{tableColumn: subColumn, entity:entity}"></ng-container>
           </ng-container>
-
         </td>
       </ng-container>
 
@@ -127,24 +132,34 @@
 
 
 <ng-template #string let-tableColumn="tableColumn" let-entity="entity">
-  <span class="{{asTableColumn(tableColumn).field.css}}"> {{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</span>
+  <span class="{{asCol(tableColumn).field.css}}"> {{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</span>
 </ng-template>
 
 <ng-template #avatarString let-tableColumn="tableColumn" let-entity="entity">
-  <img class="thumbnail-small" [src]="entityUtil.getProfileImageUrl(entity, asTableColumn(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)">
-  {{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}
+  <img class="thumbnail-small" [src]="entityUtil.getProfileImageUrl(entity, asCol(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)">
+  {{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}
+</ng-template>
+
+<ng-template #iconOption let-tableColumn="tableColumn" let-entity="entity" >
+  <icon-wrap [wrapper]="{
+    icon: asCol(tableColumn).rowIcon,
+    clazz: asCol(tableColumn).field.css,
+    content: entityUtil.getFieldValue(entity, asCol(tableColumn).field)
+  }"></icon-wrap>
 </ng-template>
 
 <ng-template #boldString let-tableColumn="tableColumn" let-entity="entity">
-  <b>{{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</b>
+  <b>{{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</b>
 </ng-template>
 
 <ng-template #avatar let-tableColumn="tableColumn" let-entity="entity">
-  <img class="thumbnail-small" [src]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)">
+  <img class="thumbnail-small" [src]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)">
 </ng-template>
 
 <ng-template #boldStringRole let-tableColumn="tableColumn" let-entity="entity">
-  <b class="pr-1">{{entityUtil.getFieldValue(entity, asTableColumn(tableColumn).field)}}</b>
-  <nb-icon class="role-icon" status="{{icon.status}}" *ngFor="let icon of getRoleIcons(entityUtil.getFieldOwnerEntity(entity, tableColumn.field)['role'])"
+  <b class="pr-1">{{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</b>
+  <nb-icon class="role-icon"
+           status="{{icon.status}}"
+           *ngFor="let icon of getRoleIcons(entityUtil.getFieldOwnerEntity(entity, asCol(tableColumn).field)['role'])"
            icon="{{icon.icon}}" pack="fa"></nb-icon>
 </ng-template>

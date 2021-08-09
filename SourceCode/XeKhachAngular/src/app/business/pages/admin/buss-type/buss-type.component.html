@@ -1,1 +1,15 @@
-BussType worked!
+<div *ngIf="screen.current === screens.bussTypeList">
+  <xe-table [tableData]="bussTypeTable"></xe-table>
+</div>
+
+<div *ngIf="screen.current === screens.bussScheme">
+  <basic-buss-scheme [scheme]="bussScheme"></basic-buss-scheme>
+</div>
+
+<div *ngIf="screen.current === screens.busses">
+  <xe-table [tableData]="bussTable">
+    <div top-right-buttons class="d-inline-block">
+      <xe-btn type="back" hideText (click)="screen.goHome()"></xe-btn>
+    </div>
+  </xe-table>
+</div>

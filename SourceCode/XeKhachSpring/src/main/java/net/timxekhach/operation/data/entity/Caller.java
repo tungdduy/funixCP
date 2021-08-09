@@ -3,8 +3,8 @@ package net.timxekhach.operation.data.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.timxekhach.operation.data.mapped.Caller_MAPPED;
 import javax.persistence.Entity;
+import net.timxekhach.operation.data.mapped.Caller_MAPPED;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
@@ -17,6 +17,10 @@ public class Caller extends Caller_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
+
+
+
 
 
 

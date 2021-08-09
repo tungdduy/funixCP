@@ -1,13 +1,11 @@
 package net.timxekhach.operation.data.repository;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import java.util.List;
 import net.timxekhach.operation.data.entity.TripUser;
-import org.springframework.stereotype.Repository;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
-
+import org.springframework.stereotype.Repository;
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
@@ -30,9 +28,6 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     List<TripUser> findByUserId(Long userId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
-
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
