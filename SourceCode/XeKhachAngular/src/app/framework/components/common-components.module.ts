@@ -8,13 +8,13 @@ import {RouterModule} from "@angular/router";
 import {XeFormComponent} from './xe-form/xe-form.component';
 import {FormsModule} from "@angular/forms";
 import {
-  NbButtonModule,
-  NbCardModule, NbCheckboxModule,
-  NbFormFieldModule,
-  NbIconLibraries,
-  NbIconModule,
-  NbInputModule,
-  NbUserModule
+    NbButtonModule,
+    NbCardModule, NbCheckboxModule,
+    NbFormFieldModule,
+    NbIconLibraries,
+    NbIconModule,
+    NbInputModule, NbSelectModule,
+    NbUserModule
 } from "@nebular/theme";
 import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
 import {XeTableComponent} from './xe-table/xe-table.component';
@@ -26,6 +26,10 @@ import {MatInputModule} from "@angular/material/input";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {CustomPaginator} from "./custom/CustomPaginatorConfiguration";
 import { UserTableComponent } from './user-table/user-table.component';
+import { XeNavComponent } from './xe-nav/xe-nav.component';
+import { BasicBussSchemeComponent } from './basic-buss-scheme/basic-buss-scheme.component';
+import { RoleInfoComponent } from './role-info/role-info.component';
+import { IconWrapComponent } from './details/icon-wrap/icon-wrap.component';
 
 
 @NgModule({
@@ -38,6 +42,10 @@ import { UserTableComponent } from './user-table/user-table.component';
         XeBasicFormComponent,
         XeTableComponent,
         UserTableComponent,
+        XeNavComponent,
+        BasicBussSchemeComponent,
+        RoleInfoComponent,
+        IconWrapComponent,
     ],
   exports: [
     XeInputComponent,
@@ -48,25 +56,30 @@ import { UserTableComponent } from './user-table/user-table.component';
     XeBasicFormComponent,
     XeTableComponent,
     UserTableComponent,
+    XeNavComponent,
+    BasicBussSchemeComponent,
+    RoleInfoComponent,
+    IconWrapComponent,
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    NbInputModule,
-    NbButtonModule,
-    NbIconModule,
-    NbFormFieldModule,
-    NbCardModule,
-    MatFormFieldModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatInputModule,
-    NbUserModule,
-    MatCheckboxModule,
-    NbCheckboxModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        NbInputModule,
+        NbButtonModule,
+        NbIconModule,
+        NbFormFieldModule,
+        NbCardModule,
+        MatFormFieldModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatInputModule,
+        NbUserModule,
+        MatCheckboxModule,
+        NbCheckboxModule,
+        NbSelectModule
+    ],
   providers: [
     {provide: MatPaginatorIntl, useValue: CustomPaginator()}
   ]

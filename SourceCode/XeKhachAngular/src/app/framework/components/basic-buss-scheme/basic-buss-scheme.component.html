@@ -1,0 +1,24 @@
+<nb-card>
+  <nb-card-header>
+    <h3>
+      <xe-btn type="back" hideText (click)="scheme.turnBackAction()"></xe-btn>
+      <lbl [key]="scheme.bussType().bussTypeCode"></lbl>
+    </h3>
+  </nb-card-header>
+  <nb-card-body>
+    <div *ngFor="let seatGroup of seatGroups">
+      <div class="pt-3">
+        <h6>
+          <lbl [key]="seatGroup.groupName"></lbl>
+          <lbl class="text-danger badge" [key]="seatGroup.note"></lbl>
+        </h6>
+
+      </div>
+      <div>
+        <div class="seat alert alert-info border-info" *ngFor="let i of seatGroup.seats">
+          {{i}}
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

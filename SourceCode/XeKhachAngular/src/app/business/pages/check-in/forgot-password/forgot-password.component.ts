@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
-import {FormAbstract} from "../../../abstract/form.abstract";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {Url} from "../../../../framework/url/url.declare";
 
 @Component({

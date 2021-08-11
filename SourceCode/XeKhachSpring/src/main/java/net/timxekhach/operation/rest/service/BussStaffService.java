@@ -1,12 +1,11 @@
 package net.timxekhach.operation.rest.service;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import net.timxekhach.operation.response.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import lombok.RequiredArgsConstructor;
-
+import net.timxekhach.operation.response.ErrorCode;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Service
@@ -15,9 +14,6 @@ import lombok.RequiredArgsConstructor;
 public class BussStaffService {
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
-
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

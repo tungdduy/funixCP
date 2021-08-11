@@ -9,7 +9,9 @@ public class AppUtil {
             I18N_DIR = BUSINESS_DIR + "i18n/",
             MESSAGE_PATH = I18N_DIR + "/api-messages_vi.ts",
             FRAMEWORK_DIR = APP_ROOT + "framework/",
-            FRAMEWORK_URL_DIR = FRAMEWORK_DIR + "url/"
+            FRAMEWORK_URL_DIR = FRAMEWORK_DIR + "url/",
+            FRAMEWORK_UTIL_DIR = FRAMEWORK_DIR + "util/"
+
     ;
 
     public static String getPathToFramework(int level) {

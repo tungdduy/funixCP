@@ -6,9 +6,7 @@ export const UrlImport = {
     // @ts-ignore
     "ADMIN-component": () => require('app/business/pages/admin/admin.component').AdminComponent,
     // @ts-ignore
-    "ADMIN.CALLER_EMPLOYEE-component": () => require('app/business/pages/admin/caller-employee/caller-employee.component').CallerEmployeeComponent,
-    // @ts-ignore
-    "ADMIN.BUSS_EMPLOYEE-component": () => require('app/business/pages/admin/buss-employee/buss-employee.component').BussEmployeeComponent,
+    "ADMIN.EMPLOYEE-component": () => require('app/business/pages/admin/employee/employee.component').EmployeeComponent,
     // @ts-ignore
     "ADMIN.TICKET-component": () => require('app/business/pages/admin/ticket/ticket.component').TicketComponent,
     // @ts-ignore
@@ -19,6 +17,8 @@ export const UrlImport = {
     "CHECK_IN.FORGOT_PASSWORD-component": () => require('app/business/pages/check-in/forgot-password/forgot-password.component').ForgotPasswordComponent,
     // @ts-ignore
     "ADMIN.BUSS_TYPE-component": () => require('app/business/pages/admin/buss-type/buss-type.component').BussTypeComponent,
+    // @ts-ignore
+    "ADMIN.MY_COMPANY-component": () => require('app/business/pages/admin/my-company/my-company.component').MyCompanyComponent,
     // @ts-ignore
     "CHECK_IN-component": () => require('app/business/pages/check-in/check-in.component').CheckInComponent,
     // @ts-ignore

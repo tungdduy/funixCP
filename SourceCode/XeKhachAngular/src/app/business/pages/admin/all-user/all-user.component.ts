@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
-import {FormAbstract} from "../../../abstract/form.abstract";
-import {User} from "../../../entities/user";
-import {XeTableData} from "../../../abstract/XeTableData";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
+import {XeTableData} from "../../../../framework/model/XeTableData";
+import {User} from "../../../entities/User";
 
 @Component({
   selector: 'xe-all-user',
@@ -10,36 +10,5 @@ import {XeTableData} from "../../../abstract/XeTableData";
 })
 export class AllUserComponent extends FormAbstract {
   user = () => this.userTable.formData.share.entity;
-  userTable: XeTableData = {
-    table: {
-      basicColumns: [
-        {field: {name: 'profileImageUrl'}, type: "avatar"},
-        {field: {name: 'fullName'}, type: "boldStringRole"},
-        {field: {name: 'phoneNumber'}, type: "string"},
-        {field: {name: 'email'}, type: "string"},
-      ],
-    },
-    formData: {
-      entityIdentifier: {
-        className: "User",
-        idFields: () => [
-          {name: "userId", value: 0}
-        ],
-      },
-      share: {entity: User},
-      header: {
-        profileImage: {name: 'profileImageUrl'},
-        titleField: {name: 'fullName'},
-        descField: {name: 'phoneNumber'},
-      },
-      fields: [
-        {name: "username", required: true},
-        {name: "phoneNumber", required: true},
-        {name: "fullName", required: true},
-        {name: "email", required: true},
-        {name: "password", clearOnSuccess: true},
-        {name: "role", hidden: true},
-      ]
-    }
-  };
+  userTable: XeTableData = User.userTable();
 }

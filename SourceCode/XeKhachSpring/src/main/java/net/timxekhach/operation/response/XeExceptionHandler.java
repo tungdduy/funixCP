@@ -3,9 +3,12 @@ package net.timxekhach.operation.response;
 
 import net.timxekhach.utility.XeReflectionUtils;
 import net.timxekhach.utility.XeResponseUtils;
+import net.timxekhach.utility.XeStringUtils;
 import net.timxekhach.utility.model.Message;
 import net.timxekhach.utility.model.XeHttpResponse;
 import net.timxekhach.utility.model.XeRuntimeException;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.engine.jdbc.env.spi.SQLStateType;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -51,6 +54,10 @@ public class XeExceptionHandler {
             String fieldName = splitter[0];
             String tableName = splitter[1].split("\\.")[0];
             messages.add(ErrorCode.FIELD_EXISTED.createMessage(fieldName, tableName));
+        }
+        if (exception.getSQLState().equals("23000") && exception.getErrorCode() == 1452) {
+            String fieldName = XeStringUtils.getStringBetween(exMsg, "FOREIGN KEY (`", "`) REFERENCES");
+            messages.add(ErrorCode.VALIDATOR_NOT_BLANK.createMessage(fieldName));
         }
 
         return XeResponseUtils.error(exception, messages);

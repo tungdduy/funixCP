@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static util.AppUtil.PAGES_DIR;
+
 @Getter
 @Setter
 public class ModuleTsModel extends AbstractUrlModel {
@@ -24,12 +25,12 @@ public class ModuleTsModel extends AbstractUrlModel {
         ).emptyOnly();
 
         separator("moduleImport").unique(
-                this.capName + "RoutingModule,",
-                "ngFormsModule,",
-                "RouterModule,"
-                )
-                .top("moduleImport", "imports: [")
-                .bottom("moduleImport\", \"],");
+                "imports: [",
+                "\t" + this.capName + "RoutingModule,",
+                "\tngFormsModule,",
+                "\tRouterModule,",
+                "],"
+        ).emptyOnly();
     }
 
     @Override

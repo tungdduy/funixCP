@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../../framework/auth/auth.service";
 import {Url} from "../../../../framework/url/url.declare";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
-import {FormAbstract} from "../../../abstract/form.abstract";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 @Component({
   selector: 'xe-login',

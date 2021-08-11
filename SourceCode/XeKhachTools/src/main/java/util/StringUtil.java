@@ -32,7 +32,7 @@ public class StringUtil extends StringUtils {
 
     public static void addIfNotContainsTrim(Collection<String> collection, String e) {
         if (isBlank(e)) return;
-        if(collection.stream().map(String::trim).anyMatch(s -> s.equals(e.trim()))){
+        if(collection.stream().map(String::trim).noneMatch(s -> s.equals(e.trim()))){
             collection.add(e);
         }
     }

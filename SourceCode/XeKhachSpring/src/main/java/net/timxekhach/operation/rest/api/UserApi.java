@@ -1,21 +1,19 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import net.timxekhach.operation.data.entity.Buss;
-import org.springframework.web.multipart.MultipartFile;
-import net.timxekhach.operation.data.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.UserService;
+import static net.timxekhach.utility.XeResponseUtils.success;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
+import net.timxekhach.operation.data.repository.UserRepository;
+import java.io.IOException;
+import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.entity.User;
 import java.util.Map;
-import static org.springframework.http.HttpStatus.OK;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import static net.timxekhach.utility.XeResponseUtils.success;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
-import java.io.IOException;
-import org.springframework.http.ResponseEntity;
-import lombok.RequiredArgsConstructor;
-
+import static org.springframework.http.HttpStatus.OK;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +23,6 @@ public class UserApi {
     private final UserService userService;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
 	@PostMapping("/login")
 	public ResponseEntity<User> login (@RequestBody Map<String, String> info) {
 		return userService.login(info);
@@ -48,12 +45,6 @@ public class UserApi {
 		return success();
 	}
 
-	@PostMapping("/update-thumbnails")
-	public ResponseEntity<Void> updateThumbnails () {
-		userService.updateThumbnails();
-		return success();
-	}
-
 	@PostMapping("/change-password")
 	public ResponseEntity<Void> changePassword (@RequestBody Map<String, String> secretKeyInfo) {
 		userService.changePassword(secretKeyInfo);
@@ -71,7 +62,6 @@ public class UserApi {
 												   @RequestParam(value = "profileImage") MultipartFile profileImage){
 		return success(userService.updateProfileImage(userId, profileImage));
 	}
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

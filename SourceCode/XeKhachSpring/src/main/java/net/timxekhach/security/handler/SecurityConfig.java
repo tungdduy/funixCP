@@ -1,5 +1,4 @@
 // ____________________ ::BEFORE_AUTHORIZATION_SEPARATOR:: ____________________ //
-
 package net.timxekhach.security.handler;
 
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers(securityResource.getPublicUrls()).permitAll()
-
 // ____________________ ::BEFORE_AUTHORIZATION_SEPARATOR:: ____________________ //
 
                 .antMatchers("/user/**").permitAll()
@@ -87,11 +85,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/trip/**").permitAll()
                 .antMatchers("/trip/available-seats/**").permitAll()
                 .antMatchers("/trip/available-trips/**").permitAll()
+                .antMatchers("/trip/search-buss/**").permitAll()
                 .antMatchers("/caller-staff/**").permitAll()
                 .antMatchers("/buss-staff/**").permitAll()
 
 // ____________________ ::AFTER_AUTHORIZATION_SEPARATOR:: ____________________ //
-
                 .anyRequest().authenticated()
             .and()
                 .exceptionHandling()
@@ -101,5 +99,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
-
 // ____________________ ::AFTER_AUTHORIZATION_SEPARATOR:: ____________________ //

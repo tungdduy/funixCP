@@ -3,7 +3,7 @@ import {AuthService} from "../../../../framework/auth/auth.service";
 import {AppMessages} from "../../../i18n";
 import {Url} from "../../../../framework/url/url.declare";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
-import {FormAbstract} from "../../../abstract/form.abstract";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 
 @Component({

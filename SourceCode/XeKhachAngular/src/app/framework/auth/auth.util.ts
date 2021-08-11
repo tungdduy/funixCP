@@ -1,5 +1,5 @@
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {User} from "../../business/entities/user";
+import {User} from "../../business/entities/User";
 import {StringUtil} from "../util/string.util";
 import {StorageUtil} from "../util/storage.util";
 import {configConstant} from "../config.constant";

@@ -1,5 +1,4 @@
-import {Component, QueryList, ViewChildren} from '@angular/core';
-import {XeInputComponent} from "../../../../framework/components/xe-input/xe-input.component";
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'xe-buss-stop',

@@ -22,7 +22,6 @@ public abstract class AbstractModel extends SeparatorContent implements Serializ
     }
 
     protected void init() {
-//        updateSeparatorContent();
     }
 
 }

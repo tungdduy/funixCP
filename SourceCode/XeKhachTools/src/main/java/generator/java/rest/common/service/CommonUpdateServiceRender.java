@@ -18,4 +18,8 @@ public class CommonUpdateServiceRender extends AbstractRender<CommonUpdateServic
         String packageName = StringUtil.removeLastChar(AbstractEntity.class.getPackage().getName(), ".abstracts".length());
         model.setEntities(newInstancesOfAllChildren(AbstractEntity.class, packageName));
     }
+
+    public static void main(String[] args) {
+        new CommonUpdateServiceRender().executeRenders();
+    }
 }

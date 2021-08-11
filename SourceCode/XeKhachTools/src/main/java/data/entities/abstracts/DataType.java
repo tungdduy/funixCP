@@ -10,6 +10,9 @@ import static util.StringUtil.PHONE_REGEX;
 @Getter
 public enum DataType {
     DESCRIPTION(() -> new Column().maxLen(255)),
+    CODE(() -> new Column().maxLen(30).upperOnly()),
+    QUANTITY(() -> new Column(Integer.class).defaultValue(0)),
+    MONEY(() -> new Column(Long.class).defaultValue(0L)),
     MAP_COUNT(() -> new Column(Integer.class).ignoreManualUpdate()),
     REQUIRE_SHORT_STRING(() -> new Column().minLen(3).maxLen(30).notNull()),
     PHONE(() -> new Column().regex(PHONE_REGEX)),
@@ -17,7 +20,6 @@ public enum DataType {
     FALSE(() -> new Column(Boolean.class).defaultValue(false)),
     TRUE(() -> new Column(Boolean.class).defaultValue(true)),
     SECRET_TOKEN(() -> new Column().maxLen(255).jsonIgnore()),
-    MONEY(() -> new Column(Long.class)),
     TIME_ONLY(() -> new Column(java.util.Date.class)),
     DATE_ONLY(() -> new Column(java.util.Date.class)),
     DATE_TIME(() -> new Column(java.util.Date.class))

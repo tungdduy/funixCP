@@ -1,28 +1,73 @@
 <div class="row">
-  <xe-basic-form class="col-md-8"
-                  [formData]="userForm">
-  </xe-basic-form>
+  <div class="col-md-8">
+    <xe-basic-form *ngIf="screen.current === screens.account"
+                   [formData]="userForm">
+      <ng-container belowHeaderTitle>
+        <role-info [roleInfos]="roleInfos" clazz="text-left"></role-info>
+      </ng-container>
+      <ng-container bottomLeftButtons>
+        <xe-btn (click)="screen.go(screens.password)" icon="key"
+                lbl="CHANGE_PASSWORD" type="secondary"></xe-btn>
+      </ng-container>
+    </xe-basic-form>
 
-  <nb-card class="col-md-4">
-    <nb-card-body>
-      <xe-form #password name="updatePassword" onSuccess="reset" readonly>
-        <xe-input name="userId" [value]="user.userId" hidden></xe-input>
-        <lbl class="text-center" #msg p></lbl>
-        <xe-btn center lbl="CLICK_TO_CHANGE_PASSWORD" type="edit" [hidden]="!password.isMute"
-                (click)="password.unMute()"></xe-btn>
-        <div [hidden]="password.isMute">
-          <xe-input name="currentPassword" type="password" required></xe-input>
-          <xe-input name="newPassword" #newPassword  type="password" required></xe-input>
-          <xe-input name="reNewPassword" [matching]="newPassword" type="password"></xe-input>
-
+    <nb-card *ngIf="screen.current === screens.password">
+      <nb-card-body>
+        <xe-form #password
+                 [initCtrl]="initMe"
+                 name="updatePassword"
+                 onSuccess="reset">
+          <xe-input [value]="user.userId" hidden name="userId"></xe-input>
+          <xe-input name="currentPassword" required></xe-input>
+          <xe-input #newPassword name="newPassword" required></xe-input>
+          <xe-input [matching]="newPassword" name="reNewPassword"></xe-input>
           <div class="text-right">
-            <xe-btn type="cancel" (click)="password.reset()"></xe-btn>
-            <xe-btn lbl="OK" type="save" [disabled]="password.isLoading"></xe-btn>
+            <lbl #msg p></lbl>
+            <xe-btn (click)="password.reset(); screen.goHome()" type="back"></xe-btn>
+            <xe-btn [disabled]="password.isLoading" lbl="OK" type="save"></xe-btn>
+          </div>
+        </xe-form>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div *ngIf="company" class="col-md-4">
+    <nb-card>
+      <nb-card-header>
+        <lbl key="company_info"></lbl>
+        :
+      </nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-4">
+            <img [alt]="company.companyName" [src]="company.profileImageUrl"
+                 class="w-100 rounded border border-secondary"/>
+          </div>
+          <div class="col-8">
+            <h6 class="mb-0">
+              <lbl [key]="company.companyName" class="text-info"></lbl>
+            </h6>
+            <lbl [key]="company.companyDesc" br class="d-block"></lbl>
           </div>
         </div>
-      </xe-form>
-    </nb-card-body>
-  </nb-card>
+        <div class="mt-2 text-center">
+          <icon-wrap iconPre="mobile-alt">{{company.hotLine}}</icon-wrap>
+          <xe-btn type="blank" icon="minus"></xe-btn>
+        </div>
+        <div class="text-right">
+          <icon-wrap class="text-right" iconOnly="plus"></icon-wrap>
+        </div>
+
+        <hr/>
+        <div class="text-center">
+          <icon-wrap iconPre="bus">{{company.totalBusses}}</icon-wrap>
+          <icon-wrap iconPre="users-cog">{{company.totalEmployees}}</icon-wrap>
+          <icon-wrap iconPre="suitcase-rolling">{{company.totalTrips}}</icon-wrap>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
 
 </div>
 

@@ -1,24 +1,22 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.TripUser;
-import lombok.*;
-import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import org.apache.commons.lang3.math.NumberUtils;
-import java.util.ArrayList;
+import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
+import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.TripUser;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import net.timxekhach.operation.data.entity.Employee;
 import javax.persistence.*;
+import lombok.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.mapped.abstracts.XePk;
 import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.timxekhach.operation.data.entity.Employee;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
