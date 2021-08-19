@@ -8,8 +8,7 @@ import {CommonUpdateService} from "../../../service/common-update.service";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Notifier} from "../../../../framework/notify/notify.service";
 import {XeLabel} from "../../../i18n";
-import { XeScreen } from '../../../../framework/components/xe-nav/xe-nav.component';
-import {EntityUtil} from "../../../../framework/util/entity.util";
+import {XeScreen} from '../../../../framework/components/xe-nav/xe-nav.component';
 
 @Component({
   selector: 'xe-company-manager',
@@ -17,62 +16,63 @@ import {EntityUtil} from "../../../../framework/util/entity.util";
   templateUrl: 'company-manager.component.html',
 })
 export class CompanyManagerComponent extends FormAbstract {
-
-  screen = new XeScreen('company', 'building', () => this.currentCompany?.companyName);
   screens = {
     company: 'company',
     employees: 'employees',
     userSelection: 'userSelection'
   };
-  currentCompany: Company = new Company();
-  openEmployees = (company) => {
-    this.currentCompany = company;
-    this.screen.go(this.screens.employees);
-  }
-
-  employeeTable: XeTableData = Employee.employeeTable({
-    xeScreen: this.screen,
-    formData: {
-      entityIdentifier: {
-        idFields: () => [
-          {name: "company.companyId", value: this.currentCompany.companyId}
-        ]
-      }
-    }
+  screen = new XeScreen({
+    home: this.screens.company,
+    homeIcon: 'building',
+    homeTitle: () => this.companyTable?.formData?.share?.entity?.companyName
   });
-  companyTable: XeTableData = Company.companyTable({
+
+
+  companyTable: XeTableData<Company> = Company.tableData({
+    xeScreen: this.screen,
+    external: {
+      updateCriteriaTableOnSelect: () => [this.employeeTable]
+    },
+    table: {
+      basicColumns: [
+        {}, {}, {}, {}, {}, {},
+        {action: {screen: this.screens.employees}}
+      ]
+    },
+  });
+  employeeTable: XeTableData<Employee> = Employee.tableData({
+    external: {
+      lookUpScreen: this.screens.userSelection
+    },
+    xeScreen: this.screen,
+  });
+
+  userTable: XeTableData<User> = User.tableData({
+    external: {
+      parent: this.employeeTable
+    },
     xeScreen: this.screen,
     table: {
-      basicColumns: {
-        6: {action: this.openEmployees}
+      action: {
+        filterCondition: (user: User) => user.employee == null,
       }
     },
     formData: {
-      entityIdentifier: {
-        idFields: () => [
-          {name: "companyId", value: this.currentCompany.companyId}
-        ]
+      control: {
+        readMode: true
       }
     }
-  });
-
-  userTable: XeTableData = User.userTable({
-    xeScreen: this.screen,
-    table: {
-      filterCondition: (user: User) => user.employee == null,
-    },
-    formData: {readonly: true}
   });
 
   addSelectedUsersToCompany() {
     const selectedUsers = this.userTable.formData.share.selection.selected;
     const employees = selectedUsers.map(user => {
       const employee = {};
-      employee['companyId'] = this.currentCompany.companyId;
+      employee['companyId'] = this.companyTable.formData.share.entity.companyId;
       employee['userId'] = user.userId;
       return employee;
     });
-    this.subscriptions.push(CommonUpdateService.instance.insertMulti<Employee>(employees, "Employee").subscribe(
+    this.subscriptions.push(CommonUpdateService.instance.insertMulti<Employee>(employees, Employee).subscribe(
       returnedEmployees => {
         console.log(this.userTable.formData.share.tableSource);
         const selectedUserIds = returnedEmployees.map(e => e.user.userId);

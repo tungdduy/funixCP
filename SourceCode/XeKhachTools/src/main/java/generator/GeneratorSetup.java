@@ -14,6 +14,7 @@ public class GeneratorSetup {
     public static final String
             API_ROOT = "SourceCode/XeKhachSpring/src/main/java/net/timxekhach/",
             API_OPERATION_ROOT = API_ROOT + "operation/",
+            API_OPERATION_RESPONSE_ROOT = API_OPERATION_ROOT + "response/",
             API_OPERATION_DATA_ROOT = API_OPERATION_ROOT + "data/",
             API_OPERATION_DATA_ENTITY_ROOT = API_OPERATION_DATA_ROOT + "entity/",
             API_OPERATION_DATA_MAPPED_ROOT = API_OPERATION_DATA_ROOT + "mapped/",

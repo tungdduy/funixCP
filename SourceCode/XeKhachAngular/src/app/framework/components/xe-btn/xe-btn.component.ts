@@ -1,14 +1,15 @@
 import {AfterViewInit, Component, HostBinding, Input} from '@angular/core';
 import {XeLbl} from "../../../business/i18n";
 import {Message} from "../../model/message.model";
+import {AbstractXe} from "../../model/AbstractXe";
 
 @Component({
   selector: 'xe-btn',
   templateUrl: './xe-btn.component.html',
   styleUrls: ['./xe-btn.component.scss']
 })
-export class XeBtnComponent implements AfterViewInit {
-  @Input() lbl;
+export class XeBtnComponent extends AbstractXe implements AfterViewInit {
+  @Input() btnText;
 
   @Input() disabled: boolean = false;
   @HostBinding('style.pointer-events') get pEvents(): string {
@@ -27,12 +28,12 @@ export class XeBtnComponent implements AfterViewInit {
   @Input() left?;
   @Input() right?;
 
-  @Input("type") type: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank';
+  @Input() template: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank';
 
   @Input() hideText;
   get showText() {
     return this.hideText === undefined
-      && (this._label !== undefined || this.lbl !== undefined);
+      && (this._label !== undefined || this.btnText !== undefined);
   }
 
 
@@ -143,9 +144,6 @@ export class XeBtnComponent implements AfterViewInit {
     }
   };
 
-  constructor() {
-  }
-
   get state() {
     return this._state;
   }
@@ -162,22 +160,18 @@ export class XeBtnComponent implements AfterViewInit {
     return pos ? 'd-block text-' + pos : 'd-inline';
   }
 
-  get label(): string {
-    if (!this._label) {
-      this._label = XeLbl(this.lbl);
-    }
-    return this._label;
-  }
-
   btnType;
   btn;
 
   ngAfterViewInit(): void {
+    this.updateBtn();
+  }
+  updateBtn() {
     setTimeout(() => {
-      this.btn = this._types[this.type];
+      this.btn = this._types[this.template];
       const size = this.btn.size;
       this._btnSize = size ? 'btn-' + size : '';
-      this.lbl = this.lbl ? this.lbl : this.btn.label;
+      this.btnText = this.btnText ? this.btnText : this.xeLabel[this.btn.label];
       this.icon = this.icon ? this.icon : this.btn.icon;
       this.btnType = this.btn.type;
       if (this.state === undefined) {

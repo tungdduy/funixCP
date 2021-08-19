@@ -22,6 +22,7 @@ public class EntityModel extends AbstractEntityModel {
                 "import javax.persistence.Entity;",
                 String.format("import net.timxekhach.operation.data.mapped.%s_MAPPED;", this.entityCapName));
     }
+    Boolean hasProfileImage = false;
 
     @Override
     public String buildRenderFilePath() {

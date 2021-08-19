@@ -10,6 +10,7 @@ public interface ${capName}Repository extends JpaRepository<${capName}, ${capNam
     void deleteBy${capName}Id(Long id);
     void deleteAllBy${capName}IdIn(List<Long> ids);
     ${capName} findBy${capName}Id(Long id);
+    List<${capName}> findBy${capName}IdIn(List<Long> id);
     <#list root.entitiesCountMe as counter>
     Integer count${root.entityCapName}IdBy${counter.capName}Id(Long ${counter.camelName});
     </#list>

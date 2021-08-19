@@ -3,6 +3,6 @@
 <xe-form name="login" #login>
   <xe-input name="username" minLength="3" lblKey="USERNAME_PLACE_HOLDER" required></xe-input>
   <xe-input type="password" minLength="3" required></xe-input>
-  <xe-btn center lbl="LOGIN" [disabled]="login.isLoading"></xe-btn>
+  <xe-btn center [btnText]="xeLabel.LOGIN" [disabled]="login.isLoading"></xe-btn>
 </xe-form>
 

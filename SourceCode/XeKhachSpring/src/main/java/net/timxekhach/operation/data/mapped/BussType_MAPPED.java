@@ -2,6 +2,9 @@ package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import javax.validation.constraints.*;
+import java.util.List;
+import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.SeatGroup;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
 import lombok.*;
@@ -51,6 +54,16 @@ public abstract class BussType_MAPPED extends XeEntity {
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
 //====================================================================//
+    @OneToMany(
+        mappedBy = "bussType",
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    @OrderBy("seatGroupOrder DESC")
+    protected List<SeatGroup> seatGroups = new ArrayList<>();
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
     public Integer getTotalBusses() {
         return CommonUpdateService.getBussRepository().countBussIdByBussTypeId(this.bussTypeId);
     }
@@ -64,13 +77,11 @@ public abstract class BussType_MAPPED extends XeEntity {
     protected String bussTypeName;
     @Size(max = 255)
     protected String bussTypeDesc;
-
-    protected Integer totalSeats = 0;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
@@ -84,10 +95,6 @@ public abstract class BussType_MAPPED extends XeEntity {
             }
             if (fieldName.equals("bussTypeDesc")) {
                 this.bussTypeDesc = String.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("totalSeats")) {
-                this.totalSeats = Integer.valueOf(value);
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {

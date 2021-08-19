@@ -10,6 +10,12 @@ public class ${root.entityCapName} extends ${root.entityCapName}_MAPPED {
         super(<#list root.constructorParams as param>${param.name}<#if param_has_next>, </#if></#list>);
     }
     </#if>
+    <#if root.hasProfileImage>
+    @Override
+    public String getProfileImageUrl() {
+        return super.getProfileImageUrl();
+    }
+    </#if>
 
 ${root.separators.body.all}
 

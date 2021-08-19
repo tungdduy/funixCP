@@ -20,9 +20,9 @@ public enum DataType {
     FALSE(() -> new Column(Boolean.class).defaultValue(false)),
     TRUE(() -> new Column(Boolean.class).defaultValue(true)),
     SECRET_TOKEN(() -> new Column().maxLen(255).jsonIgnore()),
-    TIME_ONLY(() -> new Column(java.util.Date.class)),
-    DATE_ONLY(() -> new Column(java.util.Date.class)),
-    DATE_TIME(() -> new Column(java.util.Date.class))
+    TIME_ONLY(() -> new Column(java.util.Date.class).parseExpression("XeDateUtils.timeAppToApi(value)").packageImports("net.timxekhach.utility.XeDateUtils")),
+    DATE_ONLY(() -> new Column(java.util.Date.class).parseExpression("XeDateUtils.dateAppToApi(value)").packageImports("net.timxekhach.utility.XeDateUtils")),
+    DATE_TIME(() -> new Column(java.util.Date.class).parseExpression("XeDateUtils.dateTimeAppToApi(value)").packageImports("net.timxekhach.utility.XeDateUtils")),
     ;
 
 

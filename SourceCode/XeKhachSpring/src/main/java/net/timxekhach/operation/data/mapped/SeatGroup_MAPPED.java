@@ -1,10 +1,10 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.entity.BussType;
+import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
 import lombok.*;
@@ -14,54 +14,53 @@ import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
 @MappedSuperclass @Getter @Setter
-@IdClass(Caller_MAPPED.Pk.class)
+@IdClass(SeatGroup_MAPPED.Pk.class)
 @SuppressWarnings("unused")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public abstract class Caller_MAPPED extends XeEntity {
+public abstract class SeatGroup_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE)
-    protected Long callerId;
+    protected Long seatGroupId;
 
     protected Long getIncrementId() {
-        return this.callerId;
+        return this.seatGroupId;
     }
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE)
-    protected Long companyId;
+    protected Long bussTypeId;
 
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
-        protected Long callerId;
-        protected Long companyId;
+        protected Long seatGroupId;
+        protected Long bussTypeId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
-            Long callerIdLong = Long.parseLong(data.get("callerId"));
-            Long companyIdLong = Long.parseLong(data.get("companyId"));
-            if(NumberUtils.min(new long[]{callerIdLong, companyIdLong}) < 1) {
+            Long seatGroupIdLong = Long.parseLong(data.get("seatGroupId"));
+            Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
+            if(NumberUtils.min(new long[]{seatGroupIdLong, bussTypeIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new Caller_MAPPED.Pk(callerIdLong, companyIdLong);
+            return new SeatGroup_MAPPED.Pk(seatGroupIdLong, bussTypeIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new Caller_MAPPED.Pk(0L, 0L);
+        return new SeatGroup_MAPPED.Pk(0L, 0L);
     }
 
-    protected Caller_MAPPED(){}
-    protected Caller_MAPPED(Company company) {
-        this.setCompany(company);
+    protected SeatGroup_MAPPED(){}
+    protected SeatGroup_MAPPED(BussType bussType) {
+        this.setBussType(bussType);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -69,51 +68,75 @@ public abstract class Caller_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "companyId",
-        referencedColumnName = "companyId",
+        name = "bussTypeId",
+        referencedColumnName = "bussTypeId",
         insertable = false,
         updatable = false)
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "companyId")
-    protected Company company;
+        property = "bussTypeId")
+    protected BussType bussType;
 
-    public Company getCompany(){
-        if (this.company == null) {
-            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
+    public BussType getBussType(){
+        if (this.bussType == null) {
+            this.bussType = CommonUpdateService.getBussTypeRepository().findByBussTypeId(this.bussTypeId);
         }
-        return this.company;
+        return this.bussType;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
-        this.companyId = company.getCompanyId();
+    public void setBussType(BussType bussType) {
+        this.bussType = bussType;
+        this.bussTypeId = bussType.getBussTypeId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
 
 
-    protected Boolean isLock = false;
+    protected Integer seatGroupOrder = 0;
+    @Size(max = 255)
+    protected String seatGroupName;
+    @Size(max = 255)
+    protected String seatGroupDesc;
+
+    protected Integer totalSeats = 0;
+
+    protected Integer seatFrom = 0;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
-            if (fieldName.equals("isLock")) {
-                this.isLock = Boolean.valueOf(value);
+            if (fieldName.equals("seatGroupOrder")) {
+                this.seatGroupOrder = Integer.valueOf(value);
                 continue;
             }
-            if (fieldName.equals("callerId")) {
-                this.callerId = Long.valueOf(value);
+            if (fieldName.equals("seatGroupName")) {
+                this.seatGroupName = String.valueOf(value);
+                continue;
+            }
+            if (fieldName.equals("seatGroupDesc")) {
+                this.seatGroupDesc = String.valueOf(value);
+                continue;
+            }
+            if (fieldName.equals("totalSeats")) {
+                this.totalSeats = Integer.valueOf(value);
+                continue;
+            }
+            if (fieldName.equals("seatFrom")) {
+                this.seatFrom = Integer.valueOf(value);
+                continue;
+            }
+            if (fieldName.equals("seatGroupId")) {
+                this.seatGroupId = Long.valueOf(value);
                     continue;
             }
-            if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+            if (fieldName.equals("bussTypeId")) {
+                this.bussTypeId = Long.valueOf(value);
             }
         }
     }

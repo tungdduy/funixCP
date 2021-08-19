@@ -17,9 +17,12 @@ import {
   NbDialogModule,
   NbMenuModule,
   NbSidebarModule,
+  NbTimepickerModule,
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
+import {NativeDateModule} from "@angular/material/core";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,8 +42,12 @@ import {
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
+    NbTimepickerModule.forRoot(),
+    MatDatepickerModule,
+    NativeDateModule,
   ],
   bootstrap: [AppComponent],
+
 })
 export class AppModule {
 }

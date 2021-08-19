@@ -65,6 +65,11 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
         renders.forEach(AbstractRender::executeRenders);
     }
 
+    @Override
+    public void singleRender() {
+        AbstractUrlRender.renderWithParent();
+    }
+
     public static void standaloneRender() {
         batchNewAllChildrenRenders(AbstractUrlRender.class);
         renderWithParent();

@@ -14,6 +14,7 @@ public interface TripRepository extends JpaRepository<Trip, Trip_MAPPED.Pk> {
     void deleteByTripId(Long id);
     void deleteAllByTripIdIn(List<Long> ids);
     Trip findByTripId(Long id);
+    List<Trip> findByTripIdIn(List<Long> id);
     Integer countTripIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByBussScheduleId(Long bussScheduleId);

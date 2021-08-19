@@ -4,7 +4,7 @@ package net.timxekhach.operation.data.mapped;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.entity.XeLocation;
+import net.timxekhach.operation.data.entity.Location;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
@@ -15,7 +15,6 @@ import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import net.timxekhach.operation.data.entity.Location;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -28,7 +27,7 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE)
-    protected Long xeLocationId;
+    protected Long locationId;
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -47,20 +46,20 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
-        protected Long xeLocationId;
+        protected Long locationId;
         protected Long companyId;
         protected Long bussPointId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
-            Long xeLocationIdLong = Long.parseLong(data.get("xeLocationId"));
+            Long locationIdLong = Long.parseLong(data.get("locationId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
-            if(NumberUtils.min(new long[]{xeLocationIdLong, companyIdLong, bussPointIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{locationIdLong, companyIdLong, bussPointIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new BussPoint_MAPPED.Pk(xeLocationIdLong, companyIdLong, bussPointIdLong);
+            return new BussPoint_MAPPED.Pk(locationIdLong, companyIdLong, bussPointIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
@@ -68,9 +67,9 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     }
 
     protected BussPoint_MAPPED(){}
-    protected BussPoint_MAPPED(Company company, XeLocation xeLocation) {
+    protected BussPoint_MAPPED(Company company, Location location) {
         this.setCompany(company);
-        this.setXeLocation(xeLocation);
+        this.setLocation(location);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -102,47 +101,53 @@ public abstract class BussPoint_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "xeLocationId",
-        referencedColumnName = "xeLocationId",
+        name = "locationId",
+        referencedColumnName = "locationId",
         insertable = false,
         updatable = false)
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "xeLocationId")
-    protected XeLocation xeLocation;
+        property = "locationId")
+    protected Location location;
 
-    public XeLocation getXeLocation(){
-        if (this.xeLocation == null) {
-            this.xeLocation = CommonUpdateService.getXeLocationRepository().findByXeLocationId(this.xeLocationId);
+    public Location getLocation(){
+        if (this.location == null) {
+            this.location = CommonUpdateService.getLocationRepository().findByLocationId(this.locationId);
         }
-        return this.xeLocation;
+        return this.location;
     }
 
-    public void setXeLocation(XeLocation xeLocation) {
-        this.xeLocation = xeLocation;
-        this.xeLocationId = xeLocation.getXeLocationId();
+    public void setLocation(Location location) {
+        this.location = location;
+        this.locationId = location.getLocationId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
 
     @Size(max = 255)
+    protected String bussPointName;
+    @Size(max = 255)
     protected String bussPointDesc;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
+            if (fieldName.equals("bussPointName")) {
+                this.bussPointName = String.valueOf(value);
+                continue;
+            }
             if (fieldName.equals("bussPointDesc")) {
                 this.bussPointDesc = String.valueOf(value);
                 continue;
             }
-            if (fieldName.equals("xeLocationId")) {
-                this.xeLocationId = Long.valueOf(value);
+            if (fieldName.equals("locationId")) {
+                this.locationId = Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {

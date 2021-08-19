@@ -14,4 +14,7 @@ public class XeRoleTsRender extends AbstractRender<XeRoleTsModel> {
         return true;
     }
 
+    public static void main(String[] args) {
+        new XeRoleTsRender().singleRender();
+    }
 }

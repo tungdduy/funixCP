@@ -2,8 +2,6 @@ export const UrlImport = {
     // @ts-ignore
     "CHECK_IN.REGISTER-component": () => require('app/business/pages/check-in/register/register.component').RegisterComponent,
     // @ts-ignore
-    "ADMIN.BUSS_STOP-component": () => require('app/business/pages/admin/buss-stop/buss-stop.component').BussStopComponent,
-    // @ts-ignore
     "ADMIN-component": () => require('app/business/pages/admin/admin.component').AdminComponent,
     // @ts-ignore
     "ADMIN.EMPLOYEE-component": () => require('app/business/pages/admin/employee/employee.component').EmployeeComponent,
@@ -25,6 +23,8 @@ export const UrlImport = {
     "CHECK_IN.LOGIN-component": () => require('app/business/pages/check-in/login/login.component').LoginComponent,
     // @ts-ignore
     "ADMIN.ALL_USER-component": () => require('app/business/pages/admin/all-user/all-user.component').AllUserComponent,
+    // @ts-ignore
+    "ADMIN.BUSS_POINT-component": () => require('app/business/pages/admin/buss-point/buss-point.component').BussPointComponent,
     // @ts-ignore
     "CHECK_IN-module": () => import('app/business/pages/check-in/check-in.module').then(m => m.CheckInModule),
     // @ts-ignore

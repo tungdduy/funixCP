@@ -2,19 +2,17 @@ package generator.abstracts.models;
 
 import generator.abstracts.interfaces.SeparatorContent;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.Serializable;
 
-@Getter
+@Getter @Setter
 public abstract class AbstractModel extends SeparatorContent implements Serializable {
     protected File renderFile;
 
     public File getRenderFile() {
-        if (this.renderFile == null && buildRenderFilePath() != null) {
-            this.renderFile = new File(buildRenderFilePath());
-        }
-        return this.renderFile;
+        return new File(buildRenderFilePath());
     }
 
     public AbstractModel() {

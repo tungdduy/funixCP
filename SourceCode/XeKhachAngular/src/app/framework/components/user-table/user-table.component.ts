@@ -13,10 +13,10 @@ import {XeScreen} from "../xe-nav/xe-nav.component";
 export class UserTableComponent extends FormAbstract {
 
   @Input() xeScreen: XeScreen;
-  @Input() userTable: XeTableData;
+  @Input() userTable: XeTableData<any>;
   @Input() user: () => User = () => {
-    const entity = () => this.userTable.formData.share.entity;
-    switch (this.userTable.formData.entityIdentifier.className) {
+    const entity = () => this.userTable?.formData?.share?.entity;
+    switch (this.userTable?.formData?.entityIdentifier?.clazz?.className) {
       case 'User':
         return entity();
       case 'Employee':

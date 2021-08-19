@@ -35,12 +35,15 @@ public class EntityRepositoryRender extends AbstractEntityRender<EntityRepositor
 
     @Override
     public void runBeforeRender() {
-
         this.getModelFiles().forEach(model -> {
             List<CapCamel> whoCountMe = AbstractEntity.whoCountMe.get(model.getEntityCapName());
             if (whoCountMe != null) {
                 model.getEntitiesCountMe().addAll(whoCountMe);
             }
         });
+    }
+
+    public static void main(String[] args) {
+        new EntityRepositoryRender().singleRender();
     }
 }

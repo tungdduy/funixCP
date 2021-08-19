@@ -1,16 +1,49 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {XeLbl} from "../../../business/i18n";
+
+export interface ScreenConfig {
+  preGo?: (screen) => any;
+  preHome?: (screen) => any;
+  home: string;
+  homeIcon?: string;
+  homeTitle?: () => string;
+}
 
 export class XeScreen {
-  homeTitle: () => string;
-  constructor(private _home: string,
-              private _homeIcon: string,
-              private _homeTitle: undefined | (() => string)) {
-    this.homeTitle = _homeTitle;
+  config: ScreenConfig;
+
+  get isHome() {
+    return this.current === this.config.home;
   }
 
-  current = this._home;
+  isThisHome(checkHome: string) {
+    return this.config.home === checkHome;
+  }
 
-  moveToItem(item: any) {
+  constructor(config: ScreenConfig) {
+    this.config = config;
+    this.current = config.home;
+    if (!config.homeTitle) this.config.homeTitle = () => this.config.home;
+  }
+
+  is(checkScreen: string) {
+    return this.current === checkScreen;
+  }
+
+  current;
+  stack = [];
+
+  get home() {
+    return this.config.home;
+  }
+
+  get title() {
+    return this.current === this.config.home
+      ? XeLbl(`screen.${this.config.home}`)
+      : XeLbl(this.config.homeTitle());
+  }
+
+  private _move = (item: any) => {
     let foundItem = -1;
     for (let i = this.stack.length - 1; i >= 0; i--) {
       if (this.stack[i] === item) {
@@ -26,38 +59,26 @@ export class XeScreen {
     return item;
   }
 
-  _stack = [];
-  get stack() {
-    if (!this._stack) {
-      this._stack = [];
-    }
-    return this._stack;
-  }
-
-  get homeIcon() {
-    return this._homeIcon;
-  }
-
-  get home() {
-    return this._home;
-  }
-
   back = () => {
     if (this.stack.length === 0) {
       this.goHome();
     }
     this.stack.shift();
-    let result = this.home;
+    let result = this.config.home;
     if (this.stack.length > 0) {
       result = this.stack[0];
     }
     this.current = result;
   }
-  goHome() {
-    this.current = this.home;
+  goHome = () => {
+    if (this.config.preHome) this.config.preHome(this.config.home);
+    this.stack = [];
+    this.current = this.config.home;
   }
-  go(item: any) {
-    this.current = this.moveToItem(item);
+
+  go = (item: any) => {
+    if (this.config.preGo) this.config.preGo(item);
+    this.current = this._move(item);
   }
 }
 
@@ -70,7 +91,8 @@ export class XeNavComponent implements OnInit {
 
   @Input() screen: XeScreen;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

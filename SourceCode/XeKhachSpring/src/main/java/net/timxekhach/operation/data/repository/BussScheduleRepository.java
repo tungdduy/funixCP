@@ -17,19 +17,13 @@ public interface BussScheduleRepository extends JpaRepository<BussSchedule, Buss
     void deleteByBussScheduleId(Long id);
     void deleteAllByBussScheduleIdIn(List<Long> ids);
     BussSchedule findByBussScheduleId(Long id);
+    List<BussSchedule> findByBussScheduleIdIn(List<Long> id);
     Integer countBussScheduleIdByCompanyId(Long company);
+    Integer countBussScheduleIdByBussId(Long buss);
     @SuppressWarnings("unused")
     void deleteByBussId(Long bussId);
     @SuppressWarnings("unused")
     List<BussSchedule> findByBussId(Long bussId);
-    @SuppressWarnings("unused")
-    void deleteByBussIdAndCompanyId(Long bussId, Long companyId);
-    @SuppressWarnings("unused")
-    List<BussSchedule> findByBussIdAndCompanyId(Long bussId, Long companyId);
-    @SuppressWarnings("unused")
-    void deleteByCompanyId(Long companyId);
-    @SuppressWarnings("unused")
-    List<BussSchedule> findByCompanyId(Long companyId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     List<BussSchedule> findByStartPointAndEndPointAndEffectiveDateLessThanEqualFromAndMondayIsTrue(BussPoint startPoint, BussPoint endPoint, Date departureDate);

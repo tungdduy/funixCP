@@ -1,13 +1,15 @@
 <div class="navigator" *ngIf="screen">
   <div class="d-inline-block">
-    <xe-btn (click)="screen.goHome()" [icon]="screen.homeIcon" hideText></xe-btn>
-    <lbl *ngIf="screen.stack.length > 0" class="text-primary" prepend="/ ">{{screen.homeTitle ? screen.homeTitle() : 'screen.' + screen.home}}</lbl>
+    <xe-btn (click)="screen.goHome()" [icon]="screen.config.homeIcon" hideText></xe-btn>
+    <lbl class="text-primary" prepend="/ ">{{screen.title}}</lbl>
   </div>
-  <div class="d-inline-block pl-1" *ngFor="let item of screen.stack.reverse(); index as i; last as isLast">
-    <lbl (click)="!isLast ? screen.go(item) : ''"
-         [type]="isLast ? 'text' : 'link'"
-         key="screen.{{item}}"
-         prepend=" / ">
-    </lbl>
-  </div>
+  <ng-container *ngIf="!screen.isHome" >
+    <div class="d-inline-block pl-1" *ngFor="let item of screen?.stack?.reverse(); index as i; last as isLast">
+      <lbl (click)="!isLast ? screen.go(item) : ''"
+           [type]="isLast ? 'text' : 'link'"
+           key="screen.{{item}}"
+           prepend=" / ">
+      </lbl>
+    </div>
+  </ng-container>
 </div>

@@ -40,4 +40,8 @@ public class RestApiRender extends AbstractRestRender<RestApiModel> {
         return method.getBuilder().allControllerImportClasses();
     }
 
+    public static void main(String[] args) {
+        new RestApiRender().executeRenders();
+    }
+
 }

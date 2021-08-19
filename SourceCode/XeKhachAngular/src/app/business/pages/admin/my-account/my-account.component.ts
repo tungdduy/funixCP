@@ -1,13 +1,12 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {AuthService} from "../../../../framework/auth/auth.service";
-import {XeFormData} from "../../../../framework/model/XeFormData";
 import {User} from "../../../entities/User";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {RoleInfo, RoleUtil} from "../../../../framework/util/role.util";
 import {Company} from "../../../entities/Company";
-import {PhonePipe} from "../../../../framework/components/pipes/phone-pipe";
+import {Notifier} from "../../../../framework/notify/notify.service";
 
 @Component({
   selector: 'xe-my-account',
@@ -24,7 +23,7 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
     account: 'account',
     password: 'password'
   };
-  screen = new XeScreen(this.screens.account, 'user', undefined);
+  screen = new XeScreen({home: this.screens.account, homeIcon: 'user'});
 
   handlers = [
     {
@@ -33,26 +32,32 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
     }
   ];
 
-  userForm: XeFormData = User.userTable({
+  userForm = User.tableData({
     formData: {
       header: {
         descField: undefined
       },
       share: {entity: this.user},
-      fields: {
-        4: {hidden: true}
-      },
-      onAvatarChange: (user) => {
-        this.updateUser(user);
-      },
-      onSuccess: (user) => {
-        this.updateUser(user);
+      fields: [{}, {}, {}, {}, undefined],
+      action: {
+        postUpdateProfile: (user) => {
+          this.updateUser(user);
+        },
+        postUpdate: (user) => {
+          this.updateUser(user);
+        },
+        postCancel: () => this.cancelEdit(),
+        preEdit: () => this.startEditUser(),
       }
     }
-  }).formData;
-  companyForm = Company.companyTable({
+  }, this.user).formData;
+  companyForm = Company.tableData({
     formData: {
-      share: {entity: this.company}
+      share: {entity: this.user?.employee?.company},
+      action: {
+        postCancel: () => this.cancelEdit(),
+        preEdit: () => this.startEditCompany()
+      }
     }
   }).formData;
   userFormClass = "col-md-6";
@@ -75,17 +80,23 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
     this.userBodyInfoClass = "";
     this.companyBodyInfoClass = "";
   }
-  private updateUser(user) {
+
+  private updateUser(user: User) {
     this.user = user;
+    this.company = user?.employee?.company;
     AuthUtil.instance.setRepoUser(user);
   }
 
   constructor(private authService: AuthService) {
     super();
+    this.subscriptions.push(this.refresh$(this.user, User).subscribe(
+      newUsers => this.updateUser(newUsers[0]),
+      error => Notifier.httpErrorResponse(error)
+    ));
   }
 
   ngAfterViewInit() {
     super.ngAfterViewInit();
-    this.refresh(this.user, "User");
   }
+
 }

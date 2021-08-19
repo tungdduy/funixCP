@@ -1,25 +1,36 @@
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
-import {Employee} from "./Employee";
-import {XeTableData} from "../../framework/model/XeTableData";
+import {EntityIdentifier} from "../../framework/model/XeFormData";
 import {ObjectUtil} from "../../framework/util/object.util";
-import {PhonePipe} from "../../framework/components/pipes/phone-pipe";
+import {XeTableData} from "../../framework/model/XeTableData";
+import {TripUser} from "./TripUser";
+import {Employee} from "./Employee";
+import {PhonePipe} from "../../framework/components/pipes/phone.pipe";
+import {InputTemplate} from "../../framework/model/EnumStatus";
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
+
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class User extends XeEntity {
-  userId: string;
-  username: string;
-  email: string;
-  phoneNumber: string;
-  fullName: string;
-  role: string;
-  roles: string[];
-  employee: Employee;
-
-  profileImageUrl = this.initProfileImage();
-
-  constructor() {
-    super();
-  }
-
+    static className = 'User';
+    static camelName = 'user';
+    static otherMainIdNames = [];
+    static mainIdName = 'userId';
+    static pkMapFieldNames = [];
+    userId: number;
+    allMyTrips: TripUser[];
+    employee: Employee;
+    email: string;
+    phoneNumber: string;
+    password: string;
+    username: string;
+    fullName: string;
+    role: string;
+    nonLocked: boolean;
+    secretPasswordKey: string;
+    profileImageUrl = this.initProfileImage();
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
   static setRole(user: any, roles: string[]) {
     if (!roles) {
       user.role = undefined;
@@ -32,57 +43,71 @@ export class User extends XeEntity {
     if (!roleString) return [];
     return roleString.split(",").filter(s => s.startsWith("ROLE_"));
   }
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
-  static userTable = (option: {} = {}): XeTableData => {
-    return ObjectUtil.assignEntityTable(option, User._userTable());
+  static entityIdentifier = (user: User): EntityIdentifier<User> => ({
+    entity: user,
+    clazz: User,
+    idFields: () => [
+      {name: "userId", value: user.userId},
+    ]
+  })
+
+  static new(option = {}) {
+    return new User();
   }
 
-  private static _userTable = (): XeTableData => {
-    return {
-      table: {
-        basicColumns: [
-          {field: {name: 'profileImageUrl'}, type: "avatar"},
-          {field: {name: 'fullName'}, type: "boldStringRole", inline: true,
-            subColumns: [{
-              field: {name: 'username', css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'id-card'}
-            }]
-          },
-          { // 2
-            field: {name: 'email'}, type: "string", icon: {iconOnly: 'at'}, inline: true,
-            subColumns: [{
-              field: {name: 'phoneNumber', pipe: PhonePipe.instance, css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'mobile-alt'}
-            }]
-          },
-        ],
+  static tableData = (option: XeTableData<User> = {}, user: User = User.new()): XeTableData<User> => {
+    const table = User._userTable(user);
+    ObjectUtil.assignEntity(option, table);
+    XeTableData.fullFill(table);
+    return table;
+  }
+
+  private static _userTable = (user: User): XeTableData<User> => ({
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+    table: {
+      basicColumns: [
+        {field: {name: 'profileImageUrl'}, type: "avatar"},
+        {
+          field: {name: 'fullName'}, type: "boldStringRole", display: {header: {inline: true}},
+          subColumns: [{
+            field: {name: 'username'}, type: 'string', display: {header: {icon: {iconOnly: 'id-card'}}, row: {css: 'd-block text-info'}}
+          }]
+        },
+        { // 2
+          field: {name: 'email'}, type: "string", display: {header: {icon: {iconOnly: 'at'}, inline: true}},
+          subColumns: [{
+            field: {name: 'phoneNumber', template: InputTemplate.phone},
+            display: {row: {css: 'd-block text-info'}, header: {icon: {iconOnly: 'mobile-alt'}}},
+            type: 'string',
+          }]
+        },
+      ],
+    },
+    formData: {
+      entityIdentifier: User.entityIdentifier(user),
+      header: {
+        profileImage: {name: 'profileImageUrl'},
+        titleField: {name: 'fullName'},
+        descField: {name: 'phoneNumber'},
       },
-      formData: {
-        entityIdentifier: {
-          className: "User",
-          idFields: () => [
-            {name: "userId", value: 0}
-          ],
-        },
-        share: {entity: new User()},
-        header: {
-          profileImage: {name: 'profileImageUrl'},
-          titleField: {name: 'fullName'},
-          descField: {name: 'phoneNumber'},
-        },
-        fields: [
-          // 0
-          {name: "username", required: true},
-          // 1
-          {name: "phoneNumber", required: true},
-          // 2
-          {name: "fullName", required: true},
-          // 3
-          {name: "email", required: true},
-          // 4
-          {name: "password", clearOnSuccess: true, hidden: true},
-          // 5
-          {name: "role", hidden: true},
-        ]
-      }
-    };
-  }
+      fields: [
+        // 0
+        {name: "username", required: true},
+        // 1
+        {name: "phoneNumber", required: true},
+        // 2
+        {name: "fullName", required: true},
+        // 3
+        {name: "email", required: true},
+        // 4
+        {name: "password", clearOnSuccess: true},
+        // 5
+        {name: "role", hidden: true},
+      ]
+    }
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+  })
 }
+

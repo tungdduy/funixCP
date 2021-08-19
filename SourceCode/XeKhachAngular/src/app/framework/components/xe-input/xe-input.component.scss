@@ -8,3 +8,31 @@
   color: black !important;
 }
 
+
+// OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+.options-group {
+  padding: 5px;
+  text-align: center;
+  font-size: small;
+}
+.options-group div {
+  cursor: pointer;
+  padding: 5px;
+  font-weight: bold;
+  border: 1px solid gray;
+  color: gray;
+  border-radius: 12px;
+  margin: 0 2px;
+  display: inline;
+}
+
+.options-group div:hover {
+  background: #dee2e6;
+}
+
+.option-item.active {
+  background: #fff707e0;
+  border: 2px solid #ffc107 !important;
+  color: red !important;
+}
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<< OPTIONS

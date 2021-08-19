@@ -14,6 +14,7 @@ public interface BussSchedulePriceRepository extends JpaRepository<BussScheduleP
     void deleteByBussSchedulePriceId(Long id);
     void deleteAllByBussSchedulePriceIdIn(List<Long> ids);
     BussSchedulePrice findByBussSchedulePriceId(Long id);
+    List<BussSchedulePrice> findByBussSchedulePriceIdIn(List<Long> id);
     @SuppressWarnings("unused")
     void deleteByBussScheduleId(Long bussScheduleId);
     @SuppressWarnings("unused")

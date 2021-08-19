@@ -31,10 +31,12 @@ public class CommonUpdateService {
         return CommonUpdateService.static${entity.capName}Repository;
     }
 </#list>
+    public static final Map<Class<? extends XeEntity>, Object> repoMap = new HashMap<>();
     @PostConstruct
     public void postConstruct() {
 <#list root.entities as entity>
         CommonUpdateService.static${entity.capName}Repository = ${entity.camelName}Repository;
+        repoMap.put(${entity.capName}.class, ${entity.camelName}Repository);
 </#list>
     }
 
@@ -66,23 +68,38 @@ public class CommonUpdateService {
     </#list>
 
         ${camelName}.setFieldByName(data);
+        ${camelName}.preUpdateAction();
         ${camelName}Repository.save(${camelName});
         return ${camelName};
     }
+        
+    public List<${capName}> updateMulti${capName}(List<Map<String, String>> multiData) {
+        List<${capName}> ${camelName}ParseList = new ArrayList<>();
+        multiData.forEach(data -> {
+            ${camelName}ParseList.add(this.update${capName}(data));
+        });
+        ${camelName}Repository.flush();
+        return ${camelName}ParseList;
+    }
+        
     public ${capName} insert${capName}(Map<String, String> data) {
         ${capName} ${camelName} = new ${capName}();
         ${camelName}.setFieldByName(data);
         
         <#list entity.primaryKeyEntities as pkEntity>
-        if (XeBooleanUtils.isTrue(data.get("new${pkEntity.capName}IfNull")) && (${camelName}.get${pkEntity.capName}Id() == null || ${camelName}.get${pkEntity.capName}Id() <= 0)) {
-            Map<String, String> ${pkEntity.camelName}Data = new HashMap<>();
-            data.entrySet().stream()
-                    .filter(entry -> entry.getKey().startsWith("${pkEntity.camelName}."))
-                    .forEach(entry -> ${pkEntity.camelName}Data.put(entry.getKey().substring("${pkEntity.camelName}.".length()), entry.getValue()));
-            ${camelName}.set${pkEntity.capName}(this.insert${pkEntity.capName}(${pkEntity.camelName}Data));
+        if (${camelName}.get${pkEntity.capName}Id() == null || ${camelName}.get${pkEntity.capName}Id() <= 0) {
+            if (XeBooleanUtils.isTrue(data.get("new${pkEntity.capName}IfNull"))) {
+                Map<String, String> ${pkEntity.camelName}Data = new HashMap<>();
+                data.entrySet().stream()
+                        .filter(entry -> entry.getKey().startsWith("${pkEntity.camelName}."))
+                        .forEach(entry -> ${pkEntity.camelName}Data.put(entry.getKey().substring("${pkEntity.camelName}.".length()), entry.getValue()));
+                ${camelName}.set${pkEntity.capName}(this.insert${pkEntity.capName}(${pkEntity.camelName}Data));
+            }
+        } else {
+            ${camelName}.set${pkEntity.capName}(this.${pkEntity.camelName}Repository.findBy${pkEntity.capName}Id(${camelName}.get${pkEntity.capName}Id()));
         }
         </#list>
-
+        ${camelName}.preSaveAction();
         ${camelName} = ${camelName}Repository.save(${camelName});
         return ${camelName};
     }
@@ -92,6 +109,8 @@ public class CommonUpdateService {
         return result;
     }
     public void delete${capName}By${capName}Ids(Long[] ${camelName}Ids) {
+        List<${capName}> deletingList = ${camelName}Repository.findBy${capName}IdIn(Arrays.asList(${camelName}Ids));
+        deletingList.forEach(XeEntity::preRemoveAction);
         ${camelName}Repository.deleteAllBy${capName}IdIn(Arrays.asList(${camelName}Ids));
     }
     <#if entity.primaryKeyClasses?size gt 0>

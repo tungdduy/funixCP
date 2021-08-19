@@ -1,16 +1,21 @@
 package net.timxekhach.operation.data.mapped.abstracts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import net.timxekhach.operation.data.entity.Buss;
+import net.timxekhach.operation.data.mapped.Buss_MAPPED;
+import net.timxekhach.operation.data.repository.BussRepository;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.security.model.SecurityResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
 
 @MappedSuperclass
 public abstract class XeEntity implements Serializable {
@@ -22,7 +27,7 @@ public abstract class XeEntity implements Serializable {
         return String.format("%s/profile.jpg", this.buildUniquePath());
     }
 
-    public String getProfileImageUrl() {
+    protected String getProfileImageUrl() {
         if(new File(this.buildProfileImagePath()).exists()) {
             return String.format("%s/profile.jpg", this.buildUniqueUrl());
         }
@@ -80,6 +85,18 @@ public abstract class XeEntity implements Serializable {
 
     @Transient
     @JsonIgnore
+    protected boolean isPreUpdate;
+    @PreUpdate
+    private void _preUpdate(){
+        if (!this.isPreUpdate) { //avoid call twice on persist
+            this.isPreUpdate = true;
+            this.preUpdate();
+        }
+    }
+    protected void preUpdate() {};
+
+    @Transient
+    @JsonIgnore
     protected boolean isPostPersisted;
     @PostPersist
     private void _postPersist(){
@@ -114,4 +131,29 @@ public abstract class XeEntity implements Serializable {
         }
     }
     protected void postRemove() {};
+
+    public void preSaveAction() {};
+    public void preRemoveAction(){};
+    public void preUpdateAction(){};
+    public void preSetFieldAction(){};
+    public void postSetFieldAction(){};
+
+    public void setFieldByName(Map<String, String> data) {
+        this.preSetFieldAction();
+        this._setFieldByName(data);
+        this.postSetFieldAction();
+    }
+
+    protected abstract void _setFieldByName(Map<String, String> data);
+
+    @Transient
+    @SuppressWarnings("rawtypes")
+    protected JpaRepository getRepository() {
+        return (JpaRepository) CommonUpdateService.repoMap.get(this.getClass());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void save() {
+        this.getRepository().save(this);
+    }
 }

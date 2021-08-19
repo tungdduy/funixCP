@@ -16,9 +16,14 @@ import static util.ReflectionUtil.newInstance;
 @AllArgsConstructor @Getter @Setter
 public class MapColumn {
 
+    public MapColumn orderBy(String orderBy) {
+        this.core.orderBy = orderBy;
+        return this;
+    }
+
     @Getter @Setter
     public static class Core {
-        String fieldName, mappedBy, fieldCapName;
+        String fieldName, mappedBy, orderBy, fieldCapName;
         Boolean isUnique = false;
         Set<Join> joins = new HashSet<>();
         MapTo mapTo;

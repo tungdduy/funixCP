@@ -9,6 +9,16 @@ import {User} from "../../../entities/User";
   styleUrls: ['./all-user.component.scss']
 })
 export class AllUserComponent extends FormAbstract {
-  user = () => this.userTable.formData.share.entity;
-  userTable: XeTableData = User.userTable();
+  user = () => this.userTable?.formData?.share?.entity;
+  userTable: XeTableData<User> = User.tableData({
+    formData: {
+      control: {
+        allowDelete: true,
+        allowAdd: true
+      },
+      display: {
+        cancelBtn: "cancel"
+      }
+    }
+  });
 }

@@ -30,6 +30,10 @@ public class StringUtil extends StringUtils {
         return "";
     }
 
+    public static String getStringBetween(String root, String pre, String after) {
+        return root.split(pre)[1].split(after)[0];
+    }
+
     public static void addIfNotContainsTrim(Collection<String> collection, String e) {
         if (isBlank(e)) return;
         if(collection.stream().map(String::trim).noneMatch(s -> s.equals(e.trim()))){
@@ -197,4 +201,7 @@ public class StringUtil extends StringUtils {
     }
 
 
+    public static String upperFirstLetter(String camelName) {
+        return StringUtil.isBlank(camelName) || camelName.length() < 2 ? "" : camelName.substring(0, 1).toUpperCase() + camelName.substring(1);
+    }
 }

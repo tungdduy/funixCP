@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {Employee} from "../../../entities/Employee";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {XeTableData} from "../../../../framework/model/XeTableData";
+import {User} from "../../../entities/User";
 
 @Component({
   selector: 'xe-employee',
@@ -9,15 +10,8 @@ import {XeTableData} from "../../../../framework/model/XeTableData";
   templateUrl: 'employee.component.html',
 })
 export class EmployeeComponent {
-  user = AuthUtil.instance.user;
-  company = this.user.employee.company;
-  employeeTable: XeTableData = Employee.employeeTable({
-    formData: {
-      entityIdentifier: {
-        idFields: () => [
-          {name: "company.companyId", value: this.company.companyId}
-        ]
-      }
-    }
-  });
+  user: User = AuthUtil.instance.user;
+  employeeTable: XeTableData<Employee> = Employee.tableData({}, Employee.new({
+    company: this.user?.employee?.company
+  }));
 }

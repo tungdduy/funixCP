@@ -14,6 +14,7 @@ public interface CompanyRepository extends JpaRepository<Company, Company_MAPPED
     void deleteByCompanyId(Long id);
     void deleteAllByCompanyIdIn(List<Long> ids);
     Company findByCompanyId(Long id);
+    List<Company> findByCompanyIdIn(List<Long> id);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

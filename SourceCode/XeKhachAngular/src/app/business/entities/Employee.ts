@@ -1,27 +1,60 @@
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
-import {User} from "./User";
-import {Company} from "./Company";
-import {XeTableData} from "../../framework/model/XeTableData";
-import {XeScreen} from "../../framework/components/xe-nav/xe-nav.component";
+import {EntityIdentifier} from "../../framework/model/XeFormData";
 import {ObjectUtil} from "../../framework/util/object.util";
-import {PhonePipe} from "../../framework/components/pipes/phone-pipe";
+import {XeTableData} from "../../framework/model/XeTableData";
+import {Company} from "./Company";
+import {User} from "./User";
+import {PhonePipe} from "../../framework/components/pipes/phone.pipe";
+import {InputTemplate} from "../../framework/model/EnumStatus";
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
+
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Employee extends XeEntity {
-  companyId: number;
-  employeeId: number;
-  userId: number;
-  isLock: boolean;
-  user: User;
-  company: Company;
-  countBusses: number;
+    static className = 'Employee';
+    static camelName = 'employee';
+    static otherMainIdNames = ['companyId', 'userId'];
+    static mainIdName = 'employeeId';
+    static pkMapFieldNames = ['company', 'user'];
+    employeeId: number;
+    companyId: number;
+    userId: number;
+    company: Company;
+    user: User;
+    countBusses: number;
+    isLock: boolean;
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
-  profileImageUrl = this.initProfileImage();
+  static entityIdentifier = (employee: Employee): EntityIdentifier<Employee> => ({
+    entity: employee,
+    clazz: Employee,
+    idFields: () => [
+      {name: "employeeId", value: employee.employeeId},
+      {name: "company.companyId", value: employee.company?.companyId},
+      {name: "user.userId", value: employee.user?.userId}
+    ]
+  })
 
-  static employeeTable = (option: {} = {}): XeTableData => {
-    return ObjectUtil.assignEntityTable(option, Employee._employeeTable());
+  static new(option = {}) {
+    const employee = new Employee();
+    employee.company = new Company();
+    employee.user = new User();
+    ObjectUtil.assignEntity(option, employee);
+    return employee;
   }
 
-  private static _employeeTable = (): XeTableData => ({
+  static tableData = (option: XeTableData<Employee> = {}, employee: Employee = Employee.new()): XeTableData<Employee> => {
+    const table = Employee._employeeTable(employee);
+    ObjectUtil.assignEntity(option, table);
+    XeTableData.fullFill(table);
+    return table;
+  }
+
+  private static _employeeTable = (employee: Employee): XeTableData<Employee> => ({
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
     table: {
       basicColumns: [
         // 0
@@ -29,23 +62,18 @@ export class Employee extends XeEntity {
         // 1
         {field: {name: 'user.username'}, type: "boldStringRole"},
         { // 2
-          field: {name: 'user.email'}, type: "string", icon: {iconOnly: 'at'}, inline: true,
+          field: {name: 'user.email'}, type: "string", display: {header: {icon: {iconOnly: 'at'}, inline: true}},
           subColumns: [{
-            field: {name: 'user.phoneNumber', pipe: PhonePipe.instance, css: 'd-block text-info'}, type: 'string', icon: {iconOnly: 'mobile-alt'}
+            field: {name: 'user.phoneNumber', template: InputTemplate.phone},
+            type: 'string',
+            display: {header: {icon: {iconOnly: 'mobile-alt'}}, row: {css: 'd-block text-info'}}
           }]
         },
       ],
     },
     formData: {
-      entityIdentifier: {
-        className: "Employee",
-        idFields: () => [
-          {name: "company.companyId", value: 0},
-          {name: "user.userId", value: 0, newIfNull: 'User'},
-          {name: "employeeId", value: 0},
-        ]
-      },
-      share: {entity: new Employee(), selection: {isEmpty: () => true}},
+      entityIdentifier: Employee.entityIdentifier(employee),
+      share: {entity: Employee.new(), selection: {isEmpty: () => true}},
       header: {
         profileImage: {name: 'user.profileImageUrl'},
         titleField: {name: 'user.fullName'},
@@ -60,5 +88,7 @@ export class Employee extends XeEntity {
         {name: "user.password", required: false, clearOnSuccess: true},
       ]
     }
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
   })
 }
+

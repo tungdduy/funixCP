@@ -1,0 +1,35 @@
+<xe-table
+  *ngIf="screen.current === screens.bussPoints"
+  [tableData]="bussPointTable"></xe-table>
+
+
+<div *ngIf="screen.current === screens.create">
+  <nb-card size="medium">
+    <nb-card-header>
+      <h4>
+        <xe-btn (click)="backToBussPointList()" hideText template="back"></xe-btn>
+        <lbl [txt]="xeLabel.ADD_NEW_BUSS_POINT"></lbl>
+      </h4>
+    </nb-card-header>
+    <nb-card-body>
+      <nb-stepper orientation="vertical">
+        <nb-step [label]="xeLabel.STEP_1">
+          <xe-input grid [label]="xeLabel.INPUT_THEN_CHOOSE_LOCATION" [(value)]="searchLocationText" (input)="searchLocation()"></xe-input>
+            <ng-container *ngFor="let location of locations$ | async | filterLocation">
+              <div [hidden]="!searchLocationText">
+                <button (click)="selectLocation(location)" nbButton nbStepperNext>{{displayLocation(location)}}</button>
+              </div>
+            </ng-container>
+        </nb-step>
+        <nb-step [label]="xeLabel.STEP_2">
+          <h6 [textContent]="xeLabel.NAME_SET_UP_OPTION"></h6>
+          <h5>{{displayLocation(currentBussPointInTable().location)}}</h5>
+          <xe-basic-form [formData]="bussPointTable.formData">
+          </xe-basic-form>
+
+        </nb-step>
+      </nb-stepper>
+    </nb-card-body>
+  </nb-card>
+
+</div>

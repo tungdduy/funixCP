@@ -5,8 +5,12 @@ export const StringUtil = {
   isBlank(value: string | null | undefined) {
     return value === null
       || value === undefined
+      || value === 'undefined'
       || value.toString().trim().length === 0
       || value.toString().trim() === "null";
+  },
+  equalsIgnoreCase(string1, string2) {
+    return string1 && string2 && string1.toLowerCase() === string2.toLowerCase();
   },
 
   isNotBlank(value: string | null | undefined) {

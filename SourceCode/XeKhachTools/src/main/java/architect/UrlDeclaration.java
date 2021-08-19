@@ -22,8 +22,8 @@ public class UrlDeclaration {
                         .method("update-password").param("data", Map.class)
                 .create("trip")
                         .method("available-seats").type(List.class).param("data", Map.class)
-                        .method("available-trips").type(List.class).param("data", Map.class)
-                        .method("search-buss").type(List.class).param("description", String.class)
+                        .method("available-trips").type(List.class)
+                        .method("searchLocation").type(List.class).param("searchString", String.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;
@@ -43,7 +43,7 @@ public class UrlDeclaration {
                         .sibling("buss-type").roles(ROLE_SYS_ADMIN)
                         .sibling("buss").roles(ROLE_BUSS_STAFF)
                         .sibling("employee").roles(ROLE_BUSS_ADMIN)
-                        .sibling("buss-stop").roles(ROLE_BUSS_ADMIN)
+                        .sibling("buss-point").roles(ROLE_BUSS_ADMIN)
                         .sibling("ticket").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
 
         ;

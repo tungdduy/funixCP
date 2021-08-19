@@ -110,11 +110,15 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
     <#if map.isUnique>
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "${map.fieldName}Id")
+        property = "${map.mapTo.entity.camelName}Id")
     protected ${map.mapTo.simpleClassName} ${map.fieldName};
+    <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
     <#else>
-    @JsonIgnore
+    <#if map.orderBy?has_content>
+    @OrderBy("${map.orderBy}")
+    </#if>
     protected List<${map.mapTo.simpleClassName}> ${map.fieldName} = new ArrayList<>();
+    <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
     </#if>
     <#elseif map.joins?size gt 0>
     <#if map.isUnique>
@@ -133,8 +137,9 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "${map.fieldName}Id")
+        property = "${map.mapTo.entity.camelName}Id")
     protected ${map.mapTo.simpleClassName} ${map.fieldName};
+    <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
 
     public void set${map.fieldCapName}(${map.mapTo.simpleClassName} ${map.fieldName}) {
         this.${map.fieldName} = ${map.fieldName};
@@ -222,18 +227,14 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 <#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <#-- +++++++++++++++++++NEWSECION+++++++++++++++++++++++ -->
 <#-- +++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
         <#list root.fieldsAbleAssignByString as column>
             if (fieldName.equals("${column.fieldName}")) {
-            <#if column.simpleClassName == 'Date'>
-                try {
-                this.${column.fieldName} = DateUtils.parseDate(value);
-                } catch (Exception e) {
-                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
-                }
+            <#if column.parseExpression?has_content>
+                this.${column.fieldName} = ${column.parseExpression};
             <#else>
                 this.${column.fieldName} = ${column.simpleClassName}.valueOf(value);
             </#if>

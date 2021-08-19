@@ -14,6 +14,7 @@ public interface BussRepository extends JpaRepository<Buss, Buss_MAPPED.Pk> {
     void deleteByBussId(Long id);
     void deleteAllByBussIdIn(List<Long> ids);
     Buss findByBussId(Long id);
+    List<Buss> findByBussIdIn(List<Long> id);
     Integer countBussIdByCompanyId(Long company);
     Integer countBussIdByBussTypeId(Long bussType);
     @SuppressWarnings("unused")

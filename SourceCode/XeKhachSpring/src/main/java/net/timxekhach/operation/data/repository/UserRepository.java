@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, User_MAPPED.Pk> {
     void deleteByUserId(Long id);
     void deleteAllByUserIdIn(List<Long> ids);
     User findByUserId(Long id);
+    List<User> findByUserIdIn(List<Long> id);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     boolean existsByEmail(String email);
@@ -21,8 +22,6 @@ public interface UserRepository extends JpaRepository<User, User_MAPPED.Pk> {
     User findFirstByUsernameOrEmail(String username, String email);
 
     User findFirstByEmail(String email);
-
-    List<User> findByUserIdIn(List<Long> userIds);
 
     boolean existsByUserIdIn(List<Long> userIds);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

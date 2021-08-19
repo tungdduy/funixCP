@@ -19,17 +19,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static generator.GeneratorSetup.*;
 import static util.FileUtil.fetchAllPossibleFiles;
 import static util.ReflectionUtil.newInstanceFromClass;
 
 public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
+    public void singleRender() {
+        this.executeRenders();
+    };
 
     protected abstract boolean isOverrideExistingFile();
+    protected Supplier<String> templatePathSupplier;
 
     protected String getTemplatePath() {
-        return TOOLS_ROOT + this.getClass().getPackage().getName().replace(".", "/") + "/" + getTemplateName();
+        return templatePathSupplier != null ? templatePathSupplier.get() : thisRenderPath() + getTemplateName();
+    }
+
+    protected String thisRenderPath() {
+        return TOOLS_ROOT + this.getClass().getPackage().getName().replace(".", "/") + "/";
     }
 
     protected String getTemplateName() {
@@ -39,9 +48,11 @@ public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
 
     protected abstract void handleModel(E model);
 
+    protected E myModel;
     public AbstractRender() {
         if (isNewModelOnInit()) {
             E model = newModel();
+            this.myModel = model;
             this.modelFiles.add(model);
             handleModel(model);
         }
@@ -69,7 +80,7 @@ public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
                 .getActualTypeArguments()[0];
     }
 
-    private final Template template = prepareTemplate(new File(getTemplatePath()));
+    private final Supplier<Template> template = () -> prepareTemplate(new File(getTemplatePath()));
 
     @Getter
     private final List<E> modelFiles = new ArrayList<>();
@@ -84,9 +95,9 @@ public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
             Map<String, E> input = new HashMap<>();
             input.put("root", root);
             if (isOverrideExistingFile()) {
-                writeToFile(input, template, root.getRenderFile());
+                writeToFile(input, template.get(), root.getRenderFile());
             } else {
-                writeToNoneExistFileOnly(input, template, root.getRenderFile());
+                writeToNoneExistFileOnly(input, template.get(), root.getRenderFile());
             }
         });
     }

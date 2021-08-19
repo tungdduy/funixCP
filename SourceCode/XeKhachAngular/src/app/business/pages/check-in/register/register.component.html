@@ -4,11 +4,11 @@
   <xe-input type="email"></xe-input>
   <xe-input type="password" #password></xe-input>
   <xe-input lblKey="RE_PASSWORD" type="password" [matching]="password"></xe-input>
-  <xe-btn lbl="REGISTER" [disabled]="register.isLoading" center></xe-btn>
+  <xe-btn [btnText]="xeLabel.REGISTER" [disabled]="register.isLoading" center></xe-btn>
 </xe-form>
 
 <div *ngIf="successMessage">
   <p>{{successMessage}}</p>
-  <xe-btn lbl="CLICK_TO_LOGIN" (click)="gotoLogin()" center></xe-btn>
+  <xe-btn [btnText]="xeLabel.CLICK_TO_LOGIN" (click)="gotoLogin()" center></xe-btn>
 </div>
 

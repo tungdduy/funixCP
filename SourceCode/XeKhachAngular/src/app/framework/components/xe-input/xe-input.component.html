@@ -1,33 +1,94 @@
-<div class="row">
-  <span class="text-info {{isGrid ? 'col-sm-3 col-form-label' : ''}} {{labelHiddenClass()}}">{{label}}</span>
-  <div class="{{isGrid ? 'col-sm-9' : 'w-100'}}">
-    <nb-form-field class="w-100">
-      <nb-icon nbPrefix [icon]="getIcon()" pack="fa"></nb-icon>
-        <input
-          [hidden]="!displayInputText"
-          class="{{disabled ? 'disabled': ''}}"
-          [(ngModel)]="value"
-          [disabled]="disabled"
-          [type]="type"
-          (change)="isValidateSuccess()"
-          [id]="getId()"
-          nbInput fullWidth
-          [name]="getName()"
-          [placeholder]="isGrid?placeHolder:label">
+<div class="row input-container" *ngIf="!inputMode.isBareTextOnly">
+  <div *ngIf="isShowLabel" class="text-info pb-1 {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}</div>
+  <div class=" {{isGrid ? 'col-sm-9' : 'w-100'}}">
+    <ng-container *ngIf="!template?.isDisplayCustom">
+      <div
+        class="w-100 nb-form-field-addon nb-form-field-prefix-medium nb-form-field-addon-basic nb-form-field-size-medium nb-transition">
+        <div class="nb-form-field-addon nb-form-field-prefix-medium nb-form-field-addon-basic ng-star-inserted">
+          <nb-icon [icon]="getIcon()" nbPrefix pack="fa"></nb-icon>
+        </div>
+        <div class="w-100 nb-form-control-container nb-form-field-control-with-prefix">
+          <ng-container *ngIf="template?.isTypeDate">
+            <input (click)="picker.open()" (dateChange)="onDateChange($event)" [matDatepicker]="picker" [value]="value"
+                   fullWidth nbInput>
+            <mat-datepicker #picker></mat-datepicker>
+          </ng-container>
 
-        <nb-select *ngIf="displaySelectOneMenu"
-                   fullWidth
-                   class="selectOneMenu w-100"
-                   [(ngModel)]="value"
-                   [placeholder]="isGrid?placeHolder:label">
-          <nb-option *ngFor="let item of selectOneMenu()" [value]="item.value">
-            <lbl [key]="item.label"></lbl>
-          </nb-option>
-        </nb-select>
+          <ng-container *ngIf="template?.isTypeShortInput">
+            <input
+              #htmlInput
+              (blur)="onShortInputBlur($event)"
+              (change)="isValidateSuccess()"
+              (focusin)="onShortInputFocus($event)"
+              (ngModelChange)="inputToApp($event)"
+              [disabled]="inputMode.isDisabled"
+              [id]="getId()"
+              [name]="getName()"
+              [ngModel]="readableValue"
+              [placeholder]="isGrid?placeHolder:label"
+              [type]="type" class="{{inputMode.isDisabled ? 'disabled': ''}}"
+              fullWidth
+              nbInput>
+          </ng-container>
 
-    </nb-form-field>
+          <ng-container *ngIf="template?.isTypeTime">
+            <input
+              (change)="onTimeChange($event)"
+              (input)="onInputTime()"
+              [name]="getName()"
+              [nbAutocomplete]="auto"
+              [placeholder]="isGrid?placeHolder:label"
+              [readonly]="true"
+              [value]="readableValue"
+              class="{{inputMode.isDisabled ? 'disabled': ''}}" fullWidth
+              nbInput
+              type="text">
+            <nb-autocomplete #auto (selectedChange)="onTimeChange($event)">
+              <nb-option *ngFor="let option of timeOptions$ | async" [value]="option">
+                {{ option }}
+              </nb-option>
+            </nb-autocomplete>
+          </ng-container>
+
+          <ng-container *ngIf="template?.isTypeSelectOneMenu">
+            <nb-select [(ngModel)]="value"
+                       [placeholder]="isGrid?placeHolder:label"
+                       class="selectOneMenu w-100"
+                       fullWidth>
+              <nb-option *ngFor="let item of selectOneMenu()" [value]="item.value">
+                <lbl [key]="item.label"></lbl>
+              </nb-option>
+            </nb-select>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="template.isDisplayCustom">
+      <ng-container *ngIf="template?.isTypeMultiOption">
+        <ng-container [ngTemplateOutlet]="multiOption"></ng-container>
+      </ng-container>
+    </ng-container>
     <span *ngIf="isShowError" class="text-danger badge text-right d-block"
           style="width: 100%">{{errorMessage}}</span>
     <br/>
   </div>
 </div>
+
+<ng-container *ngIf="inputMode.isBareTextOnly">
+  <ng-container *ngIf="template.isDisplayCustom">
+    <ng-container *ngTemplateOutlet="multiOption"></ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="!template.isDisplayCustom">
+    {{readableValue}}
+  </ng-container>
+</ng-container>
+
+
+<ng-template #multiOption>
+  <div class="options-group pt-2 d-inline-block">
+    <div (click)=toggleOption(option) *ngFor="let option of template?.options?.ALL" class="option-item {{inputMode.isBareTextOnly ? '' : 'cursor-pointer'}} {{hasOption(option) ? 'active' : ''}}">
+      <lbl [key]="'shortBtnSelect.' + template.options?.NAME + '.' + option"></lbl>
+    </div>
+  </div>
+</ng-template>

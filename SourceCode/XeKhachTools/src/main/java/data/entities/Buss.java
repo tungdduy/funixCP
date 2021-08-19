@@ -14,6 +14,7 @@ public class Buss extends AbstractEntity {
         pk(BussType.class);
     }
     CountMethod totalBussEmployees = count(BussEmployee.class);
+    CountMethod totalSchedules = count(BussSchedule.class);
     Column bussLicense = of(CODE);
     Column bussDesc = of(DESCRIPTION);
 

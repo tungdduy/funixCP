@@ -8,8 +8,9 @@ import static data.entities.abstracts.DataType.DESCRIPTION;
 public class BussPoint extends AbstractEntity {
     {
         pk(Company.class);
-        pk(XeLocation.class);
+        pk(Location.class);
     }
+    Column bussPointName = of(DESCRIPTION);
     Column bussPointDesc = of(DESCRIPTION);
 
 }

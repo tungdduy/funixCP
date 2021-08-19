@@ -20,6 +20,7 @@ import static generator.GeneratorSetup.API_OPERATION_DATA_MAPPED_ROOT;
 @Setter
 @SuppressWarnings("rawtypes")
 public class EntityMappedModel extends AbstractEntityModel {
+    protected List<String> pkIdChains = new ArrayList<>();
 
     @Override
     public void prepareSeparator() {
@@ -33,17 +34,17 @@ public class EntityMappedModel extends AbstractEntityModel {
                         "net.timxekhach.operation.response.ErrorCode",
                         "org.apache.commons.lang3.math.NumberUtils",
                         "com.fasterxml.jackson.annotation.JsonIgnoreProperties"
-                ));
+                )).newOnly();
 
     }
 
-    List<Column.Core> columns = new ArrayList<>();
-    List<MapColumn.Core> mapColumns = new ArrayList<>();
-    List<Column.Core> joinIdColumns = new ArrayList<>();
-    Set<PrimaryKey> primaryKeys = new HashSet<>();
-    List<PkMap> pkMaps = new ArrayList<>();
-    List<Column.Core> fieldsAbleAssignByString = new ArrayList<>();
-    List<CountMethod> countMethods = new ArrayList<>();
+    protected List<Column.Core> columns = new ArrayList<>();
+    protected List<MapColumn.Core> mapColumns = new ArrayList<>();
+    protected List<Column.Core> joinIdColumns = new ArrayList<>();
+    protected Set<PrimaryKey> primaryKeys = new HashSet<>();
+    protected List<PkMap> pkMaps = new ArrayList<>();
+    protected List<Column.Core> fieldsAbleAssignByString = new ArrayList<>();
+    protected List<CountMethod> countMethods = new ArrayList<>();
 
     @Override
     public String buildRenderFilePath() {

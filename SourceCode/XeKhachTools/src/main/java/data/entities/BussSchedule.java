@@ -11,20 +11,13 @@ import static data.entities.abstracts.DataType.*;
 public class BussSchedule extends AbstractEntity {
     {
         pk(Buss.class);
-        pk(Company.class);
     }
 
     Column price = of(MONEY);
     Column launchTime = of(TIME_ONLY);
     Column effectiveDateFrom = of(DATE_ONLY);
 
-    Column sunday = of(FALSE);
-    Column monday = of(FALSE);
-    Column tuesday = of(FALSE);
-    Column wednesday = of(FALSE);
-    Column thursday = of(FALSE);
-    Column friday = of(FALSE);
-    Column saturday = of(FALSE);
+    Column workingDays = of(DESCRIPTION);
 
     MapColumn startPoint = map(BussPoint.class);
     MapColumn middlePoints = map(BussSchedulePoint.class);

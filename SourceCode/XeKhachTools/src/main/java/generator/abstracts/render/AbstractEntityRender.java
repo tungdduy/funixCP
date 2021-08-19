@@ -16,6 +16,11 @@ import static util.StringUtil.toCamel;
 public abstract class AbstractEntityRender<E extends AbstractEntityModel> extends AbstractRender<E> {
 
     @Override
+    public void singleRender() {
+        AbstractEntityRender.renderWithParent();
+    }
+
+    @Override
     protected boolean isOverrideExistingFile() {
         return true;
     }
@@ -43,6 +48,10 @@ public abstract class AbstractEntityRender<E extends AbstractEntityModel> extend
         Consumer<AbstractEntity> visitEntity = entity -> renders.forEach(render -> render.visit(entity));
         entities.forEach(visitEntity);
         renders.forEach(AbstractRender::executeRenders);
+    }
+
+    public void render(){
+        AbstractEntityRender.renderWithParent();
     }
 
     public static void standaloneRender() {

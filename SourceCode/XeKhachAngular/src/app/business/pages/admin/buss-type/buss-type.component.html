@@ -1,15 +1,33 @@
 <div *ngIf="screen.current === screens.bussTypeList">
   <xe-table [tableData]="bussTypeTable"></xe-table>
 </div>
+<!-- ########### END OF BUSS TYPE ##############-->
 
 <div *ngIf="screen.current === screens.bussScheme">
-  <basic-buss-scheme [scheme]="bussScheme"></basic-buss-scheme>
+  <basic-buss-scheme [bussType]="bussTypeTable.formData.share.entity" [screen]="screen"></basic-buss-scheme>
 </div>
+<!-- ########### END OF BUSS SCHEME ##############-->
 
-<div *ngIf="screen.current === screens.busses">
+<div *ngIf="screen.current === screens.bussList">
   <xe-table [tableData]="bussTable">
-    <div top-right-buttons class="d-inline-block">
-      <xe-btn type="back" hideText (click)="screen.goHome()"></xe-btn>
-    </div>
   </xe-table>
 </div>
+<!-- ########### END OF BUSS LIST ##############-->
+
+<div *ngIf="screen.current === screens.schedules">
+  <xe-table [tableData]="bussScheduleTable">
+  </xe-table>
+</div>
+<!-- ########### END OF BUSS SCHEDULES ##############-->
+
+<xe-user-table *ngIf="screen.current === screens.bussEmployees"
+               [userTable]="bussEmployeeTable">
+</xe-user-table>
+
+<!-- ########### END OF BUSS EMPLOYEES ##############-->
+
+<xe-user-table *ngIf="screen.current === screens.employeeSelection"
+               [userTable]="employeeTable">
+</xe-user-table>
+<!-- ########### END OF EMPLOYEES SELECTION ##############-->
+
