@@ -10,8 +10,8 @@ import net.timxekhach.operation.data.mapped.BussPoint_MAPPED;
 public class BussPoint extends BussPoint_MAPPED {
 
     public BussPoint() {}
-    public BussPoint(Company company, XeLocation xeLocation) {
-        super(company, xeLocation);
+    public BussPoint(Company company, Location location) {
+        super(company, location);
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

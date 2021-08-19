@@ -14,18 +14,19 @@ public interface BussPointRepository extends JpaRepository<BussPoint, BussPoint_
     void deleteByBussPointId(Long id);
     void deleteAllByBussPointIdIn(List<Long> ids);
     BussPoint findByBussPointId(Long id);
+    List<BussPoint> findByBussPointIdIn(List<Long> id);
     @SuppressWarnings("unused")
     void deleteByCompanyId(Long companyId);
     @SuppressWarnings("unused")
     List<BussPoint> findByCompanyId(Long companyId);
     @SuppressWarnings("unused")
-    void deleteByCompanyIdAndXeLocationId(Long companyId, Long xeLocationId);
+    void deleteByCompanyIdAndLocationId(Long companyId, Long locationId);
     @SuppressWarnings("unused")
-    List<BussPoint> findByCompanyIdAndXeLocationId(Long companyId, Long xeLocationId);
+    List<BussPoint> findByCompanyIdAndLocationId(Long companyId, Long locationId);
     @SuppressWarnings("unused")
-    void deleteByXeLocationId(Long xeLocationId);
+    void deleteByLocationId(Long locationId);
     @SuppressWarnings("unused")
-    List<BussPoint> findByXeLocationId(Long xeLocationId);
+    List<BussPoint> findByLocationId(Long locationId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

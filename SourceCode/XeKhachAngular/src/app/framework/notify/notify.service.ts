@@ -40,11 +40,16 @@ export class Notifier {
 
 
   static httpErrorResponse(error: HttpErrorResponse, labelComponent?: XeLabelComponent) {
-    if (labelComponent) {
-      labelComponent.setMessage({code: Notifier.responseToString(error.error), state: State.danger});
+    if (error?.error) {
+      if (labelComponent) {
+        labelComponent.setMessage({code: Notifier.responseToString(error.error), state: State.danger});
+      } else {
+        Notifier.errorResponse(error.error);
+      }
     } else {
-      Notifier.errorResponse(error.error);
+      Notifier.error(error.message);
     }
+
   }
 
   static errorResponse(response: XeResponseModel) {

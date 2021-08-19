@@ -51,6 +51,7 @@ export const Url = {
       _self: config(),
       AVAILABLE_SEATS: config(),
       AVAILABLE_TRIPS: config(),
+      SEARCH_LOCATION: config(),
     },
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),
@@ -73,7 +74,7 @@ export const Url = {
       BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
       BUSS: config().setRoles([r.ROLE_BUSS_STAFF]),
       EMPLOYEE: config().setRoles([r.ROLE_BUSS_ADMIN]),
-      BUSS_STOP: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      BUSS_POINT: config().setRoles([r.ROLE_BUSS_ADMIN]),
       TICKET: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
   }

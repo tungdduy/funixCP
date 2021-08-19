@@ -7,7 +7,6 @@ import {XeSubscriber} from "./XeSubscriber";
 export abstract class FormAbstract extends XeSubscriber implements AfterViewInit {
 
   @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
-
   handlers: FormHandler[];
 
   ngAfterViewInit(): void {

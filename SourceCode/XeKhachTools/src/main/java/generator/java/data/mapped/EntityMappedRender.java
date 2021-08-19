@@ -6,12 +6,14 @@ import data.models.CountMethod;
 import data.models.MapColumn;
 import data.models.PrimaryKey;
 import generator.abstracts.render.AbstractEntityRender;
+import generator.java.data.mapped.angulars.EntityRender;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.BeanUtils;
 import util.ObjectUtil;
 import util.ReflectionUtil;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +24,12 @@ import static util.StringUtil.toCamel;
 import static util.StringUtil.toCapitalizeEachWord;
 
 @SuppressWarnings("unused")
-public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> {
+public class EntityMappedRender<E extends EntityMappedModel> extends AbstractEntityRender<EntityMappedModel> {
+
+    public static void main(String[] args) {
+        new EntityRender().singleRender();
+    }
+
 
     public static final String NEW_ARRAY_LIST = " = new ArrayList<>()";
 
@@ -69,6 +76,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
             if (columnCore.getJsonIgnore()) {
                 model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
             }
+            columnCore.getPackageImports().forEach(model::filterThenAddImport);
             model.filterThenAddImport(columnCore.getDataType().getName());
 
         });
@@ -79,8 +87,6 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
                 if (mapColumn.getIsUnique()){
                     model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIdentityInfo",
                             "com.fasterxml.jackson.annotation.ObjectIdGenerators");
-                } else {
-                    model.filterThenAddImport("com.fasterxml.jackson.annotation.JsonIgnore");
                 }
             }
             model.filterThenAddImport(mapColumn.getMapTo().getEntity().getFullOperationClassName());
@@ -94,6 +100,7 @@ public class EntityMappedRender extends AbstractEntityRender<EntityMappedModel> 
         if (!model.getCountMethods().isEmpty() || !model.pkMaps.isEmpty()){
             model.filterThenAddImport("net.timxekhach.operation.rest.service.CommonUpdateService");
         }
+
     }
 
     private boolean anyNullMappedBy(EntityMappedModel model) {

@@ -43,8 +43,9 @@ public enum ErrorCode {
     TRIP_NOT_FOUND,
     PASSWORD_MUST_MORE_THAN_3_CHARS,
     FIELD_EXISTED("fieldName", "tableName"),
-    DATA_EXISTED
-    ;
+    DATA_EXISTED,
+    SEAT_RANGE_OVERLAP,
+    SEAT_RANGE_MUST_CONTINUOUS_FROM_1;
 
 
     private String[] paramNames;

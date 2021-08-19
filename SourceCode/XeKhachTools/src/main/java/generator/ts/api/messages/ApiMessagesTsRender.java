@@ -37,9 +37,7 @@ public class ApiMessagesTsRender extends AbstractRender<ApiMessagesTsModel> {
                 getMessagesMap().put(key, content);
             }
         });
-        for (ErrorCode err : ErrorCode.values()) {
-            buildRenderMessage(err);
-        }
+        ErrorCode.values().forEach(this::buildRenderMessage);
         model.setMessages(getMessagesMap().entrySet());
     }
 
@@ -54,7 +52,7 @@ public class ApiMessagesTsRender extends AbstractRender<ApiMessagesTsModel> {
 
                 String param = String.format("${param.%s}", paramName);
                 if(!content.contains(param)){
-                    paramChanged = true;
+//                    paramChanged = true;
                 }
                 params.append(param);
             }

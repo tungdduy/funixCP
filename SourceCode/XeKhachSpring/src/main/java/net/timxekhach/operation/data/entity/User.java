@@ -19,9 +19,13 @@ import java.util.List;
 @Entity @Getter @Setter
 public class User extends User_MAPPED {
 
+    @Override
+    public String getProfileImageUrl() {
+        return super.getProfileImageUrl();
+    }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-@JsonIgnore
+    @JsonIgnore
     public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);
     }

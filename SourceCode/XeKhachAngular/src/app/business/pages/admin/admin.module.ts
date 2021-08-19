@@ -6,7 +6,7 @@ import {CompanyManagerComponent} from "./company-manager/company-manager.compone
 import {BussTypeComponent} from "./buss-type/buss-type.component";
 import {BussComponent} from "./buss/buss.component";
 import {EmployeeComponent} from "./employee/employee.component";
-import {BussStopComponent} from "./buss-stop/buss-stop.component";
+import {BussPointComponent} from "./buss-point/buss-point.component";
 import {TicketComponent} from "./ticket/ticket.component";
 import {AdminComponent} from './admin.component';
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
@@ -14,14 +14,14 @@ import {NgModule} from '@angular/core';
 import {FormsModule as ngFormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {
-  NbBadgeModule,
-  NbButtonModule,
-  NbCardModule, NbIconModule,
-  NbInputModule,
-  NbLayoutModule, NbListModule,
-  NbMenuModule,
-  NbRadioModule, NbTreeGridModule,
-  NbUserModule
+    NbBadgeModule,
+    NbButtonModule,
+    NbCardModule, NbIconModule,
+    NbInputModule,
+    NbLayoutModule, NbListModule,
+    NbMenuModule,
+    NbRadioModule, NbStepperModule, NbTreeGridModule,
+    NbUserModule
 } from "@nebular/theme";
 import {ThemeModule} from "../../../@theme/theme.module";
 import {AdminRoutingModule} from "./admin-routing.module";
@@ -36,29 +36,30 @@ import {CommonComponentsModule} from "../../../framework/components/common-compo
 @NgModule({
 
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
-imports: [
-    AdminRoutingModule,
-    ngFormsModule,
-    RouterModule,
-    NbMenuModule,
-    ThemeModule,
-    NbCardModule,
-    NbLayoutModule,
-    NbRadioModule,
-    NbButtonModule,
-    NbInputModule,
-    CommonComponentsModule,
-    NbUserModule,
-    NbIconModule,
-    NbBadgeModule,
-    NbListModule,
-    NbTreeGridModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatFormFieldModule,
-    MatInputModule
-  ],
+    imports: [
+        AdminRoutingModule,
+        ngFormsModule,
+        RouterModule,
+        NbMenuModule,
+        ThemeModule,
+        NbCardModule,
+        NbLayoutModule,
+        NbRadioModule,
+        NbButtonModule,
+        NbInputModule,
+        CommonComponentsModule,
+        NbUserModule,
+        NbIconModule,
+        NbBadgeModule,
+        NbListModule,
+        NbTreeGridModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatFormFieldModule,
+        MatInputModule,
+        NbStepperModule
+    ],
 // ____________________ ::MODULE_IMPORT_SEPARATOR:: ____________________ //
 
   declarations: [
@@ -71,7 +72,7 @@ imports: [
     BussTypeComponent,
     BussComponent,
     EmployeeComponent,
-    BussStopComponent,
+    BussPointComponent,
     TicketComponent,
   ],
   exports: [

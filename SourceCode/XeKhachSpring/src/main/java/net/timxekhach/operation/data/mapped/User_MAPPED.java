@@ -62,7 +62,6 @@ public abstract class User_MAPPED extends XeEntity {
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
-    @JsonIgnore
     protected List<TripUser> allMyTrips = new ArrayList<>();
     @OneToOne(
         mappedBy = "user",
@@ -104,7 +103,7 @@ public abstract class User_MAPPED extends XeEntity {
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();

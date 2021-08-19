@@ -10,8 +10,8 @@ import net.timxekhach.operation.data.mapped.BussSchedule_MAPPED;
 public class BussSchedule extends BussSchedule_MAPPED {
 
     public BussSchedule() {}
-    public BussSchedule(Buss buss, Company company) {
-        super(buss, company);
+    public BussSchedule(Buss buss) {
+        super(buss);
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

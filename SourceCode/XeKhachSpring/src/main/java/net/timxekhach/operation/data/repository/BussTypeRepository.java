@@ -14,6 +14,7 @@ public interface BussTypeRepository extends JpaRepository<BussType, BussType_MAP
     void deleteByBussTypeId(Long id);
     void deleteAllByBussTypeIdIn(List<Long> ids);
     BussType findByBussTypeId(Long id);
+    List<BussType> findByBussTypeIdIn(List<Long> id);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

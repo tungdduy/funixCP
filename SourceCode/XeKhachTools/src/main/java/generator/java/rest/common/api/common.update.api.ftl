@@ -31,6 +31,10 @@ public class CommonUpdateApi {
     public ResponseEntity<${capName}> update${capName} (@RequestBody Map<String, String> data) {
         return success(commonUpdateService.update${capName}(data));
     }
+    @PostMapping("/Multi${capName}")
+    public ResponseEntity<List<${capName}>> updateMulti${capName} (@RequestBody List<Map<String, String>> data) {
+        return success(commonUpdateService.updateMulti${capName}(data));
+    }
     @PutMapping("/${capName}")
     public ResponseEntity<${capName}> insert${capName}(@RequestBody Map<String, String> data) {
         return success(commonUpdateService.insert${capName}(data));
@@ -81,6 +85,7 @@ public class CommonUpdateApi {
         </#list>
         return success(this.commonUpdateService.find${capName}(data));
     }
+    //_____________ END OF ${capName} __________________________            
     </#list>
 
 }

@@ -2,6 +2,7 @@ package generator.java.rest.common.service;
 
 import data.entities.abstracts.AbstractEntity;
 import generator.abstracts.render.AbstractRender;
+import generator.java.rest.common.api.CommonUpdateApiRender;
 import util.StringUtil;
 
 import static util.ReflectionUtil.newInstancesOfAllChildren;
@@ -21,5 +22,6 @@ public class CommonUpdateServiceRender extends AbstractRender<CommonUpdateServic
 
     public static void main(String[] args) {
         new CommonUpdateServiceRender().executeRenders();
+        new CommonUpdateApiRender().executeRenders();
     }
 }

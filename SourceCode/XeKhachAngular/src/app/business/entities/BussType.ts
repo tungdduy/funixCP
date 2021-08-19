@@ -1,100 +1,116 @@
-import {SelectItem} from '../../framework/model/SelectItem';
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
+import {EntityIdentifier} from "../../framework/model/XeFormData";
+import {ObjectUtil} from "../../framework/util/object.util";
+import {XeTableData} from "../../framework/model/XeTableData";
+import {SeatGroup} from "./SeatGroup";
+import {SelectItem} from '../../framework/model/SelectItem';
 import {CommonUpdateService} from "../service/common-update.service";
 import {Notifier} from "../../framework/notify/notify.service";
-import {EntityIdentifier} from "../../framework/model/XeFormData";
+// ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
-export enum BussTypeEnum {
-  BUSS_48 = "BUSS_48",
-  BUSS_27 = "BUSS_27"
-}
-
-export interface TypeOfBuss {
-  name: BussTypeEnum;
-  seatGroups: SeatGroup[];
-}
-
-export interface SeatGroup {
-  groupName: string;
-  note: string;
-  seatRange: { start: number, end: number };
-  seats?: number[];
-}
-
-export const BussTypeDefiner: TypeOfBuss[] = [
-  {
-    name: BussTypeEnum.BUSS_48,
-    seatGroups: [
-      {groupName: 'BUSS_48_N1', note: 'header_is_1', seatRange: {start: 1, end: 12}},
-      {groupName: 'BUSS_48_T1', note: 'header_is_13', seatRange: {start: 13, end: 24}},
-      {groupName: 'BUSS_48_N2', note: 'header_is_25', seatRange: {start: 25, end: 36}},
-      {groupName: 'BUSS_48_T2', note: 'header_is_37', seatRange: {start: 37, end: 48}},
-    ]
-  },
-  {
-    name: BussTypeEnum.BUSS_27,
-    seatGroups: [
-      {groupName: 'BUSS_27_N', note: 'header_is_1', seatRange: {start: 1, end: 14}},
-      {groupName: 'BUSS_27_T', note: 'header_is_15', seatRange: {start: 15, end: 27}},
-    ]
-  }
-];
-
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 export class BussTypeUtil {
-  static bussTypes: BussType[];
+  static bussTypes: BussType[] = [];
+
+  static _bussTypeSelectItem: SelectItem<number>[];
+
+  static get bussTypeSelectItem(): SelectItem<number>[] {
+    if (!BussTypeUtil._bussTypeSelectItem) {
+      const allBussTypes: SelectItem<number>[] = [];
+      this.bussTypes.forEach(type => {
+        allBussTypes.push(new SelectItem(type.bussTypeName, type.bussTypeId));
+      });
+      BussTypeUtil._bussTypeSelectItem = allBussTypes;
+    }
+    return BussTypeUtil._bussTypeSelectItem;
+  }
+
   static catchBussTypes() {
-    CommonUpdateService.instance.getAll<BussType>(BussType.identifier.idForSearchAll, "BussType").subscribe(
+    CommonUpdateService.instance.findAll<BussType>(BussType).subscribe(
       bussTypes => {
         this.bussTypes = bussTypes;
       },
       error => Notifier.httpErrorResponse(error)
     );
   }
-
-  static _bussTypeCodeSelectItems: SelectItem<BussTypeEnum>[];
-  static get bussTypeCodeSelectItems(): SelectItem<BussTypeEnum>[] {
-    if (!BussTypeUtil._bussTypeCodeSelectItems) {
-      const allBussTypes: SelectItem<BussTypeEnum>[] = [];
-      Object.keys(BussTypeEnum).forEach(type => {
-        allBussTypes.push(new SelectItem(type, type));
-      });
-      BussTypeUtil._bussTypeCodeSelectItems = allBussTypes;
-    }
-    return BussTypeUtil._bussTypeCodeSelectItems;
-  }
-
-  static _bussTypeIdSelectItems: SelectItem<number>[];
-  static get bussTypeIdSelectItems(): SelectItem<number>[] {
-    if (!BussTypeUtil._bussTypeIdSelectItems) {
-      const allBussTypes: SelectItem<number>[] = [];
-      this.bussTypes.forEach(type => {
-        allBussTypes.push(new SelectItem(type.bussTypeCode, type.bussTypeId));
-      });
-      BussTypeUtil._bussTypeIdSelectItems = allBussTypes;
-    }
-    return BussTypeUtil._bussTypeIdSelectItems;
-  }
 }
+// ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class BussType extends XeEntity {
-
-  bussTypeId: number;
-
-  bussTypeName: string;
-  bussTypeDesc: string;
-  bussTypeCode: string;
-
+    static className = 'BussType';
+    static camelName = 'bussType';
+    static otherMainIdNames = [];
+    static mainIdName = 'bussTypeId';
+    static pkMapFieldNames = [];
+    bussTypeId: number;
+    seatGroups: SeatGroup[];
+    totalBusses: number;
+    bussTypeCode: string;
+    bussTypeName: string;
+    bussTypeDesc: string;
+    profileImageUrl = this.initProfileImage();
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
   totalSeats: number;
-  totalBusses: number;
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
-  profileImageUrl = this.initProfileImage();
-
-  static identifier: EntityIdentifier = {
-    className: "BussType",
+  static entityIdentifier = (bussType: BussType): EntityIdentifier<BussType> => ({
+    entity: bussType,
+    clazz: BussType,
     idFields: () => [
-      {name: "bussTypeId", value: 0}
-    ],
-    idForSearchAll: {bussTypeId: 0}
-  };
+      {name: "bussTypeId", value: bussType.bussTypeId},
+    ]
+  })
 
+  static new(option = {}) {
+    return new BussType();
+  }
+
+  static tableData = (option: XeTableData<BussType> = {}, bussType: BussType = BussType.new()): XeTableData<BussType> => {
+    const table = BussType._bussTypeTable(bussType);
+    ObjectUtil.assignEntity(option, table);
+    XeTableData.fullFill(table);
+    return table;
+  }
+
+  private static _bussTypeTable = (bussType: BussType): XeTableData<BussType> => ({
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+    table: {
+      basicColumns: [
+        // 0
+        {field: {name: 'profileImageUrl'}, type: "avatar"},
+        // 1
+        {field: {name: 'bussTypeCode'}, type: "boldStringRole"},
+        // 2
+        {
+          field: {name: 'bussTypeName'}, type: "boldStringRole",
+          subColumns: [
+            {field: {name: 'bussTypeDesc'}, type: "string", display: {row: {css: 'd-block'}}}
+
+          ]
+        },
+        // 3
+        {field: {name: 'totalSeats'}, type: "iconOption", display: {row: {icon: {iconAfter: "couch"}}}},
+        // 4
+        {field: {name: 'totalBusses'}, type: "iconOption", display: {row: {icon: {iconAfter: "bus"}}}},
+      ],
+    },
+    formData: {
+      entityIdentifier: BussType.entityIdentifier(bussType),
+      share: {entity: BussType.new()},
+      header: {
+        profileImage: {name: 'profileImageUrl'},
+        titleField: {name: 'bussTypeName'},
+        descField: {name: 'bussTypeDesc'},
+      },
+      fields: [
+        {name: "bussTypeCode", required: true},
+        {name: "bussTypeName", required: true},
+        {name: "bussTypeDesc", required: true},
+        {name: "totalSeats", required: true},
+      ]
+    }
+// ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+  })
 }
+

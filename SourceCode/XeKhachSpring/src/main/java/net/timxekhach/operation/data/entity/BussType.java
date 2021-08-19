@@ -9,8 +9,19 @@ import net.timxekhach.operation.data.mapped.BussType_MAPPED;
 @Entity @Getter @Setter
 public class BussType extends BussType_MAPPED {
 
+    @Override
+    public String getProfileImageUrl() {
+        return super.getProfileImageUrl();
+    }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    @Override
+    protected void prePersist() {
+        super.prePersist();
+    }
+    public int getTotalSeats() {
+        return this.seatGroups.stream().mapToInt(SeatGroup::getTotalSeats).sum();
+    }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

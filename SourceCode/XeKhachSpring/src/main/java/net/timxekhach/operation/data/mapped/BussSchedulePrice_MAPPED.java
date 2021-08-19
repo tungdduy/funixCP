@@ -154,13 +154,13 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "pointFromXeLocationId",
-        referencedColumnName = "xeLocationId",
+        name = "pointFromBussPointId",
+        referencedColumnName = "bussPointId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "pointFromBussPointId",
-        referencedColumnName = "bussPointId",
+        name = "pointFromLocationId",
+        referencedColumnName = "locationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -171,7 +171,7 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "pointFromId")
+        property = "bussSchedulePointId")
     protected BussSchedulePoint pointFrom;
 
     public void setPointFrom(BussSchedulePoint pointFrom) {
@@ -180,13 +180,18 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
         this.pointFromBussTypeId = pointFrom.getBussTypeId();
         this.pointFromBussSchedulePointId = pointFrom.getBussSchedulePointId();
         this.pointFromBussId = pointFrom.getBussId();
-        this.pointFromXeLocationId = pointFrom.getXeLocationId();
         this.pointFromBussPointId = pointFrom.getBussPointId();
+        this.pointFromLocationId = pointFrom.getLocationId();
         this.pointFromBussScheduleId = pointFrom.getBussScheduleId();
     }
 
     @ManyToOne
     @JoinColumns({
+        @JoinColumn(
+        name = "pointToLocationId",
+        referencedColumnName = "locationId",
+        insertable = false,
+        updatable = false), 
         @JoinColumn(
         name = "pointToBussId",
         referencedColumnName = "bussId",
@@ -195,11 +200,6 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
         @JoinColumn(
         name = "pointToBussSchedulePointId",
         referencedColumnName = "bussSchedulePointId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "pointToXeLocationId",
-        referencedColumnName = "xeLocationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -225,14 +225,14 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "pointToId")
+        property = "bussSchedulePointId")
     protected BussSchedulePoint pointTo;
 
     public void setPointTo(BussSchedulePoint pointTo) {
         this.pointTo = pointTo;
+        this.pointToLocationId = pointTo.getLocationId();
         this.pointToBussId = pointTo.getBussId();
         this.pointToBussSchedulePointId = pointTo.getBussSchedulePointId();
-        this.pointToXeLocationId = pointTo.getXeLocationId();
         this.pointToBussScheduleId = pointTo.getBussScheduleId();
         this.pointToBussTypeId = pointTo.getBussTypeId();
         this.pointToBussPointId = pointTo.getBussPointId();
@@ -252,17 +252,17 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE)
     protected Long pointFromBussId;
     @Setter(AccessLevel.PRIVATE)
-    protected Long pointFromXeLocationId;
-    @Setter(AccessLevel.PRIVATE)
     protected Long pointFromBussPointId;
     @Setter(AccessLevel.PRIVATE)
+    protected Long pointFromLocationId;
+    @Setter(AccessLevel.PRIVATE)
     protected Long pointFromBussScheduleId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long pointToLocationId;
     @Setter(AccessLevel.PRIVATE)
     protected Long pointToBussId;
     @Setter(AccessLevel.PRIVATE)
     protected Long pointToBussSchedulePointId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long pointToXeLocationId;
     @Setter(AccessLevel.PRIVATE)
     protected Long pointToBussScheduleId;
     @Setter(AccessLevel.PRIVATE)
@@ -280,7 +280,7 @@ public abstract class BussSchedulePrice_MAPPED extends XeEntity {
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();

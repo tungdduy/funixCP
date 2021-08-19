@@ -1,43 +1,67 @@
 package util.constants;
 
-@SuppressWarnings("all")
-public enum ErrorCode {
-    ACCESS_DENIED,
-    DO_NOT_HAVE_PERMISSION,
-    EMAIL_EXISTED,
-    NO_USER_FOUND_BY_USERNAME("username"),
-    USERNAME_EXISTED("username"),
-    UNDEFINED_ERROR,
-    VALIDATOR_EMAIL_INVALID,
-    VALIDATOR_NOT_BLANK("fieldName"),
-    VALIDATOR_PATTERN_INVALID("fieldName"),
-    VALIDATOR_SIZE_INVALID("fieldName", "min", "max"),
-    ASSIGN_1_TIME_ONLY,
-    SEND_EMAIL_FAILED,
-    EMAIL_NOT_EXIST("email"),
-    SECRET_KEY_NOT_MATCH,
-    INVALID_TIME_FORMAT("fieldName"),
-    CANNOT_FIND_USER("userId", "username", "email"),
-    DATA_NOT_FOUND,
-    CURRENT_PASSWORD_WRONG,
-    PASSWORD_NOT_MATCH,
-    NOTHING_CHANGED,
-    TRIP_NOT_FOUND,
-    PASSWORD_MUST_MORE_THAN_3_CHARS,
-    FIELD_EXISTED("fieldName", "tableName"),
-    DATA_EXISTED
-    ;
+import util.FileUtil;
+import util.StringUtil;
 
-    private String[] paramNames;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    ErrorCode(String... paramNames) {
+import static generator.GeneratorSetup.API_OPERATION_RESPONSE_ROOT;
+
+public class ErrorCode {
+
+    private List<String> paramNames = new ArrayList<>();
+
+    public List<String> getParamNames() {
+        return this.paramNames;
+    }
+
+    private final String _name;
+
+    public String name() {
+        return this._name;
+    }
+
+    ErrorCode(String name) {
+        this._name = name;
+    }
+
+    ErrorCode(String name, List<String> paramNames) {
+        this._name = name;
         this.paramNames = paramNames;
     }
 
-    ErrorCode() {
+    public static List<ErrorCode> values() {
+        String fileContent = FileUtil.readFileAsString(new File(API_OPERATION_RESPONSE_ROOT + "ErrorCode.java"));
+        String rawErrors = StringUtil.getStringBetween(fileContent, "ErrorCode \\{", ";");
+        return Arrays.stream(rawErrors.split("\\n")).filter(StringUtil::isNotBlank).map(ErrorCode::convertFromString).collect(Collectors.toList());
     }
 
-    public String[] getParamNames() {
-        return this.paramNames;
+    public static void main(String[] args) {
+        ErrorCode.values().forEach(errorCode -> {
+            System.out.printf("name: %s - params: %s", errorCode._name, errorCode.paramNames.isEmpty() ? "::Empty::" : String.join(",", errorCode.paramNames));
+            System.out.println("=======");
+        });
     }
+
+    public static ErrorCode convertFromString(String error) {
+        error = error.trim();
+        System.out.println(error);
+        if (error.contains("(")) {
+            String name = error.split("\\(")[0];
+            List<String> params = Arrays.stream(StringUtil.getStringBetween(error, "\\(", "\\)")
+                    .split(","))
+                    .map(String::trim)
+                    .map(s -> s.substring(1, s.length() - 1))
+                    .collect(Collectors.toList());
+            return new ErrorCode(name, params);
+        } else {
+            return new ErrorCode(error.replace(",", "").trim());
+        }
+    }
+
+
 }

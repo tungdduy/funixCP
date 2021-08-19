@@ -4,6 +4,10 @@ package data.models;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
 public class Column {
     @Getter @Setter
@@ -20,11 +24,29 @@ public class Column {
                 isManualUpdatable = true,
                 jsonIgnore = false,
                 upperOnly = false;
+        String angularClassName;
         String regex, simpleClassName, fieldName, initialString;
 
+        List<String> packageImports = new ArrayList<>();
+        String parseExpression, appPipe;
+
+        public String getAngularClassName() {
+          if (dataType == String.class) {
+             return ": string";
+          } else if (Number.class.isAssignableFrom(dataType)) {
+              return ": number";
+          } else if (dataType == Boolean.class) {
+              return ": boolean";
+          }
+          return "";
+        };
         public String getSimpleClassName(){
             return dataType.getSimpleName();
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Number.class.isAssignableFrom(Integer.class));
     }
 
     Core core = new Core();
@@ -102,6 +124,15 @@ public class Column {
 
     public Column ignoreManualUpdate() {
         core.isManualUpdatable = false;
+        return this;
+    }
+
+    public Column parseExpression(String parseString) {
+        core.parseExpression = parseString;
+        return this;
+    }
+    public Column packageImports(String... packageImport) {
+        core.packageImports.addAll(Arrays.asList(packageImport));
         return this;
     }
 

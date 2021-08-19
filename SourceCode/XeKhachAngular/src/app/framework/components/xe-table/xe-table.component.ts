@@ -12,26 +12,41 @@ import {XeLabel, XeLbl} from "../../../business/i18n";
 import {HttpErrorResponse} from "@angular/common/http";
 import {RoleUtil} from "../../util/role.util";
 import {XeSubscriber} from "../../model/XeSubscriber";
-import {Stream} from "stream";
+import {XeEntity} from "../../../business/entities/XeEntity";
+import {EntityIdentifier} from "../../model/XeFormData";
+import {XeScreen} from "../xe-nav/xe-nav.component";
 
 @Component({
   selector: 'xe-table',
   templateUrl: './xe-table.component.html',
   styleUrls: ['./xe-table.component.scss']
 })
-export class XeTableComponent extends XeSubscriber implements OnInit {
-  @Input() tableData: XeTableData;
+export class XeTableComponent<E extends XeEntity> extends XeSubscriber implements OnInit {
+  @Input() tableData: XeTableData<E>;
   displayedColumns: string[] = [];
-  tableSource: MatTableDataSource<any>;
+  tableSource: MatTableDataSource<E>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild("basicFormDirect") basicFormDialog;
-  @ViewChild("deleteDirect") deleteDialog;
+  @ViewChild("basicFormDialogWrapper") basicFormDialogWrapper;
+  @ViewChild("deleteDialogWrapper") deleteDialog;
   selection: SelectionModel<any>;
   isSelected = true;
 
   entityUtil = EntityUtil;
+
+  screens = {
+    basicForm: "basicForm",
+    table: "table",
+    delete: "delete"
+  };
+  screen = new XeScreen({
+    home: this.screens.table, preGo: () => {
+      if (this.screen.is(this.screens.basicForm)) {
+        this.tableData.formData?.share?.xeBasicForm?.restoreShareEntity();
+      }
+    }
+  });
 
   constructor(private commonService: CommonUpdateService,
               private dialogService: NbDialogService) {
@@ -39,24 +54,28 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
   }
 
   get hasRowSelected() {
-    return this.selection.selected.length > 0;
+    return this.selection?.selected?.length > 0;
   }
 
   ngOnInit(): void {
 
-    Object.assign(this.displayedColumns, this.tableData.table.basicColumns.map(c => c.field.name));
+    if (this.tableData.display.fullScreenForm) {
+      this.tableData.formData.display.cancelBtn = "close";
+      const currentPostCancel = this.tableData.formData.action.postCancel;
+      this.tableData.formData.action.postCancel = (entity) => {
+        if (currentPostCancel) currentPostCancel(entity);
+        this.screen.back();
+      };
+    }
+
+    this.displayedColumns = this.tableData.table.basicColumns.filter(c => c !== undefined).map(c => c.field.name);
+
     this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
     this.displayedColumns.push("select");
 
-    this.subscriptions.push(this.commonService.getAll<any>(this.entityUtil.getMainIdFromIdentifier(this.tableData.formData.entityIdentifier), this.tableData.formData.entityIdentifier.className).subscribe(
-      (result) => {
-        const filterCondition = this.tableData.table.filterCondition
-                                    ? this.tableData.table.filterCondition
-                                    : (e) => true;
-        result = result.filter(entity => {
-          EntityUtil.cache(entity, this.tableData.formData.entityIdentifier.className);
-          return filterCondition(entity);
-        });
+    this.subscriptions.push(this.commonService.findByEntityIdentifier<E>(this.tableData.formData.entityIdentifier).subscribe(
+      (result: E[]) => {
+        result = EntityUtil.cachePk(this.tableData.formData.entityIdentifier.clazz, result, this.tableData.table?.action?.filterCondition);
         this.updateTableSource(result);
       }
     ));
@@ -86,7 +105,7 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     this.tableSource.filterPredicate = (data, inputValue) => {
       const value = inputValue.trim().toLowerCase();
       const manual = this.tableData.table.manualColumns?.findIndex(column => {
-          return this.isValueContains(data, column, value);
+        return this.isValueContains(data, column, value);
       }) > -1;
       if (manual) return true;
       const basicFilter = this.tableData.table.basicColumns?.filter(column => {
@@ -101,18 +120,16 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
   }
 
   private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
-    return String(this.entityUtil.getFieldValue(data, column.field)).toLowerCase().includes(value);
+    return String(this.entityUtil.getReadableFieldValue(data, column.field)).toLowerCase().includes(value);
   }
 
-  submitEntitySuccess = (entity, isNew: boolean) => {
-    if (isNew) {
-      this.tableSource.data.unshift(entity);
-      this.tableSource.data = this.tableSource.data;
-      this.tableData.formData.share.entity = this.tableSource.data[0];
-    }
+  postPersist = (entity) => {
+    this.tableSource.data.unshift(entity);
+    this.tableSource.data = this.tableSource.data;
+    this.tableData.formData.share.entity = this.tableSource.data[0];
   }
 
-  deleteEntitySuccess = (entity) => {
+  postRemove = (entity) => {
     this.removeEntityFromArray(entity, this.tableSource.data);
     this.removeEntityFromArray(entity, this.selection.selected);
     this.tableSource.data = this.tableSource.data;
@@ -120,16 +137,15 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
 
   removeEntityFromArray(entity, data: any[]) {
     for (let i = 0; i < data.length; i++) {
-      const e = data[i];
-      if (this.entityUtil.isMatchingId(this.tableData.formData.entityIdentifier, e, entity)) {
+      const mainIdName = this.tableData.formData.entityIdentifier.clazz.mainIdName;
+      if (entity[mainIdName] === data[i][mainIdName]) {
         return data.splice(i, 1);
       }
     }
   }
 
-  editEntityDialog(entity: any) {
-    if (this.tableData.formData.readonly) return;
-    this.tableData.formData.share.entity = entity;
+  dialogEditEntity() {
+    if (this.tableData.formData?.control?.readMode) return;
     this.openBasicFormDialog();
   }
 
@@ -137,10 +153,15 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     this.tableData.formData.share.entity = this.entityUtil.newByEntityDefine(this.tableData.formData.entityIdentifier);
     this.openBasicFormDialog();
   }
+
   openBasicFormDialog() {
-    this.dialogService.open(this.basicFormDialog).onClose.subscribe(() => {
-      this.tableData.formData?.share?.xeBasicForm?.restoreShareEntity();
-    });
+    if (this.tableData.display?.fullScreenForm) {
+      this.screen.go(this.screens.basicForm);
+    } else {
+      this.dialogService.open(this.basicFormDialogWrapper).onClose.subscribe(() => {
+        this.tableData.formData?.share?.xeBasicForm?.restoreShareEntity();
+      });
+    }
   }
 
   openDeleteDialog() {
@@ -164,7 +185,7 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
 
   deleteSelected() {
 
-    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.className).subscribe(
+    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.clazz).subscribe(
       () => {
         this.selection.selected.forEach(entity => {
           this.removeEntityFromArray(entity, this.tableSource.data);
@@ -187,14 +208,15 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
   @ViewChild("boldStringRole") boldStringRoleColumn;
   @ViewChild("role") roleColumn;
   @ViewChild("iconOption") iconOptionColumn;
+
   getColumn(name: string) {
-      if (name === 'string') return this.stringColumn;
-      if (name === 'avatar') return this.avatarColumn;
-      if (name === 'role') return this.roleColumn;
-      if (name === 'boldString') return this.boldStringColumn;
-      if (name === 'boldStringRole') return this.boldStringRoleColumn;
-      if (name === 'avatarString') return this.avatarStringColumn;
-      if (name === 'iconOption') return this.iconOptionColumn;
+    if (name === 'string') return this.stringColumn;
+    if (name === 'avatar') return this.avatarColumn;
+    if (name === 'role') return this.roleColumn;
+    if (name === 'boldString') return this.boldStringColumn;
+    if (name === 'boldStringRole') return this.boldStringRoleColumn;
+    if (name === 'avatarString') return this.avatarStringColumn;
+    if (name === 'iconOption') return this.iconOptionColumn;
 
     return this.stringColumn;
   }
@@ -208,7 +230,7 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     return tableColumn as TableColumn;
   }
 
-  private updateTableSource(result: any[]) {
+  private updateTableSource(result: E[]) {
     this.tableData.formData.share.tableSource = this.tableSource;
     this.tableData.formData.share.tableEntities = result;
     this.tableSource = new MatTableDataSource<any>(result);
@@ -216,9 +238,68 @@ export class XeTableComponent extends XeSubscriber implements OnInit {
     this.tableSource.paginator = this.paginator;
     this.tableSource.sort = this.sort;
     this.tableSource.sortingDataAccessor = (item, property) => {
-      return this.entityUtil.getFieldValue(item, {name: property});
+      return this.entityUtil.getReadableFieldValue(item, {name: property});
     };
   }
 
-  xeLbl = XeLbl;
+  onSelect(entity: E, tableColumn: TableColumn) {
+    this.tableData.formData.share.entity = entity;
+    const thisIdent = this.tableData.formData.entityIdentifier;
+    if (this.tableData.external?.updateCriteriaTableOnSelect) {
+      this.tableData.external.updateCriteriaTableOnSelect().forEach(table => {
+        const targetIdent = table.formData.entityIdentifier;
+        this.updateCriteria(targetIdent, thisIdent, entity);
+      });
+    }
+    if (tableColumn.action?.screen) {
+      this.tableData?.xeScreen.go(tableColumn.action?.screen);
+    } else if (tableColumn.action?.onSelect) {
+      tableColumn.action.onSelect(entity);
+    } else {
+      this.dialogEditEntity();
+    }
+  }
+
+  private updateCriteria(targetIdent: EntityIdentifier<any>, thisIdent: EntityIdentifier<E>, entity: E) {
+    const targetEntity = targetIdent.entity;
+    if (targetIdent.clazz.pkMapFieldNames.includes(thisIdent.clazz.camelName)) {
+      targetEntity[thisIdent.clazz.camelName] = entity;
+      targetEntity[thisIdent.clazz.mainIdName] = entity[thisIdent.clazz.mainIdName];
+    } else {
+      targetIdent.clazz.pkMapFieldNames.forEach(pk => {
+        if (entity[pk]) {
+          targetEntity[pk] = entity[pk];
+          targetEntity[pk + "Id"] = entity[pk + "Id"];
+        }
+      });
+    }
+  }
+
+  addSelectedToParent() {
+    const share = this.tableData.formData.share;
+    const clazz = this.tableData.formData.entityIdentifier.clazz;
+
+    const parentCriteria = this.tableData.external.parent.formData.entityIdentifier.entity;
+    const parentIdentifier = this.tableData.external.parent.formData.entityIdentifier;
+
+    const selectedEntities = share.selection.selected;
+    const entities = selectedEntities.map(entity => {
+      const newEntity = Object.assign({}, parentCriteria);
+      const newEntityIds = EntityUtil.getAllPossibleId(newEntity, parentIdentifier);
+      newEntityIds[clazz.mainIdName] = entity[clazz.mainIdName];
+      return newEntityIds;
+    });
+    CommonUpdateService.instance.insertMulti<E>(entities, parentIdentifier.clazz).subscribe(
+      returnedEntities => {
+        const returnedIds = returnedEntities.map(be => be[clazz.mainIdName]);
+        share.selection.clear();
+        share.tableSource.data = share.tableSource.data.filter(e => !returnedIds.includes(e[clazz.mainIdName]));
+        Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+        Notifier.httpErrorResponse(error);
+      }
+    );
+  }
 }

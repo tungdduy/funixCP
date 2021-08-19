@@ -26,6 +26,20 @@ public abstract class AbstractEntity {
     protected Set<String> primaryKeyIdNames;
     protected String capName, camelName;
 
+    public void getAllPkEntity(List<AbstractEntity> result) {
+        result.addAll(this.primaryKeyEntities);
+        this.primaryKeyEntities.forEach(pk -> pk.getAllPkEntity(result));
+    }
+
+    public void getAllPkIdsChain(List<AbstractEntity> pkEntities, String prepend, List<String> result, String joiner) {
+        pkEntities.forEach(pk -> {
+            String pre = prepend == null ? String.format("%s%s", pk.camelName, joiner) : String.format("%s%s%s", prepend, pk.camelName, joiner);
+            result.add(String.format("%s%sId", pre, pk.camelName));
+            getAllPkIdsChain(pk.primaryKeyEntities, pre, result, joiner);
+            pre = prepend;
+        });
+    }
+
     public boolean hasProfileImage() {
         return false;
     }

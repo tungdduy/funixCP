@@ -19,10 +19,8 @@ public class EntityUtilTsModel extends AbstractModel {
 
     @Override
     public void prepareSeparator() {
-        separator("newEntityByDefiner");
-        separator("aboveMainEntityId");
-        separator("belowMainEntityId");
-        separator("entityCache");
+        separator("header");
+        separator("getClassByClassName");
     }
 
     @Override

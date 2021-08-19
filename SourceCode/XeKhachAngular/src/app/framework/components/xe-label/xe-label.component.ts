@@ -23,7 +23,7 @@ export class XeLabelComponent implements OnInit {
   @Input() prepend = '';
 
   @Input("key") key;
-  textValue: string;
+  @Input("txt") textValue: string;
 
   @Input("br") br;
   breakLine: boolean;

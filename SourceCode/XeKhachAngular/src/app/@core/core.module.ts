@@ -10,23 +10,6 @@ import {LayoutService, StateService} from './utils';
 
 import {RippleService} from './utils/ripple.service';
 
-const socialLinks = [
-  {
-    url: 'https://github.com/akveo/nebular',
-    target: '_blank',
-    icon: 'github',
-  },
-  {
-    url: 'https://www.facebook.com/akveo/',
-    target: '_blank',
-    icon: 'facebook',
-  },
-  {
-    url: 'https://twitter.com/akveo_inc',
-    target: '_blank',
-    icon: 'twitter',
-  },
-];
 
 const DATA_SERVICES = [
   {provide: MAT_RIPPLE_GLOBAL_OPTIONS, useExisting: RippleService},
@@ -34,7 +17,6 @@ const DATA_SERVICES = [
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
   getRole() {
-    // here you could provide any role based on any auth flow
     return observableOf('guest');
   }
 }
@@ -49,14 +31,6 @@ export const NB_CORE_PROVIDERS = [
         delay: 3000,
       }),
     ],
-    forms: {
-      LOGIN: {
-        socialLinks,
-      },
-      register: {
-        socialLinks,
-      },
-    },
   }).providers,
 
   NbSecurityModule.forRoot({

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
 import net.timxekhach.operation.data.entity.Employee;
 import org.apache.commons.lang3.time.DateUtils;
@@ -200,7 +201,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "confirmedById")
+        property = "employeeId")
     protected Employee confirmedBy;
 
     public void setConfirmedBy(Employee confirmedBy) {
@@ -240,7 +241,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
@@ -253,11 +254,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("confirmedDateTime")) {
-                try {
-                this.confirmedDateTime = DateUtils.parseDate(value);
-                } catch (Exception e) {
-                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
-                }
+                this.confirmedDateTime = XeDateUtils.dateTimeAppToApi(value);
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {

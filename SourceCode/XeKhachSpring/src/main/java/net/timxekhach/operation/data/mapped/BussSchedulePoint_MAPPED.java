@@ -26,11 +26,6 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE)
-    protected Long xeLocationId;
-
-    @Id
-    @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
     protected Long bussScheduleId;
 
     @Id
@@ -42,6 +37,11 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
     protected Long getIncrementId() {
         return this.bussSchedulePointId;
     }
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long locationId;
+
     @Id
     @Column(nullable = false, updatable = false)
     @Setter(AccessLevel.PRIVATE)
@@ -65,9 +65,9 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
-        protected Long xeLocationId;
         protected Long bussScheduleId;
         protected Long bussSchedulePointId;
+        protected Long locationId;
         protected Long bussTypeId;
         protected Long bussId;
         protected Long companyId;
@@ -76,17 +76,17 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
 
     public static Pk pk(Map<String, String> data) {
         try {
-            Long xeLocationIdLong = Long.parseLong(data.get("xeLocationId"));
             Long bussScheduleIdLong = Long.parseLong(data.get("bussScheduleId"));
             Long bussSchedulePointIdLong = Long.parseLong(data.get("bussSchedulePointId"));
+            Long locationIdLong = Long.parseLong(data.get("locationId"));
             Long bussTypeIdLong = Long.parseLong(data.get("bussTypeId"));
             Long bussIdLong = Long.parseLong(data.get("bussId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
             Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
-            if(NumberUtils.min(new long[]{xeLocationIdLong, bussScheduleIdLong, bussSchedulePointIdLong, bussTypeIdLong, bussIdLong, companyIdLong, bussPointIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{bussScheduleIdLong, bussSchedulePointIdLong, locationIdLong, bussTypeIdLong, bussIdLong, companyIdLong, bussPointIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new BussSchedulePoint_MAPPED.Pk(xeLocationIdLong, bussScheduleIdLong, bussSchedulePointIdLong, bussTypeIdLong, bussIdLong, companyIdLong, bussPointIdLong);
+            return new BussSchedulePoint_MAPPED.Pk(bussScheduleIdLong, bussSchedulePointIdLong, locationIdLong, bussTypeIdLong, bussIdLong, companyIdLong, bussPointIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
@@ -114,8 +114,8 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "xeLocationId",
-        referencedColumnName = "xeLocationId",
+        name = "locationId",
+        referencedColumnName = "locationId",
         insertable = false,
         updatable = false)
     })
@@ -135,7 +135,7 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
         this.bussPoint = bussPoint;
         this.bussPointId = bussPoint.getBussPointId();
         this.companyId = bussPoint.getCompanyId();
-        this.xeLocationId = bussPoint.getXeLocationId();
+        this.locationId = bussPoint.getLocationId();
     }
     @ManyToOne
     @JoinColumns({
@@ -189,7 +189,7 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
@@ -197,16 +197,16 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
                 this.priceToEndPoint = Long.valueOf(value);
                 continue;
             }
-            if (fieldName.equals("xeLocationId")) {
-                this.xeLocationId = Long.valueOf(value);
-                    continue;
-            }
             if (fieldName.equals("bussScheduleId")) {
                 this.bussScheduleId = Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussSchedulePointId")) {
                 this.bussSchedulePointId = Long.valueOf(value);
+                    continue;
+            }
+            if (fieldName.equals("locationId")) {
+                this.locationId = Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {

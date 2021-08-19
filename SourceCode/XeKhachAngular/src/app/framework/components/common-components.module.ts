@@ -6,9 +6,11 @@ import {XeLinkComponent} from "./xe-link/xe-link.component";
 import {XeBtnComponent} from "./xe-btn/xe-btn.component";
 import {RouterModule} from "@angular/router";
 import {XeFormComponent} from './xe-form/xe-form.component';
-import {FormsModule} from "@angular/forms";
-import {PhonePipe} from "./pipes/phone-pipe";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {PhonePipe} from "./pipes/phone.pipe";
+
 import {
+  NbAutocompleteModule,
   NbButtonModule,
   NbCardModule,
   NbCheckboxModule,
@@ -17,6 +19,7 @@ import {
   NbIconModule,
   NbInputModule,
   NbSelectModule,
+  NbTimepickerModule,
   NbUserModule
 } from "@nebular/theme";
 import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
@@ -33,6 +36,16 @@ import {XeNavComponent} from './xe-nav/xe-nav.component';
 import {BasicBussSchemeComponent} from './basic-buss-scheme/basic-buss-scheme.component';
 import {RoleInfoComponent} from './role-info/role-info.component';
 import {IconWrapComponent} from './details/icon-wrap/icon-wrap.component';
+import {LocationPipe} from "./pipes/location.pipe";
+import {OverlayModule} from "@angular/cdk/overlay";
+import {MoneyPipe} from "./pipes/money.pipe";
+import {DATE_FORMATS, XeDatePipe} from "./pipes/date.pipe";
+import {XeTimePipe} from "./pipes/time.pipe";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, NativeDateModule} from "@angular/material/core";
+import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
+import {MatButtonModule} from "@angular/material/button";
+import { MultiOptionComponent } from './multi-option/multi-option.component';
 
 
 @NgModule({
@@ -50,6 +63,11 @@ import {IconWrapComponent} from './details/icon-wrap/icon-wrap.component';
     RoleInfoComponent,
     IconWrapComponent,
     PhonePipe,
+    LocationPipe,
+    MoneyPipe,
+    XeDatePipe,
+    XeTimePipe,
+    MultiOptionComponent
   ],
   exports: [
     XeInputComponent,
@@ -64,7 +82,11 @@ import {IconWrapComponent} from './details/icon-wrap/icon-wrap.component';
     BasicBussSchemeComponent,
     RoleInfoComponent,
     IconWrapComponent,
-    PhonePipe
+    PhonePipe,
+    LocationPipe,
+    MoneyPipe,
+    XeDatePipe,
+    XeTimePipe
   ],
   imports: [
     CommonModule,
@@ -83,10 +105,19 @@ import {IconWrapComponent} from './details/icon-wrap/icon-wrap.component';
     NbUserModule,
     MatCheckboxModule,
     NbCheckboxModule,
-    NbSelectModule
+    NbSelectModule,
+    NbTimepickerModule,
+    OverlayModule,
+    ReactiveFormsModule,
+    NbAutocompleteModule,
+    MatDatepickerModule,
+    NativeDateModule,
+    MatButtonModule
   ],
   providers: [
-    {provide: MatPaginatorIntl, useValue: CustomPaginator()}
+    {provide: MatPaginatorIntl, useValue: CustomPaginator()},
+    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
+    {provide: MAT_DATE_FORMATS, useValue: DATE_FORMATS}
   ]
 })
 export class CommonComponentsModule {

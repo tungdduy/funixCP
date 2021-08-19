@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.TripService;
 import static net.timxekhach.utility.XeResponseUtils.success;
 import org.springframework.http.ResponseEntity;
+import net.timxekhach.operation.data.entity.Location;
 import java.util.Map;
 import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
@@ -24,6 +25,10 @@ public class TripApi {
 	@PostMapping("/available-trips")
 	public ResponseEntity<List> availableTrips () {
 		return success(tripService.availableTrips());
+	}
+	@GetMapping("/searchLocation/{searchString}")
+	public ResponseEntity<List<Location>> searchLocation(@PathVariable("searchString") String searchString) {
+		return success(tripService.searchLocation(searchString));
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

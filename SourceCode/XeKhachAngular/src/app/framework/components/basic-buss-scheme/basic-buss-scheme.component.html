@@ -1,24 +1,49 @@
 <nb-card>
   <nb-card-header>
-    <h3>
-      <xe-btn type="back" hideText (click)="scheme.turnBackAction()"></xe-btn>
-      <lbl [key]="scheme.bussType().bussTypeCode"></lbl>
-    </h3>
+    <div class="float-left">
+      <h3>
+        <xe-btn (click)="parentScreen.back()" hideText template="back"></xe-btn>
+        <lbl [txt]="bussType.bussTypeName"></lbl>
+      </h3>
+    </div>
+    <div class="float-right" *ngIf="editMode && screen.current === screens.schemeList">
+      <xe-btn (click)="openNewSeatRange()" template="add"></xe-btn>
+    </div>
   </nb-card-header>
   <nb-card-body>
-    <div *ngFor="let seatGroup of seatGroups">
-      <div class="pt-3">
-        <h6>
-          <lbl [key]="seatGroup.groupName"></lbl>
-          <lbl class="text-danger badge" [key]="seatGroup.note"></lbl>
-        </h6>
+    <ng-container *ngIf="screen.current === screens.schemeList">
+      <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
+        <div>
+          <div class="pt-3">
+            <h6>
+              <lbl [key]="seatGroup.seatGroupName"></lbl>
+              <lbl [key]="seatGroup.seatGroupDesc" class="text-danger badge"></lbl>
+              <xe-btn *ngIf="editMode" (click)="openEditSeatGroup(seatGroup)" hideText icon="pen" template="blank"></xe-btn>
+            </h6>
 
-      </div>
-      <div>
-        <div class="seat alert alert-info border-info" *ngFor="let i of seatGroup.seats">
-          {{i}}
+          </div>
+          <div>
+            <ng-container *ngIf="editMode">
+              <xe-btn (click)="bringUp(seatGroup, groupIdx)" *ngIf="!isFirstGroup" icon="caret-up"
+                      template="blank"></xe-btn>
+              <xe-btn (click)="bringDown(seatGroup, groupIdx)" *ngIf="!isLastGroup" icon="caret-down"
+                      template="blank"></xe-btn>
+            </ng-container>
+            <div *ngFor="let seat of seatGroup.seats" class="seat alert alert-info border-info">
+              {{seat}}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
+    <xe-basic-form *ngIf="screen.current === screens.schemeEdit"
+                   [formData]="seatGroupTable.formData" [readMode]="false">
+      <ng-container leftAboveMessageLabel>
+        <lbl key="seat_from">: {{getCurrentSeatFrom()}}</lbl>
+        <lbl key="seat_to">: {{getCurrentSeatTo()}}</lbl>
+      </ng-container>
+    </xe-basic-form>
   </nb-card-body>
 </nb-card>
+
+

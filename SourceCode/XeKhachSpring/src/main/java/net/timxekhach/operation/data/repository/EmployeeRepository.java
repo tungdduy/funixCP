@@ -14,6 +14,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Employee_MAP
     void deleteByEmployeeId(Long id);
     void deleteAllByEmployeeIdIn(List<Long> ids);
     Employee findByEmployeeId(Long id);
+    List<Employee> findByEmployeeIdIn(List<Long> id);
     Integer countEmployeeIdByCompanyId(Long company);
     @SuppressWarnings("unused")
     void deleteByCompanyId(Long companyId);

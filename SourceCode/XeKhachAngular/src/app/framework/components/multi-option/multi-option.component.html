@@ -1,0 +1,5 @@
+<div class="options-group pt-2">
+  <div *ngFor="let option of options.ALL" (click) = toggleOption(option) class="option-item {{has(option) ? 'active' : ''}}">
+    <lbl [key]="options.NAME + '.' + option"></lbl>
+  </div>
+</div>

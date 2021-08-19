@@ -14,6 +14,7 @@ public interface BussEmployeeRepository extends JpaRepository<BussEmployee, Buss
     void deleteByBussEmployeeId(Long id);
     void deleteAllByBussEmployeeIdIn(List<Long> ids);
     BussEmployee findByBussEmployeeId(Long id);
+    List<BussEmployee> findByBussEmployeeIdIn(List<Long> id);
     Integer countBussEmployeeIdByEmployeeId(Long employee);
     Integer countBussEmployeeIdByCompanyId(Long company);
     Integer countBussEmployeeIdByBussId(Long buss);

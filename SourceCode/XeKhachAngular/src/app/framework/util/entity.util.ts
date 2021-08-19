@@ -1,107 +1,51 @@
-// ____________________ ::NEW_ENTITY_BY_DEFINER_SEPARATOR:: ____________________ //
-import {Company} from "../../business/entities/Company";
-import {User} from "../../business/entities/User";
-import {Employee} from "../../business/entities/Employee";
+// ____________________ ::HEADER_SEPARATOR:: ____________________ //
 import {EntityField, EntityIdentifier} from "../model/XeFormData";
 import {StringUtil} from "./string.util";
-import {TripUser} from "../../business/entities/TripUser";
-import {Trip} from "../../business/entities/Trip";
-import {BussType} from "../../business/entities/BussType";
-import {Buss} from "../../business/entities/Buss";
 import {ObjectUtil} from "./object.util";
-import {BussEmployee} from "../../business/entities/BussEmployee";
+import {XeEntity, XeEntityClass} from "../../business/entities/XeEntity";
+import {Employee} from "../../business/entities/Employee";
+import {User} from "../../business/entities/User";
 import {TripUserSeat} from "../../business/entities/TripUserSeat";
-import {XeLocation} from "../../business/entities/XeLocation";
+import {Company} from "../../business/entities/Company";
 import {BussSchedule} from "../../business/entities/BussSchedule";
+import {Location} from "../../business/entities/Location";
+import {BussEmployee} from "../../business/entities/BussEmployee";
+import {Buss} from "../../business/entities/Buss";
+import {TripUser} from "../../business/entities/TripUser";
+import {SeatGroup} from "../../business/entities/SeatGroup";
 import {BussSchedulePrice} from "../../business/entities/BussSchedulePrice";
+import {BussType} from "../../business/entities/BussType";
 import {BussPoint} from "../../business/entities/BussPoint";
+import {Trip} from "../../business/entities/Trip";
 import {BussSchedulePoint} from "../../business/entities/BussSchedulePoint";
+import {Observable} from "rxjs";
 import {CommonUpdateService} from "../../business/service/common-update.service";
-import {Notifier} from "../notify/notify.service";
 
 
 export class EntityUtil {
 
-  static newByEntityDefine(entityDefine: EntityIdentifier) {
-    let entity = {};
-// ____________________ ::NEW_ENTITY_BY_DEFINER_SEPARATOR:: ____________________ //
-    if (entityDefine.className === 'User') {
-        entity = new User();
-    }
-    if (entityDefine.className === 'TripUserSeat') {
-        entity = new TripUserSeat();
-        entity['tripUser'] = new TripUser();
-        entity['tripUser']['trip'] = new Trip();
-        entity['tripUser']['user'] = new User();
-    }
-    if (entityDefine.className === 'Employee') {
-        entity = new Employee();
-        entity['company'] = new Company();
-        entity['user'] = new User();
-    }
-    if (entityDefine.className === 'Company') {
-        entity = new Company();
-    }
-    if (entityDefine.className === 'XeLocation') {
-        entity = new XeLocation();
-    }
-    if (entityDefine.className === 'BussSchedule') {
-        entity = new BussSchedule();
-        entity['buss'] = new Buss();
-        entity['buss']['bussType'] = new BussType();
-        entity['buss']['company'] = new Company();
-        entity['company'] = new Company();
-    }
-    if (entityDefine.className === 'BussEmployee') {
-        entity = new BussEmployee();
-        entity['buss'] = new Buss();
-        entity['buss']['bussType'] = new BussType();
-        entity['buss']['company'] = new Company();
-        entity['employee'] = new Employee();
-        entity['employee']['company'] = new Company();
-        entity['employee']['user'] = new User();
-    }
-    if (entityDefine.className === 'Buss') {
-        entity = new Buss();
-        entity['bussType'] = new BussType();
-        entity['company'] = new Company();
-    }
-    if (entityDefine.className === 'TripUser') {
-        entity = new TripUser();
-        entity['trip'] = new Trip();
-        entity['trip']['bussSchedule'] = new BussSchedule();
-        entity['user'] = new User();
-    }
-    if (entityDefine.className === 'BussSchedulePrice') {
-        entity = new BussSchedulePrice();
-        entity['bussSchedule'] = new BussSchedule();
-        entity['bussSchedule']['buss'] = new Buss();
-        entity['bussSchedule']['company'] = new Company();
-    }
-    if (entityDefine.className === 'BussType') {
-        entity = new BussType();
-    }
-    if (entityDefine.className === 'BussPoint') {
-        entity = new BussPoint();
-        entity['company'] = new Company();
-        entity['xeLocation'] = new XeLocation();
-    }
-    if (entityDefine.className === 'Trip') {
-        entity = new Trip();
-        entity['bussSchedule'] = new BussSchedule();
-        entity['bussSchedule']['buss'] = new Buss();
-        entity['bussSchedule']['company'] = new Company();
-    }
-    if (entityDefine.className === 'BussSchedulePoint') {
-        entity = new BussSchedulePoint();
-        entity['bussPoint'] = new BussPoint();
-        entity['bussPoint']['company'] = new Company();
-        entity['bussPoint']['xeLocation'] = new XeLocation();
-        entity['bussSchedule'] = new BussSchedule();
-        entity['bussSchedule']['buss'] = new Buss();
-        entity['bussSchedule']['company'] = new Company();
-    }
-// ____________________ ::ABOVE_MAIN_ENTITY_ID_SEPARATOR:: ____________________ //
+  static getClassByClassName(className: string): XeEntityClass<any> {
+// ____________________ ::HEADER_SEPARATOR:: ____________________ //
+    if (StringUtil.equalsIgnoreCase(className, 'User')) return User;
+    if (StringUtil.equalsIgnoreCase(className, 'TripUserSeat')) return TripUserSeat;
+    if (StringUtil.equalsIgnoreCase(className, 'Employee')) return Employee;
+    if (StringUtil.equalsIgnoreCase(className, 'Company')) return Company;
+    if (StringUtil.equalsIgnoreCase(className, 'BussSchedule')) return BussSchedule;
+    if (StringUtil.equalsIgnoreCase(className, 'BussEmployee')) return BussEmployee;
+    if (StringUtil.equalsIgnoreCase(className, 'Buss')) return Buss;
+    if (StringUtil.equalsIgnoreCase(className, 'Location')) return Location;
+    if (StringUtil.equalsIgnoreCase(className, 'TripUser')) return TripUser;
+    if (StringUtil.equalsIgnoreCase(className, 'SeatGroup')) return SeatGroup;
+    if (StringUtil.equalsIgnoreCase(className, 'BussSchedulePrice')) return BussSchedulePrice;
+    if (StringUtil.equalsIgnoreCase(className, 'BussType')) return BussType;
+    if (StringUtil.equalsIgnoreCase(className, 'BussPoint')) return BussPoint;
+    if (StringUtil.equalsIgnoreCase(className, 'Trip')) return Trip;
+    if (StringUtil.equalsIgnoreCase(className, 'BussSchedulePoint')) return BussSchedulePoint;
+// ____________________ ::GET_CLASS_BY_CLASS_NAME_SEPARATOR:: ____________________ //
+  }
+
+  static newByEntityDefine(entityDefine: EntityIdentifier<any>): any {
+    const entity = entityDefine.clazz.new();
     entityDefine.idFields().forEach(idField => {
       const entityField = this.getEntityWithField(entity, idField);
       entityField.entity[entityField.property] = idField.value;
@@ -110,30 +54,11 @@ export class EntityUtil {
     return entity;
   }
 
-  static mainEntityIdByClassName(className: string) {
-// ____________________ ::ABOVE_MAIN_ENTITY_ID_SEPARATOR:: ____________________ //
-    if (className === 'User') return ['userId'];
-    if (className === 'TripUserSeat') return ['tripUserSeatId', 'tripUserId'];
-    if (className === 'Employee') return ['employeeId', 'companyId', 'userId'];
-    if (className === 'Company') return ['companyId'];
-    if (className === 'XeLocation') return ['xeLocationId'];
-    if (className === 'BussSchedule') return ['bussScheduleId', 'bussId', 'companyId'];
-    if (className === 'BussEmployee') return ['bussEmployeeId', 'bussId', 'employeeId'];
-    if (className === 'Buss') return ['bussId', 'bussTypeId', 'companyId'];
-    if (className === 'TripUser') return ['tripUserId', 'tripId', 'userId'];
-    if (className === 'BussSchedulePrice') return ['bussSchedulePriceId', 'bussScheduleId'];
-    if (className === 'BussType') return ['bussTypeId'];
-    if (className === 'BussPoint') return ['bussPointId', 'companyId', 'xeLocationId'];
-    if (className === 'Trip') return ['tripId', 'bussScheduleId'];
-    if (className === 'BussSchedulePoint') return ['bussSchedulePointId', 'bussPointId', 'bussScheduleId'];
-// ____________________ ::BELOW_MAIN_ENTITY_ID_SEPARATOR:: ____________________ //
-  }
-
-  static isIdValid(entity: any, entityDefine: EntityIdentifier): boolean {
+  static isIdValid(entity: any, entityDefine: EntityIdentifier<any>): boolean {
     if (!entityDefine) return false;
     const idFields = entityDefine.idFields();
     for (const idField of idFields) {
-      const idNo = Number.parseInt(this.getFieldValue(entity, idField), 10);
+      const idNo = Number.parseInt(this.getReadableFieldValue(entity, idField), 10);
       if (isNaN(idNo) || idNo <= 0) {
         return false;
       }
@@ -141,16 +66,8 @@ export class EntityUtil {
     return true;
   }
 
-  static isMatchingId(entityDefine: EntityIdentifier, entity1, entity2): boolean {
-    for (const idField of entityDefine.idFields()) {
-      if (this.getFieldValue(entity1, idField) !== this.getFieldValue(entity2, idField)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   static getFieldOwnerEntity(oriEntity: any, field: EntityField) {
+    if (!oriEntity || !field) return {};
     const subEntityNames = this.getSubEntityNames(field);
     let traceEntity = oriEntity;
     for (const name of subEntityNames) {
@@ -182,26 +99,27 @@ export class EntityUtil {
     return {entity: traceEntity, property: fieldNameOnly};
   }
 
-  static getFieldValue(entity: any, field: EntityField) {
+  static getReadableFieldValue(entity: any, field: EntityField) {
     if (!field || !entity) return undefined;
     let result = entity[field.name];
     if (this.hasSubEntity(field)) {
       const allSubNames = field.name.split(".");
       const fieldNameOnly = allSubNames.pop();
       for (const name of allSubNames) {
-        entity = entity[name];
+        entity = ObjectUtil.isObject(entity[name]) ? entity[name] : entity;
       }
       result = entity[fieldNameOnly];
     }
-    return field.pipe ? field.pipe.transform(result) : result;
+    return field.template?.hasPipe ? field.template.pipe.toReadableString(result) : result;
   }
 
   static getProfileImageUrl(oriEntity: any, otherField: EntityField): string {
+    if (!oriEntity || !otherField) return undefined;
     const entityField = this.getEntityWithField(oriEntity, otherField);
     return entityField.entity.profileImageUrl;
   }
 
-  static getFieldOwnerMainId(field: EntityField, entityDefine: EntityIdentifier, entity: any) {
+  static getFieldOwnerMainId(field: EntityField, entityDefine: EntityIdentifier<any>, entity: any) {
     const ownerId = {};
     const owner = this.getFieldOwnerClassName(field, entityDefine);
     const ownerIdName = StringUtil.lowercaseFirstLetter(owner) + "Id";
@@ -215,6 +133,7 @@ export class EntityUtil {
     const lastSubName = allSubNames.pop();
     return allSubNames.length === 0 ? lastSubName : allSubNames.pop();
   }
+
   static getLastFieldName(field: EntityField) {
     let result = field.name;
     if (this.hasSubEntity(field)) {
@@ -223,18 +142,45 @@ export class EntityUtil {
     return result;
   }
 
-  static getFieldOwnerClassName(field: EntityField, entityDefine: EntityIdentifier) {
+  static getFieldOwnerClassName(field: EntityField, entityDefine: EntityIdentifier<any>) {
     return this.hasSubEntity(field)
       ? StringUtil.upperFirstLetter(this.getLastSubEntityName(field))
-      : entityDefine.className;
+      : entityDefine.clazz.className;
   }
 
-  static getIdInEntity(entity: any, entityDefine: EntityIdentifier) {
+  static flatThenSaveEntity(entity: any, clazz: XeEntityClass<any>): Observable<any> {
+    this.flatId(entity, clazz);
+    Object.keys(entity).forEach(key => {
+      if (ObjectUtil.isObject(entity[key])) {
+        delete entity[key];
+      }
+    });
+    return CommonUpdateService.instance.insert(entity, clazz);
+  }
+
+  static flatId(rootEntity: any, lastClass: XeEntityClass<any>, lastEntity = {}) {
+    lastClass.pkMapFieldNames.forEach(pkFieldName => {
+      const fieldEntity = rootEntity[pkFieldName];
+      if (fieldEntity) {
+        const fieldIdName = pkFieldName + "Id";
+        if (!fieldEntity[fieldIdName]) {
+          return;
+        }
+        rootEntity[fieldIdName] = fieldEntity[fieldIdName];
+        this.flatId(rootEntity, this.getClassByClassName(pkFieldName), lastEntity);
+      }
+    });
+    console.log(rootEntity);
+  }
+
+  static getAllPossibleId(entity: any, entityDefine: EntityIdentifier<any>) {
     const result = {};
     entityDefine.idFields().forEach(idField => {
-      const fieldValue = this.getFieldValue(entity, idField);
+      const fieldValue = this.getReadableFieldValue(entity, idField);
       result[idField.name] = fieldValue;
-      result[this.getLastFieldName(idField)] = fieldValue;
+      if (!result[this.getLastFieldName(idField)]) {
+        result[this.getLastFieldName(idField)] = fieldValue;
+      }
       if (idField.newIfNull) {
         const nameChain = idField.name.split(".");
         let nameChainString = "";
@@ -243,67 +189,83 @@ export class EntityUtil {
           nameChain.pop(); // remove field Owner;
           nameChainString = nameChain.join(".") + ".";
         }
-        result[nameChainString + "new" + idField.newIfNull + "IfNull"] = true;
+        result[nameChainString + "new" + idField.newIfNull.className + "IfNull"] = true;
       }
     });
     return result;
   }
 
-  static getMainIdFromIdentifier(entityDefine: EntityIdentifier) {
-    const mainIds = this.mainEntityIdByClassName(entityDefine.className);
-    const result = {};
-    entityDefine.idFields().forEach(idField => {
-      const lastFieldName = this.getLastFieldName(idField);
-      if (mainIds.includes(lastFieldName))
-      result[lastFieldName] = idField.value;
-    });
-    return result;
+  static getMainPkValue(entity: any, className: string) {
+    const idName = StringUtil.classNameToIdName(className);
+    return entity[idName];
   }
 
   static entityCache = {};
-  static cache(entity: any, className: string) {
-    const entityCaches = this.getEntityCacheByClassName(className);
-    if (!entityCaches) return;
-    this.cacheFromEntityCaches(entity, entityCaches);
-  }
-  static cacheFromEntityCaches(entity: any, entityCaches: EntityCache[]) {
-    entityCaches.forEach(sub => {
-      const camelName = StringUtil.lowercaseFirstLetter(sub.name);
-      if (ObjectUtil.isNumberGreaterThanZero(entity[camelName])) {
-        entity[camelName] = this.entityCache[camelName][entity[camelName + "Id"]];
+
+  static cache(entity, holders: EntityHolder[]) {
+    holders.forEach(holder => {
+      if (ObjectUtil.isNumberGreaterThanZero(entity[holder.fieldName])) {
+        entity[holder.fieldName] = this.entityCache[holder.fieldClassName][entity[holder.fieldName]];
+      } else if (!ObjectUtil.isObject(entity[holder.fieldName])) {
+        return;
       } else {
-        if (!this.entityCache[camelName]) {
-          this.entityCache[camelName] = {};
+        if (!this.entityCache.hasOwnProperty(holder.fieldClassName)) {
+          this.entityCache[holder.fieldClassName] = {};
         }
-        this.entityCache[camelName][entity[camelName + "Id"]] = entity[camelName];
+        const fieldId = EntityUtil.getMainPkValue(entity[holder.fieldName], holder.fieldClassName);
+        this.entityCache[holder.entityClassName][fieldId] = entity[holder.fieldName];
       }
-      if (sub.children) {
-        EntityUtil.cacheFromEntityCaches(entity[camelName], sub.children);
+      if (holder.children) {
+        this.cache(entity[holder.fieldName], holder.children);
       }
     });
   }
-  static getEntityCacheByClassName(className: string): EntityCache[] {
-// ____________________ ::BELOW_MAIN_ENTITY_ID_SEPARATOR:: ____________________ //
-    if (className === 'User') return [];
-    if (className === 'TripUserSeat') return [{name: 'tripUser'}];
-    if (className === 'Employee') return [{name: 'company'}, {name: 'user'}];
-    if (className === 'Company') return [];
-    if (className === 'XeLocation') return [];
-    if (className === 'BussSchedule') return [{name: 'buss'}, {name: 'company'}];
-    if (className === 'BussEmployee') return [{name: 'buss'}, {name: 'employee'}];
-    if (className === 'Buss') return [{name: 'bussType'}, {name: 'company'}];
-    if (className === 'TripUser') return [{name: 'trip'}, {name: 'user'}];
-    if (className === 'BussSchedulePrice') return [{name: 'bussSchedule'}];
-    if (className === 'BussType') return [];
-    if (className === 'BussPoint') return [{name: 'company'}, {name: 'xeLocation'}];
-    if (className === 'Trip') return [{name: 'bussSchedule'}];
-    if (className === 'BussSchedulePoint') return [{name: 'bussPoint'}, {name: 'bussSchedule'}];
-// ____________________ ::ENTITY_CACHE_SEPARATOR:: ____________________ //
-    return undefined;
+
+  static cachePk<E extends XeEntity>(clazz: XeEntityClass<E>, result: E[], filterCondition: (entity: any) => boolean = () => true) {
+    const cache = {};
+    return result.filter((entity) => {
+      EntityUtil.cachePkEntities(entity, clazz.pkMapFieldNames, cache);
+      return filterCondition(entity);
+    });
+  }
+
+  static cachePkEntities(entity: any, pkMapFieldNames: string[], cache: {}) {
+    pkMapFieldNames.forEach(fieldName => {
+      const camelId = fieldName + "Id";
+      if (ObjectUtil.isNumberGreaterThanZero(entity[fieldName])) {
+        entity[fieldName] = cache[fieldName][entity[camelId]];
+      } else {
+        if (!cache[fieldName]) {
+          cache[fieldName] = {};
+        }
+        cache[fieldName][entity[camelId]] = entity[fieldName];
+      }
+    });
+  }
+
+  static cachePkFromParent(parent: any, parentClass: XeEntityClass<any>, childrenFieldName: string, childrenClass: XeEntityClass<any>) {
+    const copyParent = Object.assign({}, parent);
+    copyParent[childrenFieldName] = copyParent[childrenFieldName].map(child => child[childrenClass.mainIdName]);
+    const cache = {};
+    cache[parentClass.camelName] = {};
+    cache[parentClass.camelName][parent[parentClass.mainIdName]] = copyParent;
+    parent[childrenFieldName].forEach(child => {
+      this.cachePkEntities(child, [parentClass.camelName], cache);
+    });
+    return parent[childrenFieldName];
   }
 }
+
 class EntityCache {
-  name: string;
+  fieldName?: string;
+  className?: string;
   children?: EntityCache[];
 }
-// ____________________ ::ENTITY_CACHE_SEPARATOR:: ____________________ //
+
+class EntityHolder {
+  entityClassName: string;
+  fieldName: string;
+  fieldClassName: string;
+  children?: EntityHolder[];
+}
+// ____________________ ::GET_CLASS_BY_CLASS_NAME_SEPARATOR:: ____________________ //

@@ -8,6 +8,7 @@ import {XeLabel} from "../../../business/i18n";
 import {State} from "../../model/message.model";
 import {XeLabelComponent} from "../xe-label/xe-label.component";
 import {XeSubscriber} from "../../model/XeSubscriber";
+import {InputMode} from "../../model/EnumStatus";
 
 @Component({
   selector: 'xe-form',
@@ -18,11 +19,14 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
 
   @Input() addToSubmit: () => {};
   @Input() onSuccess: 'update' | 'reset';
+  @Input() muteOnSuccess: boolean;
+
   private get isResetOnSuccess() {
     return this.onSuccess === 'reset';
   }
+
   @Input() initCtrl?: () => {};
-  @Input() readonly;
+  @Input("readMode") readMode;
   @Input() class;
   @Input() name;
 
@@ -88,10 +92,10 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   }
 
   get isMute() {
-    return this.readonly === '' || this.readonly === true;
+    return this.readMode === '' || this.readMode === true;
   }
 
-  public onSubmit() {
+  public _onSubmit() {
     if (!this.handler) {
       console.log("no FormHandler found!");
       return;
@@ -99,16 +103,15 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     let model = {};
     console.log("start submit form: " + this.name);
     let changedInputsNumber = 0;
-    const invalidNumber = this.formControls.filter(control => {
-      model[control.name] = control.value;
-      if (control.displaySelectOneMenu && control.selectOneMenu().length === 1)
-        control.value = control.selectOneMenu()[0].value;
+    const invalidNumber = this.formControls.filter(input => {
+      if (input.selectOneMenu && input.selectOneMenu().length === 1)
+        input.value = input.selectOneMenu()[0].value;
 
-      if (control.isChanged) {
+      if (input.isChanged) {
+        model[input.name] = input.submitValue;
         changedInputsNumber++;
       }
-
-      return control.validateFailed();
+      return input.validateFailed();
     }).length;
 
     console.log("changedInputsNumber: " + changedInputsNumber);
@@ -116,7 +119,9 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     if (this.addToSubmit) {
       const addToModel = this.addToSubmit();
       Object.keys(addToModel).forEach(key => {
-        model[key] = addToModel[key];
+        if (!model[key]) {
+          model[key] = addToModel[key];
+        }
       });
     }
 
@@ -135,6 +140,13 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
       this.msg?.setMessage(this.messages.noChange);
       return;
     }
+
+    const observable = this.handler?.processor(model);
+    if (observable['status'] && !observable.isSuccess()) {
+      this.notify(observable.message, State.error);
+      return;
+    }
+
     console.log("form valid, begin post...");
     console.log(model);
     this.isLoading = true;
@@ -148,10 +160,12 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
           if (this.isResetOnSuccess) {
             this.formControls.forEach(input => input.reset());
           } else {
-            this.formControls.forEach(input => input.update());
+            this.formControls.forEach(input => input.updateToNewValue());
           }
 
-          this.mute();
+          if (this.muteOnSuccess) {
+            this.mute();
+          }
         },
         (error: HttpErrorResponse) => {
           this.isLoading = false;
@@ -167,25 +181,25 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
       this.ctrl = this.initCtrl() as FormAbstract;
     }
     this.msg = this._msg.first;
-    this._originalMute = this.readonly;
+    this._originalMute = this.readMode;
     this.updateMute();
     this.handler?.reset?.call();
   }
 
   reset() {
     this.formControls.forEach(input => input.reset());
-    this.readonly = this._originalMute;
+    this.readMode = this._originalMute;
     this.handler?.reset?.call();
     this.updateMute();
   }
 
   mute() {
-    this.readonly = true;
+    this.readMode = true;
     this.updateMute();
   }
 
   unMute() {
-    this.readonly = false;
+    this.readMode = false;
     this.updateMute();
   }
 
@@ -193,13 +207,13 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     if (this.isMute) {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.disabled = false;
+          input.inputMode = InputMode.disabled;
         });
       }, 0);
     } else {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.disabled = true;
+          input.inputMode = InputMode.input;
         });
       }, 0);
     }

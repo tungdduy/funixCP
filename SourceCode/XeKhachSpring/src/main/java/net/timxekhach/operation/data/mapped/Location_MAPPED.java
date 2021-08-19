@@ -1,7 +1,6 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.validation.constraints.*;
@@ -14,7 +13,6 @@ import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
 import org.apache.commons.lang3.math.NumberUtils;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -65,7 +63,7 @@ public abstract class Location_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "parentId")
+        property = "locationId")
     protected Location parent;
 
     public void setParent(Location parent) {
@@ -88,7 +86,7 @@ public abstract class Location_MAPPED extends XeEntity {
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();

@@ -22,7 +22,7 @@ public class ModuleTsModel extends AbstractUrlModel {
                 "import {NgModule} from '@angular/core';",
                 "import {FormsModule as ngFormsModule} from \"@angular/forms\";",
                 "import {RouterModule} from \"@angular/router\";"
-        ).emptyOnly();
+        ).removeIfCurrentContentNotBlank();
 
         separator("moduleImport").unique(
                 "imports: [",
@@ -30,7 +30,7 @@ public class ModuleTsModel extends AbstractUrlModel {
                 "\tngFormsModule,",
                 "\tRouterModule,",
                 "],"
-        ).emptyOnly();
+        ).removeIfCurrentContentNotBlank();
     }
 
     @Override

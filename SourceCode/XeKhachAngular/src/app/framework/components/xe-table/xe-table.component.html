@@ -1,21 +1,29 @@
-<ng-template #basicFormDirect let-basicFormDialog="dialogRef">
-  <div class="basic-form-dialog">
-    <xe-basic-form [dialog]="basicFormDialog"
-                   [onDelete]="deleteEntitySuccess"
-                   [onSuccess]="submitEntitySuccess"
-                   [formData]="tableData.formData">
-      <ng-container belowHeaderTitle>
-        <ng-content select="[bsForm_BelowHeaderTitle]"></ng-content>
-      </ng-container>
-      <ng-container bottomLeftButtons>
-        <ng-content select="[bsForm_BottomLeftButtons]"></ng-content>
-      </ng-container>
-    </xe-basic-form>
-  </div>
+<ng-template #basicForm let-dialog="basicFormDialog">
+  <xe-basic-form [dialog]="dialog"
+                 [postRemove]="postRemove"
+                 [postPersist]="postPersist"
+                 [formData]="tableData.formData">
+    <ng-container headerTopMost *ngIf="screen.is(screens.basicForm)">
+    </ng-container>
+    <ng-container belowHeaderTitle>
+      <ng-content select="[bsForm_BelowHeaderTitle]"></ng-content>
+    </ng-container>
+    <ng-container bottomLeftButtons>
+      <ng-content select="[bsForm_BottomLeftButtons]"></ng-content>
+    </ng-container>
+  </xe-basic-form>
 </ng-template>
+
 <!-- ########### END OF BASIC FORM ##############-->
 
-<ng-template #deleteDirect let-deleteDialog="dialogRef">
+<ng-template #basicFormDialogWrapper let-basicFormDialog="dialogRef">
+  <div class="basic-form-dialog">
+    <ng-container *ngTemplateOutlet="basicForm; context: {basicFormDialog: basicFormDialog}"></ng-container>
+  </div>
+</ng-template>
+<!-- ########### END OF FORM DIALOG WRAPPER ##############-->
+
+<ng-template #deleteDialogWrapper let-deleteDialog="dialogRef">
   <div class="basic-form-dialog text-center">
     <nb-card>
       <nb-card-header>
@@ -29,27 +37,43 @@
         </p>
       </nb-card-body>
       <nb-card-footer class="text-center">
-        <xe-btn type="back" (click)="deleteDialog.close()"></xe-btn>
-        <xe-btn type="ok" (click)="deleteDialog.close(); deleteSelected()"></xe-btn>
+        <xe-btn template="back" (click)="deleteDialog.close()"></xe-btn>
+        <xe-btn template="ok" (click)="deleteDialog.close(); deleteSelected()"></xe-btn>
       </nb-card-footer>
     </nb-card>
   </div>
 </ng-template>
 <!-- ########### END OF DELETE DIALOG ##############-->
+<ng-container *ngIf="screen.is(screens.basicForm)">
+  <ng-template [ngTemplateOutlet]="basicForm">
+  </ng-template>
+</ng-container>
 
-<nb-card>
+<nb-card *ngIf="screen.is(screens.table)">
   <nb-card-body>
     <xe-nav [screen]="tableData.xeScreen"></xe-nav>
     <ng-content select="[tableHeader]"></ng-content>
     <mat-form-field appearance="legacy">
-      <mat-label>{{xeLbl('tabToFind')}}</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="{{xeLbl('typeTextHere')}}..." #input>
+      <mat-label>{{xeLabel.tabToFind}}</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="{{xeLabel.typeTextHere}}..." #input>
     </mat-form-field>
     <div class="float-right">
       <ng-content select="[top-right-buttons]"></ng-content>
-      <span *ngIf="!tableData.formData.readonly">
-        <xe-btn type="add" (click)="newEntityDialog()" hideText></xe-btn>
-        <xe-btn type="dangerDelete" [disabled]="!hasRowSelected" (click)="openDeleteDialog()" hideText></xe-btn>
+      <ng-container *ngIf="tableData.xeScreen && !tableData.xeScreen.isHome">
+        <xe-btn (click)="tableData.xeScreen.back()" template="back" hideText></xe-btn>
+      </ng-container>
+      <xe-btn *ngIf="tableData.external?.lookUpScreen"
+              (click)="tableData.xeScreen.go(tableData.external.lookUpScreen)"
+              hideText template="selectFromList"></xe-btn>
+      <xe-btn (click)="addSelectedToParent()"
+              *ngIf="tableData.external?.parent"
+              [disabled]="tableData.formData?.share?.selection?.isEmpty()"
+              icon="user-plus"
+              [btnText]="xeLabel.SELECT">
+      </xe-btn>
+      <span *ngIf="!tableData.formData?.control?.readMode">
+        <xe-btn template="add" (click)="tableData.table?.action?.manualCreate ? tableData.table.action.manualCreate() : newEntityDialog()" hideText></xe-btn>
+        <xe-btn template="dangerDelete" [disabled]="!hasRowSelected" (click)="openDeleteDialog()" hideText></xe-btn>
       </span>
     </div>
     <!-- ########### END OF TABLE HEADER ##############-->
@@ -57,19 +81,22 @@
     <table mat-table matSort [dataSource]="tableSource">
 
       <!-- ------------- BASIC columns ------------------->
-      <ng-container *ngFor="let tableColumn of tableData.table.basicColumns" [matColumnDef]="tableColumn.field.name">
+      <ng-container *ngFor="let tableColumn of tableData.table.basicColumns" [matColumnDef]="tableColumn?.field?.name">
         <th mat-header-cell mat-sort-header *matHeaderCellDef class="{{tableColumn.hiddenClass}}">
-          <div class="{{tableColumn['inline'] ? '' : 'd-grid'}} ">
-            <lbl [icon]="tableColumn.icon" [key]="tableColumn.field.name"></lbl>
+          <div class="{{tableColumn.display?.header?.inline ? '' : 'd-grid'}} ">
+            <lbl *ngIf="!tableColumn.display?.header?.silence" [icon]="tableColumn.display?.header?.icon" [key]="tableColumn.field.name"></lbl>
             <ng-container *ngFor="let subColumn of tableColumn.subColumns">
-              <lbl [icon]="subColumn.icon" [key]="subColumn.field.name"></lbl>
+              <lbl *ngIf="!subColumn.display?.header?.silence" [icon]="subColumn.display?.header?.icon" [key]="subColumn.field.name"></lbl>
             </ng-container>
           </div>
         </th>
-        <td mat-cell *matCellDef="let entity" (click)="tableColumn.action ? tableColumn.action(entity) : editEntityDialog(entity)">
+        <td mat-cell *matCellDef="let entity" (click)="onSelect(entity, tableColumn);">
           <ng-container
             *ngTemplateOutlet="getColumn(tableColumn.type); context:{tableColumn: tableColumn, entity:entity}"></ng-container>
           <ng-container *ngFor="let subColumn of tableColumn.subColumns">
+            <div [class]="subColumn.display?.row?.inline ? 'd-inline' : ''">
+
+            </div>
             <ng-container
               *ngTemplateOutlet="getColumn(subColumn.type); context:{tableColumn: subColumn, entity:entity}"></ng-container>
           </ng-container>
@@ -132,32 +159,32 @@
 
 
 <ng-template #string let-tableColumn="tableColumn" let-entity="entity">
-  <span class="{{asCol(tableColumn).field.css}}"> {{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</span>
+  <span class="{{asCol(tableColumn).display?.row?.css}}"> {{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</span>
 </ng-template>
 
 <ng-template #avatarString let-tableColumn="tableColumn" let-entity="entity">
-  <img class="thumbnail-small" [src]="entityUtil.getProfileImageUrl(entity, asCol(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)">
-  {{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}
+  <img class="thumbnail-small" [src]="entityUtil.getProfileImageUrl(entity, asCol(tableColumn).field)" [alt]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)">
+  {{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}
 </ng-template>
 
 <ng-template #iconOption let-tableColumn="tableColumn" let-entity="entity" >
   <icon-wrap [wrapper]="{
-    icon: asCol(tableColumn).rowIcon,
-    clazz: asCol(tableColumn).field.css,
-    content: entityUtil.getFieldValue(entity, asCol(tableColumn).field)
+    icon: asCol(tableColumn).display?.row?.icon,
+    clazz: asCol(tableColumn).display?.row?.css,
+    content: entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)
   }"></icon-wrap>
 </ng-template>
 
 <ng-template #boldString let-tableColumn="tableColumn" let-entity="entity">
-  <b>{{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</b>
+  <b>{{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</b>
 </ng-template>
 
 <ng-template #avatar let-tableColumn="tableColumn" let-entity="entity">
-  <img class="thumbnail-small" [src]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)" [alt]="entityUtil.getFieldValue(entity, asCol(tableColumn).field)">
+  <img class="thumbnail-small" [src]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)" [alt]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)">
 </ng-template>
 
 <ng-template #boldStringRole let-tableColumn="tableColumn" let-entity="entity">
-  <b class="pr-1">{{entityUtil.getFieldValue(entity, asCol(tableColumn).field)}}</b>
+  <b class="pr-1">{{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</b>
   <nb-icon class="role-icon"
            status="{{icon.status}}"
            *ngFor="let icon of getRoleIcons(entityUtil.getFieldOwnerEntity(entity, asCol(tableColumn).field)['role'])"

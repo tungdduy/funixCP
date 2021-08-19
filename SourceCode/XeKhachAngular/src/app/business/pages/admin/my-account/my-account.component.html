@@ -2,22 +2,23 @@
   <div class="{{userFormClass}}">
     <xe-basic-form *ngIf="screen.current === screens.account"
                    hideBody
-                   [editBtn]="startEditUser"
-                   [cancelBtn]="cancelEdit"
+                   readMode
                    [formData]="userForm">
       <ng-container belowHeaderTitle>
-        <role-info [roleInfos]="roleInfos" clazz="text-left"></role-info>
+        <div class="mt-1">
+          <nb-icon icon="mobile-alt" pack="fa"></nb-icon>
+          <lbl [txt]="user.phoneNumber | phonePipe" br></lbl>
+          <lbl [txt]="user.username"></lbl> - <lbl [txt]="user.email"></lbl>
+        </div>
       </ng-container>
       <ng-container bodyTopMost>
+        <role-info [roleInfos]="roleInfos" clazz="text-left" style="display: inline-grid"></role-info>
         <div class="d-grid {{userBodyInfoClass}}">
-          <icon-wrap class="m-1" iconPre="id-card">{{user.username}}</icon-wrap>
-          <icon-wrap class="m-1" iconPre="mobile-alt">{{user.phoneNumber | phonePipe}}</icon-wrap>
-          <icon-wrap class="m-1" iconPre="envelope">{{user.email}}</icon-wrap>
         </div>
       </ng-container>
       <ng-container bottomLeftButtons>
         <xe-btn (click)="screen.go(screens.password)" icon="key"
-                lbl="CHANGE_PASSWORD" type="secondary"></xe-btn>
+                [btnText]="xeLabel.CHANGE_PASSWORD" template="secondary"></xe-btn>
       </ng-container>
     </xe-basic-form>
 
@@ -33,19 +34,18 @@
           <xe-input [matching]="newPassword" name="reNewPassword"></xe-input>
           <div class="text-right">
             <lbl #msg p></lbl>
-            <xe-btn (click)="password.reset(); screen.goHome()" type="back"></xe-btn>
-            <xe-btn [disabled]="password.isLoading" lbl="OK" type="save"></xe-btn>
+            <xe-btn (click)="password.reset(); screen.goHome()" template="back"></xe-btn>
+            <xe-btn [disabled]="password.isLoading" [btnText]="xeLabel.OK" template="save"></xe-btn>
           </div>
         </xe-form>
       </nb-card-body>
     </nb-card>
   </div>
 
-  <div *ngIf="company" class="{{companyFormClass}}">
+  <div *ngIf="user?.employee?.company" class="{{companyFormClass}}">
     <xe-basic-form [formData]="companyForm"
-                   hideBody
-                   [editBtn]="startEditCompany"
-                   [cancelBtn]="cancelEdit">
+                   readMode
+                   hideBody>
       <div headerTopMost>
         <lbl key="company_info">:</lbl>
         <hr/>

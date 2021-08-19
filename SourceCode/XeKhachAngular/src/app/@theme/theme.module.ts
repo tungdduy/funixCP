@@ -30,6 +30,7 @@ import {MATERIAL_LIGHT_THEME} from './styles/material/theme.material-light';
 import {MATERIAL_DARK_THEME} from './styles/material/theme.material-dark';
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
+import {CommonComponentsModule} from "../framework/components/common-components.module";
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -63,15 +64,16 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatRippleModule,
-    ...NB_MODULES,
-    NbInputModule,
-    NbCheckboxModule,
-    FormsModule,
-    RouterModule
-  ],
+    imports: [
+        CommonModule,
+        MatRippleModule,
+        ...NB_MODULES,
+        NbInputModule,
+        NbCheckboxModule,
+        FormsModule,
+        RouterModule,
+        CommonComponentsModule
+    ],
   exports: [
     CommonModule,
     MatRippleModule,

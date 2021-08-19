@@ -5,7 +5,7 @@ import {Component} from '@angular/core';
   styleUrls: ['./footer.component.scss'],
   template: `
     <span class="created-by">
-      Created with ♥ by <b>FUNiX Team</b> 2021
+      <lbl key="footer_credit"></lbl>
     </span>
     <div class="socials">
       <a href="https://github.com/tungdduy/funixCP" target="_blank" class="ion ion-social-github"></a>

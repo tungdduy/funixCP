@@ -4,6 +4,7 @@ import lombok.Getter;
 import util.StringUtil;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,20 +14,33 @@ import static util.StringUtil.fetchSeparatorContent;
 @Getter
 public abstract class SeparatorContent implements RenderFilePath {
     public static class Separator {
-        @Getter
-        private final String splitter;
+        private String splitter;
         @Getter
         private String appendContent = "";
-        boolean isUnique;
+        boolean isUnique, isNewContentOnly;
         List<String> uniqueLines = new ArrayList<>();
+        Function<String, String> splitterBuilder;
+        String separatorName;
+        Separator(String name) {
+            this.separatorName = name;
+        }
 
-        Separator(String name, String... requireLines) {
-            this.splitter = StringUtil.buildSeparator(name);
+        public String getSplitter() {
+            return this.splitterBuilder != null ? this.splitterBuilder.apply(this.separatorName) : StringUtil.buildSeparator(this.separatorName);
+        }
+
+        public void splitterBuilder(Function<String, String> splitterBuilder) {
+            this.splitterBuilder = splitterBuilder;
         }
 
         public Separator append(String content) {
             isUnique = false;
             this.appendContent = this.appendContent + content;
+            return this;
+        }
+
+        public Separator newOnly(){
+            this.isNewContentOnly = true;
             return this;
         }
 
@@ -75,7 +89,7 @@ public abstract class SeparatorContent implements RenderFilePath {
 
         public String getAll() {
             String content = isUnique ? getUniqueContent() : appendContent;
-            return  Stream.of(splitter, top, content, bottom, splitter)
+            return  Stream.of(this.getSplitter(), top, content, bottom, this.getSplitter())
                     .filter(StringUtil::isNotBlank)
                     .map(StringUtil::trimTopBottomBlankLines)
                     .collect(Collectors.joining("\n"));
@@ -99,9 +113,9 @@ public abstract class SeparatorContent implements RenderFilePath {
             return this;
         }
 
-        boolean emptyOnly = false;
-        public void emptyOnly() {
-            this.emptyOnly = true;
+        boolean removeIfCurrentContentNotBlank = false;
+        public void removeIfCurrentContentNotBlank() {
+            this.removeIfCurrentContentNotBlank = true;
         }
         void clear() {
             this.top = "";
@@ -126,11 +140,15 @@ public abstract class SeparatorContent implements RenderFilePath {
         prepareSeparator();
         String oldContent = readAsString(this.buildRenderFilePath());
         this.separators.forEach((name, separator) -> {
-            String separatorContent = fetchSeparatorContent(separator.splitter, oldContent);
+            if(separator.isNewContentOnly) {
+                return;
+            }
+            String separatorContent = fetchSeparatorContent(separator.getSplitter(), oldContent);
             if (StringUtil.isNotBlank(separatorContent)
-                    && separator.emptyOnly) {
+                    && separator.removeIfCurrentContentNotBlank) {
                 separator.clear();
             }
+
             if (separator.isUnique) {
                 separator.unique(separatorContent);
             } else {

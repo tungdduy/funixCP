@@ -4,12 +4,12 @@ package net.timxekhach.operation.data.mapped;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Buss;
-import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
+import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.BussPoint;
 import java.util.List;
 import java.util.ArrayList;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.timxekhach.operation.data.entity.BussSchedulePoint;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
@@ -80,9 +80,8 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     }
 
     protected BussSchedule_MAPPED(){}
-    protected BussSchedule_MAPPED(Buss buss, Company company) {
+    protected BussSchedule_MAPPED(Buss buss) {
         this.setBuss(buss);
-        this.setCompany(company);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -123,38 +122,14 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "companyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "companyId")
-    protected Company company;
-
-    public Company getCompany(){
-        if (this.company == null) {
-            this.company = CommonUpdateService.getCompanyRepository().findByCompanyId(this.companyId);
-        }
-        return this.company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-        this.companyId = company.getCompanyId();
-    }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "startPointXeLocationId",
-        referencedColumnName = "xeLocationId",
+        name = "startPointLocationId",
+        referencedColumnName = "locationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -170,12 +145,12 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "startPointId")
+        property = "bussPointId")
     protected BussPoint startPoint;
 
     public void setStartPoint(BussPoint startPoint) {
         this.startPoint = startPoint;
-        this.startPointXeLocationId = startPoint.getXeLocationId();
+        this.startPointLocationId = startPoint.getLocationId();
         this.startPointBussPointId = startPoint.getBussPointId();
         this.startPointCompanyId = startPoint.getCompanyId();
     }
@@ -185,7 +160,6 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
-    @JsonIgnore
     protected List<BussSchedulePoint> middlePoints = new ArrayList<>();
     @ManyToOne
     @JoinColumns({
@@ -195,8 +169,8 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "endPointXeLocationId",
-        referencedColumnName = "xeLocationId",
+        name = "endPointLocationId",
+        referencedColumnName = "locationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -207,13 +181,13 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "endPointId")
+        property = "bussPointId")
     protected BussPoint endPoint;
 
     public void setEndPoint(BussPoint endPoint) {
         this.endPoint = endPoint;
         this.endPointBussPointId = endPoint.getBussPointId();
-        this.endPointXeLocationId = endPoint.getXeLocationId();
+        this.endPointLocationId = endPoint.getLocationId();
         this.endPointCompanyId = endPoint.getCompanyId();
     }
 
@@ -222,7 +196,7 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
 //====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
-    protected Long startPointXeLocationId;
+    protected Long startPointLocationId;
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointBussPointId;
     @Setter(AccessLevel.PRIVATE)
@@ -230,7 +204,7 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE)
     protected Long endPointBussPointId;
     @Setter(AccessLevel.PRIVATE)
-    protected Long endPointXeLocationId;
+    protected Long endPointLocationId;
     @Setter(AccessLevel.PRIVATE)
     protected Long endPointCompanyId;
 //====================================================================//
@@ -242,25 +216,13 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     protected Date launchTime;
 
     protected Date effectiveDateFrom;
-
-    protected Boolean sunday = false;
-
-    protected Boolean monday = false;
-
-    protected Boolean tuesday = false;
-
-    protected Boolean wednesday = false;
-
-    protected Boolean thursday = false;
-
-    protected Boolean friday = false;
-
-    protected Boolean saturday = false;
+    @Size(max = 255)
+    protected String workingDays;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
 
-    public void setFieldByName(Map<String, String> data) {
+    protected void _setFieldByName(Map<String, String> data) {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
@@ -269,47 +231,15 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("launchTime")) {
-                try {
-                this.launchTime = DateUtils.parseDate(value);
-                } catch (Exception e) {
-                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
-                }
+                this.launchTime = XeDateUtils.timeAppToApi(value);
                 continue;
             }
             if (fieldName.equals("effectiveDateFrom")) {
-                try {
-                this.effectiveDateFrom = DateUtils.parseDate(value);
-                } catch (Exception e) {
-                ErrorCode.INVALID_TIME_FORMAT.throwNow(fieldName);
-                }
+                this.effectiveDateFrom = XeDateUtils.dateAppToApi(value);
                 continue;
             }
-            if (fieldName.equals("sunday")) {
-                this.sunday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("monday")) {
-                this.monday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("tuesday")) {
-                this.tuesday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("wednesday")) {
-                this.wednesday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("thursday")) {
-                this.thursday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("friday")) {
-                this.friday = Boolean.valueOf(value);
-                continue;
-            }
-            if (fieldName.equals("saturday")) {
-                this.saturday = Boolean.valueOf(value);
+            if (fieldName.equals("workingDays")) {
+                this.workingDays = String.valueOf(value);
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {
