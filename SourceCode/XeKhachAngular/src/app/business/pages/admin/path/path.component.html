@@ -1,0 +1,12 @@
+<ng-container *ngIf="screen.is(screens.path)">
+  <xe-table [tableData]="pathTable"></xe-table>
+</ng-container>
+
+
+<ng-container *ngIf="screen.is(screens.pathPoints)">
+  <xe-table [tableData]="pathPointTable">
+    <div tableHeader>
+      <h5 [textContent]="xeLabel['column.path'] + ': ' + pathTable.formData.share.entity.pathName"></h5>
+    </div>
+  </xe-table>
+</ng-container>

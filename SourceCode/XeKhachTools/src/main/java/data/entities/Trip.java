@@ -13,16 +13,12 @@ import static data.entities.abstracts.DataType.TIME_ONLY;
 public class Trip extends AbstractEntity {
     {
         pk(BussSchedule.class);
-
     }
 
     Column price = of(MONEY);
     Column status = status(TripStatus.class);
     Column startTime = of(TIME_ONLY);
 
-    MapColumn allTripUserSeats = map(TripUserSeat.class);
-    MapColumn startPoint = map(BussPoint.class);
-    MapColumn endPoint = map(BussPoint.class);
     MapColumn tripUsers = map(TripUser.class);
 
 }

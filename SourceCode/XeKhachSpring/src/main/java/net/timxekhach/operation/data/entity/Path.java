@@ -3,15 +3,15 @@ package net.timxekhach.operation.data.entity;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
-import net.timxekhach.operation.data.mapped.BussPoint_MAPPED;
+import net.timxekhach.operation.data.mapped.Path_MAPPED;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
-public class BussPoint extends BussPoint_MAPPED {
+public class Path extends Path_MAPPED {
 
-    public BussPoint() {}
-    public BussPoint(Company company, Location location) {
-        super(company, location);
+    public Path() {}
+    public Path(Company company) {
+        super(company);
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

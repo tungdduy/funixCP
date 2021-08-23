@@ -5,8 +5,7 @@
   ],
   "linterOptions": {
     "exclude": [
-      "node_modules/**",
-      "src/app/demo-pages/**"
+      "node_modules/**"
     ]
   },
   "rulesDirectory": [

@@ -1,32 +1,48 @@
-<div *ngIf="screen.current === screens.bussTypeList">
+<ng-container *ngIf="screen.is(screens.bussTypeList)">
   <xe-table [tableData]="bussTypeTable"></xe-table>
-</div>
+</ng-container>
 <!-- ########### END OF BUSS TYPE ##############-->
 
-<div *ngIf="screen.current === screens.bussScheme">
+<ng-container *ngIf="screen.is(screens.bussScheme)">
   <basic-buss-scheme [bussType]="bussTypeTable.formData.share.entity" [screen]="screen"></basic-buss-scheme>
-</div>
+</ng-container>
 <!-- ########### END OF BUSS SCHEME ##############-->
 
-<div *ngIf="screen.current === screens.bussList">
+<ng-container *ngIf="screen.is(screens.bussList)">
   <xe-table [tableData]="bussTable">
   </xe-table>
-</div>
+</ng-container>
 <!-- ########### END OF BUSS LIST ##############-->
 
-<div *ngIf="screen.current === screens.schedules">
+<ng-container *ngIf="screen.is(screens.schedules)">
   <xe-table [tableData]="bussScheduleTable">
+    <div tableHeader><h5>
+      <span class="text-danger">{{bussTable.formData.share.entity.bussLicense}}</span>
+      {{bussTable.formData.share.entity.bussDesc}}
+    </h5></div>
   </xe-table>
-</div>
+</ng-container>
 <!-- ########### END OF BUSS SCHEDULES ##############-->
 
-<xe-user-table *ngIf="screen.current === screens.bussEmployees"
+<ng-container *ngIf="screen.is(screens.scheduleMiddlePoints)">
+  <xe-table [tableData]="bussSchedulePointTable">
+    <div tableHeader>
+      <h5>{{xeLabel.PATH}} <span class="text-danger">{{bussScheduleTable.formData.share.entity.path.pathName}}</span></h5>
+      <p>{{bussScheduleTable.formData.share.entity.path.pathDesc}}</p>
+    </div>
+  </xe-table>
+</ng-container>
+
+<!-- ########### END OF BUSS SCHEDULE POINTS ##############-->
+
+
+<xe-user-table *ngIf="screen.is(screens.bussEmployees)"
                [userTable]="bussEmployeeTable">
 </xe-user-table>
 
 <!-- ########### END OF BUSS EMPLOYEES ##############-->
 
-<xe-user-table *ngIf="screen.current === screens.employeeSelection"
+<xe-user-table *ngIf="screen.is(screens.employeeSelection)"
                [userTable]="employeeTable">
 </xe-user-table>
 <!-- ########### END OF EMPLOYEES SELECTION ##############-->

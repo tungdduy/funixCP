@@ -3,23 +3,32 @@ ${root.separators.import.all}
 <#list root.enums as enum>
 
 export class ${enum.capName} {
-  constructor(private _${enum.camelName}<#list enum.propertyIdentifiers as propId>, private _${propId.camelName}: ${propId.originClassName}</#list>) {}
+  readonly name: string;
+  constructor(private _${enum.camelName}<#list enum.propertyIdentifiers as propId>, private _${propId.camelName}: ${propId.originClassName}</#list>) {
+    this.name = _${enum.camelName};
+  }
   <#list enum.propertyIdentifiers as property>
-  <#if property.isString>
-    <#list property.propertyChoices as choice>
-  get is${property.capName}${choice.valueCapName}() {return this._${property.camelName} === ${choice.valueAsString}; }
-    </#list>
-  <#else>
+    <#if property.isString>
+      <#list property.propertyChoices as choice>
+  get has${property.capName}${choice.valueCapName}() {return this._${property.camelName} === ${choice.valueAsString}; }
+      </#list>
+    <#else>
   get ${property.camelName}() {return this._${property.camelName}; }
   get has${property.capName}() {return this._${property.camelName} !== null; }
-  </#if>
-  </#list>
-
-  <#list enum.options as option>
-  static readonly ${option.camelName} = new ${enum.capName}('${option.camelName}'<#list option.fullChoiceProperties as property>, ${property.valueAsString}${property.valuePost}</#list>);
+    </#if>
+    </#list>
+      <#list enum.manualPropertyIdentifiers as prop>
+  _${prop.camelName} = (${prop.camelName}) => {
+  this.${prop.camelName} = ${prop.camelName};
+  return this;
+  }
+  ${prop.camelName}: ${prop.valueAsString};
+      </#list>
+    <#list enum.options as option>
+  static readonly ${option.camelName} = new ${enum.capName}('${option.camelValue}'<#list option.fullChoiceProperties as property>, ${property.valueAsString}${property.valuePost}</#list>);
   get is${option.capName}() {return this._${enum.camelName} === '${option.camelName}'; }
-
   </#list>
+
 }
 
 </#list>

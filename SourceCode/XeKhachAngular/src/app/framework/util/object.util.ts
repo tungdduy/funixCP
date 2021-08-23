@@ -1,5 +1,3 @@
-import {XeTableData} from "../model/XeTableData";
-
 export class ObjectUtil {
   static isString(obj: any) {
     return typeof obj === 'string';
@@ -13,12 +11,12 @@ export class ObjectUtil {
   static isNumberGreaterThanZero(obj: any) {
     return typeof obj === 'number' && obj > 0;
   }
-  static eraserAndDeepCopyForRestore(source: {}, result: {}) {
+  static eraserAndDeepCopyForRestore(source: {}, result: {}, lvl = 0) {
+    if (lvl > 4) return result;
+    lvl++;
     if (!source) return undefined;
     Object.keys(result).forEach(key => {
-      if (ObjectUtil.isObject(result[key])) {
-        delete result[key];
-      }
+      delete result[key];
     });
 
     Object.keys(source).forEach(key => {
@@ -29,17 +27,17 @@ export class ObjectUtil {
             result[key][idx] = element;
           } else if (Array.isArray(element)) {
             result[key][idx] = [];
-            this.eraserAndDeepCopyForRestore(element, result[key][idx]);
+            this.eraserAndDeepCopyForRestore(element, result[key][idx], lvl);
           } else if (ObjectUtil.isObject(element))  {
             result[key][idx] = {};
-            this.eraserAndDeepCopyForRestore(element, result[key][idx]);
+            this.eraserAndDeepCopyForRestore(element, result[key][idx], lvl);
           } else {
             result[key][idx] = element;
           }
         });
       } else if (ObjectUtil.isObject(source[key])) {
         result[key] = {};
-        this.eraserAndDeepCopyForRestore(source[key], result[key]);
+        this.eraserAndDeepCopyForRestore(source[key], result[key], lvl);
       } else {
         result[key] = source[key];
       }
@@ -61,32 +59,6 @@ export class ObjectUtil {
       }
     });
     return result;
-  }
-
-  static assignEntity(option: {}, entity) {
-    if (!option) return entity;
-    Object.keys(option).forEach(key => {
-      if (['function', 'string', 'boolean'].includes(typeof option[key])
-      || ['xeScreen', 'parent', 'template'].includes(key)) {
-        entity[key] = option[key];
-      } else if (option[key] === undefined) {
-        delete entity[key];
-      } else if (ObjectUtil.isObject(option[key])) {
-        if (entity === undefined) entity = {};
-        if (entity[key] === undefined) Array.isArray(option[key]) ? entity[key] = [] : entity[key] = {};
-        ObjectUtil.assignEntity(option[key], entity[key]);
-      } else {
-        entity[key] = option[key];
-      }
-    });
-    if (ObjectUtil.isObject(entity)) {
-      Object.keys(entity).forEach(key => {
-        if (Array.isArray(entity[key])) {
-          entity[key] = entity[key].filter(e => e !== undefined);
-        }
-      });
-    }
-    return entity;
   }
 
 

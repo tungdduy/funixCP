@@ -16,7 +16,7 @@ export class UserTableComponent extends FormAbstract {
   @Input() userTable: XeTableData<any>;
   @Input() user: () => User = () => {
     const entity = () => this.userTable?.formData?.share?.entity;
-    switch (this.userTable?.formData?.entityIdentifier?.clazz?.className) {
+    switch (this.userTable?.formData?.entityIdentifier?.clazz?.meta.capName) {
       case 'User':
         return entity();
       case 'Employee':

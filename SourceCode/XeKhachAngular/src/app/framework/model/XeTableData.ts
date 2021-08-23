@@ -1,12 +1,20 @@
-import {EntityField, XeFormData} from "./XeFormData";
+import {EntityField, ShareFormData, XeFormData} from "./XeFormData";
 import {TemplateRef} from "@angular/core";
 import {XeScreen} from "../components/xe-nav/xe-nav.component";
 import {XeEntity} from "../../business/entities/XeEntity";
+import {Entity} from "@angular/compiler-cli/src/ngtsc/file_system/testing/src/mock_file_system";
+import {Observable} from "rxjs";
+import {InputMode} from "./EnumStatus";
 
 export interface IconOption {
   iconOnly?: string;
   iconPre?: string;
   iconAfter?: string;
+}
+
+export interface EntityFilter {
+  filterArray?: (entities: any[]) => any[];
+  filterSingle?: (entity) => boolean;
 }
 
 export interface TableColumn {
@@ -43,7 +51,14 @@ export class XeTableData<E extends XeEntity> {
   external?: {
     updateCriteriaTableOnSelect?: () => XeTableData<any>[];
     lookUpScreen?: string;
-    parent?: XeTableData<any>;
+    parent?: {
+      tableData: XeTableData<any>;
+      syncFieldsPreCreate?: {childName: string, parentField: EntityField}[];
+    }
+    updateToShareEntityField?: {
+      share?: ShareFormData<any>;
+      fieldName?: any;
+    }
   };
   display?: {
     fullScreenForm: boolean;
@@ -51,9 +66,18 @@ export class XeTableData<E extends XeEntity> {
   formData?: XeFormData<E>;
   xeScreen?: XeScreen;
   table?: {
+    customData?: () => E[],
+    mode?: {
+      lazySearch?: (term: string) => Observable<E[]>,
+      selectOneOnly?: boolean,
+      readonly?: boolean,
+      hideSelectColumn?: boolean
+    },
     action?: {
-      manualCreate?: () => any,
-      filterCondition?: (entity: any) => boolean
+      editOnRow?: () => any,
+      postSelect?: (entity) => any,
+      onClickBtnCreate?: () => any,
+      filters?: EntityFilter,
     }
     basicColumns?: TableColumn[],
     manualColumns?: ManualColumn[]
@@ -62,9 +86,10 @@ export class XeTableData<E extends XeEntity> {
   static fullFill(tableData: XeTableData<any>) {
     if (!tableData.table) tableData.table = {};
     if (!tableData.table.action) tableData.table.action = {};
+    if (!tableData.table.mode) tableData.table.mode = {};
     if (!tableData.table.basicColumns) tableData.table.basicColumns = [];
     if (!tableData.display) tableData.display = {fullScreenForm: false};
-    if (!tableData.formData.share) tableData.formData.share = {};
+    if (!tableData.formData) tableData.formData = {};
     XeFormData.fullFill(tableData.formData);
   }
 }

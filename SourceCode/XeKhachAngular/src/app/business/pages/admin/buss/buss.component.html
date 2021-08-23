@@ -1,23 +1,42 @@
-<div *ngIf="screen.current === screens.busses">
+<div *ngIf="screen.is(screens.busses)">
   <xe-table [tableData]="bussTable"></xe-table>
 </div>
 <!-- ########### END OF BUSSES ##############-->
 
-<div *ngIf="screen.current === screens.bussScheme">
+<div *ngIf="screen.is(screens.bussScheme)">
   <basic-buss-scheme  [screen]="screen"
                       [readMode]="true"
                       [bussType]="bussTable.formData.share.entity.bussType"></basic-buss-scheme>
 </div>
 <!-- ########### END OF SCHEME ##############-->
 
+<ng-container *ngIf="screen.is(screens.schedules)">
+  <xe-table [tableData]="bussScheduleTable">
+  </xe-table>
+</ng-container>
+<!-- ########### END OF BUSS SCHEDULES ##############-->
 
-<xe-user-table *ngIf="screen.current === screens.bussEmployees"
+<ng-container *ngIf="screen.is(screens.scheduleMiddlePoints)">
+  <xe-table [tableData]="pathPointTable">
+  </xe-table>
+</ng-container>
+
+<!-- ########### END OF BUSS SCHEDULE POINTS ##############-->
+
+<ng-container *ngIf="screen.is(screens.pathPointSelection)">
+  <xe-table [tableData]="pathPointSelectionTable">
+  </xe-table>
+</ng-container>
+
+<!-- ########### END OF MIDDLE POINTS SELECTION ##############-->
+
+<xe-user-table *ngIf="screen.is(screens.bussEmployees)"
                [userTable]="bussEmployeeTable">
 </xe-user-table>
 
 <!-- ########### END OF BUSS EMPLOYEES ##############-->
 
-<xe-user-table *ngIf="screen.current === screens.employeeSelection"
+<xe-user-table *ngIf="screen.is(screens.employeeSelection)"
           [userTable]="employeeTable">
 </xe-user-table>
 <!-- ########### END OF EMPLOYEES SELECTION ##############-->

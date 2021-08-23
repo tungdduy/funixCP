@@ -31,10 +31,11 @@ public abstract class AbstractEntityModel<E extends AbstractEntity> extends Abst
         super.init();
     }
 
-    protected String
-            bodyContent,
-            importContent,
-            bodySeparator = StringUtil.buildSeparator("BODY"),
-            importSeparator = StringUtil.buildSeparator("IMPORT");
+    protected String updateConstructorParams(AbstractEntity pkEntity) {
+        String pkSimpleClassName = pkEntity.getClass().getSimpleName();
+        Param param = new Param(pkSimpleClassName, toCamel(pkSimpleClassName));
+        this.getConstructorParams().add(param);
+        return pkSimpleClassName;
+    }
 
 }

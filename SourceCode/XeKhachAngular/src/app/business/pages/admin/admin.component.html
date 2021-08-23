@@ -1,4 +1,9 @@
-<ngx-one-column-layout>
+<ngx-one-column-layout [screen]="screen">
   <nb-menu [items]="menu"></nb-menu>
   <router-outlet></router-outlet>
+  <ng-container manualContent>
+    <ng-container *ngIf="screen.is(screens.table)">
+      <xe-table *ngIf="tableData" [tableData]="tableData"></xe-table>
+    </ng-container>
+  </ng-container>
 </ngx-one-column-layout>

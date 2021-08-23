@@ -18,7 +18,7 @@ public interface ${capName}Repository extends JpaRepository<${capName}, ${capNam
     @SuppressWarnings("unused")
     void deleteBy${pkFinder.name}(<#list pkFinder.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
     @SuppressWarnings("unused")
-    List<${capName}> findBy${pkFinder.name}(<#list pkFinder.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
+    List<${capName}> findBy${pkFinder.name}${root.entity.jpaDefaultOrderExpression}(<#list pkFinder.params as param>Long ${param}<#if param_has_next>, </#if></#list>);
     </#list>
 
 ${root.separators.body.all}

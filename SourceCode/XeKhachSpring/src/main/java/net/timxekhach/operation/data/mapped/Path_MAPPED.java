@@ -4,8 +4,10 @@ package net.timxekhach.operation.data.mapped;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Company;
-import net.timxekhach.operation.data.entity.Location;
 import javax.validation.constraints.*;
+import java.util.List;
+import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.PathPoint;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
 import lombok.*;
@@ -19,57 +21,49 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @MappedSuperclass @Getter @Setter
-@IdClass(BussPoint_MAPPED.Pk.class)
+@IdClass(Path_MAPPED.Pk.class)
 @SuppressWarnings("unused")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public abstract class BussPoint_MAPPED extends XeEntity {
-
-    @Id
-    @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
-    protected Long locationId;
-
-    @Id
-    @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
-    protected Long companyId;
+public abstract class Path_MAPPED extends XeEntity {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.PRIVATE)
-    protected Long bussPointId;
+    protected Long pathId;
 
     protected Long getIncrementId() {
-        return this.bussPointId;
+        return this.pathId;
     }
+    @Id
+    @Column(nullable = false, updatable = false)
+    @Setter(AccessLevel.PRIVATE)
+    protected Long companyId;
+
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
-        protected Long locationId;
+        protected Long pathId;
         protected Long companyId;
-        protected Long bussPointId;
     }
 
     public static Pk pk(Map<String, String> data) {
         try {
-            Long locationIdLong = Long.parseLong(data.get("locationId"));
+            Long pathIdLong = Long.parseLong(data.get("pathId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            Long bussPointIdLong = Long.parseLong(data.get("bussPointId"));
-            if(NumberUtils.min(new long[]{locationIdLong, companyIdLong, bussPointIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{pathIdLong, companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new BussPoint_MAPPED.Pk(locationIdLong, companyIdLong, bussPointIdLong);
+            return new Path_MAPPED.Pk(pathIdLong, companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new BussPoint_MAPPED.Pk(0L, 0L, 0L);
+        return new Path_MAPPED.Pk(0L, 0L);
     }
 
-    protected BussPoint_MAPPED(){}
-    protected BussPoint_MAPPED(Company company, Location location) {
+    protected Path_MAPPED(){}
+    protected Path_MAPPED(Company company) {
         this.setCompany(company);
-        this.setLocation(location);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -96,40 +90,36 @@ public abstract class BussPoint_MAPPED extends XeEntity {
 
     public void setCompany(Company company) {
         this.company = company;
-        this.companyId = company.getCompanyId();
-    }
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "locationId",
-        referencedColumnName = "locationId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "locationId")
-    protected Location location;
-
-    public Location getLocation(){
-        if (this.location == null) {
-            this.location = CommonUpdateService.getLocationRepository().findByLocationId(this.locationId);
+        if(company == null) {
+            this.companyId = null;
+            return;
         }
-        return this.location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-        this.locationId = location.getLocationId();
+        this.companyId = company.getCompanyId();
     }
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
+    @OneToMany(
+        mappedBy = "path",
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    @OrderBy("pointOrder ASC")
+    protected List<PathPoint> pathPoints = new ArrayList<>();
+//====================================================================//
+//==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
+    public Integer getTotalPathPoints() {
+        return CommonUpdateService.getPathPointRepository().countPathPointIdByPathId(this.pathId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
+//====================================================================//
 
     @Size(max = 255)
-    protected String bussPointName;
+    protected String pathName;
     @Size(max = 255)
-    protected String bussPointDesc;
+    protected String pathDesc;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -138,24 +128,24 @@ public abstract class BussPoint_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
-            if (fieldName.equals("bussPointName")) {
-                this.bussPointName = String.valueOf(value);
+            if (fieldName.equals("pathName")) {
+                this.setPathName(String.valueOf(value));
                 continue;
             }
-            if (fieldName.equals("bussPointDesc")) {
-                this.bussPointDesc = String.valueOf(value);
+            if (fieldName.equals("pathDesc")) {
+                this.setPathDesc(String.valueOf(value));
                 continue;
             }
-            if (fieldName.equals("locationId")) {
-                this.locationId = Long.valueOf(value);
+            if (fieldName.equals("company")) {
+                this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("pathId")) {
+                this.pathId = Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
                 this.companyId = Long.valueOf(value);
-                    continue;
-            }
-            if (fieldName.equals("bussPointId")) {
-                this.bussPointId = Long.valueOf(value);
             }
         }
     }

@@ -126,6 +126,12 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
 
     public void setBuss(Buss buss) {
         this.buss = buss;
+        if(buss == null) {
+            this.companyId = null;
+            this.bussTypeId = null;
+            this.bussId = null;
+            return;
+        }
         this.companyId = buss.getCompanyId();
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
@@ -162,6 +168,12 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+        if(employee == null) {
+            this.companyId = null;
+            this.employeeId = null;
+            this.userId = null;
+            return;
+        }
         this.companyId = employee.getCompanyId();
         this.employeeId = employee.getEmployeeId();
         this.userId = employee.getUserId();
@@ -181,7 +193,15 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("isLock")) {
-                this.isLock = Boolean.valueOf(value);
+                this.setIsLock(Boolean.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("buss")) {
+                this.setBuss(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussRepository().findByBussId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("employee")) {
+                this.setEmployee(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getEmployeeRepository().findByEmployeeId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussEmployeeId")) {

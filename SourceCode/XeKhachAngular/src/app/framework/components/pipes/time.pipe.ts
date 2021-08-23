@@ -54,8 +54,12 @@ export class XeTimePipe extends XePipe implements PipeTransform {
   }
 
   areEquals = (time1: Date, time2: Date): boolean => {
+    if ((!time1 && time2) || (time1 && !time2)) return false;
+    if (!time1 && !time2) return true;
     const convertedTime1 = (typeof time1 === 'string') ? new Date(time1) : time1;
     const convertedTime2 = (typeof time2 === 'string') ? new Date(time2) : time2;
     return convertedTime1.getHours() === convertedTime2.getHours() && convertedTime1.getMinutes() === convertedTime2.getMinutes();
   }
+
+  validate = (time) => time !== undefined && time !== null;
 }

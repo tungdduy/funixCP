@@ -26,6 +26,12 @@ public abstract class AbstractEntity {
     protected Set<String> primaryKeyIdNames;
     protected String capName, camelName;
 
+    protected String jpaDefaultOrderExpression = "";
+
+    protected void jpaOrderString(String defaultOrder) {
+        this.jpaDefaultOrderExpression = defaultOrder;
+    }
+
     public void getAllPkEntity(List<AbstractEntity> result) {
         result.addAll(this.primaryKeyEntities);
         this.primaryKeyEntities.forEach(pk -> pk.getAllPkEntity(result));

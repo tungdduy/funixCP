@@ -71,8 +71,6 @@ public abstract class BussType_MAPPED extends XeEntity {
 //==================== END of MAP COUNT ENTITIES ======================//
 //====================================================================//
 
-    @Size(max = 30)
-    protected String bussTypeCode;
     @Size(max = 255)
     protected String bussTypeName;
     @Size(max = 255)
@@ -85,16 +83,12 @@ public abstract class BussType_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
-            if (fieldName.equals("bussTypeCode")) {
-                this.bussTypeCode = String.valueOf(value);
-                continue;
-            }
             if (fieldName.equals("bussTypeName")) {
-                this.bussTypeName = String.valueOf(value);
+                this.setBussTypeName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussTypeDesc")) {
-                this.bussTypeDesc = String.valueOf(value);
+                this.setBussTypeDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {

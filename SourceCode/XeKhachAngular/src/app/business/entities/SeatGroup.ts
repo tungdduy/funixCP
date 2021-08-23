@@ -6,17 +6,14 @@ import {XeTableData} from "../../framework/model/XeTableData";
 import {BussType} from "./BussType";
 import {ServiceResult} from "../service/service-result";
 import {XeLabel} from "../i18n";
+import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class SeatGroup extends XeEntity {
-    static className = 'SeatGroup';
-    static camelName = 'seatGroup';
-    static otherMainIdNames = ['bussTypeId'];
-    static mainIdName = 'seatGroupId';
-    static pkMapFieldNames = ['bussType'];
+    static meta = EntityUtil.metas.SeatGroup;
     seatGroupId: number;
     bussTypeId: number;
     bussType: BussType;
@@ -26,52 +23,54 @@ export class SeatGroup extends XeEntity {
     totalSeats: number;
     seatFrom: number;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-    seats: number[];
+  seats: number[];
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (seatGroup: SeatGroup): EntityIdentifier<SeatGroup> => ({
     entity: seatGroup,
     clazz: SeatGroup,
-    idFields: () => [
-      {name: "seatGroupId", value: seatGroup.seatGroupId},
-      {name: "bussType.bussTypeId", value: seatGroup.bussType?.bussTypeId}
+    idFields: [
+      {name: "seatGroupId"},
+      {name: "bussType.bussTypeId"}
     ]
   })
 
   static new(option = {}) {
     const seatGroup = new SeatGroup();
     seatGroup.bussType = new BussType();
-    ObjectUtil.assignEntity(option, seatGroup);
+    EntityUtil.assignEntity(option, seatGroup);
     return seatGroup;
   }
 
   static tableData = (option: XeTableData<SeatGroup> = {}, seatGroup: SeatGroup = SeatGroup.new()): XeTableData<SeatGroup> => {
     const table = SeatGroup._seatGroupTable(seatGroup);
-    ObjectUtil.assignEntity(option, table);
+    EntityUtil.assignEntity(option, table);
     XeTableData.fullFill(table);
     return table;
   }
 
-  private static _seatGroupTable = (seatGroup: SeatGroup): XeTableData<SeatGroup> => ({
+  private static _seatGroupTable = (seatGroup: SeatGroup): XeTableData<SeatGroup> => {
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
-    formData: {
-      action: {
-        preSubmit: (sg: SeatGroup): ServiceResult => {
-          const result = new ServiceResult();
-          if (sg.totalSeats <= 0) {
-            return result.error(XeLabel.INVALID_SEAT_RANGE);
+    return {
+      formData: {
+        action: {
+          preSubmit: (sg: SeatGroup): ServiceResult => {
+            const result = new ServiceResult();
+            if (sg.totalSeats <= 0) {
+              return result.error(XeLabel.INVALID_SEAT_RANGE);
+            }
+            return result.success({});
           }
-          return result.success({});
-        }
-      },
-      entityIdentifier: SeatGroup.entityIdentifier(seatGroup),
-      fields: [
-        {name: 'seatGroupName', required: true},
-        {name: 'seatGroupDesc', required: true},
-        {name: 'totalSeats', required: true},
-      ]
-    }
+        },
+        entityIdentifier: SeatGroup.entityIdentifier(seatGroup),
+        fields: [
+          {name: 'seatGroupName', required: true},
+          {name: 'seatGroupDesc', required: true},
+          {name: 'totalSeats', required: true},
+        ]
+      }
+    };
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
-  })
+  }
 }
 

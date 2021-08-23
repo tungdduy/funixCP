@@ -1,1 +1,7 @@
-<xe-table [tableData]="tripUserTable"></xe-table>
+<nb-card>
+  <nb-card-body>
+
+  </nb-card-body>
+</nb-card>
+
+<xe-table *ngIf="screen.is(screens.trips)" [tableData]="tripUserTable"></xe-table>

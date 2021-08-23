@@ -5,8 +5,8 @@ import {XeLabel} from "../../../business/i18n";
 import {HttpErrorResponse} from "@angular/common/http";
 import {EntityField, XeFormData} from "../../model/XeFormData";
 import {FormAbstract} from "../../model/form.abstract";
-import {XeEntity} from "../../../business/entities/XeEntity";
-import {EntityUtil} from "../../util/entity.util";
+import {ClassMeta, XeEntity} from "../../../business/entities/XeEntity";
+import {EntityUtil} from "../../util/EntityUtil";
 import {XeFormComponent} from "../xe-form/xe-form.component";
 import {State} from "../../model/message.model";
 import {ObjectUtil} from "../../util/object.util";
@@ -94,15 +94,16 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
           }
         }
         if (this.isIdValid) {
-          return CommonUpdateService.instance.update<any>(formFields, this.formData.entityIdentifier.clazz);
+          return CommonUpdateService.instance.update<any>(formFields, this.formData.entityIdentifier.clazz.meta);
         } else {
-          return CommonUpdateService.instance.insert<any>(formFields, this.formData.entityIdentifier.clazz);
+          return CommonUpdateService.instance.insert<any>(formFields, this.formData.entityIdentifier.clazz.meta);
         }
       },
       success: {
         call: (entity) => {
           const isUpdate = this.isIdValid;
           const isPersist = !this.isIdValid;
+          this.entityUtil.cache(entity, this.formData.entityIdentifier.clazz.meta);
           this.formData.fields.filter(field => field.clearOnSuccess).forEach(field => this.formData.share.entity[field.name] = undefined);
           if (isUpdate && this.formData.action?.postUpdate) {
             this.formData.action?.postUpdate(entity);
@@ -113,6 +114,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
           }
           this.updateIdValidStatus();
           this.backupShareEntity(entity);
+          this.formData.share.tableComponent.ngOnInit();
         }
       }
     }
@@ -133,8 +135,6 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     Object.assign(this.idsIncludeOnSubmit(), this.formData.share.entity);
     setTimeout(() => this._isIdValid = this.entityUtil.isIdValid(this.formData.share.entity, this.formData.entityIdentifier), 0);
   }
-
-  entityUtil = EntityUtil;
 
   backupEntity = {};
 
@@ -163,7 +163,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
 
   updateProfileImage(entity: XeEntity) {
     entity.profileImageUrl = entity.profileImageUrl + "?r=" + Math.random().toString(36).substring(7);
-    this.profileOwnerEntity.profileImageUrl = entity.profileImageUrl;
+    this.profile.owner.profileImageUrl = entity.profileImageUrl;
     this.backupSelfEntity();
   }
 
@@ -171,12 +171,13 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     this.backupShareEntity(EntityUtil.newByEntityDefine(this.formData.entityIdentifier));
   }
 
-  get profileOwnerEntity() {
-    return this.entityUtil.getFieldOwnerEntity(this.formData.share.entity, this.formData.header.profileImage);
-  }
-
-  get profileOwnerMainId() {
-    return this.entityUtil.getFieldOwnerMainId(this.formData.header.profileImage, this.formData.entityIdentifier, this.formData.share.entity);
+  get profile(): {ownerId: number, ownerMeta: ClassMeta, owner: any} {
+    const ef = this.entityUtil.getEntityWithField(this.formData.share.entity, this.formData.header.profileImage);
+    return {
+      ownerId: ef.entity[ef.meta?.mainIdName] ? ef.entity[ef.meta?.mainIdName] : this.formData.share.entity[this.formData.entityIdentifier.clazz.meta.mainIdName],
+      ownerMeta: ef.meta ? ef.meta : this.formData.entityIdentifier.clazz.meta,
+      owner: ef.entity ? ef.entity : this.formData.share.entity
+    };
   }
 
   @ViewChild("form") submitForm: XeFormComponent;
@@ -185,12 +186,10 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
       return;
     }
     const formData = new FormData();
-    Object.keys(this.profileOwnerMainId).forEach(key => {
-      formData.append(key, this.formData.share.entity[key]);
-    });
+    formData.append(this.profile.ownerMeta.mainIdName, String(this.profile.ownerId));
 
     formData.append("profileImage", file);
-    this.subscriptions.push(CommonUpdateService.instance.updateProfileImage(formData, this.formData.entityIdentifier.clazz).subscribe(
+    this.subscriptions.push(CommonUpdateService.instance.updateProfileImage(formData, this.profile.ownerMeta).subscribe(
       (entity) => {
         this.updateProfileImage(entity);
         if (this.formData.action?.postUpdateProfile) {
@@ -205,9 +204,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
   }
 
   idsIncludeOnSubmit = (): {} => {
-    const idFromEntity = this.entityUtil.getAllPossibleId(this.formData.share.entity, this.formData.entityIdentifier);
-    const idFromCriteria = this.entityUtil.getAllPossibleId(this.formData.entityIdentifier.entity, this.formData.entityIdentifier);
-    return Object.assign(idFromCriteria, idFromEntity);
+    return this.entityUtil.getAllPossibleId(this.formData.share.entity, this.formData.entityIdentifier);
   }
 
   turnBack() {
@@ -222,12 +219,16 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     deleteEntity: 'delete'
   };
   screen = new XeScreen({home: this.screens.form});
-  get columnNumber() {
-    return this.formData.display?.columnNumber ? 12 / this.formData.display.columnNumber : 12;
+
+  colSpan(field: EntityField) {
+    const colSpan = field.colSpan ? field.colSpan : 1;
+    return this.formData.display?.columnNumber
+      ? 12 / this.formData.display.columnNumber * colSpan
+      : 12;
   }
 
   deleteCurrentEntity() {
-    this.subscriptions.push(CommonUpdateService.instance.delete(this.formData.share.entity, this.formData.entityIdentifier.clazz).subscribe(
+    this.subscriptions.push(CommonUpdateService.instance.delete(this.formData.share.entity, this.formData.entityIdentifier.clazz.meta).subscribe(
       () => {
         if (!!this.postRemove) {
           this.postRemove(this.formData.share.entity);

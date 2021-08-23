@@ -1,11 +1,11 @@
 import {Directive, OnDestroy} from "@angular/core";
 import {CommonUpdateService} from "../../business/service/common-update.service";
-import {ObjectUtil} from "../util/object.util";
 import {Notifier} from "../notify/notify.service";
 import {Observable} from "rxjs";
-import {XeEntityClass} from "../../business/entities/XeEntity";
-import {EntityUtil} from "../util/entity.util";
+import {ClassMeta, XeEntityClass} from "../../business/entities/XeEntity";
 import {AbstractXe} from "./AbstractXe";
+import {EntityUtil} from "../util/EntityUtil";
+import {ObjectUtil} from "../util/object.util";
 
 @Directive()
 export class XeSubscriber extends AbstractXe implements OnDestroy {
@@ -23,7 +23,7 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
         } else {
           Object.keys(entity).forEach(key => delete entity[key]);
           Object.assign(entity, arrayResult[0]);
-          EntityUtil.cachePk(clazz, [entity]);
+          EntityUtil.cache(entity, clazz.meta);
         }
       },
       httpError => Notifier.httpErrorResponse(httpError)
@@ -31,7 +31,7 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
   }
 
   refresh$(entity, clazz: XeEntityClass<any>): Observable<any> {
-    return CommonUpdateService.instance.getOne<any>(entity, clazz);
+    return CommonUpdateService.instance.getOne<any>(entity, clazz.meta);
   }
 
   update(entities: any[], clazz: XeEntityClass<any>) {
@@ -50,17 +50,20 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
       });
       prepareData.push(convertedEntity);
     });
-    CommonUpdateService.instance.updateMulti(prepareData, clazz).subscribe(
-      returnedArray => {
-        EntityUtil.cachePk(clazz, returnedArray, returned => {
+    CommonUpdateService.instance.updateMulti(prepareData, clazz.meta).subscribe(
+      returnedArray => EntityUtil.cacheMulti(returnedArray, clazz.meta, {
+        filterSingle: (filterCondition) => {
           entities.forEach(entity => {
-            if (entity[clazz.mainIdName] === returned[clazz.mainIdName]) {
-              ObjectUtil.eraserAndDeepCopyForRestore(returned, entity);
+            if (entity[clazz.meta.mainIdName] === filterCondition[clazz.meta.mainIdName]) {
+              ObjectUtil.eraserAndDeepCopyForRestore(filterCondition, entity);
             }
           });
           return true;
-        });
-      }
+        }
+      })
     );
+  }
+  updateSingle$(entity: any, meta: ClassMeta): Observable<any> {
+    return CommonUpdateService.instance.update(entity, meta);
   }
 }

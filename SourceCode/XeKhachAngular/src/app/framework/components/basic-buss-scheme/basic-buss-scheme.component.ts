@@ -3,7 +3,7 @@ import {BussType} from "../../../business/entities/BussType";
 import {XeScreen} from "../xe-nav/xe-nav.component";
 import {SeatGroup} from "../../../business/entities/SeatGroup";
 import {Notifier} from "../../notify/notify.service";
-import {EntityUtil} from "../../util/entity.util";
+import {EntityUtil} from "../../util/EntityUtil";
 import {XeSubscriber} from "../../model/XeSubscriber";
 import {XeLabel} from "../../../business/i18n";
 
@@ -32,7 +32,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
 
   ngOnInit(): void {
     this.seatGroupCriteria.bussType = this.bussType;
-    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType, 'seatGroups', SeatGroup);
+    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
   }
 
   seatGroupTable = SeatGroup.tableData({
@@ -97,10 +97,12 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
 
   getCurrentSeatFrom() {
     const entity = this.seatGroupTable.formData?.share?.entity;
-    return entity?.seatFrom ? entity.seatFrom : this.bussType?.totalSeats;
+    const seatFrom = entity?.seatFrom ? entity.seatFrom : this.bussType?.totalSeats + 1;
+    return seatFrom <= 0 ? 1 : seatFrom;
   }
 
   getCurrentSeatTo() {
-    return parseInt(String(this.getCurrentSeatFrom()), 10) + parseInt(String(this.seatGroupTable.formData?.share?.entity?.totalSeats), 10) - 1;
+    const seatTo = parseInt(String(this.getCurrentSeatFrom()), 10) + parseInt(String(this.seatGroupTable.formData?.share?.entity?.totalSeats), 10) - 1;
+    return isNaN(seatTo) ? this.getCurrentSeatFrom() : seatTo;
   }
 }

@@ -9,6 +9,7 @@ import net.timxekhach.operation.data.entity.TripUser;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Employee;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -108,35 +109,39 @@ public abstract class User_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("email")) {
-                this.email = String.valueOf(value);
+                this.setEmail(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("phoneNumber")) {
-                this.phoneNumber = String.valueOf(value);
+                this.setPhoneNumber(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("password")) {
-                this.password = String.valueOf(value);
+                this.setPassword(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("username")) {
-                this.username = String.valueOf(value);
+                this.setUsername(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("fullName")) {
-                this.fullName = String.valueOf(value);
+                this.setFullName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("role")) {
-                this.role = String.valueOf(value);
+                this.setRole(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("nonLocked")) {
-                this.nonLocked = Boolean.valueOf(value);
+                this.setNonLocked(Boolean.valueOf(value));
                 continue;
             }
             if (fieldName.equals("secretPasswordKey")) {
-                this.secretPasswordKey = String.valueOf(value);
+                this.setSecretPasswordKey(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("employee")) {
+                this.setEmployee(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getEmployeeRepository().findByEmployeeId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("userId")) {

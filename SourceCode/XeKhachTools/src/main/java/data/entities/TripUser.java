@@ -8,8 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import util.constants.TripUserStatus;
 
-import static data.entities.abstracts.DataType.DATE_TIME;
-import static data.entities.abstracts.DataType.MONEY;
+import static data.entities.abstracts.DataType.*;
 import static util.constants.TripUserStatus.PENDING;
 
 public class TripUser extends AbstractEntity {
@@ -18,9 +17,8 @@ public class TripUser extends AbstractEntity {
         pk(User.class);
     }
     Column status = status(TripUserStatus.class).defaultValue(PENDING);
-    CountMethod totalSeats = count(TripUserSeat.class);
     Column totalPrice = of(MONEY);
-
+    Column seats = of(DESCRIPTION);
     MapColumn confirmedBy = map(Employee.class);
     Column confirmedDateTime = of(DATE_TIME);
 

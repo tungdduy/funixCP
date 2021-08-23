@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.Trip_MAPPED;
-import java.util.stream.Collectors;
-import net.timxekhach.operation.data.mapped.TripUserSeat_MAPPED;
-import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter

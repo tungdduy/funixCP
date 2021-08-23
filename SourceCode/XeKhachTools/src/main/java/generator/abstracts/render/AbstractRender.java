@@ -76,7 +76,8 @@ public abstract class AbstractRender<E extends AbstractModel> extends XeTools {
 
     @SuppressWarnings("unchecked")
     protected Class<E> getParameterizeClass() {
-        return (Class<E>) ((ParameterizedTypeImpl) this.getClass().getGenericSuperclass())
+        return (Class<E>) ((ParameterizedTypeImpl) this.getClass()
+                .getGenericSuperclass())
                 .getActualTypeArguments()[0];
     }
 

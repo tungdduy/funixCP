@@ -87,6 +87,12 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 
     public void set${pkMap.fieldName?cap_first}(${pkMap.simpleClassName} ${pkMap.fieldName}) {
         this.${pkMap.fieldName} = ${pkMap.fieldName};
+        if(${pkMap.fieldName} == null) {
+        <#list pkMap.joins as join>
+            this.${join} = null;
+        </#list>
+            return;
+        }
         <#list pkMap.joins as join>
         this.${join} = ${pkMap.fieldName}.get${join?cap_first}();
         </#list>
@@ -107,25 +113,25 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
-    <#if map.isUnique>
+        <#if map.isUnique>
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "${map.mapTo.entity.camelName}Id")
     protected ${map.mapTo.simpleClassName} ${map.fieldName};
     <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
-    <#else>
-    <#if map.orderBy?has_content>
+        <#else>
+            <#if map.orderBy?has_content>
     @OrderBy("${map.orderBy}")
-    </#if>
+            </#if>
     protected List<${map.mapTo.simpleClassName}> ${map.fieldName} = new ArrayList<>();
     <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
-    </#if>
+        </#if>
     <#elseif map.joins?size gt 0>
-    <#if map.isUnique>
+        <#if map.isUnique>
     @OneToOne
-    <#else>
+        <#else>
     @ManyToOne
-    </#if>
+        </#if>
     @JoinColumns({
     <#list map.joins as join>
         @JoinColumn(
@@ -143,6 +149,12 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 
     public void set${map.fieldCapName}(${map.mapTo.simpleClassName} ${map.fieldName}) {
         this.${map.fieldName} = ${map.fieldName};
+        if(${map.fieldName} == null) {
+        <#list map.joins as join>
+            this.${join.thisName} = null;
+        </#list>
+            return;
+        }
     <#list map.joins as join>
         this.${join.thisName} = ${map.fieldName}.get${join.referencedName?cap_first}();
     </#list>
@@ -234,13 +246,28 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
         <#list root.fieldsAbleAssignByString as column>
             if (fieldName.equals("${column.fieldName}")) {
             <#if column.parseExpression?has_content>
-                this.${column.fieldName} = ${column.parseExpression};
+                this.set${column.fieldCapName}(${column.parseExpression});
             <#else>
-                this.${column.fieldName} = ${column.simpleClassName}.valueOf(value);
+                this.set${column.fieldCapName}(${column.simpleClassName}.valueOf(value));
             </#if>
                 continue;
             }
         </#list>
+<#list root.mapColumns as map>
+    <#if map.mappedBy?has_content && !map.isUnique>
+    <#else>
+            if (fieldName.equals("${map.fieldName}")) {
+                this.set${map.fieldCapName}(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.get${map.mapTo.simpleClassName}Repository().findBy${map.mapTo.simpleClassName}Id(Long.valueOf(value))));
+                continue;
+            }
+    </#if>
+</#list>
+<#list root.pkMaps as pkMap>
+            if (fieldName.equals("${pkMap.fieldName}")) {
+                this.set${pkMap.simpleClassName}(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.get${pkMap.simpleClassName}Repository().findBy${pkMap.simpleClassName}Id(Long.valueOf(value))));
+                continue;
+            }
+</#list>
         <#list root.primaryKeys as pk>
             if (fieldName.equals("${pk.fieldName}")) {
                 this.${pk.fieldName} = Long.valueOf(value);

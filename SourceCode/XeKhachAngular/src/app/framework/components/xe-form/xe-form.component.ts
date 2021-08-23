@@ -104,6 +104,7 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     console.log("start submit form: " + this.name);
     let changedInputsNumber = 0;
     const invalidNumber = this.formControls.filter(input => {
+
       if (input.selectOneMenu && input.selectOneMenu().length === 1)
         input.value = input.selectOneMenu()[0].value;
 
@@ -207,13 +208,13 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     if (this.isMute) {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.inputMode = InputMode.disabled;
+          input.mode = InputMode.disabled;
         });
       }, 0);
     } else {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.inputMode = InputMode.input;
+          input.mode = InputMode.input;
         });
       }, 0);
     }

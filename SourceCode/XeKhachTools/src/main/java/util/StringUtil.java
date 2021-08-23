@@ -147,7 +147,7 @@ public class StringUtil extends StringUtils {
     }
 
     public static String toCapitalizeEachWord(String value) {
-        return value == null ? "" : Arrays.stream(value.trim()
+        return StringUtil.isBlank(value) ? "" : Arrays.stream(value.trim()
                 .split(NONE_ALPHA_REGEX))
                 .map(s -> s.substring(0,1).toUpperCase() + s.substring(1))
                 .collect(Collectors.joining());

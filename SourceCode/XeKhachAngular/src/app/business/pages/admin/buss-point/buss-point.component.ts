@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {BussPoint} from "../../../entities/BussPoint";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {Location} from "../../../entities/Location";
@@ -7,10 +6,12 @@ import {Observable, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {LocationService} from "../../../service/location.service";
 import {StringUtil} from "../../../../framework/util/string.util";
-import {EntityUtil} from "../../../../framework/util/entity.util";
+import {EntityUtil} from "../../../../framework/util/EntityUtil";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {Notifier} from "../../../../framework/notify/notify.service";
 import {XeLabel, XeLbl} from "../../../i18n";
+import {LocationPipe} from "../../../../framework/components/pipes/location.pipe";
+import {PathPoint} from "../../../entities/PathPoint";
 
 @Component({
   selector: 'xe-buss-point',
@@ -28,10 +29,10 @@ export class BussPointComponent extends FormAbstract implements OnInit {
     homeIcon: 'map-marker-alt'
   });
 
-  bussPointTable = BussPoint.tableData({
+  bussPointTable = PathPoint.tableData({
     table: {
       action: {
-        manualCreate: () => {
+        onClickBtnCreate: () => {
           this.bussPointTable.formData.share.entity = EntityUtil.newByEntityDefine(this.bussPointTable.formData.entityIdentifier);
           this.updateNewBussPointForm();
           this.screen.go(this.screens.create);
@@ -39,6 +40,9 @@ export class BussPointComponent extends FormAbstract implements OnInit {
       }
     },
     formData: {
+      display: {
+        cancelBtn: "close",
+      },
       action: {
         postCancel: () => this.screen.back(),
         postUpdate: () => {
@@ -48,10 +52,10 @@ export class BussPointComponent extends FormAbstract implements OnInit {
         }
       }
     }
-  }, BussPoint.new({
+  }, PathPoint.new({
     company: this.myCompany
   }));
-  currentBussPointInTable = (): BussPoint => this.bussPointTable.formData.share.entity;
+  currentBussPointInTable = (): PathPoint => this.bussPointTable.formData.share.entity;
 
   searchLocationText: any;
   cancelBussPoint = () => {
@@ -77,19 +81,8 @@ export class BussPointComponent extends FormAbstract implements OnInit {
     if (!location) {
       return '';
     }
-    EntityUtil.cache(location, [
-      {
-        fieldName: 'parent',
-        fieldClassName: 'Location',
-        entityClassName: 'Location',
-        children: [{
-          fieldName: 'parent',
-          fieldClassName: 'Location',
-          entityClassName: 'Location',
-        }]
-      }
-    ]);
-    return `${location.locationName}${location.parent ? ', ' + location.parent.locationName : ''}${location.parent?.parent ? ', ' + location.parent.parent.locationName : ''}`;
+    EntityUtil.cache(location, Location.meta);
+    return LocationPipe.instance.toReadableString(location);
   }
 
   searchLocation() {

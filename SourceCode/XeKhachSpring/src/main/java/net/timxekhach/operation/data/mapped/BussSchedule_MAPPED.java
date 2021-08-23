@@ -7,10 +7,8 @@ import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
 import javax.validation.constraints.*;
-import net.timxekhach.operation.data.entity.BussPoint;
-import java.util.List;
-import java.util.ArrayList;
-import net.timxekhach.operation.data.entity.BussSchedulePoint;
+import net.timxekhach.operation.data.entity.Path;
+import net.timxekhach.operation.data.entity.PathPoint;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
@@ -118,6 +116,12 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
 
     public void setBuss(Buss buss) {
         this.buss = buss;
+        if(buss == null) {
+            this.companyId = null;
+            this.bussTypeId = null;
+            this.bussId = null;
+            return;
+        }
         this.companyId = buss.getCompanyId();
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
@@ -128,13 +132,47 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
+        name = "pathPathId",
+        referencedColumnName = "pathId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "pathCompanyId",
+        referencedColumnName = "companyId",
+        insertable = false,
+        updatable = false)
+    })
+    @JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "pathId")
+    protected Path path;
+
+    public void setPath(Path path) {
+        this.path = path;
+        if(path == null) {
+            this.pathPathId = null;
+            this.pathCompanyId = null;
+            return;
+        }
+        this.pathPathId = path.getPathId();
+        this.pathCompanyId = path.getCompanyId();
+    }
+
+    @ManyToOne
+    @JoinColumns({
+        @JoinColumn(
         name = "startPointLocationId",
         referencedColumnName = "locationId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
-        name = "startPointBussPointId",
-        referencedColumnName = "bussPointId",
+        name = "startPointPathId",
+        referencedColumnName = "pathId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "startPointPathPointId",
+        referencedColumnName = "pathPointId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -145,32 +183,39 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussPointId")
-    protected BussPoint startPoint;
+        property = "pathPointId")
+    protected PathPoint startPoint;
 
-    public void setStartPoint(BussPoint startPoint) {
+    public void setStartPoint(PathPoint startPoint) {
         this.startPoint = startPoint;
+        if(startPoint == null) {
+            this.startPointLocationId = null;
+            this.startPointPathId = null;
+            this.startPointPathPointId = null;
+            this.startPointCompanyId = null;
+            return;
+        }
         this.startPointLocationId = startPoint.getLocationId();
-        this.startPointBussPointId = startPoint.getBussPointId();
+        this.startPointPathId = startPoint.getPathId();
+        this.startPointPathPointId = startPoint.getPathPointId();
         this.startPointCompanyId = startPoint.getCompanyId();
     }
 
-    @OneToMany(
-        mappedBy = "bussSchedule",
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<BussSchedulePoint> middlePoints = new ArrayList<>();
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "endPointBussPointId",
-        referencedColumnName = "bussPointId",
+        name = "endPointPathPointId",
+        referencedColumnName = "pathPointId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
         name = "endPointLocationId",
         referencedColumnName = "locationId",
+        insertable = false,
+        updatable = false), 
+        @JoinColumn(
+        name = "endPointPathId",
+        referencedColumnName = "pathId",
         insertable = false,
         updatable = false), 
         @JoinColumn(
@@ -181,13 +226,21 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     })
     @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussPointId")
-    protected BussPoint endPoint;
+        property = "pathPointId")
+    protected PathPoint endPoint;
 
-    public void setEndPoint(BussPoint endPoint) {
+    public void setEndPoint(PathPoint endPoint) {
         this.endPoint = endPoint;
-        this.endPointBussPointId = endPoint.getBussPointId();
+        if(endPoint == null) {
+            this.endPointPathPointId = null;
+            this.endPointLocationId = null;
+            this.endPointPathId = null;
+            this.endPointCompanyId = null;
+            return;
+        }
+        this.endPointPathPointId = endPoint.getPathPointId();
         this.endPointLocationId = endPoint.getLocationId();
+        this.endPointPathId = endPoint.getPathId();
         this.endPointCompanyId = endPoint.getCompanyId();
     }
 
@@ -196,15 +249,23 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
 //====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
+    protected Long pathPathId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long pathCompanyId;
+    @Setter(AccessLevel.PRIVATE)
     protected Long startPointLocationId;
     @Setter(AccessLevel.PRIVATE)
-    protected Long startPointBussPointId;
+    protected Long startPointPathId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long startPointPathPointId;
     @Setter(AccessLevel.PRIVATE)
     protected Long startPointCompanyId;
     @Setter(AccessLevel.PRIVATE)
-    protected Long endPointBussPointId;
+    protected Long endPointPathPointId;
     @Setter(AccessLevel.PRIVATE)
     protected Long endPointLocationId;
+    @Setter(AccessLevel.PRIVATE)
+    protected Long endPointPathId;
     @Setter(AccessLevel.PRIVATE)
     protected Long endPointCompanyId;
 //====================================================================//
@@ -216,6 +277,8 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
     protected Date launchTime;
 
     protected Date effectiveDateFrom;
+
+    protected String jsonBussSchedulePoints;
     @Size(max = 255)
     protected String workingDays;
 //====================================================================//
@@ -227,19 +290,39 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("price")) {
-                this.price = Long.valueOf(value);
+                this.setPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("launchTime")) {
-                this.launchTime = XeDateUtils.timeAppToApi(value);
+                this.setLaunchTime(XeDateUtils.timeAppToApi(value));
                 continue;
             }
             if (fieldName.equals("effectiveDateFrom")) {
-                this.effectiveDateFrom = XeDateUtils.dateAppToApi(value);
+                this.setEffectiveDateFrom(XeDateUtils.dateAppToApi(value));
+                continue;
+            }
+            if (fieldName.equals("jsonBussSchedulePoints")) {
+                this.setJsonBussSchedulePoints(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("workingDays")) {
-                this.workingDays = String.valueOf(value);
+                this.setWorkingDays(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("path")) {
+                this.setPath(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathRepository().findByPathId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("startPoint")) {
+                this.setStartPoint(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathPointRepository().findByPathPointId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("endPoint")) {
+                this.setEndPoint(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathPointRepository().findByPathPointId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("buss")) {
+                this.setBuss(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussRepository().findByBussId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {

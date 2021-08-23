@@ -3,6 +3,7 @@ package data.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,9 @@ public class Column {
                 upperOnly = false;
         String angularClassName;
         String regex, simpleClassName, fieldName, initialString;
+        public String getFieldCapName() {
+            return StringUtil.toCapitalizeEachWord(fieldName);
+        }
 
         List<String> packageImports = new ArrayList<>();
         String parseExpression, appPipe;
