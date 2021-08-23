@@ -4,12 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import util.StringUtil;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 public class Property {
+    private Option option;
     String camelName, valueAsString, originClassName, valueCapName, valuePost;
+    Boolean isSilence = false;
     Set<Property> propertyChoices = new HashSet<>();
     public void addPropertyChoice(Property prop) {
         if (this.propertyChoices.stream()
@@ -21,13 +24,24 @@ public class Property {
     boolean isSameName(Property property) {
         return this.camelName.equals(property.camelName);
     }
+
+    public String getOriginClassName() {
+        return originClassName != null ? originClassName : "string";
+    }
+
     boolean isSameValue(Property property) {
-        return this.valueAsString.equals(property.valueAsString);
+        return (this.valueAsString != null
+                && property.valueAsString != null
+                && this.valueAsString.equals(property.valueAsString))
+                || (this.valueAsString == null && property.valueAsString == null)
+                || (StringUtil.isBlank(this.valueAsString) && StringUtil.isBlank(property.valueAsString));
     }
 
     public String getValueAsString() {
-        if (this.originClassName.equals("string")) return StringUtil.wrapInQuote(this.valueAsString);
-        return this.valueAsString;
+        if (this.originClassName != null
+                && this.originClassName.equals("string"))
+            return StringUtil.wrapInQuote(this.valueAsString);
+        return StringUtil.isBlank(this.valueAsString) ? "''" : this.valueAsString;
     }
     public String getValueCapName() {
         return StringUtil.toCapitalizeEachWord(this.valueAsString);
@@ -41,7 +55,7 @@ public class Property {
     }
 
     public Boolean getIsString() {
-        return this.originClassName.equals("string");
+        return originClassName == null || "string".equals(this.originClassName);
     }
 
     private Property(String name) {

@@ -16,9 +16,9 @@ export class MultiOptionUtil {
     if (all.includes(element)  && source && source.includes(this.format(element))) {
       const sourceArr = source.split("#");
       const resultArr = sourceArr.filter(s => all.includes(s) && s !== element);
-      return this.format(resultArr.join("#"));
+      return resultArr.length === 0 ? '' : this.format(resultArr.join("#"));
     }
-    return source;
+    return '';
   }
   static toggle(all, source, element) {
     return this.has(source, element) ? this.remove(all, source, element) : this.add(all, source, element);

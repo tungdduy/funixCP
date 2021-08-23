@@ -95,6 +95,10 @@ public abstract class Employee_MAPPED extends XeEntity {
 
     public void setCompany(Company company) {
         this.company = company;
+        if(company == null) {
+            this.companyId = null;
+            return;
+        }
         this.companyId = company.getCompanyId();
     }
     @ManyToOne
@@ -119,6 +123,10 @@ public abstract class Employee_MAPPED extends XeEntity {
 
     public void setUser(User user) {
         this.user = user;
+        if(user == null) {
+            this.userId = null;
+            return;
+        }
         this.userId = user.getUserId();
     }
 //====================================================================//
@@ -142,7 +150,15 @@ public abstract class Employee_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("isLock")) {
-                this.isLock = Boolean.valueOf(value);
+                this.setIsLock(Boolean.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("company")) {
+                this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("user")) {
+                this.setUser(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getUserRepository().findByUserId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("employeeId")) {

@@ -43,7 +43,7 @@ public class UrlDeclaration {
                         .sibling("buss-type").roles(ROLE_SYS_ADMIN)
                         .sibling("buss").roles(ROLE_BUSS_STAFF)
                         .sibling("employee").roles(ROLE_BUSS_ADMIN)
-                        .sibling("buss-point").roles(ROLE_BUSS_ADMIN)
+                        .sibling("path").roles(ROLE_BUSS_ADMIN)
                         .sibling("ticket").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
 
         ;

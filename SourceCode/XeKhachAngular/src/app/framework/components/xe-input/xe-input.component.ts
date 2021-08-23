@@ -9,6 +9,7 @@ import {Observable, of} from "rxjs";
 import {XeTimePipe} from "../pipes/time.pipe";
 import {AbstractXe} from "../../model/AbstractXe";
 import {MultiOptionUtil} from "../../model/EntityEnum";
+import {EntityField} from "../../model/XeFormData";
 
 
 @Component({
@@ -20,6 +21,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   _originValue;
 
   @ViewChild("htmlInput") htmlInput: ElementRef;
+  @Input() entityField: EntityField;
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -44,7 +46,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   onShortInputFocus($event: any) {
-    $event.target.value = this.template?.pipe ? this.template.pipe.toRawInputString(this._value) : this._value;
+    // $event.target.value = this.template?.pipe ? this.template.pipe.toRawInputString(this._value) : this._value;
   }
 
   get isChanged() {
@@ -58,6 +60,13 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input('disabledUpdate') _disabledUpdate?;
   get disabledUpdate() {
     return this._disabledUpdate === true || this._disabledUpdate === '';
+  }
+
+  @Input("alwaysShowLabel") _alwaysShowLabel;
+  get alwaysShowLabel(): boolean {
+    return this._alwaysShowLabel === ''
+      || !!this._alwaysShowLabel
+      || this.mode.hasShowTitle;
   }
 
   @Input() type: 'text' | 'email' | 'password' = 'text';
@@ -74,12 +83,14 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input() selectOneMenu: () => SelectItem<any>[];
   @Input("template") _template: InputTemplate;
   @Input() converter: any;
-  @Input("inputMode") _inputMode: InputMode;
-  get inputMode() {
-    return this._inputMode ? this._inputMode : InputMode.input;
+  @Input("mode") _mode: InputMode;
+  get mode() {
+    return this._mode ? this._mode : InputMode.input;
   }
-  set inputMode(mode: InputMode) {
-    this._inputMode = mode;
+
+  set mode(mode: InputMode) {
+    if (this.mode.hasForbidChange) return;
+    this._mode = mode;
   }
 
   get template() {
@@ -91,10 +102,18 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input() get value(): any {
     return this._value;
   }
+
   set value(val) {
+    if (this.entityField?.action?.preChange) {
+      this.entityField.action.preChange(val);
+    }
     this._value = val;
     this.valueChange.emit(this._value);
+    if (this.entityField?.action?.postChange) {
+      this.entityField.action.postChange(this._value);
+    }
   }
+
   _value: any;
   @Output() valueChange = new EventEmitter<any>();
 
@@ -115,6 +134,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   get appValue() {
     return this._value = this.template?.hasPipe ? this.template.pipe.toAppFormat(this._value) : this._value;
   }
+
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALUE CONVERTER
 
 
@@ -122,12 +142,12 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
 
   get isShowError() {
-    return this.inputMode?.isInput
+    return this.mode?.isInput
       && this.errorMessage;
   }
 
   public get hint() {
-    if (!this.inputMode.isInput) {
+    if (!this.mode.isInput) {
       return XeLbl('NO_VALUE');
     } else {
       return XeLbl('PLEASE_INPUT');
@@ -137,13 +157,13 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   public get label() {
     if (!this._label) {
       if (!this.lblKey) this.lblKey = this.getName();
-      this._label = XeLbl(this.lblKey);
+      this._label = XeLbl('input.' + this.template.name + "." + this.lblKey);
     }
     return this._label;
   }
 
   public get placeHolder() {
-    if (this.isGrid) {
+    if (this.isShowLabel) {
       return XeLbl(this.hint);
     }
     return this.label;
@@ -191,6 +211,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     return this.template?.hasPipe ? this.template.pipe.toReadableString(this._value) : this._value;
   }
 
+  get htmlString() {
+    return this.template?.hasPipe ? this.template.pipe.toHtmlString(this._value) : this._value;
+  }
+
   get valueStringLength() {
     return typeof this.value === 'string' ? this.value.length : 0;
   }
@@ -204,10 +228,12 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   get isShowLabel() {
-    return this.valueStringLength > 0
+    return !this.mode.hasHideTitle
+      && (this.valueStringLength > 0
       || this.isNumberGreaterThan0
       || this.isObject
-      || this.isGrid;
+      || this.isGrid
+      || this.alwaysShowLabel);
   }
 
   validateFailed() {
@@ -219,60 +245,72 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   isValidateSuccess(): boolean {
-    if (!this.template.isTypeShortInput) {
+    this.errorMessage = undefined;
+    if (!this.template.hasTypeShortInput) {
+      if (this.isRequire && !this._value
+        && !this.template.hasTypeBooleanToggle) {
+        this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
+        return false;
+      }
+      if (this.template.hasPipe) {
+        if (!this.template.pipe.validate(this.appValue)) {
+          this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
+          return false;
+        }
+      }
       return true;
     }
     if (this.isRequire &&
       (StringUtil.isBlank(String(this.value)))) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
-      return;
+      return false;
     }
 
     if (this.getName().endsWith('Id') && (this.value as unknown as number) <= 0) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
-      return;
+      return false;
     }
 
     if (this.minLength && this.valueStringLength < this.minLength) {
       this.errorMessage = AppMessages.FIELD_MUST_HAS_AT_LEAST_CHAR(this.label, this.minLength);
-      return;
+      return false;
     }
 
     if (this.maxLength && this.valueStringLength > this.maxLength) {
       this.errorMessage = AppMessages.MAXIMUM_LENGTH_OF_FIELD(this.label, this.maxLength);
-      return;
+      return false;
     }
 
     if (this.getName().toLowerCase().includes('email') && !RegexUtil.isValidEmail(this.value)) {
       this.errorMessage = AppMessages.EMAIL_NOT_VALID;
-      return;
+      return false;
     }
 
     if (this.getName().toLowerCase().includes('phone') && !RegexUtil.isValidPhone(this.value)) {
       this.errorMessage = AppMessages.PHONE_NOT_VALID;
-      return;
+      return false;
     }
 
     if (this.matching) {
       if (this.matching instanceof XeInputComponent && this.matching.value !== this.value) {
         this.errorMessage = AppMessages.FIELD_NOT_MATCH(this.label);
-        return;
+        return false;
       }
 
       if (this.matching instanceof RegExp && !this.matching.test(String(this.value))) {
         this.errorMessage = AppMessages.INVALID_FIELD(this.label);
-        return;
+        return false;
       }
 
       if (ObjectUtil.isString(this.matching) && this.matching !== this.value) {
         this.errorMessage = AppMessages.FIELD_NOT_MATCH(this.matching);
-        return;
+        return false;
       }
     }
 
     if (this.validatorMsg) {
       this.errorMessage = this.validatorMsg;
-      return;
+      return false;
     }
 
     this.errorMessage = undefined;
@@ -305,18 +343,18 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   // Multi OPTIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>
   toggleOption(option: string) {
-    if (this.inputMode.isBareTextOnly) return;
+    if (this.mode.hasForbidChange) return;
     this.value = MultiOptionUtil.toggle(this.template.options.ALL, this.value, option);
   }
 
   hasOption(option: string) {
     return MultiOptionUtil.has(this.value, option);
   }
+
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Multi OPTIONS
 
   // TIME >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   timeOptions$: Observable<string[]>;
-  timeOptions = [];
 
   onTimeChange(time: any) {
     const timer = String(time).trim().split(":");
@@ -328,7 +366,66 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   onInputTime() {
     this.timeOptions$ = of(XeTimePipe.filterTime(this.htmlInput.nativeElement.value));
   }
+
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
+
+  // SEARCH >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  search() {
+    const origin: any = this.preSearch();
+    this.template.tableData.table.action.postSelect = (entity: any) => {
+      this.value = entity;
+      this.isValidateSuccess();
+      this.template.tableData.xeScreen.back();
+      this.postSearch(origin);
+    };
+  }
+
+  preSearch() {
+    const origin = {
+      screen: this.template.tableData.xeScreen,
+      readonly: this.template.tableData.table.mode.readonly,
+      onTablePostSelect: this.template.tableData.table.action.postSelect,
+      hideSelectColumn: this.template.tableData.table.mode.hideSelectColumn,
+      onFormPostCancel: this.template.tableData.formData.action.postCancel,
+      adminContainer: {
+        screen: {config: {preGo: this.adminContainer.screen.config.preGo}},
+        tableData: this.adminContainer.tableData
+      }
+    };
+
+    this.template.tableData.xeScreen = this.adminContainer.screen;
+    this.template.tableData.table.mode.readonly = true;
+    this.template.tableData.table.mode.hideSelectColumn = true;
+    this.template.tableData.table.action.postSelect = (screen) => this.postSearch(origin);
+    this.template.tableData.formData.action.postCancel = (screen) => this.postSearch(origin);
+    this.adminContainer.screen.config.preGo = (screen) => screen !== this.adminContainer.screens.table ? this.postSearch(origin) : '';
+    this.adminContainer.tableData = this.template.tableData;
+
+    this.adminContainer.screen.go(this.adminContainer.screens.table);
+
+    return origin;
+  }
+
+  postSearch(origin) {
+    this.template.tableData.xeScreen = origin.screen;
+    this.template.tableData.table.mode.readonly = origin.readonly;
+    this.template.tableData.table.mode.hideSelectColumn = origin.hideSelectColumn;
+    this.template.tableData.table.action.postSelect = origin.onTablePostSelect;
+    this.template.tableData.formData.action.postCancel = origin.onFormPostCancel;
+    this.adminContainer.screen.config.preGo = origin.adminContainer.screen.config.preGo;
+    this.adminContainer.tableData = origin.adminContainer.tableData;
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SEARCH
+
+  // TOGGLE BOOLEAN >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  toggleBoolean() {
+    if (!this.mode.hasInput) return;
+    this.value = !this.value;
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TOGGLE BOOLEAN
+
 }
 
 

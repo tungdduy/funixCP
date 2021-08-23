@@ -3,12 +3,16 @@ import {XeTableData} from "../../../../framework/model/XeTableData";
 import {Buss} from "../../../entities/Buss";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {Company} from "../../../entities/Company";
-import {BussTypeUtil} from "../../../entities/BussType";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {Employee} from "../../../entities/Employee";
 import {BussEmployee} from "../../../entities/BussEmployee";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {BussSchedule} from "../../../entities/BussSchedule";
+import {BussType} from "../../../entities/BussType";
+import {InputTemplate} from "../../../../framework/model/EnumStatus";
+import {Path} from "../../../entities/Path";
+import {PathPoint} from "../../../entities/PathPoint";
+import {BussTypeComponent} from "../buss-type/buss-type.component";
 
 @Component({
   selector: 'xe-buss',
@@ -19,7 +23,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
   myCompany: Company = AuthUtil.instance.user?.employee?.company;
 
   ngAfterViewInit(): void {
-    BussTypeUtil.catchBussTypes();
+    BussType.catchBussTypes();
   }
 
   screens = {
@@ -27,7 +31,9 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     bussScheme: 'bussScheme',
     bussEmployees: 'bussEmployees',
     employeeSelection: 'employeeSelection',
-    bussSchedules: "bussSchedules"
+    scheduleMiddlePoints: 'scheduleMiddlePoints',
+    pathPointSelection: 'pathPointSelection',
+    schedules: 'schedules'
   };
   screen = new XeScreen({
       home: this.screens.busses,
@@ -37,14 +43,14 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
 
   bussTable = Buss.tableData({
     external: {
-      updateCriteriaTableOnSelect: () => [this.bussEmployeeTable]
+      updateCriteriaTableOnSelect: () => [this.bussEmployeeTable, this.bussScheduleTable]
     },
     xeScreen: this.screen,
     table: {
       basicColumns: [{}, {}, undefined, {},
         {action: {screen: this.screens.bussScheme}},
         {action: {screen: this.screens.bussEmployees}},
-        {action: {screen: this.screens.bussSchedules}}
+        {action: {screen: this.screens.schedules}}
       ]
     }
   }, Buss.new({company: this.myCompany}));
@@ -59,35 +65,66 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
 
   employeeTable: XeTableData<Employee> = Employee.tableData({
     external: {
-      parent: this.bussEmployeeTable
+      parent: {tableData: this.bussEmployeeTable}
     },
     xeScreen: this.screen,
     table: {
+      mode: {
+        readonly: true
+      },
       action: {
-        filterCondition: (employee: Employee) => !employee.countBusses || employee.countBusses === 0
+        filters: {
+          filterSingle: (employee: Employee) => !employee.countBusses || employee.countBusses === 0
+        }
       }
     },
-    formData: {
-      control: {
-        readMode: true
-      }
-    }
   }, Employee.new({company: this.myCompany}));
 
-  bussScheduleTable: XeTableData<BussSchedule> = BussSchedule.tableData({
-    xeScreen: this.screen,
-    table: {
-      action: {
-        filterCondition: (employee: Employee) => !employee.countBusses || employee.countBusses === 0
-      }
-    },
-    formData: {
-      control: {readMode: true}
+  pathTable = Path.tableData({
+    external: {
+      updateCriteriaTableOnSelect: () => [this.pathPointTable]
     }
   });
 
-  gotoSelectEmployee() {
-    console.log(this.bussEmployeeTable.formData.entityIdentifier.entity);
-  }
+  pathPointTable = PathPoint.tableData({
+    xeScreen: this.screen,
+    table: {
+      mode: {
+        hideSelectColumn: true
+      },
+      customData: () => this.bussScheduleTable.formData.share.entity.middlePoints,
+      basicColumns: [undefined]
+    }
+  });
+  pathPointSelectionTable = PathPoint.tableData({
+    table: {
+      customData: () => this.bussScheduleTable.formData.share.entity.path.pathPoints,
+      basicColumns: [undefined]
+    }
+  });
+  pathPointInput = InputTemplate.pathPointSearch._tableData(this.pathPointSelectionTable);
+
+  bussScheduleTable = BussSchedule.tableData({
+    xeScreen: this.screen,
+    table: {
+      basicColumns: [{}, {}, {}, {
+        action: {
+          screen: this.screens.scheduleMiddlePoints
+        }
+      }]
+    },
+    external: {
+      updateCriteriaTableOnSelect: () => [this.pathPointTable],
+    },
+    formData: {
+      fields: [
+        {}, {}, {}, {},
+        {name: 'path', template: InputTemplate.pathSearch._tableData(this.pathTable)},
+        {name: "startPoint", template: this.pathPointInput, required: true},
+        {name: "endPoint", template: this.pathPointInput, required: true},
+      ]
+    }
+  });
+
 }
 

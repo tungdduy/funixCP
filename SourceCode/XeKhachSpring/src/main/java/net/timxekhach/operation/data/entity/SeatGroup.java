@@ -36,7 +36,10 @@ public class SeatGroup extends SeatGroup_MAPPED {
 
     @Override
     public void preSaveAction() {
-        Set<Integer> allOrders = this.bussType.getSeatGroups().stream().map(SeatGroup_MAPPED::getSeatGroupOrder).collect(Collectors.toSet());
+        Set<Integer> allOrders = this.bussType.getSeatGroups()
+                .stream()
+                .map(SeatGroup_MAPPED::getSeatGroupOrder)
+                .collect(Collectors.toSet());
         int max = allOrders.size() == 0 ? 0 : Collections.max(allOrders);
         if (allOrders.size() != this.getBussType().getSeatGroups().size()) {
             max = updateSetGroupOrder(max);

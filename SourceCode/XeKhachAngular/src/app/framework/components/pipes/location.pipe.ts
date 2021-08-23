@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {XePipe} from "./XePipe";
+import {Location} from "../../../business/entities/Location";
 
 @Pipe({name: 'filterLocation'})
 export class LocationPipe extends XePipe implements PipeTransform {
@@ -22,7 +23,28 @@ export class LocationPipe extends XePipe implements PipeTransform {
     );
   }
 
-  toReadableString = (value): string => this.transform(value);
-  toAppFormat;
-  toSubmitFormat;
+  toReadableString = (location: Location): string => {
+    return `
+    ${location?.locationName || ''}, ${location?.parent?.locationName || ''}, ${location?.parent?.parent?.locationName || ''}
+    `;
+  }
+  toHtmlString = (location: Location) => {
+    return `
+    <div class="text-primary">${location?.locationName || ''}</div>
+    <div class="text-secondary">${location?.parent?.locationName || ''}</div>
+    <div class="text-secondary">${location?.parent?.parent?.locationName || ''}</div>
+    `;
+  }
+
+  toSubmitFormat = (location: Location) => {
+    if (typeof location === 'number') return location;
+    if (typeof location === 'object') {
+      if ('locationId' in location) {
+        return location.locationId;
+      }
+    }
+    const id = parseInt(location, 10);
+    if (id) return id;
+    return 0;
+  }
 }

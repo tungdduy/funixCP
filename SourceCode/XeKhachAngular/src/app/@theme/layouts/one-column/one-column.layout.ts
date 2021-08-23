@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
+import {XeScreen} from "../../../framework/components/xe-nav/xe-nav.component";
 
 @Component({
   selector: 'ngx-one-column-layout',
@@ -14,7 +15,12 @@ import {Component} from '@angular/core';
       </nb-sidebar>
 
       <nb-layout-column>
-        <ng-content select="router-outlet"></ng-content>
+        <ng-container *ngIf="screen.isHome">
+          <ng-content select="router-outlet"></ng-content>
+        </ng-container>
+        <ng-container *ngIf="!screen.isHome">
+          <ng-content select="[manualContent]"></ng-content>
+        </ng-container>
       </nb-layout-column>
 
       <nb-layout-footer fixed>
@@ -23,4 +29,6 @@ import {Component} from '@angular/core';
     </nb-layout>
   `,
 })
-export class OneColumnLayoutComponent {}
+export class OneColumnLayoutComponent {
+  @Input() screen: XeScreen;
+}

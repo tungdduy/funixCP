@@ -68,10 +68,12 @@ export class XeScreen {
     if (this.stack.length > 0) {
       result = this.stack[0];
     }
+    if (this.config.preGo) this.config.preGo(result);
     this.current = result;
   }
   goHome = () => {
     if (this.config.preHome) this.config.preHome(this.config.home);
+    if (this.config.preGo) this.config.preGo(this.config.home);
     this.stack = [];
     this.current = this.config.home;
   }

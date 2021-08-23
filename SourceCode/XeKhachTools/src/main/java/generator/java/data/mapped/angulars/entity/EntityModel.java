@@ -1,4 +1,4 @@
-package generator.java.data.mapped.angulars;
+package generator.java.data.mapped.angulars.entity;
 
 import data.entities.abstracts.AbstractEntity;
 import generator.java.data.mapped.EntityMappedModel;

@@ -96,6 +96,10 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     public void setBussType(BussType bussType) {
         this.bussType = bussType;
+        if(bussType == null) {
+            this.bussTypeId = null;
+            return;
+        }
         this.bussTypeId = bussType.getBussTypeId();
     }
     @ManyToOne
@@ -120,6 +124,10 @@ public abstract class Buss_MAPPED extends XeEntity {
 
     public void setCompany(Company company) {
         this.company = company;
+        if(company == null) {
+            this.companyId = null;
+            return;
+        }
         this.companyId = company.getCompanyId();
     }
 //====================================================================//
@@ -148,11 +156,19 @@ public abstract class Buss_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("bussLicense")) {
-                this.bussLicense = String.valueOf(value);
+                this.setBussLicense(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussDesc")) {
-                this.bussDesc = String.valueOf(value);
+                this.setBussDesc(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("bussType")) {
+                this.setBussType(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussTypeRepository().findByBussTypeId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("company")) {
+                this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {

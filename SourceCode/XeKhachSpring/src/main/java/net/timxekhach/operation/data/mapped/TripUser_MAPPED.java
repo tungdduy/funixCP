@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.User;
+import javax.validation.constraints.*;
 import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
 import net.timxekhach.operation.data.entity.Employee;
@@ -148,6 +149,14 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public void setTrip(Trip trip) {
         this.trip = trip;
+        if(trip == null) {
+            this.companyId = null;
+            this.bussTypeId = null;
+            this.bussScheduleId = null;
+            this.tripId = null;
+            this.bussId = null;
+            return;
+        }
         this.companyId = trip.getCompanyId();
         this.bussTypeId = trip.getBussTypeId();
         this.bussScheduleId = trip.getBussScheduleId();
@@ -176,6 +185,10 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public void setUser(User user) {
         this.user = user;
+        if(user == null) {
+            this.userId = null;
+            return;
+        }
         this.userId = user.getUserId();
     }
 //====================================================================//
@@ -206,6 +219,12 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
     public void setConfirmedBy(Employee confirmedBy) {
         this.confirmedBy = confirmedBy;
+        if(confirmedBy == null) {
+            this.confirmedByUserId = null;
+            this.confirmedByEmployeeId = null;
+            this.confirmedByCompanyId = null;
+            return;
+        }
         this.confirmedByUserId = confirmedBy.getUserId();
         this.confirmedByEmployeeId = confirmedBy.getEmployeeId();
         this.confirmedByCompanyId = confirmedBy.getCompanyId();
@@ -213,12 +232,6 @@ public abstract class TripUser_MAPPED extends XeEntity {
 
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
-//====================================================================//
-    public Integer getTotalSeats() {
-        return CommonUpdateService.getTripUserSeatRepository().countTripUserSeatIdByTripUserId(this.tripUserId);
-    }
-//=====================================================================//
-//==================== END of MAP COUNT ENTITIES ======================//
 //====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
@@ -235,6 +248,8 @@ public abstract class TripUser_MAPPED extends XeEntity {
     protected TripUserStatus status = TripUserStatus.PENDING;
 
     protected Long totalPrice = 0L;
+    @Size(max = 255)
+    protected String seats;
 
     protected Date confirmedDateTime;
 //====================================================================//
@@ -246,15 +261,31 @@ public abstract class TripUser_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("status")) {
-                this.status = TripUserStatus.valueOf(value);
+                this.setStatus(TripUserStatus.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalPrice")) {
-                this.totalPrice = Long.valueOf(value);
+                this.setTotalPrice(Long.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("seats")) {
+                this.setSeats(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("confirmedDateTime")) {
-                this.confirmedDateTime = XeDateUtils.dateTimeAppToApi(value);
+                this.setConfirmedDateTime(XeDateUtils.dateTimeAppToApi(value));
+                continue;
+            }
+            if (fieldName.equals("confirmedBy")) {
+                this.setConfirmedBy(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getEmployeeRepository().findByEmployeeId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("trip")) {
+                this.setTrip(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getTripRepository().findByTripId(Long.valueOf(value))));
+                continue;
+            }
+            if (fieldName.equals("user")) {
+                this.setUser(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getUserRepository().findByUserId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {

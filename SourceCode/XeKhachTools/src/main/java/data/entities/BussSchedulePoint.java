@@ -3,12 +3,31 @@ package data.entities;
 import data.entities.abstracts.AbstractEntity;
 import data.entities.abstracts.DataType;
 import data.models.Column;
-import data.models.MapColumn;
 
 public class BussSchedulePoint extends AbstractEntity {
     {
         pk(BussSchedule.class);
-        pk(BussPoint.class);
+        pk(PathPoint.class);
     }
-    Column priceToEndPoint = of(DataType.MONEY);
+    Column price = of(DataType.MONEY);
+    Column isDeductPrice = of(DataType.FALSE);
+    Column searchText = of(DataType.LONG_TEXT);
 }
+/*
+From findAllBussSchedulePoint
+--> BussSchedule.
+pointFrom
+pointTo
+date
+
+--> Trip
+All tripUsers -> PathPoint: iTo < pointFrom || iFrom > pointTo.order
+
+Buss: disabledSeats
+
+TripUser
+trip, user, pointFrom, pointTo, seats, totalSeats
+
+
+
+ */

@@ -8,7 +8,6 @@ import data.models.MapColumn;
 import util.constants.BussTypeEnum;
 
 public class BussType extends AbstractEntity {
-    Column bussTypeCode = of(DataType.CODE);
     Column bussTypeName = of(DataType.DESCRIPTION);
     Column bussTypeDesc = of(DataType.DESCRIPTION);
 

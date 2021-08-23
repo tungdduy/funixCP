@@ -9,6 +9,7 @@
     "polyfills.ts"
   ],
   "include": [
-    "**/*.d.ts"
+    "**/*.d.ts",
+    "node_modules"
   ]
 }

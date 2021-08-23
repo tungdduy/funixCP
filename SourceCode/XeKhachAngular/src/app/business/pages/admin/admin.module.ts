@@ -6,7 +6,7 @@ import {CompanyManagerComponent} from "./company-manager/company-manager.compone
 import {BussTypeComponent} from "./buss-type/buss-type.component";
 import {BussComponent} from "./buss/buss.component";
 import {EmployeeComponent} from "./employee/employee.component";
-import {BussPointComponent} from "./buss-point/buss-point.component";
+import {PathComponent} from "./path/path.component";
 import {TicketComponent} from "./ticket/ticket.component";
 import {AdminComponent} from './admin.component';
 // ____________________ ::HEADER_IMPORT_SEPARATOR:: ____________________ //
@@ -72,7 +72,7 @@ import {CommonComponentsModule} from "../../../framework/components/common-compo
     BussTypeComponent,
     BussComponent,
     EmployeeComponent,
-    BussPointComponent,
+    PathComponent,
     TicketComponent,
   ],
   exports: [

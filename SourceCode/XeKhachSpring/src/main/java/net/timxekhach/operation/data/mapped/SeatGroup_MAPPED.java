@@ -87,6 +87,10 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
 
     public void setBussType(BussType bussType) {
         this.bussType = bussType;
+        if(bussType == null) {
+            this.bussTypeId = null;
+            return;
+        }
         this.bussTypeId = bussType.getBussTypeId();
     }
 //====================================================================//
@@ -112,23 +116,27 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("seatGroupOrder")) {
-                this.seatGroupOrder = Integer.valueOf(value);
+                this.setSeatGroupOrder(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupName")) {
-                this.seatGroupName = String.valueOf(value);
+                this.setSeatGroupName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupDesc")) {
-                this.seatGroupDesc = String.valueOf(value);
+                this.setSeatGroupDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalSeats")) {
-                this.totalSeats = Integer.valueOf(value);
+                this.setTotalSeats(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatFrom")) {
-                this.seatFrom = Integer.valueOf(value);
+                this.setSeatFrom(Integer.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("bussType")) {
+                this.setBussType(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussTypeRepository().findByBussTypeId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("seatGroupId")) {

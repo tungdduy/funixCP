@@ -26,16 +26,24 @@ export class XeDatePipe extends XePipe implements PipeTransform {
   private _datePipe: DatePipe = new DatePipe("en-US");
 
   transform = (value: any): any => value;
-  toReadableString = (value: Date): string => this._datePipe.transform(value, "dd/MM/yyyy");
+  toReadableString = (value: Date): string => {
+     if (typeof value === 'string') return this._datePipe.transform(value, "dd/MM/yyyy");
+     if (value !== null && value !== undefined) return this._datePipe.transform(value, "dd/MM/yyyy");
+     return '';
+  }
   toSubmitFormat = (date: any): string => {
     return  this._datePipe.transform(date, "dd/MM/yyyy");
   }
   toAppFormat = (inputDate: any): Date => typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
 
   areEquals = (date1: Date, date2: Date): boolean => {
+    if ((!date1 && date2) || (date1 && !date2)) return false;
+    if (!date1 && !date2) return true;
     return date1.getDate() === date2.getDate()
     && date1.getMonth() === date2.getMonth()
     && date1.getFullYear() === date2.getFullYear();
   }
+
+  validate = (time) => time !== undefined && time !== null;
 
 }

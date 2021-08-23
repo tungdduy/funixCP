@@ -41,17 +41,19 @@
            name="basicFormInfo">
     <div class="row">
       <ng-container *ngFor="let field of filteredField()">
-        <div *ngIf="!isHideBody"  class="col-md-{{columnNumber}} pl-4 pr-4">
+        <div *ngIf="!isHideBody"  class="col-md-{{colSpan(field)}} pl-4 pr-4 {{formData.display?.columnNumber > 1 ? 'pt-2 pb-2' : ''}}">
             <xe-input *ngIf="isIdValid ? !field?.newOnly : true"
+                      [alwaysShowLabel]="formData.display?.columnNumber > 1"
                       [(value)]="entityUtil.getFieldOwnerEntity(formData.share?.entity, field)[entityUtil.getLastFieldName(field)]"
                       [disabledUpdate]="field.clearOnSuccess"
                       [grid]="formData.display?.grid"
+                      [entityField]="field"
                       [hidden]="field.hidden"
                       [lblKey]="field.lblKey"
                       [name]="field.name"
                       [required]="field.required"
                       [selectOneMenu]="field.selectOneMenu"
-                      [inputMode]="field.mode"
+                      [mode]="field.mode"
                       [template]="field.template">
             </xe-input>
         </div>

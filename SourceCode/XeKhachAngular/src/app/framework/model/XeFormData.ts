@@ -6,8 +6,10 @@ import {MatTableDataSource} from "@angular/material/table";
 import {SelectItem} from './SelectItem';
 import {ServiceResult} from "../../business/service/service-result";
 import {InputMode, InputTemplate} from "./EnumStatus";
+import {XeTableComponent} from "../components/xe-table/xe-table.component";
 
 export interface EntityField {
+  colSpan?: number;
   name?: string;
   lblKey?: string;
   value?: any;
@@ -17,15 +19,19 @@ export interface EntityField {
   readonly?: boolean;
   clearOnSuccess?: boolean;
   selectOneMenu?: () => SelectItem<any>[];
-  newIfNull?: XeEntityClass<any>;
+  newIfNull?: boolean;
   template?: InputTemplate;
   mode?: InputMode;
+  action?: {
+    preChange?: (field: any) => any,
+    postChange?: (field: any) => any
+  };
 }
 
 export interface EntityIdentifier<E extends XeEntity> {
   entity: E;
   clazz?: XeEntityClass<E>;
-  idFields?: () => EntityField[];
+  idFields?: EntityField[];
 }
 
 export class ShareFormData<E extends XeEntity> {
@@ -36,6 +42,7 @@ export class ShareFormData<E extends XeEntity> {
   xeBasicForm?: XeBasicFormComponent<E>;
   selection?: SelectionModel<E> | any;
   custom?: any;
+  tableComponent?: XeTableComponent<E>;
 
   static fullFill(shareData: ShareFormData<any>) {
     if (!shareData.entity) shareData.entity = {};
@@ -71,7 +78,6 @@ export class XeFormData<E extends XeEntity> {
   };
   control?: {
     muteOnSuccess?: boolean;
-    readMode?: boolean;
     allowDelete?: boolean;
     allowAdd?: boolean;
   };

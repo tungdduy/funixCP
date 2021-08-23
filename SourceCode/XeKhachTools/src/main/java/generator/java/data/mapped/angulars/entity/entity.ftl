@@ -3,11 +3,7 @@ ${root.separators.tsImport.all}
 ${root.separators.underImport.all}
 
 export class ${root.entityCapName} extends XeEntity {
-    static className = '${root.entityCapName}';
-    static camelName = '${root.entityCamelName}';
-    static otherMainIdNames = [<#list root.entity.primaryKeyEntities as pk>'${pk.camelName}Id'<#if pk_has_next>, </#if></#list>];
-    static mainIdName = '${root.entity.camelName}Id';
-    static pkMapFieldNames = [<#list root.entity.primaryKeyEntities as pk>'${pk.camelName}'<#if pk_has_next>, </#if></#list>];
+    static meta = EntityUtil.metas.${root.entityCapName};
 <#list root.primaryKeys as primaryKey>
     ${primaryKey.fieldName}: number;
 </#list>
@@ -42,10 +38,10 @@ ${root.separators.body.all}
   static entityIdentifier = (${root.entityCamelName}: ${root.entityCapName}): EntityIdentifier<${root.entityCapName}> => ({
     entity: ${root.entityCamelName},
     clazz: ${root.entityCapName},
-    idFields: () => [
-      {name: "${root.entityCamelName}Id", value: ${root.entityCamelName}.${root.entityCamelName}Id},
+    idFields: [
+      {name: "${root.entityCamelName}Id"},
     <#list root.pkIdChains as pk>
-      {name: "${pk?replace("?.", ".")}", value: ${root.entityCamelName}.${pk}}<#if pk_has_next>,</#if>
+      {name: "${pk?replace("?.", ".")}"}<#if pk_has_next>,</#if>
     </#list>
     ]
   })
@@ -67,7 +63,7 @@ ${root.separators.body.all}
         <#assign nameChain = nameChain?keep_before_last(".")>
     </#macro>
     <@tree root.entity />
-    ObjectUtil.assignEntity(option, ${root.entityCamelName});
+    EntityUtil.assignEntity(option, ${root.entityCamelName});
     return ${root.entityCamelName};
 <#else>
     return new ${root.entityCapName}();
@@ -76,13 +72,13 @@ ${root.separators.body.all}
 
   static tableData = (option: XeTableData<${root.entityCapName}> = {}, ${root.entityCamelName}: ${root.entityCapName} = ${root.entityCapName}.new()): XeTableData<${root.entityCapName}> => {
     const table = ${root.entityCapName}._${root.entityCamelName}Table(${root.entityCamelName});
-    ObjectUtil.assignEntity(option, table);
+    EntityUtil.assignEntity(option, table);
     XeTableData.fullFill(table);
     return table;
   }
 
-  private static _${root.entityCamelName}Table = (${root.entityCamelName}: ${root.entityCapName}): XeTableData<${root.entityCapName}> => ({
+  private static _${root.entityCamelName}Table = (${root.entityCamelName}: ${root.entityCapName}): XeTableData<${root.entityCapName}> => {
 ${root.separators.entityTable.all}
-  })
+  }
 }
 

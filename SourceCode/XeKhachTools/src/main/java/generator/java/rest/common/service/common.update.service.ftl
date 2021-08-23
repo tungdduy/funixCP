@@ -2,10 +2,8 @@ package net.timxekhach.operation.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.*;
-import net.timxekhach.operation.data.mapped.BussType_MAPPED;
-import net.timxekhach.operation.data.mapped.Buss_MAPPED;
-import net.timxekhach.operation.data.mapped.Company_MAPPED;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
+import net.timxekhach.operation.data.mapped.*;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.repository.*;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.XeBooleanUtils;
@@ -141,7 +139,8 @@ public class CommonUpdateService {
         }
         String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
         Object[] findMethodParams = data.values().toArray(new Long[0]);
-        return XeReflectionUtils.invokeMethodByName(${camelName}Repository, findMethodName, findMethodParams);
+        String orderExpression = "${entity.jpaDefaultOrderExpression}";
+        return XeReflectionUtils.invokeMethodByName(${camelName}Repository, findMethodName + orderExpression, findMethodParams);
     }
     <#if entity.hasProfileImage()>
     public ${capName} update${capName}ProfileImage(${capName}_MAPPED.Pk pk, MultipartFile profileImage) throws IOException {

@@ -74,7 +74,7 @@ export const Url = {
       BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
       BUSS: config().setRoles([r.ROLE_BUSS_STAFF]),
       EMPLOYEE: config().setRoles([r.ROLE_BUSS_ADMIN]),
-      BUSS_POINT: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      PATH: config().setRoles([r.ROLE_BUSS_ADMIN]),
       TICKET: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
   }

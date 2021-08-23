@@ -13,13 +13,14 @@ public class BussSchedule extends AbstractEntity {
         pk(Buss.class);
     }
 
+    MapColumn path = map(Path.class);
     Column price = of(MONEY);
     Column launchTime = of(TIME_ONLY);
     Column effectiveDateFrom = of(DATE_ONLY);
+    Column jsonBussSchedulePoints = of(LONG_TEXT);
 
     Column workingDays = of(DESCRIPTION);
 
-    MapColumn startPoint = map(BussPoint.class);
-    MapColumn middlePoints = map(BussSchedulePoint.class);
-    MapColumn endPoint = map(BussPoint.class);
+    MapColumn startPoint = map(PathPoint.class);
+    MapColumn endPoint = map(PathPoint.class);
 }

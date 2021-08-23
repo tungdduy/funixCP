@@ -49,19 +49,19 @@ export class CompanyManagerComponent extends FormAbstract {
 
   userTable: XeTableData<User> = User.tableData({
     external: {
-      parent: this.employeeTable
+      parent: {tableData: this.employeeTable}
     },
     xeScreen: this.screen,
     table: {
+      mode: {
+        readonly: true
+      },
       action: {
-        filterCondition: (user: User) => user.employee == null,
+        filters: {
+          filterSingle: (user: User) => user.employee == null,
+        }
       }
     },
-    formData: {
-      control: {
-        readMode: true
-      }
-    }
   });
 
   addSelectedUsersToCompany() {
@@ -72,7 +72,7 @@ export class CompanyManagerComponent extends FormAbstract {
       employee['userId'] = user.userId;
       return employee;
     });
-    this.subscriptions.push(CommonUpdateService.instance.insertMulti<Employee>(employees, Employee).subscribe(
+    this.subscriptions.push(CommonUpdateService.instance.insertMulti<Employee>(employees, Employee.meta).subscribe(
       returnedEmployees => {
         console.log(this.userTable.formData.share.tableSource);
         const selectedUserIds = returnedEmployees.map(e => e.user.userId);

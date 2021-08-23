@@ -10,17 +10,15 @@ import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {Employee} from "./Employee";
+import {Path} from "./Path";
+import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class TripUser extends XeEntity {
-    static className = 'TripUser';
-    static camelName = 'tripUser';
-    static otherMainIdNames = ['tripId', 'userId'];
-    static mainIdName = 'tripUserId';
-    static pkMapFieldNames = ['trip', 'user'];
+    static meta = EntityUtil.metas.TripUser;
     bussScheduleId: number;
     tripId: number;
     bussTypeId: number;
@@ -31,12 +29,12 @@ export class TripUser extends XeEntity {
     trip: Trip;
     user: User;
     confirmedBy: Employee ;
-    totalSeats: number;
     confirmedByUserId: number;
     confirmedByEmployeeId: number;
     confirmedByCompanyId: number;
     status;
     totalPrice: number;
+    seats: string;
     confirmedDateTime;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
@@ -44,14 +42,14 @@ export class TripUser extends XeEntity {
   static entityIdentifier = (tripUser: TripUser): EntityIdentifier<TripUser> => ({
     entity: tripUser,
     clazz: TripUser,
-    idFields: () => [
-      {name: "tripUserId", value: tripUser.tripUserId},
-      {name: "trip.tripId", value: tripUser.trip?.tripId},
-      {name: "trip.bussSchedule.bussScheduleId", value: tripUser.trip?.bussSchedule?.bussScheduleId},
-      {name: "trip.bussSchedule.buss.bussId", value: tripUser.trip?.bussSchedule?.buss?.bussId},
-      {name: "trip.bussSchedule.buss.bussType.bussTypeId", value: tripUser.trip?.bussSchedule?.buss?.bussType?.bussTypeId},
-      {name: "trip.bussSchedule.buss.company.companyId", value: tripUser.trip?.bussSchedule?.buss?.company?.companyId},
-      {name: "user.userId", value: tripUser.user?.userId}
+    idFields: [
+      {name: "tripUserId"},
+      {name: "trip.tripId"},
+      {name: "trip.bussSchedule.bussScheduleId"},
+      {name: "trip.bussSchedule.buss.bussId"},
+      {name: "trip.bussSchedule.buss.bussType.bussTypeId"},
+      {name: "trip.bussSchedule.buss.company.companyId"},
+      {name: "user.userId"}
     ]
   })
 
@@ -63,55 +61,53 @@ export class TripUser extends XeEntity {
     tripUser.trip.bussSchedule.buss.bussType = new BussType();
     tripUser.trip.bussSchedule.buss.company = new Company();
     tripUser.user = new User();
-    ObjectUtil.assignEntity(option, tripUser);
+    EntityUtil.assignEntity(option, tripUser);
     return tripUser;
   }
 
   static tableData = (option: XeTableData<TripUser> = {}, tripUser: TripUser = TripUser.new()): XeTableData<TripUser> => {
     const table = TripUser._tripUserTable(tripUser);
-    ObjectUtil.assignEntity(option, table);
+    EntityUtil.assignEntity(option, table);
     XeTableData.fullFill(table);
     return table;
   }
 
-  private static _tripUserTable = (tripUser: TripUser): XeTableData<TripUser> => ({
+  private static _tripUserTable = (tripUser: TripUser): XeTableData<TripUser> => {
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
-    table: {
-      basicColumns: [
-        // 0
-        {
-          field: {name: 'startPoint.location.locationName'}, type: "boldString",
-          subColumns: [
-            {field: {name: 'startPoint.location.locationParentAddresses'}, type: "string"}
-          ]
-        },
-        // 1
-        {
-          field: {name: 'endPoint.location.locationName'}, type: "string",
-          subColumns: [
-            {field: {name: 'endPoint.location.locationParentAddresses'}, type: "string"}
-          ]
-        },
-        // 2
-        {field: {name: 'user.phoneNumber'}, type: "string"},
-        // 3
-        {field: {name: 'user.email'}, type: "string"},
-      ],
-    },
-    formData: {
-      entityIdentifier: TripUser.entityIdentifier(tripUser),
-      share: {
-        custom: {
-          employee: Employee.new()
-        }
+    return {
+      table: {
+        basicColumns: [
+          // 0
+          {
+            field: {name: 'startPoint.location.locationName'}, type: "boldString",
+            subColumns: [
+              {field: {name: 'startPoint.location.locationParentAddresses'}, type: "string"}
+            ]
+          },
+          // 1
+          {
+            field: {name: 'endPoint.location.locationName'}, type: "string",
+            subColumns: [
+              {field: {name: 'endPoint.location.locationParentAddresses'}, type: "string"}
+            ]
+          },
+          // 2
+          {field: {name: 'user.phoneNumber'}, type: "string"},
+          // 3
+          {field: {name: 'user.email'}, type: "string"},
+        ],
       },
-      header: {
-        titleField: {name: 'user.fullName'},
-        descField: {name: 'user.phoneNumber'},
-      },
-      fields: []
-    }
+      formData: {
+        entityIdentifier: TripUser.entityIdentifier(tripUser),
+        share: {
+          custom: {
+            employee: Employee.new()
+          }
+        },
+        fields: []
+      }
+    };
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
-  })
+  }
 }
 

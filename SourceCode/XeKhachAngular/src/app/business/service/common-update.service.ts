@@ -2,9 +2,10 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Url} from "../../framework/url/url.declare";
-import {XeEntity, XeEntityClass} from "../entities/XeEntity";
+import {ClassMeta, XeEntity} from "../entities/XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {EntityUtil} from "../../framework/util/entity.util";
+import {EntityUtil} from "../../framework/util/EntityUtil";
+import {Location} from "../entities/Location";
 
 @Injectable({
   providedIn: 'root'
@@ -19,96 +20,90 @@ export class CommonUpdateService {
     CommonUpdateService._instance = this;
   }
 
-  oneParamIdValue = (entity, clazz: XeEntityClass<any>) => {
-    const idName = entity ? entity[clazz.mainIdName] : "0";
+  oneParamIdValue = (entity, meta: ClassMeta) => {
+    const idName = entity ? entity[meta.mainIdName] : "0";
     return idName ? idName : "0";
   }
-  commonPath = (clazz: XeEntityClass<any>) => {
-    const result = Url.API_HOST + "/common-update/" + clazz.className;
-    console.log(result);
-    return result;
-  }
+  commonPath = (meta: ClassMeta) => Url.API_HOST + "/common-update/" + meta.capName;
+  commonMultiPath = (meta: ClassMeta) => Url.API_HOST + "/common-update/Multi" + meta.capName;
 
-  commonMultiPath = (clazz: XeEntityClass<any>) => {
-    const result = Url.API_HOST + "/common-update/Multi" + clazz.className;
+  oneParamIdPath = (entity, meta: ClassMeta) => {
+    const result = this.commonPath(meta) + "/" + this.oneParamIdValue(entity, meta);
     console.log(result);
     return result;
   }
-
-  oneParamIdPath = (entity, clazz: XeEntityClass<any>) => {
-    const result = this.commonPath(clazz) + "/" + this.oneParamIdValue(entity, clazz);
-    console.log(result);
-    return result;
-  }
-  manyParamIdPath = (entity, clazz: XeEntityClass<any>) => {
-    const result = this.commonPath(clazz) + "/" + this.manyParamIdValue(entity, clazz);
-    console.log(result);
-    return result;
-  }
-  manyParamIdValue = (entity, clazz: XeEntityClass<any>) => {
-    let mainIdValue = entity[clazz.mainIdName];
+  manyParamIdPath = (entity, meta: ClassMeta) => this.commonPath(meta) + "/" + this.manyParamIdValue(entity, meta);
+  manyParamIdValue = (entity, meta: ClassMeta) => {
+    let mainIdValue = entity[meta.mainIdName];
     if (!mainIdValue) mainIdValue = "0";
-    const otherPksSorted = clazz.otherMainIdNames
+    const otherPksSorted = meta.pkMetas().map(pkMeta => pkMeta.mainIdName)
       .sort((a, b) => a.localeCompare(b))
       .map(idName => entity[idName]).map(s => !s ? "0" : s);
     otherPksSorted.unshift(mainIdValue);
     return otherPksSorted.join("/");
   }
 
-  profileImagePath = (clazz: XeEntityClass<any>) => this.commonPath(clazz) + "-profile-image";
+  profileImagePath = (meta: ClassMeta) => this.commonPath(meta) + "-profile-image";
 
-  updateProfileImage(formData: FormData, clazz: XeEntityClass<any>): Observable<any> {
-    return this.http.post<string>(this.profileImagePath(clazz), formData);
+  updateProfileImage(formData: FormData, meta: ClassMeta): Observable<any> {
+    return this.http.post<string>(this.profileImagePath(meta), formData);
   }
 
-  update<T extends XeEntity>(data, clazz: XeEntityClass<T>): Observable<T> {
-    return this.http.post<T>(this.commonPath(clazz), data);
+  update<T extends XeEntity>(data, meta: ClassMeta): Observable<T> {
+    return this.http.post<T>(this.commonPath(meta), data);
   }
-  updateMulti<T extends XeEntity>(data, clazz: XeEntityClass<T>): Observable<T> {
-    return this.http.post<T>(this.commonMultiPath(clazz), data);
-  }
-
-  insert<T extends XeEntity>(entity: T, clazz: XeEntityClass<T>): Observable<T> {
-    return this.http.put<T>(this.commonPath(clazz), entity);
+  updateMulti<T extends XeEntity>(data, meta: ClassMeta): Observable<T[]> {
+    return this.http.post<T[]>(this.commonMultiPath(meta), data);
   }
 
-  insertMulti<T extends XeEntity>(data: any[], clazz: XeEntityClass<T>): Observable<T[]> {
-    return this.http.put<T[]>(this.commonMultiPath(clazz), data);
+  insert<T extends XeEntity>(entity: T, meta: ClassMeta): Observable<T> {
+    return this.http.put<T>(this.commonPath(meta), entity);
   }
 
-  delete<T extends XeEntity>(data, clazz: XeEntityClass<T>): Observable<T> {
-    return this.http.delete<T>(this.oneParamIdPath(data, clazz));
+  insertMulti<T extends XeEntity>(data: any[], meta: ClassMeta): Observable<T[]> {
+    return this.http.put<T[]>(this.commonMultiPath(meta), data);
   }
 
-  getOne<T extends XeEntity>(data, clazz: XeEntityClass<T>): Observable<T> {
-    return this.http.get<T>(this.oneParamIdPath(data, clazz));
+  delete<T extends XeEntity>(data, meta: ClassMeta): Observable<T> {
+    return this.http.delete<T>(this.oneParamIdPath(data, meta));
+  }
+
+  getOne<T extends XeEntity>(data, meta: ClassMeta): Observable<T> {
+    return this.http.get<T>(this.oneParamIdPath(data, meta));
   }
 
   public findByEntityIdentifier<T extends XeEntity>(identifier: EntityIdentifier<T>): Observable<T[]> {
     const bareIdNames = {};
-    identifier.idFields().forEach(idField => {
-      const bareIdName = idField.name.substring(idField.name.lastIndexOf(".") + 1);
-      if (idField.value) bareIdNames[bareIdName] = idField.value;
+    const allIds = EntityUtil.getAllPossibleId(identifier.entity, identifier);
+    Object.keys(allIds).forEach(idChain => {
+      if (!idChain.includes(".")) {
+        bareIdNames[idChain] = allIds[idChain];
+      }
     });
-    let mainId = bareIdNames[identifier.clazz.mainIdName];
+    let mainId = bareIdNames[identifier.clazz.meta.mainIdName];
     if (!mainId) mainId = "0";
-    const otherIds = identifier.clazz.otherMainIdNames
+    const otherIds = identifier.clazz.meta.pkMetas().map(pkMeta => pkMeta.mainIdName)
       .sort((a, b) => a.localeCompare(b))
       .map(pk => bareIdNames[pk])
       .map(pkValue => !pkValue ? "0" : pkValue);
     otherIds.unshift(mainId);
-    const url = this.commonPath(identifier.clazz) + "/" + otherIds.join("/");
+    const url = this.commonPath(identifier.clazz.meta) + "/" + otherIds.join("/");
+    console.log(url);
     return this.http.get<T[]>(url);
   }
 
-  public findAll<T extends XeEntity>(clazz: XeEntityClass<T>): Observable<T[]> {
-    const findAllZeroIdPath = this.commonPath(clazz) + "/0" + "/0".repeat(clazz.otherMainIdNames.length);
+  public findAll<T extends XeEntity>(meta: ClassMeta): Observable<T[]> {
+    const findAllZeroIdPath = this.commonPath(meta) + "/0" + "/0".repeat(meta.pkMetas().length);
     return this.http.get<T[]>(findAllZeroIdPath);
   }
 
-  deleteAll(selected: any[], clazz: XeEntityClass<any>) {
-    const params = selected.map(s => s[clazz.mainIdName]).join(",");
-    const url = this.commonPath(clazz) + "/" + params;
+  deleteAll(selected: any[], meta: ClassMeta) {
+    const params = selected.map(s => s[meta.mainIdName]).join(",");
+    const url = this.commonPath(meta) + "/" + params;
     return this.http.delete(url);
+  }
+
+  searchLocation(searchTerm: string): Observable<Location[]> {
+    return this.http.get<Location[]>(Url.API_HOST + "/trip/searchLocation/" + searchTerm);
   }
 }

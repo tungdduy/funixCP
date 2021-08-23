@@ -8,25 +8,30 @@
   color: black !important;
 }
 
+.input-container {
+  padding-bottom: 13px;
+  max-width: 100%;
+}
+
 
 // OPTIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 .options-group {
   padding: 5px;
   text-align: center;
   font-size: small;
+  max-width: 160px;
 }
 .options-group div {
-  cursor: pointer;
-  padding: 5px;
+  padding: 2px 6px;
   font-weight: bold;
   border: 1px solid gray;
   color: gray;
   border-radius: 12px;
-  margin: 0 2px;
-  display: inline;
+  margin: 4px 2px;
+  display: inline-block;
 }
 
-.options-group div:hover {
+.options-group .selectable:hover {
   background: #dee2e6;
 }
 

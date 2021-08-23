@@ -7,8 +7,6 @@ import net.timxekhach.operation.data.entity.BussSchedule;
 import net.timxekhach.operation.data.enumeration.TripStatus;
 import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
-import net.timxekhach.operation.data.entity.TripUserSeat;
-import net.timxekhach.operation.data.entity.BussPoint;
 import java.util.List;
 import java.util.ArrayList;
 import net.timxekhach.operation.data.entity.TripUser;
@@ -131,6 +129,13 @@ public abstract class Trip_MAPPED extends XeEntity {
 
     public void setBussSchedule(BussSchedule bussSchedule) {
         this.bussSchedule = bussSchedule;
+        if(bussSchedule == null) {
+            this.companyId = null;
+            this.bussTypeId = null;
+            this.bussScheduleId = null;
+            this.bussId = null;
+            return;
+        }
         this.companyId = bussSchedule.getCompanyId();
         this.bussTypeId = bussSchedule.getBussTypeId();
         this.bussScheduleId = bussSchedule.getBussScheduleId();
@@ -139,126 +144,6 @@ public abstract class Trip_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "allTripUserSeatsBussId",
-        referencedColumnName = "bussId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsUserId",
-        referencedColumnName = "userId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsBussTypeId",
-        referencedColumnName = "bussTypeId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsTripId",
-        referencedColumnName = "tripId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsTripUserId",
-        referencedColumnName = "tripUserId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsTripUserSeatId",
-        referencedColumnName = "tripUserSeatId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "allTripUserSeatsBussScheduleId",
-        referencedColumnName = "bussScheduleId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "tripUserSeatId")
-    protected TripUserSeat allTripUserSeats;
-
-    public void setAllTripUserSeats(TripUserSeat allTripUserSeats) {
-        this.allTripUserSeats = allTripUserSeats;
-        this.allTripUserSeatsBussId = allTripUserSeats.getBussId();
-        this.allTripUserSeatsUserId = allTripUserSeats.getUserId();
-        this.allTripUserSeatsBussTypeId = allTripUserSeats.getBussTypeId();
-        this.allTripUserSeatsCompanyId = allTripUserSeats.getCompanyId();
-        this.allTripUserSeatsTripId = allTripUserSeats.getTripId();
-        this.allTripUserSeatsTripUserId = allTripUserSeats.getTripUserId();
-        this.allTripUserSeatsTripUserSeatId = allTripUserSeats.getTripUserSeatId();
-        this.allTripUserSeatsBussScheduleId = allTripUserSeats.getBussScheduleId();
-    }
-
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "startPointLocationId",
-        referencedColumnName = "locationId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "startPointBussPointId",
-        referencedColumnName = "bussPointId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "startPointCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussPointId")
-    protected BussPoint startPoint;
-
-    public void setStartPoint(BussPoint startPoint) {
-        this.startPoint = startPoint;
-        this.startPointLocationId = startPoint.getLocationId();
-        this.startPointBussPointId = startPoint.getBussPointId();
-        this.startPointCompanyId = startPoint.getCompanyId();
-    }
-
-    @ManyToOne
-    @JoinColumns({
-        @JoinColumn(
-        name = "endPointBussPointId",
-        referencedColumnName = "bussPointId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "endPointLocationId",
-        referencedColumnName = "locationId",
-        insertable = false,
-        updatable = false), 
-        @JoinColumn(
-        name = "endPointCompanyId",
-        referencedColumnName = "companyId",
-        insertable = false,
-        updatable = false)
-    })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussPointId")
-    protected BussPoint endPoint;
-
-    public void setEndPoint(BussPoint endPoint) {
-        this.endPoint = endPoint;
-        this.endPointBussPointId = endPoint.getBussPointId();
-        this.endPointLocationId = endPoint.getLocationId();
-        this.endPointCompanyId = endPoint.getCompanyId();
-    }
-
     @OneToMany(
         mappedBy = "trip",
         orphanRemoval = true,
@@ -269,37 +154,6 @@ public abstract class Trip_MAPPED extends XeEntity {
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
 
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsBussId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsUserId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsBussTypeId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsCompanyId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsTripId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsTripUserId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsTripUserSeatId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long allTripUserSeatsBussScheduleId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long startPointLocationId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long startPointBussPointId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long startPointCompanyId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long endPointBussPointId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long endPointLocationId;
-    @Setter(AccessLevel.PRIVATE)
-    protected Long endPointCompanyId;
-//====================================================================//
-//==================== END of JOIN ID COLUMNS ========================//
-//====================================================================//
 
     protected Long price = 0L;
 
@@ -316,15 +170,19 @@ public abstract class Trip_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("price")) {
-                this.price = Long.valueOf(value);
+                this.setPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("status")) {
-                this.status = TripStatus.valueOf(value);
+                this.setStatus(TripStatus.valueOf(value));
                 continue;
             }
             if (fieldName.equals("startTime")) {
-                this.startTime = XeDateUtils.timeAppToApi(value);
+                this.setStartTime(XeDateUtils.timeAppToApi(value));
+                continue;
+            }
+            if (fieldName.equals("bussSchedule")) {
+                this.setBussSchedule(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussScheduleRepository().findByBussScheduleId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {

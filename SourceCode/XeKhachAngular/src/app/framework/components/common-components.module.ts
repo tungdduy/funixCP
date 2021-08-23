@@ -46,6 +46,8 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, NativeDateModule} from "
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {MatButtonModule} from "@angular/material/button";
 import { MultiOptionComponent } from './multi-option/multi-option.component';
+import {PathPipe} from "./pipes/Path.pipe";
+import {PathPointPipe} from "./pipes/PathPoint.pipe";
 
 
 @NgModule({
@@ -67,6 +69,8 @@ import { MultiOptionComponent } from './multi-option/multi-option.component';
     MoneyPipe,
     XeDatePipe,
     XeTimePipe,
+    PathPointPipe,
+    PathPipe,
     MultiOptionComponent
   ],
   exports: [
@@ -86,7 +90,9 @@ import { MultiOptionComponent } from './multi-option/multi-option.component';
     LocationPipe,
     MoneyPipe,
     XeDatePipe,
-    XeTimePipe
+    XeTimePipe,
+    PathPointPipe,
+    PathPipe
   ],
   imports: [
     CommonModule,

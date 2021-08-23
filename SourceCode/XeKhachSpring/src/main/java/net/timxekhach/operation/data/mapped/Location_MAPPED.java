@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Location;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -68,6 +69,10 @@ public abstract class Location_MAPPED extends XeEntity {
 
     public void setParent(Location parent) {
         this.parent = parent;
+        if(parent == null) {
+            this.parentLocationId = null;
+            return;
+        }
         this.parentLocationId = parent.getLocationId();
     }
 
@@ -91,7 +96,11 @@ public abstract class Location_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("locationName")) {
-                this.locationName = String.valueOf(value);
+                this.setLocationName(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("parent")) {
+                this.setParent(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getLocationRepository().findByLocationId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("locationId")) {

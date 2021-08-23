@@ -7,44 +7,23 @@ import {BussSchedule} from "./BussSchedule";
 import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
-import {TripUserSeat} from "./TripUserSeat";
-import {BussPoint} from "./BussPoint";
 import {TripUser} from "./TripUser";
+import {Path} from "./Path";
+import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Trip extends XeEntity {
-    static className = 'Trip';
-    static camelName = 'trip';
-    static otherMainIdNames = ['bussScheduleId'];
-    static mainIdName = 'tripId';
-    static pkMapFieldNames = ['bussSchedule'];
+    static meta = EntityUtil.metas.Trip;
     bussScheduleId: number;
     tripId: number;
     bussTypeId: number;
     bussId: number;
     companyId: number;
     bussSchedule: BussSchedule;
-    allTripUserSeats: TripUserSeat ;
-    startPoint: BussPoint ;
-    endPoint: BussPoint ;
     tripUsers: TripUser[];
-    allTripUserSeatsBussId: number;
-    allTripUserSeatsUserId: number;
-    allTripUserSeatsBussTypeId: number;
-    allTripUserSeatsCompanyId: number;
-    allTripUserSeatsTripId: number;
-    allTripUserSeatsTripUserId: number;
-    allTripUserSeatsTripUserSeatId: number;
-    allTripUserSeatsBussScheduleId: number;
-    startPointLocationId: number;
-    startPointBussPointId: number;
-    startPointCompanyId: number;
-    endPointBussPointId: number;
-    endPointLocationId: number;
-    endPointCompanyId: number;
     price: number;
     status;
     startTime;
@@ -54,12 +33,12 @@ export class Trip extends XeEntity {
   static entityIdentifier = (trip: Trip): EntityIdentifier<Trip> => ({
     entity: trip,
     clazz: Trip,
-    idFields: () => [
-      {name: "tripId", value: trip.tripId},
-      {name: "bussSchedule.bussScheduleId", value: trip.bussSchedule?.bussScheduleId},
-      {name: "bussSchedule.buss.bussId", value: trip.bussSchedule?.buss?.bussId},
-      {name: "bussSchedule.buss.bussType.bussTypeId", value: trip.bussSchedule?.buss?.bussType?.bussTypeId},
-      {name: "bussSchedule.buss.company.companyId", value: trip.bussSchedule?.buss?.company?.companyId}
+    idFields: [
+      {name: "tripId"},
+      {name: "bussSchedule.bussScheduleId"},
+      {name: "bussSchedule.buss.bussId"},
+      {name: "bussSchedule.buss.bussType.bussTypeId"},
+      {name: "bussSchedule.buss.company.companyId"}
     ]
   })
 
@@ -69,20 +48,21 @@ export class Trip extends XeEntity {
     trip.bussSchedule.buss = new Buss();
     trip.bussSchedule.buss.bussType = new BussType();
     trip.bussSchedule.buss.company = new Company();
-    ObjectUtil.assignEntity(option, trip);
+    EntityUtil.assignEntity(option, trip);
     return trip;
   }
 
   static tableData = (option: XeTableData<Trip> = {}, trip: Trip = Trip.new()): XeTableData<Trip> => {
     const table = Trip._tripTable(trip);
-    ObjectUtil.assignEntity(option, table);
+    EntityUtil.assignEntity(option, table);
     XeTableData.fullFill(table);
     return table;
   }
 
-  private static _tripTable = (trip: Trip): XeTableData<Trip> => ({
+  private static _tripTable = (trip: Trip): XeTableData<Trip> => {
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+    return {};
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
-  })
+  }
 }
 
