@@ -26,7 +26,7 @@ async function init() {
     navigator.serviceWorker.addEventListener('message', event => {
         console.log(event);
         if (event.data.hasOwnProperty("newData")) {
-            alert(event.data.newData.body);
+            alert(event.data.newData.notification.body);
         }
     });
 

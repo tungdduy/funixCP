@@ -28,11 +28,15 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 @Log4j2
-@RequiredArgsConstructor
 public class FcmClient {
 
   private UserRepository userRepository;
 
+  /**
+   * Initial Firebase App based on config file
+   * which is available in {@link FcmSettings}
+   * @param settings
+   */
   public FcmClient(FcmSettings settings) {
     //TODO
     Path p = Paths.get(settings.getServiceAccountFile());
@@ -47,6 +51,13 @@ public class FcmClient {
     }
   }
 
+  /**
+   * Sending a messsage to the topic with given data
+   * @param topic
+   * @param data
+   * @throws InterruptedException
+   * @throws ExecutionException
+   */
   public void send(String topic, Map<String, String> data)
       throws InterruptedException, ExecutionException {
 
@@ -61,6 +72,11 @@ public class FcmClient {
     System.out.println("Sent message: " + response);
   }
 
+  /**
+   * Register a token to the topic
+   * See {@link #getTopic()}
+   * @param clientToken
+   */
   public void subscribe(String clientToken) {
     try {
       TopicManagementResponse response = FirebaseMessaging.getInstance()

@@ -17,10 +17,10 @@ messaging.usePublicVapidKey('BOjXxbOEy6KoGPWSgq5_RaTZFuANQ0nR3lxAmtl0ZmvsHrKVqVJ
 
 self.addEventListener('push', async event => {
     console.log("push event");
-    console.log(event.data.json().notification);
+    console.log(event.data.json());
     const allClients = await clients.matchAll({ includeUncontrolled: true });
     for (const client of allClients) {
-        client.postMessage({newData : event.data.json().notification});
+        client.postMessage({newData : {notification : event.data.json().notification, data : event.data.json().data}});
     }
 });
 

@@ -11,8 +11,14 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class RegistryController {
 
+  /**
+   * See {@link FcmClient}
+   */
   private FcmClient fcmClient;
 
+  /**
+   * Register a token to specific topic for firebase
+   */
   @PostMapping("/subscribe")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void register(@RequestBody String token) {
