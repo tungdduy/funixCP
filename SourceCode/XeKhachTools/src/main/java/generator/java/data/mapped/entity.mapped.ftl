@@ -97,6 +97,7 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
         this.${join} = ${pkMap.fieldName}.get${join?cap_first}();
         </#list>
     }
+
 </#list>
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//

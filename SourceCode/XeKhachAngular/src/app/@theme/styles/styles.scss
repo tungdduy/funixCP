@@ -64,3 +64,35 @@ nb-select.size-medium button {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.text-x-large {
+  font-size: x-large;
+}
+
+.text-large {
+  font-size: large;
+}
+
+
+.icon-wrapper {
+  border-radius: 5px;
+  border: 1px solid gray;
+  width: fit-content;
+  padding: 5px 12px 0px 7px;
+  cursor: pointer;
+  color: #585858;
+}
+
+.icon-wrapper.active {
+  color: #007bff;
+}
+
+.icon-wrapper:hover, .icon-wrapper:hover nb-icon{
+  color: #007bff !important;
+  opacity: 1;
+  background: lightyellow;
+}
+
+.icon-wrapper .icon-text {
+  font-size: 1.2rem;
+}

@@ -101,6 +101,7 @@ public abstract class Employee_MAPPED extends XeEntity {
         }
         this.companyId = company.getCompanyId();
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -129,6 +130,7 @@ public abstract class Employee_MAPPED extends XeEntity {
         }
         this.userId = user.getUserId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//

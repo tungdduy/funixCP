@@ -82,7 +82,7 @@ export class BussPointComponent extends FormAbstract implements OnInit {
       return '';
     }
     EntityUtil.cache(location, Location.meta);
-    return LocationPipe.instance.toReadableString(location);
+    return LocationPipe.instance.singleToInline(location);
   }
 
   searchLocation() {

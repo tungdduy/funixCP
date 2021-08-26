@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {IconOption} from "../../../model/XeTableData";
 
 export interface IconWrapper {
@@ -18,7 +18,6 @@ export class IconWrapComponent implements OnInit {
   @Input() iconAfter: string;
   @Input() iconOnly: string;
   @Input() wrapper: IconWrapper;
-  constructor() {}
 
   ngOnInit(): void {
     this.wrapper = this.wrapper ? this.wrapper : {

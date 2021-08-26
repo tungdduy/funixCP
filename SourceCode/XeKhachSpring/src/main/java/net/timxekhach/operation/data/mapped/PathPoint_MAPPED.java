@@ -109,6 +109,7 @@ public abstract class PathPoint_MAPPED extends XeEntity {
         }
         this.locationId = location.getLocationId();
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -144,6 +145,7 @@ public abstract class PathPoint_MAPPED extends XeEntity {
         this.companyId = path.getCompanyId();
         this.pathId = path.getPathId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//

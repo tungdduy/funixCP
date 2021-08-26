@@ -1,6 +1,6 @@
 import {XeLabel, XeLbl} from "../../business/i18n";
 import {Directive} from "@angular/core";
-import {InputMode, InputTemplate} from "./EnumStatus";
+import {BussSchemeMode, InputMode, InputTemplate} from "./EnumStatus";
 import {AdminComponent} from "../../business/pages/admin/admin.component";
 import {EntityUtil} from "../util/EntityUtil";
 
@@ -10,6 +10,7 @@ export class AbstractXe {
   xeInputMode = InputMode;
   xeInputTemplate = InputTemplate;
   entityUtil = EntityUtil;
+  bussSchemeMode = BussSchemeMode;
   xeLbl = XeLbl;
   get adminContainer() {
     return AdminComponent.instance();

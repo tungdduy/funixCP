@@ -6,6 +6,7 @@ import {ClassMeta, XeEntityClass} from "../../business/entities/XeEntity";
 import {AbstractXe} from "./AbstractXe";
 import {EntityUtil} from "../util/EntityUtil";
 import {ObjectUtil} from "../util/object.util";
+import {Meta} from "@angular/platform-browser";
 
 @Directive()
 export class XeSubscriber extends AbstractXe implements OnDestroy {
@@ -34,7 +35,7 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
     return CommonUpdateService.instance.getOne<any>(entity, clazz.meta);
   }
 
-  update(entities: any[], clazz: XeEntityClass<any>) {
+  updateMulti$(entities: any[], meta: ClassMeta) {
     const prepareData = [];
     entities.forEach(entity => {
       const convertedEntity = {};
@@ -50,7 +51,12 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
       });
       prepareData.push(convertedEntity);
     });
-    CommonUpdateService.instance.updateMulti(prepareData, clazz.meta).subscribe(
+    return CommonUpdateService.instance.updateMulti(prepareData, meta);
+  }
+
+  update(entities: any[], clazz: XeEntityClass<any>) {
+    this.updateMulti$(entities, clazz.meta)
+    .subscribe(
       returnedArray => EntityUtil.cacheMulti(returnedArray, clazz.meta, {
         filterSingle: (filterCondition) => {
           entities.forEach(entity => {

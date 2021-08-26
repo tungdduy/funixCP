@@ -28,8 +28,8 @@ export class PathComponent extends FormAbstract {
         updateCriteriaTableOnSelect: () => [this.pathPointTable]
       },
       table: {
-        basicColumns: [{}, {},
-          {action: {screen: this.screens.pathPoints}}
+        basicColumns: ['pathName', 'pathDesc',
+          {field: {name: 'totalPathPoints'}, action: {screen: this.screens.pathPoints}}
         ]
       },
     },
@@ -38,7 +38,9 @@ export class PathComponent extends FormAbstract {
   pathPointTable = PathPoint.tableData({
     xeScreen: this.screen,
     table: {
-      basicColumns: [{}, undefined]
+      basicColumns: [
+        'pointOrder', 'pointName', 'location'
+      ]
     }
   });
 

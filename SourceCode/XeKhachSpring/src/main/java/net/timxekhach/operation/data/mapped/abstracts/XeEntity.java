@@ -130,13 +130,13 @@ public abstract class XeEntity implements Serializable {
             this.postRemove();
         }
     }
-    protected void postRemove() {};
+    protected void postRemove() {}
 
-    public void preSaveAction() {};
-    public void preRemoveAction(){};
-    public void preUpdateAction(){};
-    public void preSetFieldAction(){};
-    public void postSetFieldAction(){};
+    public void preSaveAction() {}
+    public void preRemoveAction(){}
+    public void preUpdateAction(){}
+    public void preSetFieldAction(){}
+    public void postSetFieldAction(){}
 
     public void setFieldByName(Map<String, String> data) {
         this.preSetFieldAction();

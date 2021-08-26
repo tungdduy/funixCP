@@ -4,3 +4,26 @@
   width: 4rem;
   text-align: center;
 }
+
+.seat-available:hover {
+  background: #9ddc53;
+}
+
+.seat-selected:hover {
+  background: yellow;
+}
+
+.seat-available {
+  background: #87e48e4f;
+  border: 1px solid lightgray;
+  cursor: pointer;
+}
+
+.seat-selected {
+  background: #ffeb3b;
+  border: 2px solid orangered;
+  color: red;
+  font-size: large;
+  font-weight: bold;
+  cursor: pointer;
+}

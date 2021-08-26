@@ -10,6 +10,8 @@ import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {Employee} from "./Employee";
+import {TripUserPoint} from "./TripUserPoint";
+import {PathPoint} from "./PathPoint";
 import {Path} from "./Path";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
@@ -32,11 +34,40 @@ export class TripUser extends XeEntity {
     confirmedByUserId: number;
     confirmedByEmployeeId: number;
     confirmedByCompanyId: number;
+    phoneNumber: string;
+    fullName: string;
     status;
+    unitPrice: number;
     totalPrice: number;
-    seats: string;
+    tripUserPointsString: string;
+    seatsString: string;
     confirmedDateTime;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    tripUserPoints: PathPoint[];
+    startPoint: PathPoint;
+    endPoint: PathPoint;
+    totalSeats: number;
+    seats: number[];
+
+    static removeSeat(tripUser: TripUser, seatNo: number) {
+      tripUser.seats.splice(tripUser.seats.indexOf(seatNo), 1);
+      TripUser.updatePrice(tripUser);
+    }
+    static addSeat(tripUser: TripUser, seatNo: number) {
+      tripUser.seats.push(seatNo);
+      TripUser.updatePrice(tripUser);
+    }
+    static updatePrice(tripUser: TripUser) {
+      tripUser.totalSeats = tripUser.seats.length;
+      tripUser.totalPrice = tripUser.unitPrice * tripUser.totalSeats;
+      tripUser.seatsString = tripUser.seats.join(",");
+    }
+    static clearOrderInfo(tripUser: TripUser) {
+      tripUser.totalSeats = 0;
+      tripUser.totalPrice = 0;
+      tripUser.seats = [];
+      tripUser.seatsString = "";
+    }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (tripUser: TripUser): EntityIdentifier<TripUser> => ({

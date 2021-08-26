@@ -11,11 +11,10 @@ import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component
 import {BussSchedule} from "../../../entities/BussSchedule";
 import {BussEmployee} from "../../../entities/BussEmployee";
 import {Employee} from "../../../entities/Employee";
-import {InputMode, InputTemplate} from "../../../../framework/model/EnumStatus";
+import {InputTemplate} from "../../../../framework/model/EnumStatus";
 import {PathPoint} from "../../../entities/PathPoint";
 import {Path} from "../../../entities/Path";
-import {BussSchedulePoint} from "../../../entities/model/BussSchedulePoint";
-import {of} from "rxjs";
+import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
 
 @Component({
   selector: 'xe-buss-type',
@@ -46,9 +45,9 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
       updateCriteriaTableOnSelect: () => [this.bussTable]
     },
     table: {
-      basicColumns: [{}, {},
-        {action: {screen: this.screens.bussScheme}},
-        {action: {screen: this.screens.bussList}}
+      basicColumns: ['profileImageUrl', 'bussTypeName',
+        {field: {name: 'totalSeats'}, action: {screen: this.screens.bussScheme}},
+        {field: {name: 'totalBusses'}, action: {screen: this.screens.bussList}}
       ]
     }
   });
@@ -63,9 +62,9 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
     },
     xeScreen: this.screen,
     table: {
-      basicColumns: [undefined, undefined, {}, {}, undefined,
-        {action: {screen: this.screens.bussEmployees}},
-        {action: {screen: this.screens.schedules}}
+      basicColumns: ['company.companyName', 'bussLicense',
+        {field: {name: 'totalBussEmployees'}, action: {screen: this.screens.bussEmployees}},
+        {field: {name: 'totalSchedules'}, action: {screen: this.screens.schedules}}
       ],
     },
     formData: {
@@ -108,63 +107,42 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
     },
   }, Employee.new());
 
-  pathTable = Path.tableData({
-  });
-
+  pathTable = Path.tableData({});
   bussSchedulePointTable = BussSchedulePoint.tableData({
     xeScreen: this.screen,
     table: {
+      customData: () => this.bussScheduleTable.formData.share.entity.sortedBussSchedulePoints,
       mode: {
+        readonly: true,
         hideSelectColumn: true
       },
       action: {
-        editOnRow: () => {
-          const schedule = this.bussScheduleTable.formData.share.entity;
-          const scheduleIds = this.entityUtil.getAllPossibleId(schedule, this.bussScheduleTable.formData.entityIdentifier);
-
-          const schedulePoints = [];
-          schedule.bussSchedulePoints.forEach((point: BussSchedulePoint) => {
-            schedulePoints.push({
-              bussScheduleId: point.bussScheduleId,
-              pathPointId: point.pathPointId || point.pathPoint?.pathPointId,
-              price: point.price,
-              isDeductPriceFromPreviousPoint: point.isDeductPriceFromPreviousPoint,
-              pointOrder: point.pointOrder
-            });
-          });
-          scheduleIds['jsonBussSchedulePoints'] = JSON.stringify(schedulePoints);
-          this.updateSingle$(scheduleIds, BussSchedule.meta).subscribe((bussSchedule: BussSchedule) => {
-            this.entityUtil.cache(bussSchedule, BussSchedule.meta);
-            this.bussSchedulePointTable.formData.share.tableSource.data = bussSchedule.bussSchedulePoints;
-            Notifier.success(this.xeLabel.SAVED_SUCCESSFULLY);
-          });
-        }
-      },
-      customData: () => this.bussScheduleTable.formData.share.entity.bussSchedulePoints,
+        editOnRow: true
+      }
     }
   });
   pathPointSelectionTable = PathPoint.tableData({
     table: {
       customData: () => this.bussScheduleTable.formData.share.entity.path.pathPoints,
-      basicColumns: [undefined]
     },
     formData: {}
   });
-  pathPointInput = InputTemplate.pathPointSearch._tableData(this.pathPointSelectionTable);
+  pathPointInput = InputTemplate.pathPoint._tableData(this.pathPointSelectionTable);
   bussScheduleTable = BussSchedule.tableData({
     xeScreen: this.screen,
     table: {
-      basicColumns: [{}, {}, {}, {
-        action: {
-          screen: this.screens.scheduleMiddlePoints
+      basicColumns: ['scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays',
+        {
+          field: {name: 'totalBussSchedulePoints'},
+          action: {screen: this.screens.scheduleMiddlePoints}
         }
-      }]
+      ]
     },
     formData: {
       fields: [
         {}, {}, {}, {},
         {
-          name: 'path', template: InputTemplate.pathSearch._tableData(this.pathTable),
+          name: 'path', template: InputTemplate.path._tableData(this.pathTable),
           colSpan: 2,
           action: {
             preChange: (path: Path) => {

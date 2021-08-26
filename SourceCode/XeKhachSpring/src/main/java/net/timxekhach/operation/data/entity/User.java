@@ -63,6 +63,11 @@ public class User extends User_MAPPED {
     }
 
     @Override
+    public void postSetFieldAction() {
+        this.phoneNumber = XeStringUtils.getNoneDigitChars(this.phoneNumber);
+    }
+
+    @Override
     public void prePersist(){
         ErrorCode.PASSWORD_MUST_MORE_THAN_3_CHARS.throwIf(this.password == null || this.password.length() < 3);
         this.encodePassword();

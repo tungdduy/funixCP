@@ -17,7 +17,7 @@ import {XeScreen} from "../xe-nav/xe-nav.component";
 import {EntityUtil} from "../../util/EntityUtil";
 import {Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
-import {XeBtnComponent} from "../xe-btn/xe-btn.component";
+import {ObjectUtil} from "../../util/object.util";
 
 @Component({
   selector: 'xe-table',
@@ -76,8 +76,15 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   private initData() {
-    if (this.tableData.table.mode.lazySearch) {
-      this.initLazySearch();
+    const previousData = this.tableData.formData.share?.tableEntities;
+    let dataEmpty = true;
+    if (previousData?.length > 0) {
+      this.updateTableData(previousData);
+      dataEmpty = false;
+    }
+    if (this.tableData.table.mode.lazyData) {
+      this.tableData.table.action.triggerUpdate = (term) => this.searchTerm.next(term);
+      if (dataEmpty) this.initLazyData();
     } else if (this.tableData.table.customData) {
       const data = this.tableData.table.customData();
       this.updateTableData(data);
@@ -110,22 +117,27 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
-  private updateTableData(result: E[]) {
-    const mainIdName = this.tableData.formData.entityIdentifier.clazz.meta.mainIdName;
+  public updateTableData(result: E[]) {
+    console.log("table result to update: ", result);
+    const mainIdName = this.entityMeta.mainIdName;
     const filter = (entity) => {
       const tableCondition = this.tableData.table.action.filters?.filterSingle ? this.tableData.table.action.filters.filterSingle(entity) : true;
       if (!tableCondition) return tableCondition;
-      if (this.tableData?.external?.parent) {
+      if (this.tableData?.external?.parent && this.tableData.external.parent.tableData.formData.entityIdentifier.clazz.meta.capName === this.entityMeta.capName) {
         return !this.tableData.external.parent.tableData.formData.share.tableEntities
           .map(parent => parent[mainIdName]).includes(entity[mainIdName]);
       }
       return true;
     };
-    result = EntityUtil.cacheMulti(result, this.tableData.formData.entityIdentifier.clazz.meta, {
+    console.time('cache table entity');
+    result = EntityUtil.cacheMulti(result, this.entityMeta, {
       filterSingle: filter,
       filterArray: this.tableData.table.action?.filters?.filterArray
     });
+    console.timeEnd('cache table entity');
+    console.time('update table');
     this.updateTableSource(result);
+    console.timeEnd('update table');
   }
 
   filterTableColumn(entity, column: TableColumn, value) {
@@ -142,21 +154,29 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return false;
   }
 
-  private searchTerm = new Subject<string>();
+  searchTerm = new Subject<any>();
 
-  private initLazySearch() {
-    if (this.tableData.table.mode.lazySearch) {
+  private initLazyData() {
+    if (this.tableData.table.mode.lazyData) {
       this.searchTerm.pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap((term: string) => this.tableData.table.mode.lazySearch(term))
-      ).subscribe(data => this.updateTableData(data));
+        switchMap((term) => {
+          if (this.tableData?.table?.mode?.lazyData) {
+            return this.tableData.table.mode.lazyData(term);
+          } else {
+            if (ObjectUtil.isObject(term)) {
+              return term.triggerLazySearch;
+            }
+          }
+        })
+      ).subscribe(data => this.updateTableData(data as any as E[]));
     }
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    if (this.tableData.table.mode.lazySearch) {
+    if (this.tableData.table.mode.lazyData) {
       if (filterValue.trim().length > 0) {
         this.searchTerm.next(filterValue);
       } else {
@@ -186,7 +206,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
-    return String(this.entityUtil.getReadableFieldValue(data, column.field)).toLowerCase().includes(value);
+    return String(this.entityUtil.valueAsInlineString(data, this.entityMeta, column.field)).toLowerCase().includes(value);
   }
 
   postPersist = (entity) => {
@@ -203,7 +223,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   removeEntityFromArray(entity, data: any[]) {
     for (let i = 0; i < data.length; i++) {
-      const mainIdName = this.tableData.formData.entityIdentifier.clazz.meta.mainIdName;
+      const mainIdName = this.entityMeta.mainIdName;
       if (entity[mainIdName] === data[i][mainIdName]) {
         return data.splice(i, 1);
       }
@@ -251,7 +271,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   deleteSelected() {
 
-    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.tableData.formData.entityIdentifier.clazz.meta).subscribe(
+    this.subscriptions.push(this.commonService.deleteAll(this.selection.selected, this.entityMeta).subscribe(
       () => {
         this.selection.selected.forEach(entity => {
           this.removeEntityFromArray(entity, this.tableSource.data);
@@ -306,7 +326,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     this.tableSource.paginator = this.paginator;
     this.tableSource.sort = this.sort;
     this.tableSource.sortingDataAccessor = (item, property) => {
-      return this.entityUtil.getReadableFieldValue(item, {name: property});
+      return this.entityUtil.valueAsInlineString(item, this.entityMeta, {name: property});
     };
   }
 
@@ -344,7 +364,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
         targetIdent.idFields.forEach(targetField => {
           targetFieldId = this.entityUtil.getLastFieldName(targetField);
           if (thisFieldId === targetFieldId) {
-            targetEntity[targetFieldId] = this.entityUtil.getOriginFieldValue(entity, field);
+            targetEntity[targetFieldId] = this.entityUtil.getOriginFieldValue(entity, thisIdent.clazz.meta, field);
             targetEntity[this.entityUtil.getLastSubEntityName(targetField)] = targetEntity[targetFieldId];
           }
         });
@@ -356,8 +376,8 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     const share = this.tableData.formData.share;
     const clazz = this.tableData.formData.entityIdentifier.clazz;
 
-    const parentEntity = this.tableData.external.parent.tableData.formData.entityIdentifier.entity;
-    const parentIdentifier = this.tableData.external.parent.tableData.formData.entityIdentifier;
+    const parentEntity = this.entityIdentifier.entity;
+    const parentIdentifier = this.entityIdentifier;
     const syncFields = this.tableData.external.parent.syncFieldsPreCreate;
     const selectedEntities = share.selection.selected;
     const entities = selectedEntities.map(entity => {
@@ -366,7 +386,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       newEntity[clazz.meta.mainIdName] = entity[clazz.meta.mainIdName];
       if (syncFields) {
         syncFields.forEach(sync => {
-          newEntity[sync.childName] = this.entityUtil.getOriginFieldValue(parentEntity, sync.parentField);
+          newEntity[sync.childName] = this.entityUtil.getOriginFieldValue(parentEntity, parentIdentifier.clazz.meta, sync.parentField);
         });
       }
       console.log(newEntity);
@@ -427,8 +447,40 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   editOnRow: boolean;
+
   updateOnRow() {
-    this.editOnRow = false;
-    this.tableData.table.action.editOnRow();
+    this.updateMulti$(this.tableSource.data, this.entityMeta).subscribe(arrayResult => {
+      this.updateTableData(arrayResult as any);
+      this.editOnRow = false;
+      Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
+    });
+  }
+
+
+  tempLastFieldName: string;
+  getLastFieldName = () => this.tempLastFieldName;
+
+  getLastEntity(entity: any, tableColumn: any) {
+    const col = tableColumn as TableColumn;
+    const ef = this.entityUtil
+      .getEntityWithField(entity, this.entityMeta,
+        col.field);
+    this.tempLastFieldName = ef.lastFieldName;
+    return ef.entity;
+  }
+  get entityMeta() {
+    return this.tableData.formData.entityIdentifier.clazz.meta;
+  }
+
+  get entityIdentifier() {
+    return this.tableData.external.parent.tableData.formData.entityIdentifier;
+  }
+
+  getOriginValue(entity: any, column: TableColumn) {
+    return this.entityUtil.getOriginFieldValue(entity, this.entityMeta , column.field);
+  }
+
+  getInlineValue(entity: any, column: TableColumn) {
+    return this.entityUtil.valueAsInlineString(entity, this.entityMeta, column.field);
   }
 }

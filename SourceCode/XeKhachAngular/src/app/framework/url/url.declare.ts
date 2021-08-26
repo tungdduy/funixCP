@@ -49,9 +49,10 @@ export const Url = {
     },
     TRIP: {
       _self: config(),
-      AVAILABLE_SEATS: config(),
-      AVAILABLE_TRIPS: config(),
       SEARCH_LOCATION: config(),
+      FIND_BUSS_SCHEDULES: config(),
+      FIND_SCHEDULED_LOCATIONS_CONTAINS: config(),
+      FIND_LOCATIONS_HAS_SCHEDULE_GO_THROUGH_LOCATION: config(),
     },
     CALLER_STAFF: config(),
     BUSS_STAFF: config(),

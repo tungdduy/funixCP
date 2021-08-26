@@ -13,21 +13,4 @@ public class BussSchedulePoint extends AbstractEntity {
     Column isDeductPrice = of(DataType.FALSE);
     Column searchText = of(DataType.LONG_TEXT);
 }
-/*
-From findAllBussSchedulePoint
---> BussSchedule.
-pointFrom
-pointTo
-date
 
---> Trip
-All tripUsers -> PathPoint: iTo < pointFrom || iFrom > pointTo.order
-
-Buss: disabledSeats
-
-TripUser
-trip, user, pointFrom, pointTo, seats, totalSeats
-
-
-
- */

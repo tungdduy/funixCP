@@ -136,6 +136,7 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -178,6 +179,7 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         this.employeeId = employee.getEmployeeId();
         this.userId = employee.getUserId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//

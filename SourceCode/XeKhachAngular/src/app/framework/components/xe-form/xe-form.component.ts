@@ -208,13 +208,13 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     if (this.isMute) {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.mode = InputMode.disabled;
+          input.formMode = InputMode.disabled;
         });
       }, 0);
     } else {
       setTimeout(() => {
         this.formControls.forEach(input => {
-          input.mode = InputMode.input;
+          input.formMode = input.originalMode;
         });
       }, 0);
     }

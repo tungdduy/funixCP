@@ -1,0 +1,352 @@
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  3,
+  'giapsoft@gmail.com',
+  'Nguyễn Thành Giáp',
+  1,
+  '$2a$10$K9XjDhgqpUxztXMK5HsBoOzbEEIQW8HD8VG/FQwW3sR5F8w0w5TxW',
+  '0970000033',
+  'ROLE_USER,ROLE_SYS_ADMIN,ROLE_BUSS_STAFF,ROLE_BUSS_ADMIN',
+  'ocSzoS',
+  'giapsoft'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  35,
+  'nhanvienxe@gmail.comz',
+  'nhân viên xe',
+  0,
+  '$2a$10$UnYqH8m9a1yXPkdsKLIDwOkGvFvuDIzOfKmavHIMIsaiBcrtdxise',
+  '0988999888',
+  'ROLE_USER,ROLE_SYS_ADMIN,ROLE_BUSS_ADMIN',
+  NULL,
+  'nhanvienxe'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  43,
+  'giapnet@gmail.com',
+  'Tổng đài viên',
+  1,
+  '$2a$10$cKJf9D8m6tgS2sFACBTG6ud1AKEbMk93/kf8dcax7.kzgyzrqaCzO',
+  '0980000000',
+  'ROLE_USER,ROLE_CALLER_STAFF,ROLE_BUSS_ADMIN,ROLE_BUSS_STAFF,ROLE_SYS_ADMIN',
+  NULL,
+  'caller'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  46,
+  'giapday@gmail.com',
+  'buss',
+  1,
+  '$2a$10$e9WgzO8v3BiOO3jSFuv/CebXFHAZlI0K1i8KwltvmRbO5b08iIyIC',
+  '0930000000',
+  'ROLE_USER,ROLE_BUSS_STAFF',
+  NULL,
+  'buss'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  48,
+  'bussadmin@gmail.com',
+  'bussadmin',
+  1,
+  '$2a$10$pXxm8VT68bU7X0zBSrrvSOan3fkTx6qzxRE5ys5R329W.5BmZQW/a',
+  '09710000004',
+  'ROLE_USER,ROLE_SYSTEM_MANAGER,ROLE_BUSS_ADMIN,ROLE_CALLER_STAFF',
+  NULL,
+  'bussadmin'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  55,
+  'nhaxe@gmail.com',
+  'nhaxe',
+  1,
+  '$2a$10$sLsdRiCxBK2Y76mNqqB3yOm1MlKBjI6MOQahYh44xtCVWoJR6Ytdi',
+  '09889994444',
+  'ROLE_USER,ROLE_BUSS_ADMIN',
+  NULL,
+  'nhaxe'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  57,
+  'abv@gmail.com',
+  'ewqeqwewq',
+  0,
+  '$2a$10$LNsuLcLohQvBOFTTkp2uF.gilox146ZzySi0kw04PCZhI5Rv3QGH2',
+  '09884848484',
+  '',
+  NULL,
+  'gggggggggggg'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  91,
+  'dlskfjsdlkf@gfslkjgfds.com',
+  'sfjsldkjfsd',
+  0,
+  '$2a$10$JoV1yxdj/ErKCMkBEztn8ec3a3DrpGZJp8xgFTMMPLXgOWuQM/zeW',
+  '09894934934',
+  'ROLE_USER',
+  NULL,
+  'sfsldkfj'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  95,
+  'dslkfjLK@mgil.com',
+  'fslfkjsdlkfj',
+  0,
+  '$2a$10$yepbH19xQ4tdnm/MiPly1ep1kVs720sunX4PbbLm1hLEGzV69p17a',
+  '09872321312',
+  'ROLE_USER',
+  NULL,
+  'asdasdasd'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  113,
+  'lksdjf@gmail.com',
+  'skljflskjdf',
+  0,
+  '$2a$10$fiJMy4ilOt80h9.vYpFpk.Nj9GNvrWNiewLqnVXs5gs.6Cez5weMW',
+  '09884842842',
+  'ROLE_USER',
+  NULL,
+  'ewrewrwer'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  132,
+  'ajksfh@fdsjhf.com',
+  'gadkjasd',
+  0,
+  '$2a$10$EBxkSGQ99h21q9aPa6ENIeuQreIvIZiZ6aF/XLrpmFAP4.W0M5YOq',
+  '09884247274',
+  'ROLE_USER,ROLE_BUSS_STAFF',
+  NULL,
+  'kljdslkdsj'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  305,
+  'trandau@gmail.com',
+  'Trần Đậu',
+  0,
+  '$2a$10$PFF9rtwfXZ/aNkyEZIAQB.1B.wi/uFbGjk12vrNipNB72KSZ.ic72',
+  '0989444222',
+  'ROLE_USER',
+  NULL,
+  'trandau'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  326,
+  'dsfhjsdkj@gmail.com',
+  'dfhsdkjf@',
+  0,
+  '$2a$10$M4V1sKAgE1ykLQ6wTWl0Ceve8B0sBiHDCuUcQChb6gU3fMO.Aclee',
+  '09884784747',
+  'ROLE_USER',
+  NULL,
+  'sdkjfsdkhf'
+);
+
+INSERT INTO `user`
+(
+  user_id,
+  email,
+  full_name,
+  non_locked,
+  password,
+  phone_number,
+  role,
+  secret_password_key,
+  username
+)
+VALUES
+(
+  330,
+  'lfjdsaklf@fsdjfc.com',
+  'dddddddddd',
+  0,
+  '$2a$10$jNARyeWAfXRPpgpZQ9EX7.UYCsXeGy9aGAfhiEy9weuRnMANIIDLK',
+  '09884848431',
+  'ROLE_USER',
+  NULL,
+  'sdasd'
+);
+
+
+COMMIT;

@@ -1,17 +1,21 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {Url} from "../../framework/url/url.declare";
 import {ClassMeta, XeEntity} from "../entities/XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {Location} from "../entities/Location";
+import {BussSchedule} from "../entities/BussSchedule";
+import {XeDatePipe} from "../../framework/components/pipes/date.pipe";
+import {BussScheduleCriteria} from "../pages/admin/my-trip/my-trip.component";
+import {StringUtil} from "../../framework/util/string.util";
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonUpdateService {
-  static _instance: CommonUpdateService;
+  private static _instance: CommonUpdateService;
   static get instance() {
     return CommonUpdateService._instance;
   }
@@ -52,6 +56,7 @@ export class CommonUpdateService {
   update<T extends XeEntity>(data, meta: ClassMeta): Observable<T> {
     return this.http.post<T>(this.commonPath(meta), data);
   }
+
   updateMulti<T extends XeEntity>(data, meta: ClassMeta): Observable<T[]> {
     return this.http.post<T[]>(this.commonMultiPath(meta), data);
   }
@@ -105,5 +110,24 @@ export class CommonUpdateService {
 
   searchLocation(searchTerm: string): Observable<Location[]> {
     return this.http.get<Location[]>(Url.API_HOST + "/trip/searchLocation/" + searchTerm);
+  }
+
+  findScheduledLocations(criteria: BussScheduleCriteria): Observable<Location[]> {
+    if (StringUtil.isBlank(criteria.inputText)) return of([]);
+    const fromId = criteria.inputName === 'locationFrom' ? 0 : criteria.locationFrom?.locationId || 0;
+    const toId = criteria.inputName === 'locationTo' ? 0 : criteria.locationTo?.locationId || 0;
+    const mark0ForStart = criteria.inputName === 'locationFrom' ? 0 : 1;
+    const searchLocationUrl = Url.API_HOST + "/trip/findScheduledLocations/" + mark0ForStart + "/" + fromId + "/" + toId + "/" + criteria.inputText;
+    console.log("search location url:", searchLocationUrl);
+    return CommonUpdateService.instance.http.get<Location[]>(searchLocationUrl);
+  }
+
+  findBussSchedules(data: BussScheduleCriteria): Observable<BussSchedule[]> {
+    const url = Url.API_HOST + "/trip/findBussSchedules/"
+      + XeDatePipe.instance.singleToSubmitFormat(data.launchDate) + "/"
+      + data.locationFrom.locationId + "/"
+      + data.locationTo.locationId;
+    console.log(url);
+    return this.http.get<BussSchedule[]>(url);
   }
 }

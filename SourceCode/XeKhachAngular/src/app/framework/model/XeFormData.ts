@@ -23,9 +23,10 @@ export interface EntityField {
   template?: InputTemplate;
   mode?: InputMode;
   action?: {
-    preChange?: (field: any) => any,
-    postChange?: (field: any) => any
+    preChange?: (field: any, option?) => any,
+    postChange?: (field: any, option?) => any
   };
+  attachInlines?: string[];
 }
 
 export interface EntityIdentifier<E extends XeEntity> {

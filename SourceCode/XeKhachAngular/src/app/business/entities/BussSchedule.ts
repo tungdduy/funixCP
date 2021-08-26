@@ -1,16 +1,17 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {Path} from "./Path";
+import {BussSchedulePoint} from "./BussSchedulePoint";
 import {PathPoint} from "./PathPoint";
-import {InputTemplate} from "../../framework/model/EnumStatus";
+import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
-import {BussSchedulePoint} from "./model/BussSchedulePoint";
+import {XeTimePipe} from "../../framework/components/pipes/time.pipe";
+import {Trip} from "./Trip";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -24,8 +25,10 @@ export class BussSchedule extends XeEntity {
     companyId: number;
     buss: Buss;
     path: Path ;
+    bussSchedulePoints: BussSchedulePoint[];
     startPoint: PathPoint ;
     endPoint: PathPoint ;
+    totalBussSchedulePoints: number;
     pathPathId: number;
     pathCompanyId: number;
     startPointLocationId: number;
@@ -36,13 +39,13 @@ export class BussSchedule extends XeEntity {
     endPointLocationId: number;
     endPointPathId: number;
     endPointCompanyId: number;
-    price: number;
+    scheduleUnitPrice: number;
     launchTime;
     effectiveDateFrom;
-    jsonBussSchedulePoints: string;
     workingDays: string;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-   bussSchedulePoints: BussSchedulePoint[];
+  preparedTrip: Trip;
+  sortedBussSchedulePoints: BussSchedulePoint[];
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (bussSchedule: BussSchedule): EntityIdentifier<BussSchedule> => ({
@@ -80,15 +83,26 @@ export class BussSchedule extends XeEntity {
       },
       table: {
         basicColumns: [
-          /*0*/ {field: {name: 'price', template: InputTemplate.money}, type: "string"},
-          /*1*/ {field: {name: 'startPoint', template: InputTemplate.pathPointSearch}},
-          /*2*/ {field: {name: 'endPoint', template: InputTemplate.pathPointSearch}},
-          /*3*/ {
-            field: {name: 'totalMiddlePoints'},
+          {field: {name: 'scheduleUnitPrice', template: InputTemplate.money}, type: "string"},
+
+          {
+            field: {name: 'startPoint', template: InputTemplate.pathPoint},
+            subColumns: [
+              {field: {name: 'startPoint.location', template: InputTemplate.location}}
+            ]
+          },
+          {
+            field: {name: 'endPoint', template: InputTemplate.pathPoint},
+            subColumns: [
+              {field: {name: 'startPoint.location', template: InputTemplate.location}}
+            ]
+          },
+          {
+            field: {name: 'totalBussSchedulePoints'},
             type: "iconOption",
             display: {row: {icon: {iconAfter: "map-marker-alt"}}}
           },
-          /*4*/ {
+          {
             field: {name: 'effectiveDateFrom', template: InputTemplate.date}, type: "string",
             subColumns: [
               {
@@ -98,8 +112,46 @@ export class BussSchedule extends XeEntity {
               },
             ]
           },
-          /*5*/ {field: {name: 'workingDays', template: InputTemplate.weekDays}, type: "string"},
-        ]
+          {field: {name: 'workingDays', template: InputTemplate.weekDays}, type: "string"},
+          {
+            field: {name: 'buss.company.companyName', template: InputTemplate.shortInput},
+            subColumns: [
+              {
+                field: {name: 'preparedTrip.preparedTripUser.unitPrice', template: InputTemplate.money},
+                display: {row: {css: 'text-x-large text-danger d-block p-2'}}
+              },
+              {field: {name: 'launchTime', template: InputTemplate.time}}
+            ]
+          },
+          {
+            field: {name: 'preparedTrip.preparedTripUser.startPoint', template: InputTemplate.pathPoint},
+            subColumns: [
+              {
+                field: {name: 'preparedTrip.preparedTripUser.startPoint.location', template: InputTemplate.location},
+                display: {header: {silence: true}}
+              }
+            ]
+          },
+          {
+            field: {name: 'preparedTrip.preparedTripUser.endPoint', template: InputTemplate.pathPoint},
+            subColumns: [
+              {
+                field: {name: 'preparedTrip.preparedTripUser.endPoint.location', template: InputTemplate.location},
+                display: {header: {silence: true}}
+              }
+            ]
+          },
+          {
+            field: {name: 'preparedTrip.preparedTripUser.totalTripUserPoints'},
+            type: "iconOption",
+            display: {row: {icon: {iconAfter: "map-marker-alt"}}},
+            subColumns: [{
+              field: {name: 'preparedTrip.totalAvailableSeats', attachInlines: ['preparedTrip.totalSeats']},
+              type: "iconOption",
+              display: {row: {icon: {iconAfter: "couch"}}},
+            }]
+          },
+        ],
       },
       formData: {
         entityIdentifier: BussSchedule.entityIdentifier(bussSchedule),
@@ -108,13 +160,18 @@ export class BussSchedule extends XeEntity {
           columnNumber: 3
         },
         fields: [
-          {name: "price", template: InputTemplate.money, required: true},
-          {name: "launchTime", template: InputTemplate.time, required: true},
+          {name: "scheduleUnitPrice", template: InputTemplate.money, required: true},
+          {
+            name: "launchTime",
+            template: InputTemplate.time._observable(XeTimePipe.autoInputObservable),
+            mode: InputMode.selectOnly,
+            required: true
+          },
           {name: "effectiveDateFrom", template: InputTemplate.date, required: true},
           {name: "workingDays", template: InputTemplate.weekDays, required: true},
         ]
       }
-    };
+    } as XeTableData<BussSchedule>;
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
   }
 }

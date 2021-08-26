@@ -5,22 +5,18 @@ import {XePipe} from "./XePipe";
 export class PhonePipe extends XePipe implements PipeTransform {
   private static _instance: PhonePipe;
   static get instance(): PhonePipe {
-    if (!PhonePipe._instance) {
-      PhonePipe._instance = new PhonePipe();
+    if (!this._instance) {
+      this._instance = new PhonePipe();
     }
-    return PhonePipe._instance;
+    return this._instance;
   }
 
-  transform(value: string): string {
-    return !value ? '' : `${value.substring(0, 3)}.${value.substring(3, 6)}.${value.substring(6)}`;
-  }
-  toSubmitFormat = (value: string): string => {
-    return this.transform(value);
-  }
-  toAppFormat = (value) => {
-    return value;
-  }
+  singleToAppValue = (value, options?) => this.singleToSubmitFormat(value);
 
-  toReadableString = (value): string => this.transform(value);
+  singleToInline(value: string, options?) {
+    const stringValue = String(value);
+    return !value || stringValue.length < 9 ? value : `${stringValue.substring(0, 3)}.${stringValue.substring(3, 6)}.${stringValue.substring(6)}`;
+  }
+  singleToSubmitFormat = (value, options?) => !value ? '' : parseInt(String(value).replace(/[^0-9]+/g, ""), 10);
 
 }

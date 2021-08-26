@@ -10,6 +10,7 @@ import static util.StringUtil.PHONE_REGEX;
 @Getter
 public enum DataType {
     DESCRIPTION(() -> new Column().maxLen(255)),
+    COMMA_SEPARATOR(() -> new Column()),
     LONG_TEXT(() -> new Column()),
     CODE(() -> new Column().maxLen(30).upperOnly()),
     QUANTITY(() -> new Column(Integer.class).defaultValue(0)),

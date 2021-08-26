@@ -16,9 +16,15 @@ public class TripUser extends AbstractEntity {
         pk(Trip.class);
         pk(User.class);
     }
+
+    Column phoneNumber = of(PHONE);
+    Column fullName = of(DESCRIPTION);
+
     Column status = status(TripUserStatus.class).defaultValue(PENDING);
+    Column unitPrice = of(MONEY);
     Column totalPrice = of(MONEY);
-    Column seats = of(DESCRIPTION);
+    Column tripUserPointsString = of(COMMA_SEPARATOR);
+    Column seatsString = of(COMMA_SEPARATOR);
     MapColumn confirmedBy = map(Employee.class);
     Column confirmedDateTime = of(DATE_TIME);
 

@@ -63,7 +63,7 @@ export class PathPoint extends XeEntity {
       table: {
         basicColumns: [
           {field: {name: 'pointOrder', template: InputTemplate.tableOrder}},
-          {field: {name: 'path', template: InputTemplate.pathSearch, mode: InputMode.html}},
+          {field: {name: 'path', template: InputTemplate.path, mode: InputMode.html}},
           {/*0*/
             field: {name: 'pointName', template: InputTemplate.shortInput},
             subColumns: [
@@ -71,7 +71,7 @@ export class PathPoint extends XeEntity {
             ]
           },
           {
-            field: {name: 'location', template: InputTemplate.locationSearch, required: true}
+            field: {name: 'location', template: InputTemplate.location, required: true}
           }
         ]
       },
@@ -82,8 +82,8 @@ export class PathPoint extends XeEntity {
         entityIdentifier: PathPoint.entityIdentifier(pathPoint),
         share: {entity: PathPoint.new()},
         fields: [
-          {name: 'path', template: InputTemplate.pathSearch, mode: InputMode.textTitle},
-          {name: "location", template: InputTemplate.locationSearch._tableData(Location.cachedLocationTable()), required: true},
+          {name: 'path', template: InputTemplate.path, mode: InputMode.textTitle},
+          {name: "location", template: InputTemplate.location._tableData(Location.cachedLocationTable()), required: true},
           {name: "pointName", template: InputTemplate.shortInput, required: true},
           {name: "pointDesc", template: InputTemplate.shortInput, required: true}
         ]

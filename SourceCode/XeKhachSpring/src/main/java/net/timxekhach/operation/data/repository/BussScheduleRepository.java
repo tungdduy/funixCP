@@ -6,6 +6,7 @@ import net.timxekhach.operation.data.mapped.BussSchedule_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Date;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
@@ -23,6 +24,7 @@ public interface BussScheduleRepository extends JpaRepository<BussSchedule, Buss
     List<BussSchedule> findByBussId(Long bussId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    List<BussSchedule> findByEffectiveDateFromLessThanEqualAndWorkingDaysContains(Date date, String dayInWeekExpression);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

@@ -48,6 +48,7 @@ import {MatButtonModule} from "@angular/material/button";
 import { MultiOptionComponent } from './multi-option/multi-option.component';
 import {PathPipe} from "./pipes/Path.pipe";
 import {PathPointPipe} from "./pipes/PathPoint.pipe";
+import {BussSchedulePointPipe} from "./pipes/BussSchedulePointPipe";
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import {PathPointPipe} from "./pipes/PathPoint.pipe";
     XeTimePipe,
     PathPointPipe,
     PathPipe,
-    MultiOptionComponent
+    MultiOptionComponent,
+    BussSchedulePointPipe,
   ],
   exports: [
     XeInputComponent,
@@ -92,7 +94,8 @@ import {PathPointPipe} from "./pipes/PathPoint.pipe";
     XeDatePipe,
     XeTimePipe,
     PathPointPipe,
-    PathPipe
+    PathPipe,
+    BussSchedulePointPipe
   ],
   imports: [
     CommonModule,

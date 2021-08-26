@@ -11,12 +11,14 @@ export class MoneyPipe extends XePipe implements PipeTransform {
     return MoneyPipe._instance;
   }
 
-  transform(value: string): string {
-    return this.toReadableString(value);
+  singleToAppValue = (value, options?) => {
+    return !value ? '' : parseInt(String(value).replace(/[^0-9]+/g, ""), 10);
   }
-  toReadableString = (value) => !value ? "" : String(value).replace(/[^0-9]+/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "đ";
-  toAppFormat = (value) => parseInt(String(value).replace(/[^0-9]+/g, ""), 10);
-  toSubmitFormat = (value) => value;
-  toRawInputString = (value) => !value ? "" : String(value).replace(/[^0-9]+/, "");
+
+  singleToInline(value, options?) {
+    return !value ? "" : String(value).replace(/[^0-9]+/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "đ";
+  }
+
+  singleToSubmitFormat = (value, options?) => this.singleToAppValue(value);
 
 }

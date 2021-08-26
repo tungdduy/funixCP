@@ -1,8 +1,12 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {XePipe} from "./XePipe";
 import {DatePipe} from "@angular/common";
+import {Observable, of} from "rxjs";
+import {ValueConverter} from "@angular/compiler/src/render3/view/template";
+import {ValueExchange} from "../../model/ValueExchange";
+import {AutoInputModel} from "../../model/AutoInputModel";
 
-@Pipe({name: 'XeTime'})
+@Pipe({name: 'xeTimePipe'})
 export class XeTimePipe extends XePipe implements PipeTransform {
   private static _instance: XeTimePipe;
   static get instance(): XeTimePipe {
@@ -13,44 +17,21 @@ export class XeTimePipe extends XePipe implements PipeTransform {
   }
   private _timePipe: DatePipe = new DatePipe("en-US");
 
-  transform = (value) => value;
-
-  toReadableString = (time: Date): string => {
-    return this._timePipe.transform(time, "HH:mm");
-  }
-  toSubmitFormat = (time: Date): string => this._timePipe.transform(time, "HH:mm");
-  toAppFormat = (inputTime: any): Date => typeof inputTime === 'string' ? new Date(inputTime) : inputTime;
-
-
-
-  static getHourMinuteBlocks(hours: any[], hFormatted: string | number) {
-    hours.push(`${hFormatted}:00`);
-    hours.push(`${hFormatted}:15`);
-    hours.push(`${hFormatted}:30`);
-    hours.push(`${hFormatted}:45`);
+  static getHourMinuteBlocks(hours: AutoInputModel[], hFormatted: string | number) {
+    hours.push({appValue: this.instance.inputStringToAppValue(`${hFormatted}:00`), inlineString: `${hFormatted}:00`});
+    hours.push({appValue: this.instance.inputStringToAppValue(`${hFormatted}:15`), inlineString: `${hFormatted}:15`});
+    hours.push({appValue: this.instance.inputStringToAppValue(`${hFormatted}:30`), inlineString: `${hFormatted}:30`});
+    hours.push({appValue: this.instance.inputStringToAppValue(`${hFormatted}:45`), inlineString: `${hFormatted}:45`});
   }
 
-  static allHourOptions() {
-    const hours = [];
+  static autoInputObservable = (time: string) => {
+    const hours: AutoInputModel[] = [];
     for (let i = 0; i < 24; i++) {
       const h = i < 16 ? (i + 7) : i - 16;
       const hFormatted = h < 10 ? "0" + h : h;
       XeTimePipe.getHourMinuteBlocks(hours, hFormatted);
     }
-    return hours;
-  }
-
-  static filterTime(time: string): string[] {
-    if (!time) return [];
-    const value = time.trim().toLowerCase();
-    const hour = value.length > 2 ? parseInt(value.substring(0, 1), 10) : parseInt(value, 10);
-    const hours = [];
-    if (hour >= 0 && hour <= 23) {
-      const hourFormatted = hour < 10 ? "0" + hour : hour;
-      XeTimePipe.getHourMinuteBlocks(hours, hourFormatted);
-      return hours;
-    }
-    return XeTimePipe.allHourOptions();
+    return of(hours);
   }
 
   areEquals = (time1: Date, time2: Date): boolean => {
@@ -62,4 +43,22 @@ export class XeTimePipe extends XePipe implements PipeTransform {
   }
 
   validate = (time) => time !== undefined && time !== null;
+
+  inputStringToAppValue = (time: any) => {
+    const timer = String(time).trim().split(":");
+    const hour = parseInt(timer[0], 10);
+    const minute = parseInt(timer[1], 10);
+    return new Date(0, 0, 0, hour, minute);
+  }
+
+  singleToAppValue = (inputTime: any): Date => typeof inputTime === 'string' ? new Date(inputTime) : inputTime;
+
+  singleToInline = (time) => {
+    return !time ? '' : this._timePipe.transform(time, "HH:mm");
+  }
+
+  singleToSubmitFormat = (time: Date): string => this._timePipe.transform(time, "HH:mm");
+  singleToAutoInputModel(value, options?): AutoInputModel {
+    return value;
+  }
 }

@@ -1,5 +1,5 @@
 package net.timxekhach.operation.data.enumeration;
 
 public enum TripUserStatus {
-    PENDING
+    PENDING, DELETED, SUCCESS
 }

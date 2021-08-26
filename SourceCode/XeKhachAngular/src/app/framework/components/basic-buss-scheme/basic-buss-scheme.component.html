@@ -6,44 +6,124 @@
         <lbl [txt]="bussType.bussTypeName"></lbl>
       </h3>
     </div>
-    <div class="float-right" *ngIf="editMode && screen.current === screens.schemeList">
+
+    <div *ngIf="mode.hasEdit && screen.is(screens.schemeView)" class="float-right">
       <xe-btn (click)="openNewSeatRange()" template="add"></xe-btn>
     </div>
   </nb-card-header>
   <nb-card-body>
-    <ng-container *ngIf="screen.current === screens.schemeList">
-      <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
-        <div>
-          <div class="pt-3">
-            <h6>
-              <lbl [key]="seatGroup.seatGroupName"></lbl>
-              <lbl [key]="seatGroup.seatGroupDesc" class="text-danger badge"></lbl>
-              <xe-btn *ngIf="editMode" (click)="openEditSeatGroup(seatGroup)" hideText icon="pen" template="blank"></xe-btn>
-            </h6>
 
-          </div>
-          <div>
-            <ng-container *ngIf="editMode">
-              <xe-btn (click)="bringUp(seatGroup, groupIdx)" *ngIf="!isFirstGroup" icon="caret-up"
-                      template="blank"></xe-btn>
-              <xe-btn (click)="bringDown(seatGroup, groupIdx)" *ngIf="!isLastGroup" icon="caret-down"
-                      template="blank"></xe-btn>
-            </ng-container>
-            <div *ngFor="let seat of seatGroup.seats" class="seat alert alert-info border-info">
-              {{seat}}
-            </div>
-          </div>
-        </div>
-      </div>
+    <ng-container *ngIf="screen.is(screens.schemeView)">
+      <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
     </ng-container>
-    <xe-basic-form *ngIf="screen.current === screens.schemeEdit"
-                   [formData]="seatGroupTable.formData" [readMode]="false">
-      <ng-container leftAboveMessageLabel>
-        <lbl key="seat_from">: {{getCurrentSeatFrom()}}</lbl>
-        <lbl key="seat_to">: {{getCurrentSeatTo()}}</lbl>
-      </ng-container>
-    </xe-basic-form>
+
+    <ng-container *ngIf="mode.hasOrdering">
+      <ng-container *ngTemplateOutlet="TripOrderControlTemplate"></ng-container>
+    </ng-container>
+
+    <ng-container *ngTemplateOutlet="SchemeFormEditTemplate"></ng-container>
+
   </nb-card-body>
 </nb-card>
 
+<!-- ##############################  [SCHEME VIEW] ###################################### -->
+<ng-template #SchemeViewTemplate>
+  <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
+    <div>
+      <div class="pt-3">
+        <h6>
+          <lbl [key]="seatGroup.seatGroupName"></lbl>
+          <lbl [key]="seatGroup.seatGroupDesc" class="text-danger badge"></lbl>
+          <xe-btn (click)="openEditSeatGroup(seatGroup)" *ngIf="mode.hasEdit" hideText icon="pen"
+                  template="blank"></xe-btn>
+        </h6>
+
+      </div>
+      <div>
+        <ng-container *ngIf="mode.hasEdit">
+          <xe-btn (click)="bringUp(seatGroup, groupIdx)" *ngIf="!isFirstGroup" icon="caret-up"
+                  template="blank"></xe-btn>
+          <xe-btn (click)="bringDown(seatGroup, groupIdx)" *ngIf="!isLastGroup" icon="caret-down"
+                  template="blank"></xe-btn>
+        </ng-container>
+        <ng-container *ngFor="let seatNo of seatGroup.seats">
+          <div *ngIf="!mode.hasOrdering" class="seat alert alert-info border-info">
+            {{seatNo}}
+          </div>
+          <ng-container *ngIf="mode.hasOrdering">
+            <ng-container *ngTemplateOutlet="SeatSchemeTemplate; context: {seatNo: seatNo}"></ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ##############################  [SCHEME EDIT] ###################################### -->
+<ng-template #SchemeFormEditTemplate>
+  <xe-basic-form *ngIf="screen.is(screens.schemeEdit)"
+                 [formData]="seatGroupTable.formData" [readMode]="false">
+    <ng-container leftAboveMessageLabel>
+      <lbl key="seat_from">: {{getCurrentSeatFrom()}}</lbl>
+      <lbl key="seat_to">: {{getCurrentSeatTo()}}</lbl>
+    </ng-container>
+  </xe-basic-form>
+</ng-template>
+
+
+<!-- ##############################  [ORDERING CONTROL] ###################################### -->
+<ng-template #SeatSchemeTemplate let-seatNo="seatNo">
+  <div (click)="toggleSeatOrder(seatNo)"
+       class="seat alert {{seatStatus(seatNo).classes}}">
+    {{seatNo}}
+  </div>
+</ng-template>
+
+<ng-template #TripOrderControlTemplate>
+  <ng-container *ngIf="mode.hasOrdering">
+    <div>
+      <div [innerHTML]="tripUser.startPoint | pathPointPipe"></div>
+      <div [innerHTML]="tripUser.startPoint.location | locationPipe"></div>
+    </div>
+    <div>
+      <div [innerHTML]="tripUser.endPoint | pathPointPipe"></div>
+      <div [innerHTML]="tripUser.endPoint.location | locationPipe"></div>
+    </div>
+
+    <div>
+      <div>{{xeLabel.SEAT_UNIT_PRICE}}: <span class="text-secondary">{{tripUser.unitPrice}}</span></div>
+      <div>{{xeLabel.SELECTED_SEATS}}: <span class="text-secondary">{{tripUser.seatsString}}</span></div>
+      <div>{{xeLabel.TOTAL_SELECTED_SEATS}}: <span class="text-info">{{tripUser.totalSeats}}</span></div>
+      <div>{{xeLabel.TOTAL_PRICE}}: <span class="text-info">{{tripUser.totalPrice | moneyPipe}}</span></div>
+    </div>
+
+    <div id="scheme-order-bottom-control">
+      <xe-btn (click)="clearOrderInfo()" template="clear"></xe-btn>
+    </div>
+  </ng-container>
+</ng-template>
+
+
+<!-- ########################  ORDER INFO  ##################################### -->
+<ng-template #OrderCard>
+  <lbl [txt]="xeLabel.companyName">{{bussSchedule.buss.company.companyName}}</lbl>
+  <lbl [txt]="xeLabel.companyDesc">{{bussSchedule.buss.company.companyDesc}}</lbl>
+  <lbl [txt]="xeLabel.bussLicense">{{bussSchedule.buss.bussLicense}}</lbl>
+  <lbl [txt]="xeLabel.bussTypeName">{{bussSchedule.buss.bussType.bussTypeName}}</lbl>
+  <lbl [txt]="xeLabel.bussTypeDesc">{{bussSchedule.buss.bussType.bussTypeDesc}}</lbl>
+  <lbl [txt]="xeLabel.LAUNCH_DATE">{{trip.launchDate | xeDatePipe}}</lbl>
+  <lbl [txt]="xeLabel.launchTime">{{trip.launchTime | xeTimePipe}}</lbl>
+
+  <div>{{xeLabel.SELECTED_SEATS}}: <span class="text-secondary">{{tripUser.seatsString}}</span></div>
+  <div>{{xeLabel.TOTAL_SELECTED_SEATS}}: <span class="text-info">{{tripUser.totalSeats}}</span></div>
+  <div>{{xeLabel.SEAT_UNIT_PRICE}}: <span class="text-secondary">{{tripUser.unitPrice | moneyPipe}}</span></div>
+  <div>{{xeLabel.TOTAL_PRICE}}: <span class="text-info">{{tripUser.totalPrice | moneyPipe}}</span></div>
+
+  <xe-input [(value)]="tripUser.fullName"></xe-input>
+  <xe-input [(value)]="tripUser.phoneNumber"></xe-input>
+  <div class="cart-order-bottom-control">
+    <xe-btn (click)="screen.back()" template="back"></xe-btn>
+    <xe-btn (click)="order()" template="submit"></xe-btn>
+  </div>
+</ng-template>
 

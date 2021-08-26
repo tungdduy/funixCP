@@ -4,7 +4,7 @@
 <!-- ########### END OF BUSS TYPE ##############-->
 
 <ng-container *ngIf="screen.is(screens.bussScheme)">
-  <basic-buss-scheme [bussType]="bussTypeTable.formData.share.entity" [screen]="screen"></basic-buss-scheme>
+  <basic-buss-scheme [mode]="bussSchemeMode.edit" [bussType]="bussTypeTable.formData.share.entity" [screen]="screen"></basic-buss-scheme>
 </ng-container>
 <!-- ########### END OF BUSS SCHEME ##############-->
 

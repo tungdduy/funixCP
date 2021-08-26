@@ -1,0 +1,100 @@
+INSERT INTO buss_schedule
+(
+  buss_id,
+  buss_schedule_id,
+  buss_type_id,
+  company_id,
+  effective_date_from,
+  end_point_company_id,
+  end_point_location_id,
+  end_point_path_id,
+  end_point_path_point_id,
+  json_point_prices,
+  launch_time,
+  path_company_id,
+  path_path_id,
+  price,
+  start_point_company_id,
+  start_point_location_id,
+  start_point_path_id,
+  start_point_path_point_id,
+  working_days,
+  json_buss_schedule_points,
+  schedule_unit_price
+)
+VALUES
+(
+  364,
+  390,
+  357,
+  1,
+  '2021-08-20 00:00:00.000',
+  1,
+  4721,
+  355,
+  372,
+  NULL,
+  '1970-01-01 14:15:00.000',
+  1,
+  355,
+  250000,
+  1,
+  21305,
+  355,
+  369,
+  '#WED#SUN#TUE#MON#THU#FRI#SAT#',
+  NULL,
+  450000
+);
+
+INSERT INTO buss_schedule
+(
+  buss_id,
+  buss_schedule_id,
+  buss_type_id,
+  company_id,
+  effective_date_from,
+  end_point_company_id,
+  end_point_location_id,
+  end_point_path_id,
+  end_point_path_point_id,
+  json_point_prices,
+  launch_time,
+  path_company_id,
+  path_path_id,
+  price,
+  start_point_company_id,
+  start_point_location_id,
+  start_point_path_id,
+  start_point_path_point_id,
+  working_days,
+  json_buss_schedule_points,
+  schedule_unit_price
+)
+VALUES
+(
+  364,
+  402,
+  357,
+  1,
+  '2021-08-10 00:00:00.000',
+  1,
+  31,
+  391,
+  392,
+  NULL,
+  '1970-01-01 12:00:00.000',
+  1,
+  391,
+  250000,
+  1,
+  1,
+  391,
+  396,
+  '#SUN#MON#THU#SAT#FRI#WED#TUE#',
+  '[{"bussScheduleId":402,"pathPointId":395,"price":200000,"isDeductPriceFromPreviousPoint":true,"pointOrder":2},{"bussScheduleId":402,"pathPointId":394,"price":180000,"isDeductPriceFromPreviousPoint":true,"pointOrder":3},{"bussScheduleId":402,"pathPointId":393,"price":150000,"isDeductPriceFromPreviousPoint":false,"pointOrder":4}]',
+  230000
+);
+
+
+COMMIT;
