@@ -3,19 +3,12 @@ import {EntityField, EntityIdentifier} from "../model/XeFormData";
 import {StringUtil} from "./string.util";
 import {ObjectUtil} from "./object.util";
 import {ClassMeta, XeEntity} from "../../business/entities/XeEntity";
-import {EntityFilter} from "../model/XeTableData";
+import {EntityFilter, TableColumn} from "../model/XeTableData";
 
 
 export class EntityUtil {
 
   static metas = {
-    BussSchedulePoint: {
-      capName: 'BussSchedulePoint',
-      camelName: 'bussSchedulePoint',
-      pkMetas: () => [EntityUtil.metas.PathPoint],
-      mainIdName: 'bussSchedulePointId',
-      mapFields: () => []
-    },
 // ____________________ ::TOP_SEPARATOR:: ____________________ //
     User: {
         capName: 'User',
@@ -50,7 +43,7 @@ export class EntityUtil {
         camelName: 'bussSchedule',
         pkMetas: () => [EntityUtil.metas.Buss],
         mainIdName: 'bussScheduleId',
-        mapFields: () => [{name: 'path', meta: EntityUtil.metas.Path}, {name: 'startPoint', meta: EntityUtil.metas.PathPoint}, {name: 'endPoint', meta: EntityUtil.metas.PathPoint}],
+        mapFields: () => [{name: 'path', meta: EntityUtil.metas.Path}, {name: 'bussSchedulePoints', meta: EntityUtil.metas.BussSchedulePoint}, {name: 'startPoint', meta: EntityUtil.metas.PathPoint}, {name: 'endPoint', meta: EntityUtil.metas.PathPoint}],
     } as ClassMeta,
     BussEmployee: {
         capName: 'BussEmployee',
@@ -107,6 +100,13 @@ export class EntityUtil {
         pkMetas: () => [EntityUtil.metas.Company],
         mainIdName: 'pathId',
         mapFields: () => [{name: 'pathPoints', meta: EntityUtil.metas.PathPoint}],
+    } as ClassMeta,
+    BussSchedulePoint: {
+        capName: 'BussSchedulePoint',
+        camelName: 'bussSchedulePoint',
+        pkMetas: () => [EntityUtil.metas.BussSchedule, EntityUtil.metas.PathPoint],
+        mainIdName: 'bussSchedulePointId',
+        mapFields: () => [],
     } as ClassMeta
   };
 
@@ -124,6 +124,7 @@ export class EntityUtil {
     if (StringUtil.equalsIgnoreCase(name, 'BussType')) return this.metas.BussType;
     if (StringUtil.equalsIgnoreCase(name, 'Trip')) return this.metas.Trip;
     if (StringUtil.equalsIgnoreCase(name, 'Path')) return this.metas.Path;
+    if (StringUtil.equalsIgnoreCase(name, 'BussSchedulePoint')) return this.metas.BussSchedulePoint;
   }
 // ____________________ ::BOTTOM_SEPARATOR:: ____________________ //
   static newByEntityDefine(entityDefine: EntityIdentifier<any>): any {
@@ -131,10 +132,10 @@ export class EntityUtil {
     const templateEntity = entityDefine.entity;
     entityDefine.idFields.forEach(idField => {
       if (idField.name !== entityDefine.clazz.meta.mainIdName) {
-        const entityField = this.getEntityWithField(entity, idField);
-        const templateField = this.getEntityWithField(templateEntity, idField);
-        entityField.entity[entityField.property] = templateField.value;
-        entity[entityField.property] = templateField.value;
+        const entityField = this.getEntityWithField(entity, entityDefine.clazz.meta, idField);
+        const templateField = this.getEntityWithField(templateEntity, entityDefine.clazz.meta, idField);
+        entityField.entity[entityField.lastFieldName] = templateField.value;
+        entity[entityField.lastFieldName] = templateField.value;
       }
     });
     entityDefine.clazz.meta.pkMetas().forEach(pkMeta => {
@@ -147,7 +148,7 @@ export class EntityUtil {
     if (!entityDefine) return false;
     const idFields = entityDefine.idFields;
     for (const idField of idFields) {
-      const idNo = Number.parseInt(this.getReadableFieldValue(entity, idField), 10);
+      const idNo = Number.parseInt(this.valueAsInlineString(entity, entityDefine.clazz.meta, idField), 10);
       if (isNaN(idNo) || idNo <= 0) {
         return false;
       }
@@ -175,36 +176,77 @@ export class EntityUtil {
     return result;
   }
 
-  static getEntityWithField(entity: any, field: EntityField): { entity, property, value, meta: ClassMeta } {
+  static getFromCache(name, id) {
+    const capName = StringUtil.upperFirstLetter(name);
+    if (!this.entityCache[capName])
+      this.entityCache[capName] = {};
+    return this.entityCache[capName][id];
+  }
+
+  static putToCache(name, id, value) {
+    const capName = StringUtil.upperFirstLetter(name);
+    if (!this.entityCache[capName])
+      this.entityCache[capName] = {};
+    this.entityCache[capName][id] = value;
+  }
+
+  static getEntityWithField(entity: any, entityMeta: ClassMeta, field: EntityField): { entity, lastFieldName, value, fieldMeta: ClassMeta } {
     const allSubNames = field.name.split(".");
-    const fieldNameOnly = allSubNames.pop();
+    const lastFieldName = allSubNames.pop();
     let traceEntity = entity;
-    let meta;
+    let fieldMeta = entityMeta;
     for (const name of allSubNames) {
-      meta = this.getClassMeta(name);
-      if (ObjectUtil.isNumberGreaterThanZero(traceEntity)) break;
+      if (ObjectUtil.isNumberGreaterThanZero(traceEntity)) {
+        traceEntity = this.getFromCache(fieldMeta.capName, traceEntity);
+        if (!traceEntity) {
+          break;
+        }
+      }
+      fieldMeta = this.traceMeta(fieldMeta, name);
       if (!traceEntity[name]) {
         traceEntity[name] = {};
       }
       traceEntity = traceEntity[name];
     }
-    const value = ObjectUtil.isNumberGreaterThanZero(traceEntity) ? traceEntity : traceEntity[fieldNameOnly];
-    return {entity: traceEntity, property: fieldNameOnly, value, meta};
+    traceEntity = ObjectUtil.isNumberGreaterThanZero(traceEntity) ? this.getFromCache(fieldMeta.capName, traceEntity) : traceEntity;
+    const value =  traceEntity ? traceEntity[lastFieldName] : undefined;
+    return {entity: traceEntity, lastFieldName, value, fieldMeta};
   }
 
-  static getReadableFieldValue(entity: any, field: EntityField) {
-    const value = this.getOriginFieldValue(entity, field);
-    return value === undefined ? undefined : field.template?.hasPipe ? field.template.pipe.toReadableString(value) : value;
+  static traceMeta = (parentMeta: ClassMeta, fieldName) => {
+    if (!parentMeta) return undefined;
+    for (const pkMeta of parentMeta.pkMetas()) {
+      if (StringUtil.equalsIgnoreCase(pkMeta.camelName, fieldName)) {
+        return pkMeta;
+      }
+    }
+    for (const mapField of parentMeta.mapFields()) {
+      if (StringUtil.equalsIgnoreCase(mapField.name, fieldName)) {
+        return mapField.meta;
+      }
+    }
   }
 
-  static getOriginFieldValue(entity: any, field: EntityField) {
+  static valueAsInlineString(entity: any, entityMeta: ClassMeta, field: EntityField) {
+    if (!field || !entity || !entityMeta) return undefined;
+    const value = this.getOriginFieldValue(entity, entityMeta, field);
+    let traceValue = value === undefined ? undefined : field.template?.hasPipe ? field.template.pipe.singleToInline(value) : value;
+    if (field.attachInlines?.length > 0) {
+      field.attachInlines.forEach(attachName => {
+        traceValue += "/" + this.valueAsInlineString(entity, entityMeta, {name: attachName});
+      });
+    }
+    return traceValue;
+  }
+
+  static getOriginFieldValue(entity: any, entityMeta: ClassMeta, field: EntityField) {
     if (!field || !entity) return undefined;
-    return this.getEntityWithField(entity, field).value;
+    return this.getEntityWithField(entity, entityMeta, field).value;
   }
 
-  static getProfileImageUrl(oriEntity: any, otherField: EntityField): string {
+  static getProfileImageUrl(oriEntity: any, entityMeta: ClassMeta, otherField: EntityField): string {
     if (!oriEntity || !otherField) return undefined;
-    const entityField = this.getEntityWithField(oriEntity, otherField);
+    const entityField = this.getEntityWithField(oriEntity, entityMeta, otherField);
     return entityField.entity.profileImageUrl;
   }
 
@@ -241,8 +283,8 @@ export class EntityUtil {
     const result = {};
     const criteriaEntity = entityDefine.entity;
     entityDefine.idFields.forEach(idField => {
-      const idFromCriteria = this.getOriginFieldValue(criteriaEntity, idField);
-      const idFromEntity = this.getOriginFieldValue(entity, idField);
+      const idFromCriteria = this.getOriginFieldValue(criteriaEntity, entityDefine.clazz.meta, idField);
+      const idFromEntity = this.getOriginFieldValue(entity, entityDefine.clazz.meta, idField);
       const selectedId = idFromEntity ? idFromEntity : idFromCriteria;
       result[idField.name] = selectedId;
       if (!result[this.getLastFieldName(idField)]) {
@@ -268,8 +310,23 @@ export class EntityUtil {
     if (deepLvl > 4) return entity;
     deepLvl++;
     Object.keys(option).forEach(key => {
-      if (['function', 'string', 'boolean'].includes(typeof option[key])
-        || ['xeScreen', 'parent', 'template', 'inputMode'].includes(key)) {
+      if (['basicColumns', 'subColumns'].includes(key)) {
+        const prepareColumns = [];
+        option[key].forEach((optionColumn: TableColumn | string) => {
+          entity[key].forEach((column: TableColumn, index: number) => {
+            if (typeof optionColumn === 'string') {
+              if (optionColumn === column.field.name) {
+                prepareColumns.push(column);
+              }
+            } else if (column.field.name === optionColumn.field.name) {
+              this.assignEntity(optionColumn, column, deepLvl);
+              prepareColumns.push(column);
+            }
+          });
+        });
+        entity[key] = prepareColumns;
+      } else if (['function', 'string', 'boolean'].includes(typeof option[key])
+        || ['xeScreen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
         entity[key] = option[key];
       } else if (option[key] === undefined) {
         delete entity[key];
@@ -297,12 +354,13 @@ export class EntityUtil {
   static entityCache = {};
 
   static cacheMulti<E extends XeEntity>(entities: E[], meta: ClassMeta, filters: EntityFilter = {filterSingle: (e) => true}, rootLvl = 0) {
+
     rootLvl++;
     if (filters.filterArray) {
       entities = filters.filterArray(entities);
     }
-    return entities.filter(entity => {
-      if (rootLvl > 5) {
+    const result = entities.filter(entity => {
+      if (rootLvl > 3) { // do not cache more when exceed this lvl
         return filters.filterSingle(entity);
       }
       this.cache(entity, meta, rootLvl);
@@ -310,9 +368,10 @@ export class EntityUtil {
     });
     if (this.cacheLater.length !== 0) {
       this.cacheLater.forEach(delay => {
-        delay.entity[delay.fieldName] = this.entityCache[delay.className][delay.id];
+        delay.entity[delay.fieldName] = this.getFromCache(delay.className, delay.id);
       });
     }
+    return result;
   }
 
   static cache(entity: XeEntity, meta: ClassMeta, rootLvl = 0) {
@@ -338,7 +397,7 @@ export class EntityUtil {
       const cacheField = new EntityCacheField();
       cacheField.meta = field.meta;
       cacheField.name = field.name;
-      if (lvl < 4) {
+      if (lvl < 3) {
         cacheField.children = this.buildMapCacheFields(cacheField.meta, [], lvl);
       }
       result.push(cacheField);
@@ -346,14 +405,14 @@ export class EntityUtil {
     return result;
   }
 
-  static cacheLater: {entity: {}, fieldName: string, className: string, id: any}[] = [];
+  static cacheLater: { entity: {}, fieldName: string, className: string, id: any }[] = [];
 
   private static privateCache(parent, entity, meta: ClassMeta, cacheFields: EntityCacheField[], rootLvl) {
     if (ObjectUtil.isNumberGreaterThanZero(entity)) {
-      if (!this.entityCache[meta.capName]) {
+      if (!this.getFromCache(meta.capName, entity)) {
         this.cacheLater.push({entity: parent, fieldName: meta.camelName, className: meta.capName, id: entity});
       } else {
-        entity = this.entityCache[meta.capName][entity];
+        entity = this.getFromCache(meta.capName, entity);
         parent[meta.camelName] = entity;
       }
       return;
@@ -364,21 +423,18 @@ export class EntityUtil {
         this.cacheMulti(fieldValue, field.meta, {filterSingle: (e) => true}, rootLvl);
         return;
       } else if (ObjectUtil.isNumberGreaterThanZero(fieldValue)) {
-        if (!this.entityCache[field.meta.capName]) {
+        if (!this.getFromCache(field.name, fieldValue)) {
           this.cacheLater.push({entity, fieldName: field.name, className: field.meta.capName, id: fieldValue});
         } else {
-          entity[field.name] = this.entityCache[field.meta.capName][fieldValue];
+          entity[field.name] = this.getFromCache(field.meta.capName, fieldValue);
         }
       } else if (!ObjectUtil.isObject(fieldValue)) {
         return;
       } else { // fieldValue is Object
-        if (!this.entityCache.hasOwnProperty(field.meta.capName)) {
-          this.entityCache[field.meta.capName] = {};
-        }
         const fieldId = fieldValue[field.meta.mainIdName];
-        this.entityCache[field.meta.capName][fieldId] = fieldValue;
+        this.putToCache(field.meta.capName, fieldId, fieldValue);
       }
-      if (field.children) {
+      if (field.children && !!entity[field.name]) {
         this.privateCache(entity, entity[field.name], field.meta, field.children, rootLvl);
       }
     });
@@ -399,7 +455,7 @@ export class EntityUtil {
     });
   }
 
-  static cachePkFromParent(parent: any, parentMeta: ClassMeta, childrenFieldName: string, childMeta: ClassMeta) {
+  static  cachePkFromParent(parent: any, parentMeta: ClassMeta, childrenFieldName: string, childMeta: ClassMeta) {
     const copyParent = Object.assign({}, parent);
     copyParent[childrenFieldName] = copyParent[childrenFieldName].map(child => child[childMeta.mainIdName]);
     const cache = {};

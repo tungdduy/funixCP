@@ -23,6 +23,7 @@ export class Buss extends XeEntity {
     totalSchedules: number;
     bussLicense: string;
     bussDesc: string;
+    lockedSeatsString: string;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

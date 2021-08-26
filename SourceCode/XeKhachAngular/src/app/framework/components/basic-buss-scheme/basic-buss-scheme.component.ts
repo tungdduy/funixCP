@@ -6,6 +6,12 @@ import {Notifier} from "../../notify/notify.service";
 import {EntityUtil} from "../../util/EntityUtil";
 import {XeSubscriber} from "../../model/XeSubscriber";
 import {XeLabel} from "../../../business/i18n";
+import {BussSchemeMode, SeatStatus} from "../../model/EnumStatus";
+import {TripUser} from "../../../business/entities/TripUser";
+import {Trip} from "../../../business/entities/Trip";
+import {BussSchedule} from "../../../business/entities/BussSchedule";
+import {AuthUtil} from "../../auth/auth.util";
+import {CommonUpdateService} from "../../../business/service/common-update.service";
 
 @Component({
   selector: 'basic-buss-scheme',
@@ -16,23 +22,19 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
   @Input() bussType: BussType;
   @Input("screen") parentScreen: XeScreen;
   @Input("readMode") _readMode;
-  get readMode() {
-    return this._readMode === '' || this._readMode === true;
-  }
-  get editMode() {
-    return !this.readMode;
-  }
+  @Input() mode: BussSchemeMode = BussSchemeMode.readonly;
 
   seatGroupCriteria = SeatGroup.new();
   screens = {
     schemeEdit: "schemeEdit",
-    schemeList: "schemeList"
+    schemeView: "schemeList",
   };
-  screen = new XeScreen({home: this.screens.schemeList});
+  screen = new XeScreen({home: this.screens.schemeView});
 
   ngOnInit(): void {
     this.seatGroupCriteria.bussType = this.bussType;
     this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
+    this.initOrderStatus();
   }
 
   seatGroupTable = SeatGroup.tableData({
@@ -65,7 +67,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
       }
     }
   }, this.seatGroupCriteria);
-  seatGroup: SeatGroup;
 
   openNewSeatRange() {
     this.seatGroupTable.formData.share.entity = SeatGroup.new({bussType: this.bussType});
@@ -104,5 +105,63 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
   getCurrentSeatTo() {
     const seatTo = parseInt(String(this.getCurrentSeatFrom()), 10) + parseInt(String(this.seatGroupTable.formData?.share?.entity?.totalSeats), 10) - 1;
     return isNaN(seatTo) ? this.getCurrentSeatFrom() : seatTo;
+  }
+
+  // PROCESS ORDERING ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  get isLoggedIn() {
+    return AuthUtil.instance.isUserLoggedIn;
+  }
+  totalPrice: number;
+  selectedSeats: number[];
+  @Input() bussSchedule: BussSchedule;
+  @Input() trip: Trip;
+  @Input() tripUser: TripUser;
+
+  private _seatStatus: SeatStatus[] = [];
+
+  seatStatus(seatNo: number): SeatStatus {
+    return this._seatStatus[seatNo] || SeatStatus.hidden;
+  }
+
+  initOrderStatus() {
+    if (!this.mode?.hasOrdering) return;
+    this.trip.lockedSeats.forEach(locked => {
+      this._seatStatus[locked] = SeatStatus.locked;
+    });
+    this.trip.availableSeats.forEach(available => {
+      this._seatStatus[available] = SeatStatus.available;
+    });
+    this.trip.bookedSeats.forEach(booked => {
+      this._seatStatus[booked] = SeatStatus.booked;
+    });
+
+    if (AuthUtil.instance.isUserLoggedIn) {
+      this.tripUser.phoneNumber = AuthUtil.instance.user.phoneNumber;
+      this.tripUser.fullName = AuthUtil.instance.user.fullName;
+    }
+  }
+
+  toggleSeatOrder(seatNo: number) {
+    if (this._seatStatus[seatNo].hasClassesSeatAvailable) {
+      this._seatStatus[seatNo] = SeatStatus.selected;
+      TripUser.addSeat(this.tripUser, seatNo);
+    } else if (this._seatStatus[seatNo].hasClassesSeatSelected) {
+      this._seatStatus[seatNo] = SeatStatus.available;
+      TripUser.removeSeat(this.tripUser, seatNo);
+    }
+  }
+
+  clearOrderInfo() {
+    this._seatStatus.forEach((seat, index) => this._seatStatus[index] = seat.hasClassesSeatSelected ? SeatStatus.available : seat);
+    TripUser.clearOrderInfo(this.tripUser);
+  }
+
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
+
+
+  order() {
+
   }
 }

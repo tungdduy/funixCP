@@ -35,8 +35,8 @@ export class CompanyManagerComponent extends FormAbstract {
     },
     table: {
       basicColumns: [
-        {}, {}, {}, {}, {}, {},
-        {action: {screen: this.screens.employees}}
+        'companyName', 'companyDesc', 'hotLine', 'totalTrips', 'totalSchedules', 'totalBusses',
+        {field: {name: 'totalEmployees'}, action: {screen: this.screens.employees}}
       ]
     },
   });
@@ -63,27 +63,4 @@ export class CompanyManagerComponent extends FormAbstract {
       }
     },
   });
-
-  addSelectedUsersToCompany() {
-    const selectedUsers = this.userTable.formData.share.selection.selected;
-    const employees = selectedUsers.map(user => {
-      const employee = {};
-      employee['companyId'] = this.companyTable.formData.share.entity.companyId;
-      employee['userId'] = user.userId;
-      return employee;
-    });
-    this.subscriptions.push(CommonUpdateService.instance.insertMulti<Employee>(employees, Employee.meta).subscribe(
-      returnedEmployees => {
-        console.log(this.userTable.formData.share.tableSource);
-        const selectedUserIds = returnedEmployees.map(e => e.user.userId);
-        this.userTable.formData.share.selection.clear();
-        this.userTable.formData.share.tableSource.data = this.userTable.formData.share.tableSource.data.filter(e => !selectedUserIds.includes(e.userId));
-        Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-        Notifier.httpErrorResponse(error);
-      }
-    ));
-  }
 }

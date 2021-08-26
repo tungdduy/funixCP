@@ -12,23 +12,20 @@
 
 <ng-container *ngIf="screen.is(screens.schedules)">
   <xe-table [tableData]="bussScheduleTable">
+    <div tableHeader><h5>
+      <span class="text-danger">{{bussTable.formData.share.entity.bussLicense}}</span>
+      {{bussTable.formData.share.entity.bussDesc}}
+    </h5></div>
   </xe-table>
 </ng-container>
 <!-- ########### END OF BUSS SCHEDULES ##############-->
 
 <ng-container *ngIf="screen.is(screens.scheduleMiddlePoints)">
-  <xe-table [tableData]="pathPointTable">
+  <xe-table [tableData]="bussSchedulePointTable">
   </xe-table>
 </ng-container>
 
 <!-- ########### END OF BUSS SCHEDULE POINTS ##############-->
-
-<ng-container *ngIf="screen.is(screens.pathPointSelection)">
-  <xe-table [tableData]="pathPointSelectionTable">
-  </xe-table>
-</ng-container>
-
-<!-- ########### END OF MIDDLE POINTS SELECTION ##############-->
 
 <xe-user-table *ngIf="screen.is(screens.bussEmployees)"
                [userTable]="bussEmployeeTable">

@@ -102,6 +102,7 @@ public abstract class Buss_MAPPED extends XeEntity {
         }
         this.bussTypeId = bussType.getBussTypeId();
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -130,6 +131,7 @@ public abstract class Buss_MAPPED extends XeEntity {
         }
         this.companyId = company.getCompanyId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
@@ -147,6 +149,8 @@ public abstract class Buss_MAPPED extends XeEntity {
     protected String bussLicense;
     @Size(max = 255)
     protected String bussDesc;
+    @Size(max = 255)
+    protected String lockedSeatsString;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -161,6 +165,10 @@ public abstract class Buss_MAPPED extends XeEntity {
             }
             if (fieldName.equals("bussDesc")) {
                 this.setBussDesc(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("lockedSeatsString")) {
+                this.setLockedSeatsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussType")) {

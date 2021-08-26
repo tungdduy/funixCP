@@ -13,14 +13,14 @@ export class ${enum.capName} {
   get has${property.capName}${choice.valueCapName}() {return this._${property.camelName} === ${choice.valueAsString}; }
       </#list>
     <#else>
-  get ${property.camelName}() {return this._${property.camelName}; }
   get has${property.capName}() {return this._${property.camelName} !== null; }
     </#if>
+  get ${property.camelName}() {return this._${property.camelName}; }
     </#list>
       <#list enum.manualPropertyIdentifiers as prop>
   _${prop.camelName} = (${prop.camelName}) => {
   this.${prop.camelName} = ${prop.camelName};
-  return this;
+    return this;
   }
   ${prop.camelName}: ${prop.valueAsString};
       </#list>

@@ -38,6 +38,12 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
 
 
   _types = {
+    clear: {
+      state: 'secondary',
+      size: 'sm',
+      type: 'button',
+      label: 'clear'
+    },
     default: {
       state: 'primary',
       size: 'sm',
@@ -168,9 +174,8 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
   }
   updateBtn() {
     setTimeout(() => {
-      this.btn = this._types[this.template];
-      const size = this.btn.size;
-      this._btnSize = size ? 'btn-' + size : '';
+      this.btn = this._types[this.template] || this._types.default;
+      this._btnSize = this.btn?.size ? 'btn-' + this.btn.size : '';
       this.btnText = this.btnText ? this.btnText : this.xeLabel[this.btn.label];
       this.icon = this.icon ? this.icon : this.btn.icon;
       this.btnType = this.btn.type;

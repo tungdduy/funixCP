@@ -16,7 +16,9 @@ export class Location extends XeEntity {
     parent: Location ;
     parentLocationId: number;
     locationName: string;
+    searchText: string;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+  displayName: string;
   private static _cachedLocationTable;
   static cachedLocationTable = (): XeTableData<Location> => {
     if (!Location._cachedLocationTable) {
@@ -66,7 +68,7 @@ export class Location extends XeEntity {
         mode: {
           hideSelectColumn: true,
           readonly: true,
-          lazySearch: (term: string) => CommonUpdateService.instance.searchLocation(term)
+          lazyData: (term: string) => CommonUpdateService.instance.searchLocation(term)
         },
         basicColumns: [
           { // 2

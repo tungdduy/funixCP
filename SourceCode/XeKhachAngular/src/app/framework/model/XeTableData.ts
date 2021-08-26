@@ -68,18 +68,20 @@ export class XeTableData<E extends XeEntity> {
   table?: {
     customData?: () => E[],
     mode?: {
-      lazySearch?: (term: string) => Observable<E[]>,
+      hideSearchBox?: boolean;
+      lazyData?: (term: string) => Observable<E[]>,
       selectOneOnly?: boolean,
       readonly?: boolean,
       hideSelectColumn?: boolean
     },
     action?: {
-      editOnRow?: () => any,
+      editOnRow?: boolean,
       postSelect?: (entity) => any,
       onClickBtnCreate?: () => any,
       filters?: EntityFilter,
+      triggerUpdate?: (term) => any;
     }
-    basicColumns?: TableColumn[],
+    basicColumns?: TableColumn[] | any,
     manualColumns?: ManualColumn[]
   };
 

@@ -95,8 +95,5 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
     ));
   }
 
-  ngAfterViewInit() {
-    super.ngAfterViewInit();
-  }
 
 }

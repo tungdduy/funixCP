@@ -17,5 +17,6 @@ public class Buss extends AbstractEntity {
     CountMethod totalSchedules = count(BussSchedule.class);
     Column bussLicense = of(CODE);
     Column bussDesc = of(DESCRIPTION);
+    Column lockedSeatsString = of(DESCRIPTION);
 
 }

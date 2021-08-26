@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import {XeTableData} from "../../../../framework/model/XeTableData";
 import {Buss} from "../../../entities/Buss";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
@@ -12,7 +12,7 @@ import {BussType} from "../../../entities/BussType";
 import {InputTemplate} from "../../../../framework/model/EnumStatus";
 import {Path} from "../../../entities/Path";
 import {PathPoint} from "../../../entities/PathPoint";
-import {BussTypeComponent} from "../buss-type/buss-type.component";
+import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
 
 @Component({
   selector: 'xe-buss',
@@ -20,7 +20,8 @@ import {BussTypeComponent} from "../buss-type/buss-type.component";
   templateUrl: 'buss.component.html',
 })
 export class BussComponent extends FormAbstract implements AfterViewInit {
-  myCompany: Company = AuthUtil.instance.user?.employee?.company;
+
+  @Input()  myCompany: Company = AuthUtil.instance.user?.employee?.company;
 
   ngAfterViewInit(): void {
     BussType.catchBussTypes();
@@ -36,9 +37,9 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     schedules: 'schedules'
   };
   screen = new XeScreen({
-      home: this.screens.busses,
-      homeIcon: 'bus',
-      homeTitle: () => `${this.bussTable.formData.share.entity.bussLicense} (${this.bussTable.formData.share.entity.bussDesc})`
+    home: this.screens.busses,
+    homeIcon: 'bus',
+    homeTitle: () => `${this.bussTable.formData.share.entity.bussLicense} (${this.bussTable.formData.share.entity.bussDesc})`
   });
 
   bussTable = Buss.tableData({
@@ -47,10 +48,10 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     },
     xeScreen: this.screen,
     table: {
-      basicColumns: [{}, {}, undefined, {},
-        {action: {screen: this.screens.bussScheme}},
-        {action: {screen: this.screens.bussEmployees}},
-        {action: {screen: this.screens.schedules}}
+      basicColumns: ['bussType.profileImageUrl', 'bussType.bussTypeName',
+        {field: {name: 'bussType.totalSeats'}, action: {screen: this.screens.bussScheme}},
+        {field: {name: 'totalBussEmployees'}, action: {screen: this.screens.bussEmployees}},
+        {field: {name: 'totalSchedules'}, action: {screen: this.screens.schedules}}
       ]
     }
   }, Buss.new({company: this.myCompany}));
@@ -80,46 +81,61 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     },
   }, Employee.new({company: this.myCompany}));
 
-  pathTable = Path.tableData({
-    external: {
-      updateCriteriaTableOnSelect: () => [this.pathPointTable]
-    }
-  });
-
-  pathPointTable = PathPoint.tableData({
+  pathTable = Path.tableData({});
+  bussSchedulePointTable = BussSchedulePoint.tableData({
     xeScreen: this.screen,
     table: {
+      customData: () => this.bussScheduleTable.formData.share.entity.sortedBussSchedulePoints,
       mode: {
+        readonly: true,
         hideSelectColumn: true
       },
-      customData: () => this.bussScheduleTable.formData.share.entity.middlePoints,
-      basicColumns: [undefined]
+      action: {
+        editOnRow: true
+      }
     }
   });
   pathPointSelectionTable = PathPoint.tableData({
     table: {
       customData: () => this.bussScheduleTable.formData.share.entity.path.pathPoints,
-      basicColumns: [undefined]
-    }
+    },
+    formData: {}
   });
-  pathPointInput = InputTemplate.pathPointSearch._tableData(this.pathPointSelectionTable);
-
+  pathPointInput = InputTemplate.pathPoint._tableData(this.pathPointSelectionTable);
   bussScheduleTable = BussSchedule.tableData({
     xeScreen: this.screen,
     table: {
-      basicColumns: [{}, {}, {}, {
-        action: {
-          screen: this.screens.scheduleMiddlePoints
+      basicColumns: ['scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays',
+        {
+          field: {name: 'totalBussSchedulePoints'},
+          action: {screen: this.screens.scheduleMiddlePoints}
         }
-      }]
-    },
-    external: {
-      updateCriteriaTableOnSelect: () => [this.pathPointTable],
+      ]
     },
     formData: {
       fields: [
         {}, {}, {}, {},
-        {name: 'path', template: InputTemplate.pathSearch._tableData(this.pathTable)},
+        {
+          name: 'path', template: InputTemplate.path._tableData(this.pathTable),
+          colSpan: 2,
+          action: {
+            preChange: (path: Path) => {
+              const bussSchedule = this.bussScheduleTable.formData.share.entity;
+              if (bussSchedule.path && bussSchedule.path.pathId !== path.pathId) {
+                bussSchedule.startPoint = undefined;
+                bussSchedule.startPointCompanyId = 0;
+                bussSchedule.startPointPathId = 0;
+                bussSchedule.startPointPathPointId = 0;
+                bussSchedule.startPointLocationId = 0;
+                bussSchedule.endPoint = undefined;
+                bussSchedule.endPointCompanyId = 0;
+                bussSchedule.endPointPathId = 0;
+                bussSchedule.endPointPathPointId = 0;
+                bussSchedule.endPointLocationId = 0;
+              }
+            }
+          }
+        },
         {name: "startPoint", template: this.pathPointInput, required: true},
         {name: "endPoint", template: this.pathPointInput, required: true},
       ]

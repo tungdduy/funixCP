@@ -163,6 +163,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.tripId = trip.getTripId();
         this.bussId = trip.getBussId();
     }
+
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -191,6 +192,7 @@ public abstract class TripUser_MAPPED extends XeEntity {
         }
         this.userId = user.getUserId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
@@ -244,12 +246,21 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //==================== END of JOIN ID COLUMNS ========================//
 //====================================================================//
 
+    @Pattern(regexp = "(03|05|07|08|09)+\\d{8,10}")
+    protected String phoneNumber;
+    @Size(max = 255)
+    protected String fullName;
+
     @Enumerated(EnumType.STRING)
     protected TripUserStatus status = TripUserStatus.PENDING;
 
+    protected Long unitPrice = 0L;
+
     protected Long totalPrice = 0L;
-    @Size(max = 255)
-    protected String seats;
+
+    protected String tripUserPointsString;
+
+    protected String seatsString;
 
     protected Date confirmedDateTime;
 //====================================================================//
@@ -260,16 +271,32 @@ public abstract class TripUser_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
+            if (fieldName.equals("phoneNumber")) {
+                this.setPhoneNumber(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("fullName")) {
+                this.setFullName(String.valueOf(value));
+                continue;
+            }
             if (fieldName.equals("status")) {
                 this.setStatus(TripUserStatus.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("unitPrice")) {
+                this.setUnitPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalPrice")) {
                 this.setTotalPrice(Long.valueOf(value));
                 continue;
             }
-            if (fieldName.equals("seats")) {
-                this.setSeats(String.valueOf(value));
+            if (fieldName.equals("tripUserPointsString")) {
+                this.setTripUserPointsString(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("seatsString")) {
+                this.setSeatsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("confirmedDateTime")) {

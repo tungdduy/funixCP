@@ -7,18 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 import util.constants.TripStatus;
 
-import static data.entities.abstracts.DataType.MONEY;
-import static data.entities.abstracts.DataType.TIME_ONLY;
+import static data.entities.abstracts.DataType.*;
 
 public class Trip extends AbstractEntity {
     {
         pk(BussSchedule.class);
     }
 
-    Column price = of(MONEY);
-    Column status = status(TripStatus.class);
-    Column startTime = of(TIME_ONLY);
-
+    Column lockedSeatsString = of(COMMA_SEPARATOR);
+    Column tripUnitPrice = of(MONEY);
+    Column launchTime = of(TIME_ONLY);
+    Column launchDate = of(DATE_ONLY);
     MapColumn tripUsers = map(TripUser.class);
 
 }

@@ -21,9 +21,10 @@ public class UrlDeclaration {
                         .method("change-password").param("secretKeyInfo", Map.class)
                         .method("update-password").param("data", Map.class)
                 .create("trip")
-                        .method("available-seats").type(List.class).param("data", Map.class)
-                        .method("available-trips").type(List.class)
                         .method("searchLocation").type(List.class).param("searchString", String.class)
+                        .method("findBussSchedules").type(List.class).pathVar("searchString", String.class).pathVar("locationFromId", Long.class).pathVar("locationToId", Long.class)
+                        .method("findScheduledLocationsContains").type(List.class).pathVar("searchString", String.class)
+                        .method("findLocationsHasScheduleGoThroughLocation").type(List.class).pathVar("searchString", String.class).pathVar("locationId", Long.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;

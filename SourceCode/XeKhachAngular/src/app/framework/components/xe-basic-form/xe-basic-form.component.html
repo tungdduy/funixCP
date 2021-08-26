@@ -1,9 +1,9 @@
 <ng-template #formHeader>
   <div *ngIf="!!formData.header" class="row">
-    <div *ngIf="formData.header.profileImage" class="col-sm-3 avatar-holder">
-      <img *ngIf="entityUtil.getProfileImageUrl(formData.share.entity, formData.header.profileImage)"
-           [alt]="entityUtil.getReadableFieldValue(formData.share.entity, formData.header.titleField)"
-           [src]="entityUtil.getProfileImageUrl(formData.share.entity, formData.header.profileImage)"
+    <div *ngIf="formProfileField" class="col-sm-3 avatar-holder">
+      <img *ngIf="entityUtil.getProfileImageUrl(formEntity, formMeta, formProfileField)"
+           [alt]="entityUtil.valueAsInlineString(formEntity, formMeta, formData.header.titleField)"
+           [src]="entityUtil.getProfileImageUrl(formEntity, formMeta, formProfileField)"
            class="d-inline border-info rounded-circle avatar w-100">
       <div>
         <button
@@ -20,11 +20,11 @@
     </div>
     <div class="col-sm-9 avatar-content">
       <div class="avatar-title">
-        <h4>{{entityUtil.getReadableFieldValue(formData.share.entity, formData.header.titleField)}}</h4>
-        {{entityUtil.getReadableFieldValue(formData.share.entity, formData.header.descField)}}
+        <h4>{{entityUtil.valueAsInlineString(formEntity, formMeta, formData.header.titleField)}}</h4>
+        {{entityUtil.valueAsInlineString(formEntity, formMeta, formData.header.descField)}}
         <ng-container *ngIf="formData.header.subFields">
           <ng-container *ngFor="let field of formData.header.subFields">
-            - {{entityUtil.getReadableFieldValue(formData.share.entity, field)}}
+            - {{entityUtil.valueAsInlineString(formEntity, formMeta, field)}}
           </ng-container>
         </ng-container>
         <ng-content select="[belowHeaderTitle]"></ng-content>

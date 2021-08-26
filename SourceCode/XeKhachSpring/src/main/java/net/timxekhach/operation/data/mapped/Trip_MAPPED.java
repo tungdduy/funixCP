@@ -4,7 +4,6 @@ package net.timxekhach.operation.data.mapped;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.BussSchedule;
-import net.timxekhach.operation.data.enumeration.TripStatus;
 import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
 import java.util.List;
@@ -141,6 +140,7 @@ public abstract class Trip_MAPPED extends XeEntity {
         this.bussScheduleId = bussSchedule.getBussScheduleId();
         this.bussId = bussSchedule.getBussId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
@@ -155,12 +155,13 @@ public abstract class Trip_MAPPED extends XeEntity {
 //====================================================================//
 
 
-    protected Long price = 0L;
+    protected String lockedSeatsString;
 
-    @Enumerated(EnumType.STRING)
-    protected TripStatus status;
+    protected Long tripUnitPrice = 0L;
 
-    protected Date startTime;
+    protected Date launchTime;
+
+    protected Date launchDate;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -169,16 +170,20 @@ public abstract class Trip_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
-            if (fieldName.equals("price")) {
-                this.setPrice(Long.valueOf(value));
+            if (fieldName.equals("lockedSeatsString")) {
+                this.setLockedSeatsString(String.valueOf(value));
                 continue;
             }
-            if (fieldName.equals("status")) {
-                this.setStatus(TripStatus.valueOf(value));
+            if (fieldName.equals("tripUnitPrice")) {
+                this.setTripUnitPrice(Long.valueOf(value));
                 continue;
             }
-            if (fieldName.equals("startTime")) {
-                this.setStartTime(XeDateUtils.timeAppToApi(value));
+            if (fieldName.equals("launchTime")) {
+                this.setLaunchTime(XeDateUtils.timeAppToApi(value));
+                continue;
+            }
+            if (fieldName.equals("launchDate")) {
+                this.setLaunchDate(XeDateUtils.dateAppToApi(value));
                 continue;
             }
             if (fieldName.equals("bussSchedule")) {

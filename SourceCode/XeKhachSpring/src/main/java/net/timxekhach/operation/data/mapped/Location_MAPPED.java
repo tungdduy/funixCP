@@ -87,6 +87,8 @@ public abstract class Location_MAPPED extends XeEntity {
 //====================================================================//
     @Size(max = 255)
     protected String locationName;
+    @Size(max = 255)
+    protected String searchText;
 //====================================================================//
 //====================== END of BASIC COLUMNS ========================//
 //====================================================================//
@@ -97,6 +99,10 @@ public abstract class Location_MAPPED extends XeEntity {
             String value = entry.getValue();
             if (fieldName.equals("locationName")) {
                 this.setLocationName(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("searchText")) {
+                this.setSearchText(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("parent")) {

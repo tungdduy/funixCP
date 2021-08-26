@@ -93,6 +93,7 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
         }
         this.bussTypeId = bussType.getBussTypeId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//

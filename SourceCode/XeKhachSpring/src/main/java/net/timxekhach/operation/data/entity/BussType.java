@@ -19,8 +19,13 @@ public class BussType extends BussType_MAPPED {
     protected void prePersist() {
         super.prePersist();
     }
-    public int getTotalSeats() {
-        return this.seatGroups.stream().mapToInt(SeatGroup::getTotalSeats).sum();
+
+    private Integer totalSeats;
+    public Integer getTotalSeats() {
+        if(this.totalSeats == null) {
+            this.totalSeats = this.seatGroups.stream().mapToInt(SeatGroup::getTotalSeats).sum();
+        }
+        return this.totalSeats;
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

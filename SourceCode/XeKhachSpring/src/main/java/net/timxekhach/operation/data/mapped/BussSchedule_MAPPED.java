@@ -8,6 +8,9 @@ import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Path;
+import java.util.List;
+import java.util.ArrayList;
+import net.timxekhach.operation.data.entity.BussSchedulePoint;
 import net.timxekhach.operation.data.entity.PathPoint;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
@@ -126,6 +129,7 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         this.bussTypeId = buss.getBussTypeId();
         this.bussId = buss.getBussId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//
@@ -158,6 +162,12 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         this.pathCompanyId = path.getCompanyId();
     }
 
+    @OneToMany(
+        mappedBy = "bussSchedule",
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    protected List<BussSchedulePoint> bussSchedulePoints = new ArrayList<>();
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -247,6 +257,12 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
 //====================================================================//
+    public Integer getTotalBussSchedulePoints() {
+        return CommonUpdateService.getBussSchedulePointRepository().countBussSchedulePointIdByBussScheduleId(this.bussScheduleId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
+//====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
     protected Long pathPathId;
@@ -272,13 +288,11 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
 //==================== END of JOIN ID COLUMNS ========================//
 //====================================================================//
 
-    protected Long price = 0L;
+    protected Long scheduleUnitPrice = 0L;
 
     protected Date launchTime;
 
     protected Date effectiveDateFrom;
-
-    protected String jsonBussSchedulePoints;
     @Size(max = 255)
     protected String workingDays;
 //====================================================================//
@@ -289,8 +303,8 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
         for (Map.Entry<String, String> entry : data.entrySet()) {
             String fieldName = entry.getKey();
             String value = entry.getValue();
-            if (fieldName.equals("price")) {
-                this.setPrice(Long.valueOf(value));
+            if (fieldName.equals("scheduleUnitPrice")) {
+                this.setScheduleUnitPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("launchTime")) {
@@ -299,10 +313,6 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
             }
             if (fieldName.equals("effectiveDateFrom")) {
                 this.setEffectiveDateFrom(XeDateUtils.dateAppToApi(value));
-                continue;
-            }
-            if (fieldName.equals("jsonBussSchedulePoints")) {
-                this.setJsonBussSchedulePoints(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("workingDays")) {

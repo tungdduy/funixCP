@@ -57,7 +57,7 @@
   <nb-card-body>
     <xe-nav [screen]="tableData.xeScreen"></xe-nav>
     <ng-content select="[tableHeader]"></ng-content>
-    <mat-form-field appearance="legacy">
+    <mat-form-field *ngIf="!tableData.table?.mode?.hideSearchBox" appearance="legacy">
       <mat-label>{{xeLabel.tabToFind}}</mat-label>
       <input #input (keyup)="applyFilter($event)" matInput placeholder="{{xeLabel.typeTextHere}}...">
     </mat-form-field>
@@ -91,9 +91,10 @@
       </xe-btn>
 
       <span *ngIf="!tableData.table?.mode?.readonly">
-        <xe-btn (click)="tableData.table?.action?.onClickBtnCreate ? tableData.table.action.onClickBtnCreate() : newEntityDialog()"
-                hideText
-                template="add"></xe-btn>
+        <xe-btn
+          (click)="tableData.table?.action?.onClickBtnCreate ? tableData.table.action.onClickBtnCreate() : newEntityDialog()"
+          hideText
+          template="add"></xe-btn>
         <xe-btn (click)="openDeleteDialog()" [disabled]="!hasRowSelected" hideText template="dangerDelete"></xe-btn>
       </span>
     </div>
@@ -109,17 +110,20 @@
           <div class="{{tableColumn.display?.header?.inline ? '' : 'd-grid'}} ">
             <lbl *ngIf="!tableColumn.display?.header?.silence" [icon]="tableColumn.display?.header?.icon"
                  [key]="'column.' + tableColumn.field.name"></lbl>
-            <ng-container *ngFor="let subColumn of tableColumn.subColumns">
-              <lbl *ngIf="!subColumn.display?.header?.silence" [icon]="subColumn.display?.header?.icon"
-                   [key]="'column.' + subColumn.field.name"></lbl>
+            <ng-container *ngFor="let subColumn of tableColumn.subColumns || []">
+              <lbl *ngIf="!subColumn?.display?.header?.silence" [icon]="subColumn?.display?.header?.icon"
+                   [key]="'column.' + subColumn?.field?.name"></lbl>
             </ng-container>
           </div>
         </th>
-        <td (click)="onSelect(entity, tableColumn);" *matCellDef="let entity; let columnIndex = index;" mat-cell>
-          <ng-container
-            *ngTemplateOutlet="getColumn(tableColumn); context:{tableColumn: tableColumn, entity:entity, columnIndex: columnIndex}"></ng-container>
+        <td *matCellDef="let entity; let columnIndex = index;" mat-cell>
+          <div (click)="onSelect(entity, tableColumn);">
+            <ng-container
+              *ngTemplateOutlet="getColumn(tableColumn); context:{tableColumn: tableColumn, entity:entity, columnIndex: columnIndex}"></ng-container>
+          </div>
+
           <ng-container *ngFor="let subColumn of tableColumn.subColumns">
-            <div [class]="subColumn.display?.row?.inline ? 'd-inline' : ''">
+            <div [class]="subColumn.display?.row?.inline ? 'd-inline' : ''"  (click)="onSelect(entity, subColumn);">
               <ng-container
                 *ngTemplateOutlet="getColumn(subColumn); context:{tableColumn: subColumn, entity:entity, columnIndex: columnIndex}"></ng-container>
             </div>
@@ -166,7 +170,7 @@
       <tr *matNoDataRow class="mat-row">
         <td class="mat-cell" colspan="4">
           <lbl key="NOT_FOUND_DATA"></lbl>
-          ... {{input.value}}</td>
+        </td>
       </tr>
 
       <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
@@ -186,22 +190,24 @@
   </nb-card-body>
 </nb-card>
 
-<ng-template #inputTemplate let-entity="entity" let-tableColumn="tableColumn" let-columnIndex="columnIndex" >
+<ng-template #inputTemplate let-columnIndex="columnIndex" let-entity="entity" let-tableColumn="tableColumn">
 
   <ng-container *ngIf="asCol(tableColumn).field.template.isTableOrder">
     {{getRowIndexBase1(columnIndex)}}
-    <xe-btn (click)="bringUp(entity, asCol(tableColumn).field, columnIndex)" *ngIf="!isFirstRow(columnIndex)" icon="caret-up"
+    <xe-btn (click)="bringUp(entity, asCol(tableColumn).field, columnIndex)" *ngIf="!isFirstRow(columnIndex)"
+            icon="caret-up"
             template="blank"></xe-btn>
-    <xe-btn (click)="bringDown(entity, asCol(tableColumn).field, columnIndex)" *ngIf="!isLastRow(columnIndex)" icon="caret-down"
+    <xe-btn (click)="bringDown(entity, asCol(tableColumn).field, columnIndex)" *ngIf="!isLastRow(columnIndex)"
+            icon="caret-down"
             template="blank"></xe-btn>
   </ng-container>
 
   <ng-container *ngIf="!asCol(tableColumn).field.template.isTableOrder">
-    <xe-input [class]="asCol(tableColumn).display?.row?.css || ''"
+    <xe-input [(value)]="getLastEntity(entity, tableColumn)[getLastFieldName()]"
+              [class]="asCol(tableColumn).display?.row?.css || ''"
               [mode]="editOnRow ? asCol(tableColumn).field.mode || xeInputMode.html: xeInputMode.html"
               [template]="asCol(tableColumn).field.template"
-              [(value)]="entityUtil.getEntityWithField(entity, asCol(tableColumn).field).entity[entityUtil.getLastFieldName(asCol(tableColumn).field)]"
-              >
+    >
     </xe-input>
   </ng-container>
 
@@ -209,34 +215,36 @@
 
 <ng-template #string let-entity="entity" let-tableColumn="tableColumn">
   <span
-    class="{{asCol(tableColumn).display?.row?.css}}"> {{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</span>
+    class="{{asCol(tableColumn).display?.row?.css}}"> {{entityUtil.valueAsInlineString(entity, entityMeta, asCol(tableColumn).field)}}</span>
 </ng-template>
 
 <ng-template #avatarString let-entity="entity" let-tableColumn="tableColumn">
-  <img [alt]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)" [src]="entityUtil.getProfileImageUrl(entity, asCol(tableColumn).field)"
+  <img [alt]="getInlineValue(entity, tableColumn)"
+       [src]="entityUtil.getProfileImageUrl(entity, entityMeta, asCol(tableColumn).field)"
        class="thumbnail-small">
-  {{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}
+  {{getInlineValue(entity, tableColumn)}}
 </ng-template>
 
 <ng-template #iconOption let-entity="entity" let-tableColumn="tableColumn">
   <icon-wrap [wrapper]="{
     icon: asCol(tableColumn).display?.row?.icon,
     clazz: asCol(tableColumn).display?.row?.css,
-    content: entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)
+    content: getInlineValue(entity, tableColumn)
   }"></icon-wrap>
 </ng-template>
 
 <ng-template #boldString let-entity="entity" let-tableColumn="tableColumn">
-  <b>{{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</b>
+  <b>{{getInlineValue(entity, tableColumn)}}</b>
 </ng-template>
 
 <ng-template #avatar let-entity="entity" let-tableColumn="tableColumn">
-  <img [alt]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)" [src]="entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)"
+  <img [alt]="getInlineValue(entity, tableColumn)"
+       [src]="getInlineValue(entity, tableColumn)"
        class="thumbnail-small">
 </ng-template>
 
 <ng-template #boldStringRole let-entity="entity" let-tableColumn="tableColumn">
-  <b class="pr-1">{{entityUtil.getReadableFieldValue(entity, asCol(tableColumn).field)}}</b>
+  <b class="pr-1">{{getInlineValue(entity, tableColumn)}}</b>
   <nb-icon *ngFor="let icon of getRoleIcons(entityUtil.getFieldOwnerEntity(entity, asCol(tableColumn).field)['role'])"
            class="role-icon"
            icon="{{icon.icon}}"

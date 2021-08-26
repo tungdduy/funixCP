@@ -96,6 +96,7 @@ public abstract class Path_MAPPED extends XeEntity {
         }
         this.companyId = company.getCompanyId();
     }
+
 //====================================================================//
 //==================== END of PRIMARY MAP ENTITY =====================//
 //====================================================================//

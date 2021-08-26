@@ -14,31 +14,29 @@ export const DATE_FORMATS = {
   },
 };
 
-@Pipe({name: 'XeDate'})
+@Pipe({name: 'xeDatePipe'})
 export class XeDatePipe extends XePipe implements PipeTransform {
+  singleToInline(value: any, options?: any) {
+    if (typeof value === 'string') return this._datePipe.transform(value, "dd-MM-yyyy");
+    if (value !== null && value !== undefined) return this._datePipe.transform(value, "dd-MM-yyyy");
+    return '';
+  }
+  singleToAppValue = (value: Date, options?: any) => value;
+  singleToSubmitFormat = (value: Date, options?: any) => this._datePipe.transform(value, "dd-MM-yyyy");
   private static _instance: XeDatePipe;
   static get instance(): XeDatePipe {
-    if (!XeDatePipe._instance) {
-      XeDatePipe._instance = new XeDatePipe();
+    if (!this._instance) {
+      this._instance = new XeDatePipe();
     }
-    return XeDatePipe._instance;
+    return this._instance;
   }
   private _datePipe: DatePipe = new DatePipe("en-US");
-
-  transform = (value: any): any => value;
-  toReadableString = (value: Date): string => {
-     if (typeof value === 'string') return this._datePipe.transform(value, "dd/MM/yyyy");
-     if (value !== null && value !== undefined) return this._datePipe.transform(value, "dd/MM/yyyy");
-     return '';
-  }
-  toSubmitFormat = (date: any): string => {
-    return  this._datePipe.transform(date, "dd/MM/yyyy");
-  }
-  toAppFormat = (inputDate: any): Date => typeof inputDate === 'string' ? new Date(inputDate) : inputDate;
 
   areEquals = (date1: Date, date2: Date): boolean => {
     if ((!date1 && date2) || (date1 && !date2)) return false;
     if (!date1 && !date2) return true;
+    if (typeof date1 === 'string') date1 = new Date(date1);
+    if (typeof date2 === 'string') date2 = new Date(date1);
     return date1.getDate() === date2.getDate()
     && date1.getMonth() === date2.getMonth()
     && date1.getFullYear() === date2.getFullYear();
@@ -47,3 +45,4 @@ export class XeDatePipe extends XePipe implements PipeTransform {
   validate = (time) => time !== undefined && time !== null;
 
 }
+

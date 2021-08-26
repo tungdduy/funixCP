@@ -8,7 +8,6 @@ import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {TripUser} from "./TripUser";
-import {Path} from "./Path";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
@@ -24,10 +23,19 @@ export class Trip extends XeEntity {
     companyId: number;
     bussSchedule: BussSchedule;
     tripUsers: TripUser[];
-    price: number;
-    status;
-    startTime;
+    lockedSeatsString: string;
+    tripUnitPrice: number;
+    launchTime;
+    launchDate;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    preparedTripUser: TripUser;
+    availableSeats: number[];
+    bookedSeats: number[];
+    lockedSeats: number[];
+    totalAvailableSeats: number;
+    totalSeats: number;
+    full: boolean;
+    launched: boolean;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (trip: Trip): EntityIdentifier<Trip> => ({

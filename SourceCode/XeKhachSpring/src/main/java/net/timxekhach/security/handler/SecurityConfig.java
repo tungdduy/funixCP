@@ -83,9 +83,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/change-password/**").permitAll()
                 .antMatchers("/user/update-password/**").permitAll()
                 .antMatchers("/trip/**").permitAll()
-                .antMatchers("/trip/available-seats/**").permitAll()
-                .antMatchers("/trip/available-trips/**").permitAll()
                 .antMatchers("/trip/searchLocation/**").permitAll()
+                .antMatchers("/trip/findBussSchedules/**").permitAll()
+                .antMatchers("/trip/findScheduledLocationsContains/**").permitAll()
+                .antMatchers("/trip/findLocationsHasScheduleGoThroughLocation/**").permitAll()
                 .antMatchers("/caller-staff/**").permitAll()
                 .antMatchers("/buss-staff/**").permitAll()
 

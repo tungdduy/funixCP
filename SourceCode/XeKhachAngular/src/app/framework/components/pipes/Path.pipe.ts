@@ -12,15 +12,17 @@ export class PathPipe extends XePipe implements PipeTransform {
     return PathPipe._instance;
   }
 
-  toSubmitFormat = (path: Path) => !path ? 0 : path.pathId;
-  toReadableString = (path: Path) => {
-    return path ? `${path.pathName || ''}<br/>${path.pathDesc}` : '';
-  }
-  toHtmlString = (path: Path) => {
+  singleToHtml = (path: Path) => {
     if (!path) return '';
     return `
     <h6 class="text-danger">${path.pathName || ''}</h6>
     ${path.pathDesc ? '<div class="text-secondary">' + path.pathDesc || '' + '</div>' : ''}
     `;
+  }
+
+  singleToInline = (path, options?) => path ? `${path.pathName || ''}<br/>${path.pathDesc || ''}` : '';
+
+  singleToSubmitFormat(value: Path, options?) {
+    return !value ? 0 : value.pathId;
   }
 }

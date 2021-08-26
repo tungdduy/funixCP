@@ -15,7 +15,7 @@
       <nb-stepper orientation="vertical">
         <nb-step [label]="xeLabel.STEP_1">
           <xe-input grid [label]="xeLabel.INPUT_THEN_CHOOSE_LOCATION" [(value)]="searchLocationText" (input)="searchLocation()"></xe-input>
-            <ng-container *ngFor="let location of locations$ | async | filterLocation">
+            <ng-container *ngFor="let location of locations$ | async | locationPipe">
               <div [hidden]="!searchLocationText">
                 <button (click)="selectLocation(location)" nbButton nbStepperNext>{{displayLocation(location)}}</button>
               </div>

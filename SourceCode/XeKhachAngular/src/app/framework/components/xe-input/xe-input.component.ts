@@ -5,11 +5,13 @@ import {AppMessages, XeLbl} from '../../../business/i18n';
 import {StringUtil} from '../../util/string.util';
 import {SelectItem} from '../../model/SelectItem';
 import {InputMode, InputTemplate} from "../../model/EnumStatus";
-import {Observable, of} from "rxjs";
-import {XeTimePipe} from "../pipes/time.pipe";
+import {Observable, Subject} from "rxjs";
 import {AbstractXe} from "../../model/AbstractXe";
 import {MultiOptionUtil} from "../../model/EntityEnum";
 import {EntityField} from "../../model/XeFormData";
+import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
+import {AutoInputModel} from "../../model/AutoInputModel";
+import {Util} from "leaflet";
 
 
 @Component({
@@ -20,8 +22,9 @@ import {EntityField} from "../../model/XeFormData";
 export class XeInputComponent extends AbstractXe implements AfterViewInit {
   _originValue;
 
-  @ViewChild("htmlInput") htmlInput: ElementRef;
+  @ViewChild("htmlShortInput") htmlShortInput: ElementRef;
   @Input() entityField: EntityField;
+  originalMode: InputMode;
 
   ngAfterViewInit(): void {
     setTimeout(() => {
@@ -34,19 +37,20 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     if (this.name?.toLowerCase().includes('password')) {
       this.type = 'password';
     }
-    if (this.template.isTime) {
-      this.timeOptions$ = of(XeTimePipe.allHourOptions());
+    if (this.template?.pipe?.singleToInline && this.htmlShortInput?.nativeElement) {
+      this.htmlShortInput.nativeElement.value = this.template.pipe.singleToInline(this.value);
     }
+    this.initAutoInput();
   }
 
   onShortInputBlur($event: any) {
-    if (this.template?.pipe?.toAppFormat && this.htmlInput?.nativeElement) {
-      $event.target.value = this.template?.pipe.toReadableString(this.value);
+    if (this.template?.pipe?.singleToInline && this.htmlShortInput?.nativeElement) {
+      $event.target.value = this.template?.pipe.singleToInline(this.value);
     }
   }
 
   onShortInputFocus($event: any) {
-    // $event.target.value = this.template?.pipe ? this.template.pipe.toRawInputString(this._value) : this._value;
+    $event.target.value = this.template?.pipe?.singleToManualShortInput(this._value) || this._value || "";
   }
 
   get isChanged() {
@@ -83,13 +87,18 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input() selectOneMenu: () => SelectItem<any>[];
   @Input("template") _template: InputTemplate;
   @Input() converter: any;
+  @Input() formMode: InputMode;
+
+  get isDisabled() {
+    return this.formMode?.hasDisabled || this.mode.hasDisabled;
+  }
+
   @Input("mode") _mode: InputMode;
   get mode() {
     return this._mode ? this._mode : InputMode.input;
   }
 
   set mode(mode: InputMode) {
-    if (this.mode.hasForbidChange) return;
     this._mode = mode;
   }
 
@@ -107,10 +116,16 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     if (this.entityField?.action?.preChange) {
       this.entityField.action.preChange(val);
     }
+    if (this.template.preChange) {
+      this.template.preChange(val, this.template.criteria);
+    }
     this._value = val;
     this.valueChange.emit(this._value);
     if (this.entityField?.action?.postChange) {
       this.entityField.action.postChange(this._value);
+    }
+    if (this.template.postChange) {
+      this.template.postChange(val, this.template.criteria);
     }
   }
 
@@ -119,20 +134,16 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   // VALUE CONVERTER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   inputToApp(val) {
-    this._value = this.template.hasPipe ? this.template.pipe.toAppFormat(val) : val;
+    this._value = this.template.hasPipe ? this.template.pipe.singleToAppValue(val) : val;
     this.valueChange.emit(this._value);
   }
 
-  get inputStringValue() {
-    return this.template.hasPipe ? this.template.pipe.toRawInputString(this._value) : this._value;
-  }
-
   get submitValue() {
-    return this.template.hasPipe ? this.template.pipe.toSubmitFormat(this._value) : this._value;
+    return this.template.hasPipe ? this.template.pipe.singleToSubmitFormat(this._value) : this._value;
   }
 
   get appValue() {
-    return this._value = this.template?.hasPipe ? this.template.pipe.toAppFormat(this._value) : this._value;
+    return this._value = this.template?.hasPipe ? this.template.pipe.singleToAppValue(this._value) : this._value;
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALUE CONVERTER
@@ -207,12 +218,12 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     return this.name;
   }
 
-  get readableValue() {
-    return this.template?.hasPipe ? this.template.pipe.toReadableString(this._value) : this._value;
+  get asInlineString() {
+    return this.template?.hasPipe ? this.template.pipe.singleToShortString ? this.template.pipe.singleToShortString(this._value) : this.template.pipe.singleToInline(this._value) : this._value;
   }
 
-  get htmlString() {
-    return this.template?.hasPipe ? this.template.pipe.toHtmlString(this._value) : this._value;
+  get asHtml() {
+    return this.template?.hasPipe ? this.template.pipe.singleToHtml(this._value) : this._value;
   }
 
   get valueStringLength() {
@@ -230,10 +241,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   get isShowLabel() {
     return !this.mode.hasHideTitle
       && (this.valueStringLength > 0
-      || this.isNumberGreaterThan0
-      || this.isObject
-      || this.isGrid
-      || this.alwaysShowLabel);
+        || this.isNumberGreaterThan0
+        || this.isObject
+        || this.isGrid
+        || this.alwaysShowLabel);
   }
 
   validateFailed() {
@@ -354,17 +365,44 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Multi OPTIONS
 
   // TIME >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  timeOptions$: Observable<string[]>;
+  autoInputOptions$: Observable<AutoInputModel[]>;
 
-  onTimeChange(time: any) {
-    const timer = String(time).trim().split(":");
-    const hour = parseInt(timer[0], 10);
-    const minute = parseInt(timer[1], 10);
-    this.value = new Date(0, 0, 0, hour, minute);
+  onAutoInputChange($event: any) {
+    const inputValue = $event.target.value;
+    if (StringUtil.isBlank(inputValue)) {
+      this.value = undefined;
+      return;
+    }
+    if (this.mode.hasAcceptAnyString) {
+      this.value = inputValue;
+    } else {
+      this.searchTerm.next(inputValue);
+    }
   }
 
-  onInputTime() {
-    this.timeOptions$ = of(XeTimePipe.filterTime(this.htmlInput.nativeElement.value));
+  onClickAutoInput() {
+    if (this.template.hasTriggerOnClick) {
+      this.searchTerm.next(this.value);
+    }
+  }
+
+  onAutoInputSelected(_v: any) {
+    this.value = _v;
+  }
+
+  private searchTerm = new Subject<string>();
+
+  private initAutoInput() {
+    if (!this.template.hasAutoInput) return;
+    this.autoInputOptions$ = this.searchTerm.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        this.template.criteria.inputName = this.name;
+        this.template.criteria.inputText = term;
+        return this.template.observable(this.template.criteria);
+      })
+    );
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
@@ -425,6 +463,11 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TOGGLE BOOLEAN
+
+
+  // TIME >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
 
 }
 

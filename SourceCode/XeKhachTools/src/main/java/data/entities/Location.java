@@ -8,4 +8,5 @@ import data.models.MapColumn;
 public class Location extends AbstractEntity {
     MapColumn parent = map(Location.class);
     Column locationName = of(DataType.DESCRIPTION);
+    Column searchText = of(DataType.DESCRIPTION);
 }

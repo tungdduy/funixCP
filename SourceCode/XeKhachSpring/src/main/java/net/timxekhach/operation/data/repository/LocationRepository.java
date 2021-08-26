@@ -17,7 +17,7 @@ public interface LocationRepository extends JpaRepository<Location, Location_MAP
     List<Location> findByLocationIdIn(List<Long> id);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-    List<Location> findTop20ByLocationNameContainsOrderByLocationIdDesc(String searchString);
+    List<Location> findTop20BySearchTextContainsOrderByLocationIdDesc(String searchString);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
