@@ -18,13 +18,13 @@ table {
 }
 
 .mat-column-select {
-  overflow: initial;
+  overflow: inherit;
 }
 
 nb-layout { .scrollable-container { overflow-y: scroll !important; } }
 
 .role-icon {
-  border: 1px solid rgb(208 208 208);
+  border: 1px solid rgb(208, 208, 208);
   padding: 4px;
   display: inline;
   border-radius: 13px;
