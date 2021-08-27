@@ -48,7 +48,10 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     },
     xeScreen: this.screen,
     table: {
-      basicColumns: ['bussType.profileImageUrl', 'bussType.bussTypeName',
+      selectBasicColumns: [
+        'bussType.profileImageUrl', 'bussType.bussTypeName'
+      ],
+      basicColumns: [
         {field: {name: 'bussType.totalSeats'}, action: {screen: this.screens.bussScheme}},
         {field: {name: 'totalBussEmployees'}, action: {screen: this.screens.bussEmployees}},
         {field: {name: 'totalSchedules'}, action: {screen: this.screens.schedules}}
@@ -105,7 +108,10 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
   bussScheduleTable = BussSchedule.tableData({
     xeScreen: this.screen,
     table: {
-      basicColumns: ['scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays',
+      selectBasicColumns: [
+        'scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays'
+      ],
+      basicColumns: [
         {
           field: {name: 'totalBussSchedulePoints'},
           action: {screen: this.screens.scheduleMiddlePoints}

@@ -2,8 +2,8 @@
 import {EntityField, EntityIdentifier} from "../model/XeFormData";
 import {StringUtil} from "./string.util";
 import {ObjectUtil} from "./object.util";
-import {ClassMeta, XeEntity} from "../../business/entities/XeEntity";
-import {EntityFilter, TableColumn} from "../model/XeTableData";
+import {ClassMeta} from "../../business/entities/XeEntity";
+import {TableColumn} from "../model/XeTableData";
 
 
 export class EntityUtil {
@@ -15,102 +15,144 @@ export class EntityUtil {
         camelName: 'user',
         pkMetas: () => [],
         mainIdName: 'userId',
-        mapFields: () => [{name: 'allMyTrips', meta: EntityUtil.metas.TripUser}, {name: 'employee', meta: EntityUtil.metas.Employee}],
     } as ClassMeta,
     Employee: {
         capName: 'Employee',
         camelName: 'employee',
         pkMetas: () => [EntityUtil.metas.Company, EntityUtil.metas.User],
         mainIdName: 'employeeId',
-        mapFields: () => [],
     } as ClassMeta,
     PathPoint: {
         capName: 'PathPoint',
         camelName: 'pathPoint',
         pkMetas: () => [EntityUtil.metas.Location, EntityUtil.metas.Path],
         mainIdName: 'pathPointId',
-        mapFields: () => [],
     } as ClassMeta,
     Company: {
         capName: 'Company',
         camelName: 'company',
         pkMetas: () => [],
         mainIdName: 'companyId',
-        mapFields: () => [],
     } as ClassMeta,
     BussSchedule: {
         capName: 'BussSchedule',
         camelName: 'bussSchedule',
         pkMetas: () => [EntityUtil.metas.Buss],
         mainIdName: 'bussScheduleId',
-        mapFields: () => [{name: 'path', meta: EntityUtil.metas.Path}, {name: 'bussSchedulePoints', meta: EntityUtil.metas.BussSchedulePoint}, {name: 'startPoint', meta: EntityUtil.metas.PathPoint}, {name: 'endPoint', meta: EntityUtil.metas.PathPoint}],
     } as ClassMeta,
     BussEmployee: {
         capName: 'BussEmployee',
         camelName: 'bussEmployee',
         pkMetas: () => [EntityUtil.metas.Buss, EntityUtil.metas.Employee],
         mainIdName: 'bussEmployeeId',
-        mapFields: () => [],
     } as ClassMeta,
     Buss: {
         capName: 'Buss',
         camelName: 'buss',
         pkMetas: () => [EntityUtil.metas.BussType, EntityUtil.metas.Company],
         mainIdName: 'bussId',
-        mapFields: () => [],
     } as ClassMeta,
     Location: {
         capName: 'Location',
         camelName: 'location',
         pkMetas: () => [],
         mainIdName: 'locationId',
-        mapFields: () => [{name: 'parent', meta: EntityUtil.metas.Location}],
     } as ClassMeta,
     TripUser: {
         capName: 'TripUser',
         camelName: 'tripUser',
         pkMetas: () => [EntityUtil.metas.Trip, EntityUtil.metas.User],
         mainIdName: 'tripUserId',
-        mapFields: () => [{name: 'confirmedBy', meta: EntityUtil.metas.Employee}],
     } as ClassMeta,
     SeatGroup: {
         capName: 'SeatGroup',
         camelName: 'seatGroup',
         pkMetas: () => [EntityUtil.metas.BussType],
         mainIdName: 'seatGroupId',
-        mapFields: () => [],
     } as ClassMeta,
     BussType: {
         capName: 'BussType',
         camelName: 'bussType',
         pkMetas: () => [],
         mainIdName: 'bussTypeId',
-        mapFields: () => [{name: 'seatGroups', meta: EntityUtil.metas.SeatGroup}],
     } as ClassMeta,
     Trip: {
         capName: 'Trip',
         camelName: 'trip',
         pkMetas: () => [EntityUtil.metas.BussSchedule],
         mainIdName: 'tripId',
-        mapFields: () => [{name: 'tripUsers', meta: EntityUtil.metas.TripUser}],
     } as ClassMeta,
     Path: {
         capName: 'Path',
         camelName: 'path',
         pkMetas: () => [EntityUtil.metas.Company],
         mainIdName: 'pathId',
-        mapFields: () => [{name: 'pathPoints', meta: EntityUtil.metas.PathPoint}],
     } as ClassMeta,
     BussSchedulePoint: {
         capName: 'BussSchedulePoint',
         camelName: 'bussSchedulePoint',
         pkMetas: () => [EntityUtil.metas.BussSchedule, EntityUtil.metas.PathPoint],
         mainIdName: 'bussSchedulePointId',
-        mapFields: () => [],
     } as ClassMeta
   };
 
-  static getClassMeta(name: string) {
+  static declaredMapFields = {
+    User: {
+      employee: EntityUtil.metas.Employee
+    },
+    Employee: {
+      company: EntityUtil.metas.Company,
+      user: EntityUtil.metas.User,
+    },
+    PathPoint: {
+      location: EntityUtil.metas.Location,
+      path: EntityUtil.metas.Path,
+    },
+    Company: {
+    },
+    BussSchedule: {
+      buss: EntityUtil.metas.Buss,
+      path: EntityUtil.metas.Path,
+      bussSchedulePoints: EntityUtil.metas.BussSchedulePoint,
+      startPoint: EntityUtil.metas.PathPoint,
+      endPoint: EntityUtil.metas.PathPoint
+    },
+    BussEmployee: {
+      buss: EntityUtil.metas.Buss,
+      employee: EntityUtil.metas.Employee,
+    },
+    Buss: {
+      bussType: EntityUtil.metas.BussType,
+      company: EntityUtil.metas.Company,
+    },
+    Location: {
+      parent: EntityUtil.metas.Location
+    },
+    TripUser: {
+      trip: EntityUtil.metas.Trip,
+      user: EntityUtil.metas.User,
+      confirmedBy: EntityUtil.metas.Employee
+    },
+    SeatGroup: {
+      bussType: EntityUtil.metas.BussType,
+    },
+    BussType: {
+      seatGroups: EntityUtil.metas.SeatGroup
+    },
+    Trip: {
+      bussSchedule: EntityUtil.metas.BussSchedule,
+      tripUsers: EntityUtil.metas.TripUser
+    },
+    Path: {
+      company: EntityUtil.metas.Company,
+      pathPoints: EntityUtil.metas.PathPoint
+    },
+    BussSchedulePoint: {
+      bussSchedule: EntityUtil.metas.BussSchedule,
+      pathPoint: EntityUtil.metas.PathPoint,
+    }
+  };
+  static getMeta(name: string) {
     if (StringUtil.equalsIgnoreCase(name, 'User')) return this.metas.User;
     if (StringUtil.equalsIgnoreCase(name, 'Employee')) return this.metas.Employee;
     if (StringUtil.equalsIgnoreCase(name, 'PathPoint')) return this.metas.PathPoint;
@@ -127,6 +169,41 @@ export class EntityUtil {
     if (StringUtil.equalsIgnoreCase(name, 'BussSchedulePoint')) return this.metas.BussSchedulePoint;
   }
 // ____________________ ::BOTTOM_SEPARATOR:: ____________________ //
+  static manualMapFields = {
+    Path: {},
+    Trip: {preparedTripUser: EntityUtil.metas.TripUser},
+    Location: {},
+    PathPoint: {},
+    BussEmployee: {},
+    Buss: {},
+    SeatGroup: {},
+    BussType: {},
+    Company: {},
+    TripUser: {
+      endPoint: EntityUtil.metas.PathPoint,
+      tripUserPoints: EntityUtil.metas.PathPoint,
+      trip: EntityUtil.metas.Trip,
+      startPoint: EntityUtil.metas.PathPoint
+    },
+    BussSchedulePoint: {},
+    BussSchedule: {preparedTrip: EntityUtil.metas.Trip, sortedBussSchedulePoints: EntityUtil.metas.BussSchedulePoint},
+    Employee: {},
+    User: {}
+  };
+
+  private static _mapFields;
+  static get mapFields() {
+    if (!this._mapFields) {
+      this._mapFields = Object.assign({}, this.declaredMapFields);
+      Object.keys(this.manualMapFields).forEach(className => {
+        Object.keys(this.manualMapFields[className]).forEach(fieldName => {
+          this._mapFields[className][fieldName] = this.manualMapFields[className][fieldName];
+        });
+      });
+    }
+    return this._mapFields;
+  }
+
   static newByEntityDefine(entityDefine: EntityIdentifier<any>): any {
     const entity = entityDefine.clazz.new();
     const templateEntity = entityDefine.entity;
@@ -156,14 +233,8 @@ export class EntityUtil {
     return true;
   }
 
-  static getFieldOwnerEntity(oriEntity: any, field: EntityField) {
-    if (!oriEntity || !field) return {};
-    const subEntityNames = this.getSubEntityNames(field);
-    let traceEntity = oriEntity;
-    for (const name of subEntityNames) {
-      traceEntity = traceEntity[name];
-    }
-    return traceEntity;
+  static getLastFieldOwner(rootEntity: any, rootClass: ClassMeta, field: EntityField) {
+    return this.getEntityWithField(rootEntity, rootClass, field).entity;
   }
 
   static hasSubEntity(field: EntityField) {
@@ -176,55 +247,30 @@ export class EntityUtil {
     return result;
   }
 
-  static getFromCache(name, id) {
-    const capName = StringUtil.upperFirstLetter(name);
-    if (!this.entityCache[capName])
-      this.entityCache[capName] = {};
-    return this.entityCache[capName][id];
+  static getFromCache(className, id) {
+    return this.entityCache[className.toLowerCase() + "." + id];
   }
 
-  static putToCache(name, id, value) {
-    const capName = StringUtil.upperFirstLetter(name);
-    if (!this.entityCache[capName])
-      this.entityCache[capName] = {};
-    this.entityCache[capName][id] = value;
-  }
 
-  static getEntityWithField(entity: any, entityMeta: ClassMeta, field: EntityField): { entity, lastFieldName, value, fieldMeta: ClassMeta } {
-    const allSubNames = field.name.split(".");
-    const lastFieldName = allSubNames.pop();
-    let traceEntity = entity;
-    let fieldMeta = entityMeta;
-    for (const name of allSubNames) {
-      if (ObjectUtil.isNumberGreaterThanZero(traceEntity)) {
-        traceEntity = this.getFromCache(fieldMeta.capName, traceEntity);
-        if (!traceEntity) {
-          break;
-        }
-      }
-      fieldMeta = this.traceMeta(fieldMeta, name);
-      if (!traceEntity[name]) {
-        traceEntity[name] = {};
-      }
+  static getEntityWithField(rootEntity: any, rootMeta: ClassMeta, field: EntityField): { entity, lastFieldName, value, fieldMeta: ClassMeta } {
+    if (!rootEntity || !field || ObjectUtil.isNumberGreaterThanZero(rootEntity)) return rootEntity;
+    const subNames = this.getSubEntityNames(field);
+    let traceEntity = rootEntity;
+    let traceMeta = rootMeta;
+    for (const name of subNames) {
       traceEntity = traceEntity[name];
+      traceMeta = this.mapFields[traceMeta.capName][name];
+      if (ObjectUtil.isNumberGreaterThanZero(traceEntity) && traceMeta) {
+        traceEntity = this.getFromCache(traceMeta.capName, traceEntity);
+      }
     }
-    traceEntity = ObjectUtil.isNumberGreaterThanZero(traceEntity) ? this.getFromCache(fieldMeta.capName, traceEntity) : traceEntity;
-    const value =  traceEntity ? traceEntity[lastFieldName] : undefined;
-    return {entity: traceEntity, lastFieldName, value, fieldMeta};
+    const lastFieldName = field.name.split(".").pop();
+    const value = this.getExistValue(traceEntity, lastFieldName);
+    return {entity: traceEntity, lastFieldName, value, fieldMeta: traceMeta};
   }
 
-  static traceMeta = (parentMeta: ClassMeta, fieldName) => {
-    if (!parentMeta) return undefined;
-    for (const pkMeta of parentMeta.pkMetas()) {
-      if (StringUtil.equalsIgnoreCase(pkMeta.camelName, fieldName)) {
-        return pkMeta;
-      }
-    }
-    for (const mapField of parentMeta.mapFields()) {
-      if (StringUtil.equalsIgnoreCase(mapField.name, fieldName)) {
-        return mapField.meta;
-      }
-    }
+  static getExistValue(entity, fieldName) {
+    return !entity || !fieldName ? undefined : ObjectUtil.isNumberGreaterThanZero(entity) ? entity : entity[fieldName];
   }
 
   static valueAsInlineString(entity: any, entityMeta: ClassMeta, field: EntityField) {
@@ -279,14 +325,25 @@ export class EntityUtil {
     });
   }
 
+  static getAllPossibleIdName(meta: ClassMeta, result = []): string[] {
+    meta.pkMetas().forEach(pkMeta => {
+      if (!result.includes(pkMeta.mainIdName)) result.push(pkMeta.mainIdName);
+      this.getAllPossibleIdName(pkMeta, result);
+    });
+    return result;
+  }
+
   static getAllPossibleId(entity: any, entityDefine: EntityIdentifier<any>) {
     const result = {};
     const criteriaEntity = entityDefine.entity;
+    const newIfNulls: { meta: ClassMeta, nameChainString: string }[] = [];
     entityDefine.idFields.forEach(idField => {
       const idFromCriteria = this.getOriginFieldValue(criteriaEntity, entityDefine.clazz.meta, idField);
       const idFromEntity = this.getOriginFieldValue(entity, entityDefine.clazz.meta, idField);
       const selectedId = idFromEntity ? idFromEntity : idFromCriteria;
-      result[idField.name] = selectedId;
+      if (selectedId) {
+        result[idField.name] = selectedId;
+      }
       if (!result[this.getLastFieldName(idField)]) {
         result[this.getLastFieldName(idField)] = selectedId;
       }
@@ -299,12 +356,32 @@ export class EntityUtil {
         }
         const nameChainString = nameChain.length === 0 ? '' : nameChain.join(".") + ".";
         const capFieldName = StringUtil.upperFirstLetter(camelFieldName);
+        const newIfNullMeta = EntityUtil.metas[capFieldName];
+        if (newIfNullMeta) {
+          newIfNulls.push({meta: newIfNullMeta, nameChainString});
+        }
         result[nameChainString + "new" + capFieldName + "IfNull"] = true;
       }
     });
+    if (newIfNulls.length > 0) {
+      newIfNulls.forEach(newIfNull => {
+        const necessaryIds = this.getAllPossibleIdName(newIfNull.meta);
+        console.log(newIfNull.nameChainString, newIfNull.meta.camelName, necessaryIds);
+        necessaryIds.forEach(newIfNullId => {
+          result[newIfNull.nameChainString + newIfNull.meta.camelName + "." + newIfNullId] = result[newIfNullId];
+        });
+      });
+
+    }
     return result;
   }
 
+  private static addColumnIfNotExist(addedColumns: string[], column: TableColumn, prepareColumns: any[]) {
+    if (!addedColumns.includes(column.field.name)) {
+      prepareColumns.push(column);
+      addedColumns.push(column.field.name);
+    }
+  }
   static assignEntity(option: {}, entity, deepLvl = 0) {
     if (!option) return entity;
     if (deepLvl > 4) return entity;
@@ -312,21 +389,22 @@ export class EntityUtil {
     Object.keys(option).forEach(key => {
       if (['basicColumns', 'subColumns'].includes(key)) {
         const prepareColumns = [];
-        option[key].forEach((optionColumn: TableColumn | string) => {
-          entity[key].forEach((column: TableColumn, index: number) => {
-            if (typeof optionColumn === 'string') {
-              if (optionColumn === column.field.name) {
-                prepareColumns.push(column);
-              }
-            } else if (column.field.name === optionColumn.field.name) {
-              this.assignEntity(optionColumn, column, deepLvl);
-              prepareColumns.push(column);
-            }
-          });
+        const modifiedColumns = {};
+        option[key].forEach(col => modifiedColumns[col?.field?.name] = col);
+        const selectedColumns = option['selectBasicColumns'];
+        const addedColumns: string[] = [];
+        entity[key].forEach((column: TableColumn) => {
+          const checkModified = modifiedColumns[column.field.name];
+          if (checkModified) {
+            this.assignEntity(checkModified, column, deepLvl);
+          }
+          if (checkModified || !selectedColumns || selectedColumns.includes(column.field.name)) {
+            this.addColumnIfNotExist(addedColumns, column, prepareColumns);
+          }
         });
         entity[key] = prepareColumns;
       } else if (['function', 'string', 'boolean'].includes(typeof option[key])
-        || ['xeScreen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
+        || ['xeScreen', 'action', 'screen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
         entity[key] = option[key];
       } else if (option[key] === undefined) {
         delete entity[key];
@@ -349,93 +427,55 @@ export class EntityUtil {
   }
 
 
-  // ENTITY CACHE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// ENTITY CACHE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  static entityCache = {};
+  static entityCache = []; // cache.ClassName.id = entity -- cached.className.id has Value
 
-  static cacheMulti<E extends XeEntity>(entities: E[], meta: ClassMeta, filters: EntityFilter = {filterSingle: (e) => true}, rootLvl = 0) {
-
-    rootLvl++;
-    if (filters.filterArray) {
-      entities = filters.filterArray(entities);
-    }
-    const result = entities.filter(entity => {
-      if (rootLvl > 3) { // do not cache more when exceed this lvl
-        return filters.filterSingle(entity);
-      }
-      this.cache(entity, meta, rootLvl);
-      return filters.filterSingle(entity);
-    });
-    if (this.cacheLater.length !== 0) {
-      this.cacheLater.forEach(delay => {
-        delay.entity[delay.fieldName] = this.getFromCache(delay.className, delay.id);
+  private static privateCache(entity: any, entityMeta: ClassMeta, cached = {}) {
+    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return;
+    const eid = entityMeta.capName.toLowerCase() + "." + entity[entityMeta.mainIdName];
+    if (!cached[eid]) {
+      cached[eid] = "true";
+      this.entityCache[eid] = entity;
+      Object.keys(entity).forEach(fieldName => {
+        const fieldMeta: ClassMeta = this.mapFields[entityMeta.capName][fieldName];
+        if (fieldMeta) {
+          const fieldValue = entity[fieldName];
+          if (Array.isArray(fieldValue)) {
+            fieldValue.forEach(fieldChild => {
+              this.privateCache(fieldChild, fieldMeta, cached);
+            });
+          } else {
+            if (!ObjectUtil.isNumberGreaterThanZero(fieldValue) && !!fieldValue) {
+              const uniqueIdName = fieldMeta.capName.toLowerCase() + "." + fieldValue[fieldMeta.mainIdName];
+              this.entityCache[uniqueIdName] = fieldValue;
+              this.privateCache(fieldValue, fieldMeta, cached);
+            }
+          }
+        }
       });
     }
-    return result;
   }
 
-  static cache(entity: XeEntity, meta: ClassMeta, rootLvl = 0) {
-    const cacheFields = this.buildCacheFields(meta);
-    this.privateCache(entity, entity, meta, cacheFields, rootLvl);
-  }
-
-  private static buildCacheFields(meta: ClassMeta, result = []): EntityCacheField[] {
-    meta.pkMetas().forEach(pkMeta => {
-      const cacheField = new EntityCacheField();
-      cacheField.name = pkMeta.camelName;
-      cacheField.meta = pkMeta;
-      cacheField.children = this.buildCacheFields(pkMeta, []);
-      result.push(cacheField);
-    });
-    const mapCaches = this.buildMapCacheFields(meta);
-    return result.concat(mapCaches);
-  }
-
-  private static buildMapCacheFields(meta: ClassMeta, result = [], lvl = 0): EntityCacheField[] {
-    lvl++;
-    meta.mapFields().forEach(field => {
-      const cacheField = new EntityCacheField();
-      cacheField.meta = field.meta;
-      cacheField.name = field.name;
-      if (lvl < 3) {
-        cacheField.children = this.buildMapCacheFields(cacheField.meta, [], lvl);
-      }
-      result.push(cacheField);
-    });
-    return result;
-  }
-
-  static cacheLater: { entity: {}, fieldName: string, className: string, id: any }[] = [];
-
-  private static privateCache(parent, entity, meta: ClassMeta, cacheFields: EntityCacheField[], rootLvl) {
-    if (ObjectUtil.isNumberGreaterThanZero(entity)) {
-      if (!this.getFromCache(meta.capName, entity)) {
-        this.cacheLater.push({entity: parent, fieldName: meta.camelName, className: meta.capName, id: entity});
-      } else {
-        entity = this.getFromCache(meta.capName, entity);
-        parent[meta.camelName] = entity;
-      }
-      return;
+  public static cache(entity: any, entityMeta: ClassMeta) {
+    if (Array.isArray(entity)) {
+      entity.forEach(child => {
+        this.privateCache(child, entityMeta);
+      });
+    } else {
+      this.privateCache(entity, entityMeta);
     }
-    cacheFields.forEach(field => {
-      const fieldValue = entity[field.name];
-      if (Array.isArray(fieldValue)) {
-        this.cacheMulti(fieldValue, field.meta, {filterSingle: (e) => true}, rootLvl);
-        return;
-      } else if (ObjectUtil.isNumberGreaterThanZero(fieldValue)) {
-        if (!this.getFromCache(field.name, fieldValue)) {
-          this.cacheLater.push({entity, fieldName: field.name, className: field.meta.capName, id: fieldValue});
-        } else {
-          entity[field.name] = this.getFromCache(field.meta.capName, fieldValue);
-        }
-      } else if (!ObjectUtil.isObject(fieldValue)) {
-        return;
-      } else { // fieldValue is Object
-        const fieldId = fieldValue[field.meta.mainIdName];
-        this.putToCache(field.meta.capName, fieldId, fieldValue);
-      }
-      if (field.children && !!entity[field.name]) {
-        this.privateCache(entity, entity[field.name], field.meta, field.children, rootLvl);
+
+    console.log(this.entityCache);
+  }
+
+  private static put(obj, nameChain: string[], value) {
+    nameChain.forEach((name, idx) => {
+      if (!obj[name]) obj[name] = {};
+      if (idx === nameChain.length - 1) {
+        obj[name] = value;
+      } else {
+        obj = obj[name];
       }
     });
   }
@@ -455,7 +495,7 @@ export class EntityUtil {
     });
   }
 
-  static  cachePkFromParent(parent: any, parentMeta: ClassMeta, childrenFieldName: string, childMeta: ClassMeta) {
+  static cachePkFromParent(parent: any, parentMeta: ClassMeta, childrenFieldName: string, childMeta: ClassMeta) {
     const copyParent = Object.assign({}, parent);
     copyParent[childrenFieldName] = copyParent[childrenFieldName].map(child => child[childMeta.mainIdName]);
     const cache = {};

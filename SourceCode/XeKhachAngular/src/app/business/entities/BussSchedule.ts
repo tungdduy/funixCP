@@ -1,6 +1,7 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
+import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Buss} from "./Buss";
 import {BussType} from "./BussType";
@@ -146,7 +147,7 @@ export class BussSchedule extends XeEntity {
             type: "iconOption",
             display: {row: {icon: {iconAfter: "map-marker-alt"}}},
             subColumns: [{
-              field: {name: 'preparedTrip.totalAvailableSeats', attachInlines: ['preparedTrip.totalSeats']},
+              field: {name: 'preparedTrip.preparedTotalAvailableSeats', attachInlines: ['preparedTrip.totalSeats']},
               type: "iconOption",
               display: {row: {icon: {iconAfter: "couch"}}},
             }]

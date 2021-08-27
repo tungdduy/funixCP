@@ -11,7 +11,7 @@ public class BussType extends AbstractEntity {
     Column bussTypeName = of(DataType.DESCRIPTION);
     Column bussTypeDesc = of(DataType.DESCRIPTION);
 
-    MapColumn seatGroups = map(SeatGroup.class).orderBy("seatGroupOrder DESC");
+    MapColumn seatGroups = map(SeatGroup.class).orderBy("seatGroupOrder DESC").renderJson();
     CountMethod totalBusses = count(Buss.class);
 
     @Override

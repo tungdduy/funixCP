@@ -10,10 +10,9 @@ import {Buss} from "./Buss";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {Employee} from "./Employee";
-import {TripUserPoint} from "./TripUserPoint";
 import {PathPoint} from "./PathPoint";
-import {Path} from "./Path";
 import {EntityUtil} from "../../framework/util/EntityUtil";
+import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -36,6 +35,7 @@ export class TripUser extends XeEntity {
     confirmedByCompanyId: number;
     phoneNumber: string;
     fullName: string;
+    email: string;
     status;
     unitPrice: number;
     totalPrice: number;
@@ -43,31 +43,34 @@ export class TripUser extends XeEntity {
     seatsString: string;
     confirmedDateTime;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-    tripUserPoints: PathPoint[];
-    startPoint: PathPoint;
-    endPoint: PathPoint;
-    totalSeats: number;
-    seats: number[];
+  tripUserPoints: PathPoint[];
+  startPoint: PathPoint;
+  endPoint: PathPoint;
+  totalSeats: number;
+  seats: number[];
 
-    static removeSeat(tripUser: TripUser, seatNo: number) {
-      tripUser.seats.splice(tripUser.seats.indexOf(seatNo), 1);
-      TripUser.updatePrice(tripUser);
-    }
-    static addSeat(tripUser: TripUser, seatNo: number) {
-      tripUser.seats.push(seatNo);
-      TripUser.updatePrice(tripUser);
-    }
-    static updatePrice(tripUser: TripUser) {
-      tripUser.totalSeats = tripUser.seats.length;
-      tripUser.totalPrice = tripUser.unitPrice * tripUser.totalSeats;
-      tripUser.seatsString = tripUser.seats.join(",");
-    }
-    static clearOrderInfo(tripUser: TripUser) {
-      tripUser.totalSeats = 0;
-      tripUser.totalPrice = 0;
-      tripUser.seats = [];
-      tripUser.seatsString = "";
-    }
+  static removeSeat(tripUser: TripUser, seatNo: number) {
+    tripUser.seats.splice(tripUser.seats.indexOf(seatNo), 1);
+    TripUser.updatePrice(tripUser);
+  }
+
+  static addSeat(tripUser: TripUser, seatNo: number) {
+    tripUser.seats.push(seatNo);
+    TripUser.updatePrice(tripUser);
+  }
+
+  static updatePrice(tripUser: TripUser) {
+    tripUser.totalSeats = tripUser.seats.length;
+    tripUser.totalPrice = tripUser.unitPrice * tripUser.totalSeats;
+    tripUser.seatsString = tripUser.seats.join(",");
+  }
+
+  static clearOrderInfo(tripUser: TripUser) {
+    tripUser.totalSeats = 0;
+    tripUser.totalPrice = 0;
+    tripUser.seats = [];
+    tripUser.seatsString = "";
+  }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (tripUser: TripUser): EntityIdentifier<TripUser> => ({
@@ -105,39 +108,76 @@ export class TripUser extends XeEntity {
 
   private static _tripUserTable = (tripUser: TripUser): XeTableData<TripUser> => {
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+    const identifier = TripUser.entityIdentifier(tripUser);
+    identifier.idFields.forEach((field) => {
+      if (field.name === "trip.tripId") field['newIfNull'] = true;
+    });
     return {
       table: {
         basicColumns: [
           // 0
           {
-            field: {name: 'startPoint.location.locationName'}, type: "boldString",
+            field: {name: 'startPoint', template: InputTemplate.pathPoint},
             subColumns: [
-              {field: {name: 'startPoint.location.locationParentAddresses'}, type: "string"}
+              {field: {name: 'startPoint.location', template: InputTemplate.location}}
             ]
           },
           // 1
           {
-            field: {name: 'endPoint.location.locationName'}, type: "string",
+            field: {name: 'endPoint', template: InputTemplate.pathPoint},
             subColumns: [
-              {field: {name: 'endPoint.location.locationParentAddresses'}, type: "string"}
+              {field: {name: 'endPoint.location', template: InputTemplate.location}}
             ]
           },
+          {
+            field: {name: 'seatsString', template: InputTemplate.seats},
+            subColumns: [
+              {field: {name: 'totalPrice', template: InputTemplate.money}, display: {header: {silence: true}}}
+            ]
+
+          },
           // 2
-          {field: {name: 'user.phoneNumber'}, type: "string"},
-          // 3
-          {field: {name: 'user.email'}, type: "string"},
+          {
+            field: {name: 'trip.launchDate', template: InputTemplate.date},
+            subColumns: [
+              {field: {name: 'trip.launchTime', template: InputTemplate.time}},
+            ]
+          },
+          {
+            field: {name: 'trip.bussSchedule.buss.company.companyName'},
+            subColumns: [
+              {field: {name: 'trip.bussSchedule.buss.bussType.bussTypeName'}},
+              {field: {name: 'trip.bussSchedule.buss.bussLicense'}},
+            ]
+          },
         ],
       },
       formData: {
-        entityIdentifier: TripUser.entityIdentifier(tripUser),
-        share: {
-          custom: {
-            employee: Employee.new()
-          }
+        entityIdentifier: identifier,
+        mode: {
+          uncheckChanged: true
         },
-        fields: []
+        share: {
+          entity: tripUser,
+        },
+        display: {
+          bare: true,
+          noButton: true,
+        },
+        fields: [
+          {name: 'fullName', required: true},
+          {name: 'phoneNumber', required: true, template: InputTemplate.phone},
+          {name: 'email', lblKey: 'email_optional'},
+          {name: 'unitPrice', hidden: true},
+          {name: 'seatsString', required: true, hidden: true},
+          {name: 'totalPrice', hidden: true},
+          {name: 'tripUserPointsString', hidden: true},
+          {name: 'trip.launchTime', template: InputTemplate.time, hidden: true},
+          {name: 'trip.launchDate', template: InputTemplate.date, hidden: true},
+          {name: 'trip.tripUnitPrice', hidden: true},
+        ]
       }
-    };
+    } as XeTableData<TripUser>;
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
   }
 }

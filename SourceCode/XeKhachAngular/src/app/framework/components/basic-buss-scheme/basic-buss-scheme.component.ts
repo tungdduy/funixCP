@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterContentInit, Component, Input, OnInit} from '@angular/core';
 import {BussType} from "../../../business/entities/BussType";
 import {XeScreen} from "../xe-nav/xe-nav.component";
 import {SeatGroup} from "../../../business/entities/SeatGroup";
@@ -11,14 +11,26 @@ import {TripUser} from "../../../business/entities/TripUser";
 import {Trip} from "../../../business/entities/Trip";
 import {BussSchedule} from "../../../business/entities/BussSchedule";
 import {AuthUtil} from "../../auth/auth.util";
-import {CommonUpdateService} from "../../../business/service/common-update.service";
+import {XeFormData} from "../../model/XeFormData";
+import {RegexUtil} from "../../util/regex.util";
+import {ObjectUtil} from "../../util/object.util";
 
 @Component({
   selector: 'basic-buss-scheme',
   templateUrl: './basic-buss-scheme.component.html',
   styleUrls: ['./basic-buss-scheme.component.scss']
 })
-export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
+export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, AfterContentInit {
+  ngAfterContentInit(): void {
+    if (ObjectUtil.isNumberGreaterThanZero(this.bussType)) {
+      this.bussType = EntityUtil.getFromCache(BussType.meta.capName, this.bussType);
+    }
+    if (!this.bussType || !this.bussType.bussTypeId) return;
+    this.seatGroupCriteria.bussType = this.bussType;
+    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
+    this.initOrderStatus();
+  }
+
   @Input() bussType: BussType;
   @Input("screen") parentScreen: XeScreen;
   @Input("readMode") _readMode;
@@ -28,13 +40,13 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
   screens = {
     schemeEdit: "schemeEdit",
     schemeView: "schemeList",
+    orderSuccessfully: "orderSuccessfully"
   };
   screen = new XeScreen({home: this.screens.schemeView});
 
   ngOnInit(): void {
-    this.seatGroupCriteria.bussType = this.bussType;
-    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
     this.initOrderStatus();
+    this.initTripAdmin();
   }
 
   seatGroupTable = SeatGroup.tableData({
@@ -112,11 +124,13 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
   get isLoggedIn() {
     return AuthUtil.instance.isUserLoggedIn;
   }
+
   totalPrice: number;
   selectedSeats: number[];
   @Input() bussSchedule: BussSchedule;
   @Input() trip: Trip;
   @Input() tripUser: TripUser;
+  tripUserForm: XeFormData<TripUser>;
 
   private _seatStatus: SeatStatus[] = [];
 
@@ -129,17 +143,37 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
     this.trip.lockedSeats.forEach(locked => {
       this._seatStatus[locked] = SeatStatus.locked;
     });
-    this.trip.availableSeats.forEach(available => {
+    this.trip.lockedBussSeats.forEach(locked => {
+      this._seatStatus[locked] = SeatStatus.locked;
+    });
+    this.trip.preparedAvailableSeats.forEach(available => {
       this._seatStatus[available] = SeatStatus.available;
     });
-    this.trip.bookedSeats.forEach(booked => {
+    this.trip.preparedBookedSeats.forEach(booked => {
       this._seatStatus[booked] = SeatStatus.booked;
+    });
+    this.tripUser.seats.forEach(seatNo => {
+      this._seatStatus[seatNo] = SeatStatus.selected;
     });
 
     if (AuthUtil.instance.isUserLoggedIn) {
       this.tripUser.phoneNumber = AuthUtil.instance.user.phoneNumber;
       this.tripUser.fullName = AuthUtil.instance.user.fullName;
+      this.tripUser.email = AuthUtil.instance.user.email;
+      this.tripUser.trip = this.trip;
+      this.tripUser.trip.bussSchedule = this.bussSchedule;
+      this.tripUser.user = AuthUtil.instance.user;
     }
+    this.tripUserForm = TripUser.tableData({
+      formData: {
+        action: {
+          postPersist: (tripUser) => {
+            Notifier.success(this.xeLabel.ORDER_SUCCESSFULLY);
+            this.screen.go(this.screens.orderSuccessfully);
+          }
+        }
+      }
+    }, this.tripUser).formData;
   }
 
   toggleSeatOrder(seatNo: number) {
@@ -158,10 +192,48 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit {
   }
 
 
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
+  _errorMessage: string;
 
+  get orderValidEmail() {
+    return RegexUtil.isValidEmail(this.tripUser.email);
+  }
+
+  set errorMessage(error: string) {
+    this._errorMessage = error;
+    setTimeout(() => {
+      this._errorMessage = undefined;
+    }, 5000);
+  }
+
+  get errorMessage() {
+    return this._errorMessage;
+  }
 
   order() {
+    if (this.tripUser.seats.length <= 0) {
+      this.errorMessage = XeLabel.PLEASE_SELECT_SEATS;
+      return;
+    }
+
+    const formError = this.tripUserForm.share.xeForm.errorMessages;
+    if (formError.length > 0) {
+      this.errorMessage = formError.join("<br/>");
+      return;
+    }
+    this.errorMessage = undefined;
+    this.tripUserForm.share.xeForm._onSubmit();
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
+  // ###############################################################
+  // ###############################################################
+  // ###############################################################
+
+  // TRIP ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+  initTripAdmin() {
+    if (!this.mode.hasTripAdmin) return;
 
   }
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF TRIP ADMIN
 }

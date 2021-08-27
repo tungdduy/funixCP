@@ -40,6 +40,7 @@ public class UrlDeclaration {
                         .sibling("my-company").roles(ROLE_BUSS_ADMIN)
                         .sibling("all-user").roles(ROLE_SYS_ADMIN)
                         .sibling("my-trip").roles(ROLE_USER)
+                        .sibling("find-trip")
                         .sibling("company-manager").roles(ROLE_SYS_ADMIN)
                         .sibling("buss-type").roles(ROLE_SYS_ADMIN)
                         .sibling("buss").roles(ROLE_BUSS_STAFF)

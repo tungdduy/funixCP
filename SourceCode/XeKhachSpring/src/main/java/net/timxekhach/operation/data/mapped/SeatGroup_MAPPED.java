@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.BussType;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -73,9 +74,7 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussTypeId")
+    @JsonIgnore
     protected BussType bussType;
 
     public BussType getBussType(){
@@ -141,11 +140,11 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("seatGroupId")) {
-                this.seatGroupId = Long.valueOf(value);
+                this.seatGroupId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
             }
         }
     }

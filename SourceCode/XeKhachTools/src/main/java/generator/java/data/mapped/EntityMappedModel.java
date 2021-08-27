@@ -42,6 +42,7 @@ public class EntityMappedModel extends AbstractEntityModel {
     public void prepareSeparator() {
         separator("import").unique(
                 StringUtil.toImportFormat(
+                        "com.fasterxml.jackson.annotation.JsonIgnore",
                         "javax.persistence.*",
                         "lombok.*",
                         "net.timxekhach.operation.data.mapped.abstracts.XeEntity",
@@ -92,6 +93,7 @@ public class EntityMappedModel extends AbstractEntityModel {
             String pkIdName = pkEntity.idName();
 
             PkMap pkMap = new PkMap();
+            pkMap.setIsJsonIgnored(this.getEntity().getIgnorePkJsons().contains(pkSimpleClassName));
             pkMap.setFieldName(toCamel(pkSimpleClassName));
             pkMap.setSimpleClassName(pkSimpleClassName);
             fetchAllIds(pkEntity, namedId -> {

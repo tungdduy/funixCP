@@ -82,6 +82,7 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
   }
 
   private updateUser(user: User) {
+    this.entityUtil.cache(user, User.meta);
     this.user = user;
     this.company = user?.employee?.company;
     AuthUtil.instance.setRepoUser(user);

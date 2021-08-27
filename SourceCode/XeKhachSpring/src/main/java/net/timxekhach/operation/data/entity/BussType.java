@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.BussType_MAPPED;
+import java.util.ArrayList;
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter

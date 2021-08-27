@@ -1,1 +1,15 @@
-Ticket worked!
+<ng-container *ngIf="screen.is(screens.trips)">
+  <xe-table [tableData]="tripTable"></xe-table>
+</ng-container>
+
+<ng-container *ngIf="screen.is(screens.tripUsers)">
+  <xe-table [tableData]="tripUserTable"></xe-table>
+</ng-container>
+
+
+<ng-container *ngIf="screen.is(screens.tripDetails)">
+  <basic-buss-scheme [screen]="screen"
+                     [bussType]="bussType">
+  </basic-buss-scheme>
+</ng-container>
+

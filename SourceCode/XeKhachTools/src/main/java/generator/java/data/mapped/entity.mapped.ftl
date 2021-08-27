@@ -73,9 +73,13 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
         updatable = false)<#if join_has_next>, </#if>
     </#list>
     })
+    <#if pkMap.isJsonIgnored>
+    @JsonIgnore
+    <#else>
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "${pkMap.fieldName}Id")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "${pkMap.fieldName}Id")
+    </#if>
     protected ${pkMap.simpleClassName} ${pkMap.fieldName};
 
     public ${pkMap.simpleClassName} get${pkMap.simpleClassName}(){
@@ -124,6 +128,9 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
             <#if map.orderBy?has_content>
     @OrderBy("${map.orderBy}")
             </#if>
+    <#if map.isJsonIgnored>
+    @JsonIgnore
+    </#if>
     protected List<${map.mapTo.simpleClassName}> ${map.fieldName} = new ArrayList<>();
     <#-- +++++++++++++++++++...Field...+++++++++++++++++++++++ -->
         </#if>
@@ -271,7 +278,7 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 </#list>
         <#list root.primaryKeys as pk>
             if (fieldName.equals("${pk.fieldName}")) {
-                this.${pk.fieldName} = Long.valueOf(value);
+                this.${pk.fieldName} = value == null ? null : Long.valueOf(value);
                 <#if pk_has_next>
                     continue;
                 </#if>

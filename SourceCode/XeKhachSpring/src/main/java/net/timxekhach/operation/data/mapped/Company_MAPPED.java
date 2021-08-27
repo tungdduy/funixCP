@@ -3,6 +3,7 @@ package net.timxekhach.operation.data.mapped;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -104,7 +105,7 @@ public abstract class Company_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
             }
         }
     }

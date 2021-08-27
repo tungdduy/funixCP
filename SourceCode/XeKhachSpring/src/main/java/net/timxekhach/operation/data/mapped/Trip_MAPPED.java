@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import net.timxekhach.operation.data.entity.TripUser;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -115,8 +116,8 @@ public abstract class Trip_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussScheduleId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "bussScheduleId")
     protected BussSchedule bussSchedule;
 
     public BussSchedule getBussSchedule(){
@@ -149,9 +150,16 @@ public abstract class Trip_MAPPED extends XeEntity {
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
+    @JsonIgnore
     protected List<TripUser> tripUsers = new ArrayList<>();
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
+//====================================================================//
+    public Integer getTotalTripUsers() {
+        return CommonUpdateService.getTripUserRepository().countTripUserIdByTripId(this.tripId);
+    }
+//=====================================================================//
+//==================== END of MAP COUNT ENTITIES ======================//
 //====================================================================//
 
 
@@ -191,23 +199,23 @@ public abstract class Trip_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {
-                this.bussScheduleId = Long.valueOf(value);
+                this.bussScheduleId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("tripId")) {
-                this.tripId = Long.valueOf(value);
+                this.tripId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussId")) {
-                this.bussId = Long.valueOf(value);
+                this.bussId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
             }
         }
     }

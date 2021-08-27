@@ -75,4 +75,8 @@ public abstract class AbstractUrlRender<E extends AbstractUrlModel> extends Abst
         renderWithParent();
     }
 
+    public static void main(String[] args) {
+        AbstractUrlRender.standaloneRender();
+    }
+
 }

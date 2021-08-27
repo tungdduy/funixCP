@@ -58,11 +58,15 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   ngOnInit(): void {
+    this.initTable();
+  }
+
+  initTable() {
     this.initFullScreenForm();
     this.initColumns();
+    this.initSelectionAnsShare();
     setTimeout(() => {
       this.initData();
-      this.initSelectionAnsShare();
     }, 0);
   }
 
@@ -118,6 +122,9 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   public updateTableData(result: E[]) {
+    console.time('cache table entity');
+    EntityUtil.cache(result, this.entityMeta);
+
     console.log("table result to update: ", result);
     const mainIdName = this.entityMeta.mainIdName;
     const filter = (entity) => {
@@ -129,11 +136,10 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       }
       return true;
     };
-    console.time('cache table entity');
-    result = EntityUtil.cacheMulti(result, this.entityMeta, {
-      filterSingle: filter,
-      filterArray: this.tableData.table.action?.filters?.filterArray
-    });
+    result = result.filter(e => filter(e));
+    if (this.tableData.table.action?.filters?.filterArray) {
+      result = this.tableData.table.action.filters.filterArray(result);
+    }
     console.timeEnd('cache table entity');
     console.time('update table');
     this.updateTableSource(result);

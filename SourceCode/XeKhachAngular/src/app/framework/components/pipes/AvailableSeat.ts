@@ -5,7 +5,7 @@ import {IconWrapComponent} from "../details/icon-wrap/icon-wrap.component";
 export class AvailableSeat  extends XePipe {
 
   singleToHtml = (trip: Trip, options?) => {
-    const wrapper = {icon: 'couch', content: trip.totalAvailableSeats + "/" + trip.totalSeats};
+    const wrapper = {icon: 'couch', content: trip.totalPreparedAvailableSeats + "/" + trip.totalSeats};
     return `
       <icon-wrap [wrapper]="${wrapper}"></icon-wrap>
     `;
@@ -13,12 +13,6 @@ export class AvailableSeat  extends XePipe {
 
   singleToXeComponent = (trip: Trip) => {
     return new IconWrapComponent();
-  }
-
-  singleToInline(trip: Trip, options?) {
-  }
-
-  singleToSubmitFormat(trip: Trip, options?) {
   }
 
 }

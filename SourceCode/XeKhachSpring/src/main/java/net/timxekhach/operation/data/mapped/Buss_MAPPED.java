@@ -7,6 +7,7 @@ import net.timxekhach.operation.data.entity.BussType;
 import net.timxekhach.operation.data.entity.Company;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -83,8 +84,8 @@ public abstract class Buss_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussTypeId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "bussTypeId")
     protected BussType bussType;
 
     public BussType getBussType(){
@@ -112,8 +113,8 @@ public abstract class Buss_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "companyId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "companyId")
     protected Company company;
 
     public Company getCompany(){
@@ -180,15 +181,15 @@ public abstract class Buss_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussId")) {
-                this.bussId = Long.valueOf(value);
+                this.bussId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
             }
         }
     }

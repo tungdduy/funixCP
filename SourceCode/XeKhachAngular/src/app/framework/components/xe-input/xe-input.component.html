@@ -49,9 +49,10 @@
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
 <ng-template #inputContent>
 
-  <ng-container *ngIf="template.hasTypeSearchTable">
+  <ng-container *ngIf="template.hasTypeSearchTable || template.hasTypeHtml">
     <div [innerHTML]="asHtml"></div>
   </ng-container>
+
 
   <div class="options-group pt-2 d-inline-block" *ngIf="template.hasTypeMultiOption">
     <div (click)="toggleOption(option); isValidateSuccess()" *ngFor="let option of template?.options?.ALL"
@@ -88,6 +89,7 @@
   <ng-container *ngIf="template.hasTypeDate">
     <input (click)="picker.open()" (dateChange)="onDateChange($event); isValidateSuccess()" [matDatepicker]="picker"
            [value]="value"
+           [readOnly]="true"
            fullWidth nbInput>
     <mat-datepicker #picker></mat-datepicker>
   </ng-container>

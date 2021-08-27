@@ -49,6 +49,7 @@ import { MultiOptionComponent } from './multi-option/multi-option.component';
 import {PathPipe} from "./pipes/Path.pipe";
 import {PathPointPipe} from "./pipes/PathPoint.pipe";
 import {BussSchedulePointPipe} from "./pipes/BussSchedulePointPipe";
+import {SeatPipe} from "./pipes/SeatPipe";
 
 
 @NgModule({
@@ -74,6 +75,7 @@ import {BussSchedulePointPipe} from "./pipes/BussSchedulePointPipe";
     PathPipe,
     MultiOptionComponent,
     BussSchedulePointPipe,
+    SeatPipe
   ],
   exports: [
     XeInputComponent,
@@ -95,7 +97,8 @@ import {BussSchedulePointPipe} from "./pipes/BussSchedulePointPipe";
     XeTimePipe,
     PathPointPipe,
     PathPipe,
-    BussSchedulePointPipe
+    BussSchedulePointPipe,
+    SeatPipe
   ],
   imports: [
     CommonModule,

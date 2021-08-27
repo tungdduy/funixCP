@@ -19,6 +19,7 @@ public class TripUser extends AbstractEntity {
 
     Column phoneNumber = of(PHONE);
     Column fullName = of(DESCRIPTION);
+    Column email = of(EMAIL);
 
     Column status = status(TripUserStatus.class).defaultValue(PENDING);
     Column unitPrice = of(MONEY);

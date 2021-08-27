@@ -29,6 +29,7 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   @Input("readMode") readMode;
   @Input() class;
   @Input() name;
+  @Input() uncheckChanged;
 
   @Input() hide;
   @ContentChildren(XeInputComponent, {descendants: true}) formControls: QueryList<XeInputComponent>;
@@ -95,6 +96,10 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     return this.readMode === '' || this.readMode === true;
   }
 
+  get errorMessages(): string[] {
+    return this.formControls.filter(input => input.validateFailed()).map(input => input.errorMessage);
+  }
+
   public _onSubmit() {
     if (!this.handler) {
       console.log("no FormHandler found!");
@@ -108,7 +113,7 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
       if (input.selectOneMenu && input.selectOneMenu().length === 1)
         input.value = input.selectOneMenu()[0].value;
 
-      if (input.isChanged) {
+      if (input.isChanged || this.uncheckChanged) {
         model[input.name] = input.submitValue;
         changedInputsNumber++;
       }
@@ -219,4 +224,5 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
       }, 0);
     }
   }
+
 }

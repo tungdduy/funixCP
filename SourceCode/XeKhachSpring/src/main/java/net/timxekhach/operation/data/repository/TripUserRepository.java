@@ -15,6 +15,7 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     void deleteAllByTripUserIdIn(List<Long> ids);
     TripUser findByTripUserId(Long id);
     List<TripUser> findByTripUserIdIn(List<Long> id);
+    Integer countTripUserIdByTripId(Long trip);
     @SuppressWarnings("unused")
     void deleteByTripId(Long tripId);
     @SuppressWarnings("unused")

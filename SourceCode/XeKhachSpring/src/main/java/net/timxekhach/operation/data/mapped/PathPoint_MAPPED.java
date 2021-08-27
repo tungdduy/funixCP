@@ -7,6 +7,7 @@ import net.timxekhach.operation.data.entity.Location;
 import net.timxekhach.operation.data.entity.Path;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -90,8 +91,8 @@ public abstract class PathPoint_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "locationId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "locationId")
     protected Location location;
 
     public Location getLocation(){
@@ -124,8 +125,8 @@ public abstract class PathPoint_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "pathId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "pathId")
     protected Path path;
 
     public Path getPath(){
@@ -185,19 +186,19 @@ public abstract class PathPoint_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("pathPointId")) {
-                this.pathPointId = Long.valueOf(value);
+                this.pathPointId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("pathId")) {
-                this.pathId = Long.valueOf(value);
+                this.pathId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("locationId")) {
-                this.locationId = Long.valueOf(value);
+                this.locationId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
             }
         }
     }

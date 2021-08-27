@@ -19,6 +19,7 @@ import java.util.Map;
 
 @MappedSuperclass
 public abstract class XeEntity implements Serializable {
+
     @Transient
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 

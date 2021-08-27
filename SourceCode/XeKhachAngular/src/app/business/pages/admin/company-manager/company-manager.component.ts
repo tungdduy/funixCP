@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Company} from "../../../entities/Company";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
-import {XeTableData} from '../../../../framework/model/XeTableData';
+import {TableColumn, XeTableData} from '../../../../framework/model/XeTableData';
 import {Employee} from '../../../entities/Employee';
 import {User} from '../../../entities/User';
 import {CommonUpdateService} from "../../../service/common-update.service";
@@ -9,6 +9,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Notifier} from "../../../../framework/notify/notify.service";
 import {XeLabel} from "../../../i18n";
 import {XeScreen} from '../../../../framework/components/xe-nav/xe-nav.component';
+import {EntityField} from "../../../../framework/model/XeFormData";
 
 @Component({
   selector: 'xe-company-manager',
@@ -34,8 +35,9 @@ export class CompanyManagerComponent extends FormAbstract {
       updateCriteriaTableOnSelect: () => [this.employeeTable]
     },
     table: {
+      selectBasicColumns: ['companyName', 'companyDesc', 'hotLine', 'totalTrips', 'totalSchedules', 'totalBusses',
+      ],
       basicColumns: [
-        'companyName', 'companyDesc', 'hotLine', 'totalTrips', 'totalSchedules', 'totalBusses',
         {field: {name: 'totalEmployees'}, action: {screen: this.screens.employees}}
       ]
     },

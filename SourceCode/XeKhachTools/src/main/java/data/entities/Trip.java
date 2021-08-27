@@ -2,6 +2,7 @@ package data.entities;
 
 import data.entities.abstracts.AbstractEntity;
 import data.models.Column;
+import data.models.CountMethod;
 import data.models.MapColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class Trip extends AbstractEntity {
         pk(BussSchedule.class);
     }
 
+    CountMethod totalTripUsers = count(TripUser.class);
     Column lockedSeatsString = of(COMMA_SEPARATOR);
     Column tripUnitPrice = of(MONEY);
     Column launchTime = of(TIME_ONLY);

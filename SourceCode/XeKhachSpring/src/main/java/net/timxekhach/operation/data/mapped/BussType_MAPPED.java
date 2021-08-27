@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import net.timxekhach.operation.data.entity.SeatGroup;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -92,7 +93,7 @@ public abstract class BussType_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
             }
         }
     }

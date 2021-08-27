@@ -17,10 +17,12 @@ export class IconWrapComponent implements OnInit {
   @Input() iconPre: string;
   @Input() iconAfter: string;
   @Input() iconOnly: string;
+  @Input() clazz: string;
   @Input() wrapper: IconWrapper;
 
   ngOnInit(): void {
     this.wrapper = this.wrapper ? this.wrapper : {
+      clazz: this.clazz,
       icon: {
         iconPre: this.iconPre,
         iconAfter: this.iconAfter,

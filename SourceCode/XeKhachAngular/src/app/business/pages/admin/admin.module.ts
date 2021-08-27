@@ -2,6 +2,7 @@ import {MyAccountComponent} from "./my-account/my-account.component";
 import {MyCompanyComponent} from "./my-company/my-company.component";
 import {AllUserComponent} from "./all-user/all-user.component";
 import {MyTripComponent} from "./my-trip/my-trip.component";
+import {FindTripComponent} from "./find-trip/find-trip.component";
 import {CompanyManagerComponent} from "./company-manager/company-manager.component";
 import {BussTypeComponent} from "./buss-type/buss-type.component";
 import {BussComponent} from "./buss/buss.component";
@@ -68,6 +69,7 @@ import {CommonComponentsModule} from "../../../framework/components/common-compo
     MyCompanyComponent,
     AllUserComponent,
     MyTripComponent,
+    FindTripComponent,
     CompanyManagerComponent,
     BussTypeComponent,
     BussComponent,

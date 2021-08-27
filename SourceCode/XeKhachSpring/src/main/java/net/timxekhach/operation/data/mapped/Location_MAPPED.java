@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.validation.constraints.*;
 import net.timxekhach.operation.data.entity.Location;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -110,7 +111,7 @@ public abstract class Location_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("locationId")) {
-                this.locationId = Long.valueOf(value);
+                this.locationId = value == null ? null : Long.valueOf(value);
             }
         }
     }

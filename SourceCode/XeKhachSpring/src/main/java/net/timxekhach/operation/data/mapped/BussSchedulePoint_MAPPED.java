@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.BussSchedule;
 import net.timxekhach.operation.data.entity.PathPoint;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -132,8 +133,8 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussScheduleId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "bussScheduleId")
     protected BussSchedule bussSchedule;
 
     public BussSchedule getBussSchedule(){
@@ -182,8 +183,8 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "pathPointId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "pathPointId")
     protected PathPoint pathPoint;
 
     public PathPoint getPathPoint(){
@@ -247,35 +248,35 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("pathPointId")) {
-                this.pathPointId = Long.valueOf(value);
+                this.pathPointId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussScheduleId")) {
-                this.bussScheduleId = Long.valueOf(value);
+                this.bussScheduleId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("pathId")) {
-                this.pathId = Long.valueOf(value);
+                this.pathId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussSchedulePointId")) {
-                this.bussSchedulePointId = Long.valueOf(value);
+                this.bussSchedulePointId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("locationId")) {
-                this.locationId = Long.valueOf(value);
+                this.locationId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussId")) {
-                this.bussId = Long.valueOf(value);
+                this.bussId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
             }
         }
     }

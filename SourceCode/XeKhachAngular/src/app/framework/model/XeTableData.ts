@@ -24,6 +24,7 @@ export interface TableColumn {
   subColumns?: TableColumn[];
   display?: {
     header?: {
+      title?: string;
       css?: string;
       silence?: boolean;
       icon?: IconOption;
@@ -81,7 +82,8 @@ export class XeTableData<E extends XeEntity> {
       filters?: EntityFilter,
       triggerUpdate?: (term) => any;
     }
-    basicColumns?: TableColumn[] | any,
+    selectBasicColumns?: any[],
+    basicColumns?: TableColumn[],
     manualColumns?: ManualColumn[]
   };
 

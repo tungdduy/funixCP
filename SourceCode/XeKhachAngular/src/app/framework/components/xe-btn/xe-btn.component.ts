@@ -28,7 +28,7 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
   @Input() left?;
   @Input() right?;
 
-  @Input() template: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank';
+  @Input() template: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank' | 'eraser' | 'orderTrip';
 
   @Input() hideText;
   get showText() {
@@ -38,11 +38,12 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
 
 
   _types = {
-    clear: {
+    eraser: {
       state: 'secondary',
       size: 'sm',
       type: 'button',
-      label: 'clear'
+      label: 'eraser',
+      icon: 'eraser'
     },
     default: {
       state: 'primary',
@@ -106,6 +107,13 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
       label: 'ok',
       state: 'primary',
       size: 'sm',
+      type: 'button'
+    },
+    orderTrip: {
+      icon: 'luggage-cart',
+      label: 'orderNow',
+      state: 'primary',
+      size: 'lg',
       type: 'button'
     },
     selectFromList: {

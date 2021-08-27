@@ -6,7 +6,6 @@ export declare interface ClassMeta {
   camelName: string;
   pkMetas: () => ClassMeta[];
   mainIdName: string;
-  mapFields: () => {name: string, meta: ClassMeta}[];
 }
 
 export declare interface XeEntityClass<E extends XeEntity> {

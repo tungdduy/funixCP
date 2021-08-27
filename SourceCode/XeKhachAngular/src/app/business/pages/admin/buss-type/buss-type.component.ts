@@ -45,7 +45,10 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
       updateCriteriaTableOnSelect: () => [this.bussTable]
     },
     table: {
-      basicColumns: ['profileImageUrl', 'bussTypeName',
+      selectBasicColumns: [
+        'profileImageUrl', 'bussTypeName'
+      ],
+      basicColumns: [
         {field: {name: 'totalSeats'}, action: {screen: this.screens.bussScheme}},
         {field: {name: 'totalBusses'}, action: {screen: this.screens.bussList}}
       ]
@@ -62,7 +65,8 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
     },
     xeScreen: this.screen,
     table: {
-      basicColumns: ['company.companyName', 'bussLicense',
+      selectBasicColumns: ['company.companyName', 'bussLicense'],
+      basicColumns: [
         {field: {name: 'totalBussEmployees'}, action: {screen: this.screens.bussEmployees}},
         {field: {name: 'totalSchedules'}, action: {screen: this.screens.schedules}}
       ],
@@ -131,7 +135,8 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
   bussScheduleTable = BussSchedule.tableData({
     xeScreen: this.screen,
     table: {
-      basicColumns: ['scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays',
+      selectBasicColumns: ['scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays'],
+      basicColumns: [
         {
           field: {name: 'totalBussSchedulePoints'},
           action: {screen: this.screens.scheduleMiddlePoints}

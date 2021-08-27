@@ -12,6 +12,7 @@ import java.util.Date;
 import net.timxekhach.operation.data.entity.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -136,8 +137,8 @@ public abstract class TripUser_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "tripId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "tripId")
     protected Trip trip;
 
     public Trip getTrip(){
@@ -173,8 +174,8 @@ public abstract class TripUser_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "userId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "userId")
     protected User user;
 
     public User getUser(){
@@ -251,6 +252,9 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @Size(max = 255)
     protected String fullName;
 
+    @Email
+    protected String email;
+
     @Enumerated(EnumType.STRING)
     protected TripUserStatus status = TripUserStatus.PENDING;
 
@@ -277,6 +281,10 @@ public abstract class TripUser_MAPPED extends XeEntity {
             }
             if (fieldName.equals("fullName")) {
                 this.setFullName(String.valueOf(value));
+                continue;
+            }
+            if (fieldName.equals("email")) {
+                this.setEmail(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("status")) {
@@ -316,31 +324,31 @@ public abstract class TripUser_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {
-                this.bussScheduleId = Long.valueOf(value);
+                this.bussScheduleId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("tripId")) {
-                this.tripId = Long.valueOf(value);
+                this.tripId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("tripUserId")) {
-                this.tripUserId = Long.valueOf(value);
+                this.tripUserId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussId")) {
-                this.bussId = Long.valueOf(value);
+                this.bussId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("userId")) {
-                this.userId = Long.valueOf(value);
+                this.userId = value == null ? null : Long.valueOf(value);
             }
         }
     }
