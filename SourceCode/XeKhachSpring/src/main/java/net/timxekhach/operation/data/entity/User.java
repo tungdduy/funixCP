@@ -1,8 +1,11 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
+
 import net.timxekhach.operation.data.mapped.User_MAPPED;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
@@ -92,7 +95,20 @@ public class User extends User_MAPPED {
            this.encodePassword();
         }
     }
-// ____________________ ::BODY_SEPARATOR:: ____________________ //
+
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    @Override
+    @JsonProperty
+    public void setPassword(String password) {
+        super.setPassword(password);
+    }
+
+    // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
 
