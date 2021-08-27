@@ -22,7 +22,7 @@
       </ng-container>
     </xe-basic-form>
 
-    <nb-card *ngIf="screen.current === screens.password">
+    <nb-card *ngIf="screen.is(screens.password)">
       <nb-card-body>
         <xe-form #password
                  [initCtrl]="initMe"
@@ -55,7 +55,6 @@
       </div>
       <div bodyTopMost class="{{companyBodyInfoClass}}">
         <div class="text-center">
-
           <icon-wrap iconPre="bus">{{company.totalBusses}}</icon-wrap>
           <icon-wrap iconPre="users-cog">{{company.totalEmployees}}</icon-wrap>
           <icon-wrap iconPre="suitcase-rolling">{{company.totalTrips}}</icon-wrap>

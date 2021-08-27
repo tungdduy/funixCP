@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.SeatGroup_MAPPED;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.Transient;
 import net.timxekhach.utility.XeNumberUtils;
 import net.timxekhach.utility.XeObjectUtils;
@@ -24,6 +25,11 @@ public class SeatGroup extends SeatGroup_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+    @JsonIgnore
+    public BussType getBussType() {
+        return super.getBussType();
+    }
+
     private boolean isValidSeatRange() {
         return this.seatGroupOrder != null && this.totalSeats != null && this.seatGroupOrder > 0 && this.totalSeats > 0;
     }

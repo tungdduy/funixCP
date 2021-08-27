@@ -126,7 +126,6 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
           }
           this.updateIdValidStatus();
           this.backupShareEntity(entity);
-          this.formData.share.tableComponent.ngOnInit();
         }
       }
     }
@@ -256,4 +255,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     ));
   }
 
+  asXeForm(form: any): XeFormComponent {
+    return form as XeFormComponent;
+  }
 }

@@ -1,6 +1,7 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {XePipe} from "./XePipe";
 import {DatePipe} from "@angular/common";
+import {XeLabel} from "../../../business/i18n";
 
 export const DATE_FORMATS = {
   parse: {
@@ -16,7 +17,7 @@ export const DATE_FORMATS = {
 
 @Pipe({name: 'xeDatePipe'})
 export class XeDatePipe extends XePipe implements PipeTransform {
-  singleToInline(value: any, options?: any) {
+  singleToInline = (value: any, options?: any) => {
     if (typeof value === 'string') return this._datePipe.transform(value, "dd-MM-yyyy");
     if (value !== null && value !== undefined) return this._datePipe.transform(value, "dd-MM-yyyy");
     return '';
@@ -42,7 +43,7 @@ export class XeDatePipe extends XePipe implements PipeTransform {
     && date1.getFullYear() === date2.getFullYear();
   }
 
-  validate = (time) => time !== undefined && time !== null;
+  singleValidate = (time) => time !== undefined && time !== null ? undefined : XeLabel.INVALID_INPUT;
 
 }
 

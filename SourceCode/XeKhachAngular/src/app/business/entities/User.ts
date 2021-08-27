@@ -3,8 +3,8 @@ import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
 import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
-import {TripUser} from "./TripUser";
 import {Employee} from "./Employee";
+import {TripUser} from "./TripUser";
 import {InputTemplate} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
@@ -15,7 +15,6 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 export class User extends XeEntity {
     static meta = EntityUtil.metas.User;
     userId: number;
-    allMyTrips: TripUser[];
     employee: Employee;
     email: string;
     phoneNumber: string;

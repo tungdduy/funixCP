@@ -40,7 +40,8 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                 .setOptions(
                         Option.name("edit"),
                         Option.name("readonly"),
-                        Option.name("ordering")
+                        Option.name("ordering"),
+                        Option.name("tripAdmin")
                 )
         );
 
@@ -48,6 +49,12 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                 .setOptions(
                         Option.name("locked").setProperties(
                                 Property.name("classes").stringValue("seat-locked")
+                        ),
+                        Option.name("lockedByBuss").setProperties(
+                                Property.name("classes").stringValue("seat-locked-by-buss")
+                        ),
+                        Option.name("lockedByTrip").setProperties(
+                                Property.name("classes").stringValue("seat-locked-by-trip")
                         ),
                         Option.name("hidden").setProperties(
                                 Property.name("classes").stringValue("seat-hidden")
@@ -98,6 +105,10 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                                 Option.name("phone").setProperties(
                                         Property.name("type").stringValue("shortInput"),
                                         Property.name("pipe").value("PhonePipe").postFix(".instance").type("XePipe")),
+                                Option.name("seats").setProperties(
+                                        Property.name("type").stringValue("html"),
+                                        Property.name("display").stringValue("custom"),
+                                        Property.name("pipe").value("SeatPipe").postFix(".instance").type("XePipe")),
                                 Option.name("money").setProperties(
                                         Property.name("type").stringValue("shortInput"),
                                         Property.name("pipe").value("MoneyPipe").postFix(".instance").type("XePipe")),

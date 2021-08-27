@@ -1,39 +1,51 @@
-<nb-card>
+<nb-card *ngIf="!screen.is(screens.orderSuccessfully)">
   <nb-card-header>
     <div class="float-left">
       <h3>
         <xe-btn (click)="parentScreen.back()" hideText template="back"></xe-btn>
-        <lbl [txt]="bussType.bussTypeName"></lbl>
+        <lbl [txt]="bussType?.bussTypeName"></lbl>
       </h3>
     </div>
-
     <div *ngIf="mode.hasEdit && screen.is(screens.schemeView)" class="float-right">
       <xe-btn (click)="openNewSeatRange()" template="add"></xe-btn>
     </div>
   </nb-card-header>
   <nb-card-body>
-
-    <ng-container *ngIf="screen.is(screens.schemeView)">
-      <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
-    </ng-container>
-
-    <ng-container *ngIf="mode.hasOrdering">
-      <ng-container *ngTemplateOutlet="TripOrderControlTemplate"></ng-container>
-    </ng-container>
+    <ng-container *ngTemplateOutlet="schemeViewTemplate"></ng-container>
 
     <ng-container *ngTemplateOutlet="SchemeFormEditTemplate"></ng-container>
 
   </nb-card-body>
 </nb-card>
 
+<ng-template #schemeViewTemplate>
+  <ng-container *ngIf="screen.is(screens.schemeView)">
+    <div class="row">
+      <ng-container *ngIf="!mode.hasOrdering">
+        <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="mode.hasOrdering">
+        <div class="col-md-6">
+          <ng-container *ngTemplateOutlet="TripOrderControlTemplate"></ng-container>
+        </div>
+        <div class="col-md-6">
+          <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
+        </div>
+      </ng-container>
+
+    </div>
+  </ng-container>
+</ng-template>
+
 <!-- ##############################  [SCHEME VIEW] ###################################### -->
 <ng-template #SchemeViewTemplate>
-  <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
-    <div>
+  <div>
+    <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
       <div class="pt-3">
         <h6>
           <lbl [key]="seatGroup.seatGroupName"></lbl>
-          <lbl [key]="seatGroup.seatGroupDesc" class="text-danger badge"></lbl>
+          <lbl [key]="seatGroup.seatGroupDesc" class="text-secondary badge"></lbl>
           <xe-btn (click)="openEditSeatGroup(seatGroup)" *ngIf="mode.hasEdit" hideText icon="pen"
                   template="blank"></xe-btn>
         </h6>
@@ -78,52 +90,145 @@
     {{seatNo}}
   </div>
 </ng-template>
+<!-- ##############################  [SeatSchemeTemplate] ###################################### -->
 
 <ng-template #TripOrderControlTemplate>
   <ng-container *ngIf="mode.hasOrdering">
-    <div>
-      <div [innerHTML]="tripUser.startPoint | pathPointPipe"></div>
-      <div [innerHTML]="tripUser.startPoint.location | locationPipe"></div>
+    <div class="row">
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="bussInfoTemplate"></ng-container>
+      </div>
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="schedulePointInfoTemplate"></ng-container>
+      </div>
     </div>
-    <div>
-      <div [innerHTML]="tripUser.endPoint | pathPointPipe"></div>
-      <div [innerHTML]="tripUser.endPoint.location | locationPipe"></div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <xe-basic-form [formData]="tripUserForm"></xe-basic-form>
+      </div>
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="seatInfoTemplate"></ng-container>
+      </div>
     </div>
-
-    <div>
-      <div>{{xeLabel.SEAT_UNIT_PRICE}}: <span class="text-secondary">{{tripUser.unitPrice}}</span></div>
-      <div>{{xeLabel.SELECTED_SEATS}}: <span class="text-secondary">{{tripUser.seatsString}}</span></div>
-      <div>{{xeLabel.TOTAL_SELECTED_SEATS}}: <span class="text-info">{{tripUser.totalSeats}}</span></div>
-      <div>{{xeLabel.TOTAL_PRICE}}: <span class="text-info">{{tripUser.totalPrice | moneyPipe}}</span></div>
+    <div *ngIf="errorMessage" class="text-right text-danger text-large">
+      <div [innerHTML]="errorMessage"></div>
     </div>
-
-    <div id="scheme-order-bottom-control">
-      <xe-btn (click)="clearOrderInfo()" template="clear"></xe-btn>
+    <hr>
+    <div class="cart-order-bottom-control">
+      <div class="float-left">
+        <xe-btn (click)="parentScreen.back()" template="back"></xe-btn>
+      </div>
+      <div class="float-right">
+        <xe-btn (click)="clearOrderInfo()" [disabled]="tripUser.totalPrice <= 0" template="eraser"></xe-btn>
+        <xe-btn (click)="order()" template="orderTrip"></xe-btn>
+      </div>
     </div>
   </ng-container>
 </ng-template>
 
+<!-- ##############################  [TripOrderControlTemplate] ###################################### -->
 
-<!-- ########################  ORDER INFO  ##################################### -->
-<ng-template #OrderCard>
-  <lbl [txt]="xeLabel.companyName">{{bussSchedule.buss.company.companyName}}</lbl>
-  <lbl [txt]="xeLabel.companyDesc">{{bussSchedule.buss.company.companyDesc}}</lbl>
-  <lbl [txt]="xeLabel.bussLicense">{{bussSchedule.buss.bussLicense}}</lbl>
-  <lbl [txt]="xeLabel.bussTypeName">{{bussSchedule.buss.bussType.bussTypeName}}</lbl>
-  <lbl [txt]="xeLabel.bussTypeDesc">{{bussSchedule.buss.bussType.bussTypeDesc}}</lbl>
-  <lbl [txt]="xeLabel.LAUNCH_DATE">{{trip.launchDate | xeDatePipe}}</lbl>
-  <lbl [txt]="xeLabel.launchTime">{{trip.launchTime | xeTimePipe}}</lbl>
+<ng-template #bussInfoTemplate>
+  <lbl [icon]="{iconPre: 'building'}" [txt]="xeLabel.companyName" class="d-block p-2">
+    : {{bussSchedule.buss.company.companyName}} - {{bussSchedule.buss.company.companyDesc}} </lbl>
+  <lbl [icon]="{iconPre: 'pencil-ruler'}" [txt]="xeLabel.BUSS_TYPE" class="d-block p-2">
+    : {{bussSchedule.buss.bussType?.bussTypeName}}</lbl>
+  <lbl [icon]="{iconPre: 'bus'}" [txt]="xeLabel.bussLicense" class="d-block p-2">
+    : {{bussSchedule.buss.bussLicense}}</lbl>
+</ng-template>
+<!-- ##############################  [bussInfoTemplate] ###################################### -->
 
-  <div>{{xeLabel.SELECTED_SEATS}}: <span class="text-secondary">{{tripUser.seatsString}}</span></div>
-  <div>{{xeLabel.TOTAL_SELECTED_SEATS}}: <span class="text-info">{{tripUser.totalSeats}}</span></div>
-  <div>{{xeLabel.SEAT_UNIT_PRICE}}: <span class="text-secondary">{{tripUser.unitPrice | moneyPipe}}</span></div>
-  <div>{{xeLabel.TOTAL_PRICE}}: <span class="text-info">{{tripUser.totalPrice | moneyPipe}}</span></div>
-
-  <xe-input [(value)]="tripUser.fullName"></xe-input>
-  <xe-input [(value)]="tripUser.phoneNumber"></xe-input>
-  <div class="cart-order-bottom-control">
-    <xe-btn (click)="screen.back()" template="back"></xe-btn>
-    <xe-btn (click)="order()" template="submit"></xe-btn>
+<ng-template #seatInfoTemplate>
+  <h5 [innerHTML]="xeLabel.cart_seat_info"></h5>
+  <div class="cart-seat-info">
+    <lbl [icon]="{iconPre: 'money-check'}" [txt]="xeLabel.SEAT_UNIT_PRICE" class="d-block p-2">
+      : {{tripUser.unitPrice | moneyPipe}}</lbl>
+    <lbl [icon]="{iconPre: 'calendar'}" [txt]="xeLabel.LAUNCH_DATE" class="d-block p-2">
+      : {{trip.launchDate | xeDatePipe}}</lbl>
+    <icon-wrap clazz="pb-1" iconAfter="clock">{{xeLabel.launchTime}} {{trip.launchTime | xeTimePipe}}</icon-wrap>
+    <icon-wrap clazz="pb-1" iconAfter="couch"> {{tripUser.totalSeats || 0}}</icon-wrap>
+    <hr>
+    <div *ngIf="screen.is(screens.orderSuccessfully)">
+      <div [innerText]="xeLabel.SELECTED_SEATS" class="mb-2"></div>
+      <div [innerHTML]="tripUser.seatsString | seatPipe"></div>
+    </div>
+    <div *ngIf="tripUser.totalPrice <= 0" class="text-right">
+      {{xeLabel.PLEASE_SELECT_SEATS}}
+      <nb-icon icon="hand-point-right" pack="fa"></nb-icon>
+    </div>
+    <div class="text-center">{{xeLabel.totalPayment}}:
+      <h4
+        class="d-inline-block text-danger text-right pt-2">{{tripUser.totalPrice | moneyPipe : {html: true} : 'zero'}}</h4>
+    </div>
   </div>
 </ng-template>
+<!-- ##############################  [seatInfoTemplate] ###################################### -->
+
+<ng-template #schedulePointInfoTemplate>
+  <div class="row">
+    <div class="col-md-6">
+      <h6 [textContent]="xeLabel.POINT_FROM"></h6>
+      <div>
+        <div [innerHTML]="tripUser.startPoint | pathPointPipe"></div>
+        <div [innerHTML]="tripUser.startPoint.location | locationPipe"></div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h6 [textContent]="xeLabel.POINT_TO"></h6>
+      <div>
+        <div [innerHTML]="tripUser.endPoint | pathPointPipe"></div>
+        <div [innerHTML]="tripUser.endPoint.location | locationPipe"></div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- ##############################  [schedulePointInfoTemplate] ###################################### -->
+
+
+  <ng-container *ngIf="screen.is(screens.orderSuccessfully)">
+    <nb-card>
+      <nb-card-header>
+        <div class="text-center">
+          <h3 [innerText]="xeLabel.ORDER_SUCCESSFULLY"></h3>
+          <div [innerText]="xeLabel.BELOW_IS_YOUR_ORDER_INFO">:</div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="m-auto">
+          <div class="row">
+            <div class="col-md-4">
+              <h6 [textContent]="xeLabel.ORDER_PERSON_INFO"></h6>
+              <lbl [icon]="{iconPre: 'user'}" [txt]="xeLabel.fullName" class="d-block p-2">
+                : {{tripUser.fullName}} </lbl>
+              <lbl [icon]="{iconPre: 'mobile-alt'}" [txt]="xeLabel.phoneNumber" class="d-block p-2">
+                : {{tripUser.phoneNumber | phonePipe}} </lbl>
+              <div *ngIf="orderValidEmail">
+                <lbl [icon]="{iconPre: 'envelope'}" [txt]="xeLabel.email" class="d-block p-2">
+                  : {{tripUser.email}} </lbl>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <ng-container *ngTemplateOutlet="bussInfoTemplate"></ng-container>
+            </div>
+            <div class="col-md-4">
+              <ng-container *ngTemplateOutlet="schedulePointInfoTemplate"></ng-container>
+            </div>
+            <div class="col-md-6">
+              <ng-container *ngTemplateOutlet="seatInfoTemplate"></ng-container>
+            </div>
+            <div class="col-md-6 order-success-bottom-wrapper">
+              <div class="mt-2 text-center order-success-bottom-controls">
+                <xe-btn [btnText]="xeLabel.REVIEW_HISTORY" icon="history" template="cancel"></xe-btn>
+                <xe-btn [btnText]="xeLabel.GO_HOME" template="ok"></xe-btn>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </ng-container>
+<!-- ##############################  [orderSuccessfullyTemplate] ###################################### -->
+
 

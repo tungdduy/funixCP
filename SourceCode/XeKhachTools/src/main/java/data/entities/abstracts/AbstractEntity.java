@@ -3,6 +3,7 @@ package data.entities.abstracts;
 import data.models.Column;
 import data.models.CountMethod;
 import data.models.MapColumn;
+import generator.java.data.mapped.PkMap;
 import generator.java.data.repository.CapCamel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public abstract class AbstractEntity {
     protected List<AbstractEntity> primaryKeyEntities;
     protected Set<String> primaryKeyIdNames;
     protected String capName, camelName;
+    protected List<String> ignorePkJsons = new ArrayList<>();
 
     protected String jpaDefaultOrderExpression = "";
 
@@ -84,9 +86,16 @@ public abstract class AbstractEntity {
         return primaryKeyIdNames;
     }
 
-    protected <E extends AbstractEntity> void pk(Class<E> pkClass) {
+    protected <E extends AbstractEntity> AbstractEntity pk(Class<E> pkClass) {
         primaryKeyClasses.add(pkClass);
+        return this;
     }
+
+    public  AbstractEntity ignoreJson() {
+        this.ignorePkJsons.add(this.primaryKeyClasses.get(this.primaryKeyClasses.size() -1).getSimpleName());
+        return this;
+    }
+
 
     protected Column of(DataType dataType) {
         return dataType.column.get();

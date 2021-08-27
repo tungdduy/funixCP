@@ -71,6 +71,7 @@ export const Url = {
       MY_COMPANY: config().setRoles([r.ROLE_BUSS_ADMIN]),
       ALL_USER: config().setRoles([r.ROLE_SYS_ADMIN]),
       MY_TRIP: uConfig(),
+      FIND_TRIP: config(),
       COMPANY_MANAGER: config().setRoles([r.ROLE_SYS_ADMIN]),
       BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
       BUSS: config().setRoles([r.ROLE_BUSS_STAFF]),

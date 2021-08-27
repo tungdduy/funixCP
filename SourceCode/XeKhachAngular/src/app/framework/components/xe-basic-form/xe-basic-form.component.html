@@ -35,73 +35,81 @@
 
 <ng-template #formTemplate>
   <xe-form #form
+           [uncheckChanged]="formData.mode?.uncheckChanged"
            [addToSubmit]="idsIncludeOnSubmit"
            [muteOnSuccess]="formData.control?.muteOnSuccess"
            [readMode]="readMode"
            name="basicFormInfo">
     <div class="row">
       <ng-container *ngFor="let field of filteredField()">
-        <div *ngIf="!isHideBody"  class="col-md-{{colSpan(field)}} pl-4 pr-4 {{formData.display?.columnNumber > 1 ? 'pt-2 pb-2' : ''}}">
-            <xe-input *ngIf="isIdValid ? !field?.newOnly : true"
-                      [alwaysShowLabel]="formData.display?.columnNumber > 1"
-                      [(value)]="entityUtil.getFieldOwnerEntity(formData.share?.entity, field)[entityUtil.getLastFieldName(field)]"
-                      [disabledUpdate]="field.clearOnSuccess"
-                      [grid]="formData.display?.grid"
-                      [entityField]="field"
-                      [hidden]="field.hidden"
-                      [lblKey]="field.lblKey"
-                      [name]="field.name"
-                      [required]="field.required"
-                      [selectOneMenu]="field.selectOneMenu"
-                      [mode]="field.mode"
-                      [template]="field.template">
-            </xe-input>
+        <div *ngIf="!isHideBody"
+             class="col-md-{{colSpan(field)}} pl-4 pr-4 {{formData.display?.columnNumber > 1 ? 'pt-2 pb-2' : ''}}">
+          <xe-input *ngIf="isIdValid ? !field?.newOnly : true"
+                    [(value)]="entityUtil.getLastFieldOwner(formData.share?.entity, formData.entityIdentifier.clazz.meta, field)[entityUtil.getLastFieldName(field)]"
+                    [alwaysShowLabel]="formData.display?.columnNumber > 1"
+                    [disabledUpdate]="field.clearOnSuccess"
+                    [entityField]="field"
+                    [grid]="formData.display?.grid"
+                    [hidden]="field.hidden"
+                    [lblKey]="field.lblKey"
+                    [mode]="field.mode"
+                    [name]="field.name"
+                    [required]="field.required"
+                    [selectOneMenu]="field.selectOneMenu"
+                    [template]="field.template">
+          </xe-input>
         </div>
       </ng-container>
     </div>
     <ng-content select="[leftAboveMessageLabel]"></ng-content>
-    <lbl #msg class="text-right" p></lbl>
-    <div class="float-left">
-      <ng-content select="[bottomLeftButtons]"></ng-content>
-    </div>
-    <div class="float-left">
-
-      <xe-btn (click)="resetHideBody(); form.reset(); screen.go(screens.deleteEntity)"
-              *ngIf="(editMode && formData.control?.allowDelete) && isIdValid"
-              hideText template="delete"></xe-btn>
-
-      <xe-btn (click)="newEntity(); form.unMute()"
-              *ngIf="readMode && formData.control?.allowAdd"
-              hideText
-              template="add"></xe-btn>
-    </div>
-    <div class="text-right">
-      <ng-content select="[bottomRightButtons]"></ng-content>
-
-      <xe-btn (click)="onCancel()"
-              *ngIf="hasDialog || formData.display.cancelBtn === 'close'"
-              template="close"></xe-btn>
-
-      <xe-btn (click)="onEdit()"
-              *ngIf="readMode"
-              template="edit"></xe-btn>
-
-      <ng-container *ngIf="editMode">
-        <xe-btn (click)="onCancel()"
-                *ngIf="!hasDialog && formData.display.cancelBtn !== 'close'"
-                template="cancel"></xe-btn>
-
-        <xe-btn *ngIf="isCreate"
-                [disabled]="form.isLoading"
-                template="add"></xe-btn>
-
-        <xe-btn *ngIf="isUpdate"
-                [disabled]="form.isLoading"
-                template="save"></xe-btn>
-
-      </ng-container>
-    </div>
+    <ng-container *ngIf="!formData.display.noButton">
+      <lbl #msg class="text-right" p></lbl>
+      <ng-container *ngTemplateOutlet="formButtonControls; context:{form: form}"></ng-container>
+    </ng-container>
   </xe-form>
+</ng-template>
+
+<ng-template #formButtonControls let-form="form">
+  <div class="float-left">
+    <ng-content select="[bottomLeftButtons]"></ng-content>
+  </div>
+  <div class="float-left">
+
+    <xe-btn (click)="resetHideBody(); asXeForm(form).reset(); screen.go(screens.deleteEntity)"
+            *ngIf="(editMode && formData.control?.allowDelete) && isIdValid"
+            hideText template="delete"></xe-btn>
+
+    <xe-btn (click)="newEntity(); asXeForm(form).unMute()"
+            *ngIf="readMode && formData.control?.allowAdd"
+            hideText
+            template="add"></xe-btn>
+  </div>
+  <div class="text-right">
+    <ng-content select="[bottomRightButtons]"></ng-content>
+
+    <xe-btn (click)="onCancel()"
+            *ngIf="hasDialog || formData.display.cancelBtn === 'close'"
+            template="close"></xe-btn>
+
+    <xe-btn (click)="onEdit()"
+            *ngIf="readMode"
+            template="edit"></xe-btn>
+
+    <ng-container *ngIf="editMode">
+      <xe-btn (click)="onCancel()"
+              *ngIf="!hasDialog && formData.display.cancelBtn !== 'close'"
+              template="cancel"></xe-btn>
+
+      <xe-btn *ngIf="isCreate"
+              [disabled]="asXeForm(form).isLoading"
+              template="add"></xe-btn>
+
+      <xe-btn *ngIf="isUpdate"
+              [disabled]="asXeForm(form).isLoading"
+              template="save"></xe-btn>
+
+    </ng-container>
+  </div>
 </ng-template>
 
 <!-- ########################## END OF FORM HEADER #######################-->

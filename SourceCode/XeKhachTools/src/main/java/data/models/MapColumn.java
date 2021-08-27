@@ -23,6 +23,7 @@ public class MapColumn {
 
     @Getter @Setter
     public static class Core {
+        Boolean isJsonIgnored = true;
         String fieldName, mappedBy, orderBy, fieldCapName;
         Boolean isUnique = false;
         Set<Join> joins = new HashSet<>();
@@ -31,6 +32,11 @@ public class MapColumn {
     }
 
     Core core;
+
+    public MapColumn renderJson() {
+        core.isJsonIgnored = false;
+        return this;
+    }
 
     public MapColumn unique() {
         core.isUnique = true;

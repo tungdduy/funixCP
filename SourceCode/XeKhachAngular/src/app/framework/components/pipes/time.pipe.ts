@@ -1,10 +1,9 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {XePipe} from "./XePipe";
 import {DatePipe} from "@angular/common";
-import {Observable, of} from "rxjs";
-import {ValueConverter} from "@angular/compiler/src/render3/view/template";
-import {ValueExchange} from "../../model/ValueExchange";
+import {of} from "rxjs";
 import {AutoInputModel} from "../../model/AutoInputModel";
+import {XeLabel} from "../../../business/i18n";
 
 @Pipe({name: 'xeTimePipe'})
 export class XeTimePipe extends XePipe implements PipeTransform {
@@ -42,7 +41,7 @@ export class XeTimePipe extends XePipe implements PipeTransform {
     return convertedTime1.getHours() === convertedTime2.getHours() && convertedTime1.getMinutes() === convertedTime2.getMinutes();
   }
 
-  validate = (time) => time !== undefined && time !== null;
+  singleValidate = (time) => time !== undefined && time !== null ? undefined : XeLabel.INVALID_INPUT;
 
   inputStringToAppValue = (time: any) => {
     const timer = String(time).trim().split(":");

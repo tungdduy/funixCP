@@ -11,6 +11,7 @@ import java.util.Set;
 public class PkMap {
     Set<String> joins = new HashSet<>();
     String simpleClassName, fieldName;
+    Boolean isJsonIgnored;
     public String getFieldCapName() {
         return StringUtil.toCapitalizeEachWord(this.fieldName);
     }

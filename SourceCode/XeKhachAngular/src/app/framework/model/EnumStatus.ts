@@ -12,6 +12,7 @@ import {LocationPipe} from "../components/pipes/location.pipe";
 import {Observable} from "rxjs";
 import {AutoInputModel} from "./AutoInputModel";
 import {BussSchedulePointPipe} from "../components/pipes/BussSchedulePointPipe";
+import {SeatPipe} from "../components/pipes/SeatPipe";
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -64,21 +65,25 @@ export class InputMode {
 
 export class BussSchemeMode {
   readonly name: string;
-  constructor(private _bussSchemeMode, private _readonly: string, private _edit: string, private _ordering: string) {
+  constructor(private _bussSchemeMode, private _tripAdmin: string, private _readonly: string, private _edit: string, private _ordering: string) {
     this.name = _bussSchemeMode;
   }
+  get hasTripAdmin() {return this._tripAdmin === ""; }
+  get tripAdmin() {return this._tripAdmin; }
   get hasReadonly() {return this._readonly === ""; }
   get readonly() {return this._readonly; }
   get hasEdit() {return this._edit === ""; }
   get edit() {return this._edit; }
   get hasOrdering() {return this._ordering === ""; }
   get ordering() {return this._ordering; }
-  static readonly edit = new BussSchemeMode('edit', null, "", null);
+  static readonly edit = new BussSchemeMode('edit', null, null, "", null);
   get isEdit() {return this._bussSchemeMode === 'edit'; }
-  static readonly readonly = new BussSchemeMode('readonly', "", null, null);
+  static readonly readonly = new BussSchemeMode('readonly', null, "", null, null);
   get isReadonly() {return this._bussSchemeMode === 'readonly'; }
-  static readonly ordering = new BussSchemeMode('ordering', null, null, "");
+  static readonly ordering = new BussSchemeMode('ordering', null, null, null, "");
   get isOrdering() {return this._bussSchemeMode === 'ordering'; }
+  static readonly tripAdmin = new BussSchemeMode('tripAdmin', "", null, null, null);
+  get isTripAdmin() {return this._bussSchemeMode === 'tripAdmin'; }
 
 }
 
@@ -88,14 +93,20 @@ export class SeatStatus {
   constructor(private _seatStatus, private _classes: string) {
     this.name = _seatStatus;
   }
-  get hasClassesSeatHidden() {return this._classes === "seat-hidden"; }
   get hasClassesSeatSelected() {return this._classes === "seat-selected"; }
-  get hasClassesSeatLocked() {return this._classes === "seat-locked"; }
+  get hasClassesSeatLockedByBuss() {return this._classes === "seat-locked-by-buss"; }
   get hasClassesSeatAvailable() {return this._classes === "seat-available"; }
+  get hasClassesSeatHidden() {return this._classes === "seat-hidden"; }
+  get hasClassesSeatLockedByTrip() {return this._classes === "seat-locked-by-trip"; }
   get hasClassesSeatBooked() {return this._classes === "seat-booked"; }
+  get hasClassesSeatLocked() {return this._classes === "seat-locked"; }
   get classes() {return this._classes; }
   static readonly locked = new SeatStatus('locked', "seat-locked");
   get isLocked() {return this._seatStatus === 'locked'; }
+  static readonly lockedByBuss = new SeatStatus('lockedByBuss', "seat-locked-by-buss");
+  get isLockedByBuss() {return this._seatStatus === 'lockedByBuss'; }
+  static readonly lockedByTrip = new SeatStatus('lockedByTrip', "seat-locked-by-trip");
+  get isLockedByTrip() {return this._seatStatus === 'lockedByTrip'; }
   static readonly hidden = new SeatStatus('hidden', "seat-hidden");
   get isHidden() {return this._seatStatus === 'hidden'; }
   static readonly available = new SeatStatus('available', "seat-available");
@@ -123,12 +134,13 @@ export class InputTemplate {
   get options() {return this._options; }
   get hasPipe() {return this._pipe !== null; }
   get pipe() {return this._pipe; }
-  get hasTypeSearchTable() {return this._type === "searchTable"; }
   get hasTypeShortInput() {return this._type === "shortInput"; }
-  get hasTypeSelectOneMenu() {return this._type === "selectOneMenu"; }
-  get hasTypeMultiOption() {return this._type === "multiOption"; }
   get hasTypeBooleanToggle() {return this._type === "booleanToggle"; }
+  get hasTypeSearchTable() {return this._type === "searchTable"; }
   get hasTypeDate() {return this._type === "date"; }
+  get hasTypeMultiOption() {return this._type === "multiOption"; }
+  get hasTypeHtml() {return this._type === "html"; }
+  get hasTypeSelectOneMenu() {return this._type === "selectOneMenu"; }
   get hasTypeTime() {return this._type === "time"; }
   get type() {return this._type; }
   get hasTriggerOnClick() {return this._triggerOnClick === ''; }
@@ -172,6 +184,8 @@ export class InputTemplate {
   get isScheduledLocation() {return this._inputTemplate === 'scheduledLocation'; }
   static readonly phone = new InputTemplate('phone', null, null, null, null, PhonePipe.instance, "shortInput", null);
   get isPhone() {return this._inputTemplate === 'phone'; }
+  static readonly seats = new InputTemplate('seats', null, "custom", null, null, SeatPipe.instance, "html", null);
+  get isSeats() {return this._inputTemplate === 'seats'; }
   static readonly money = new InputTemplate('money', null, null, null, null, MoneyPipe.instance, "shortInput", null);
   get isMoney() {return this._inputTemplate === 'money'; }
   static readonly weekDays = new InputTemplate('weekDays', null, "custom", null, WeekDays, null, "multiOption", null);

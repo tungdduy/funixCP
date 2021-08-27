@@ -5,7 +5,6 @@ import javax.validation.constraints.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.ArrayList;
-import net.timxekhach.operation.data.entity.TripUser;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Employee;
@@ -58,12 +57,6 @@ public abstract class User_MAPPED extends XeEntity {
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
 //====================================================================//
-    @OneToMany(
-        mappedBy = "user",
-        orphanRemoval = true,
-        fetch = FetchType.LAZY
-    )
-    protected List<TripUser> allMyTrips = new ArrayList<>();
     @OneToOne(
         mappedBy = "user",
         orphanRemoval = true,
@@ -83,6 +76,7 @@ public abstract class User_MAPPED extends XeEntity {
     protected String email;
 
     @Pattern(regexp = "(03|05|07|08|09)+\\d{8,10}")
+    @Column(unique = true)
     protected String phoneNumber;
     @Size(max = 255)
     @JsonIgnore
@@ -145,7 +139,7 @@ public abstract class User_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("userId")) {
-                this.userId = Long.valueOf(value);
+                this.userId = value == null ? null : Long.valueOf(value);
             }
         }
     }

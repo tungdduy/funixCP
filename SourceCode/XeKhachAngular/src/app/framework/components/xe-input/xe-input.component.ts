@@ -11,7 +11,6 @@ import {MultiOptionUtil} from "../../model/EntityEnum";
 import {EntityField} from "../../model/XeFormData";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {AutoInputModel} from "../../model/AutoInputModel";
-import {Util} from "leaflet";
 
 
 @Component({
@@ -79,8 +78,8 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input() id: string;
   @Input() required: any;
   @Input() validatorMsg?: string;
-  @Input() minLength?: bigint;
-  @Input() maxLength?: bigint;
+  @Input() minLength?: number;
+  @Input() maxLength?: number;
   @Input() matching?: any;
   @Input() name?: string;
   @Input() icon?;
@@ -257,24 +256,23 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   isValidateSuccess(): boolean {
     this.errorMessage = undefined;
-    if (!this.template.hasTypeShortInput) {
-      if (this.isRequire && !this._value
-        && !this.template.hasTypeBooleanToggle) {
-        this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
+    if (this.isRequire && !this._value
+      && !this.template.hasTypeBooleanToggle) {
+      this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
+      return false;
+    }
+    if (this.template.hasPipe) {
+      this.errorMessage = this.template?.pipe?.singleValidate(this.appValue);
+      if (!!this.errorMessage)
         return false;
-      }
-      if (this.template.hasPipe) {
-        if (!this.template.pipe.validate(this.appValue)) {
-          this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
-          return false;
-        }
-      }
-      return true;
     }
     if (this.isRequire &&
       (StringUtil.isBlank(String(this.value)))) {
       this.errorMessage = AppMessages.PLEASE_INPUT(this.label);
       return false;
+    }
+    if (!this.isRequire) {
+      return true;
     }
 
     if (this.getName().endsWith('Id') && (this.value as unknown as number) <= 0) {

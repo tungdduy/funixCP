@@ -1,5 +1,7 @@
 export const UrlImport = {
     // @ts-ignore
+    "ADMIN.FIND_TRIP-component": () => require('app/business/pages/admin/find-trip/find-trip.component').FindTripComponent,
+    // @ts-ignore
     "CHECK_IN.REGISTER-component": () => require('app/business/pages/check-in/register/register.component').RegisterComponent,
     // @ts-ignore
     "ADMIN.PATH-component": () => require('app/business/pages/admin/path/path.component').PathComponent,

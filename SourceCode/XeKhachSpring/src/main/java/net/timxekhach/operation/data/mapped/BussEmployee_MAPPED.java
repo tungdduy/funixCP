@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import lombok.*;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
@@ -113,8 +114,8 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "bussId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "bussId")
     protected Buss buss;
 
     public Buss getBuss(){
@@ -156,8 +157,8 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
         updatable = false)
     })
     @JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "employeeId")
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "employeeId")
     protected Employee employee;
 
     public Employee getEmployee(){
@@ -207,27 +208,27 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
                 continue;
             }
             if (fieldName.equals("bussEmployeeId")) {
-                this.bussEmployeeId = Long.valueOf(value);
+                this.bussEmployeeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussTypeId")) {
-                this.bussTypeId = Long.valueOf(value);
+                this.bussTypeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("employeeId")) {
-                this.employeeId = Long.valueOf(value);
+                this.employeeId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("bussId")) {
-                this.bussId = Long.valueOf(value);
+                this.bussId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("companyId")) {
-                this.companyId = Long.valueOf(value);
+                this.companyId = value == null ? null : Long.valueOf(value);
                     continue;
             }
             if (fieldName.equals("userId")) {
-                this.userId = Long.valueOf(value);
+                this.userId = value == null ? null : Long.valueOf(value);
             }
         }
     }

@@ -22,9 +22,9 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
         if (callback !== null) {
           callback(arrayResult[0]);
         } else {
+          EntityUtil.cache(arrayResult, clazz.meta);
           Object.keys(entity).forEach(key => delete entity[key]);
           Object.assign(entity, arrayResult[0]);
-          EntityUtil.cache(entity, clazz.meta);
         }
       },
       httpError => Notifier.httpErrorResponse(httpError)
@@ -57,16 +57,9 @@ export class XeSubscriber extends AbstractXe implements OnDestroy {
   update(entities: any[], clazz: XeEntityClass<any>) {
     this.updateMulti$(entities, clazz.meta)
     .subscribe(
-      returnedArray => EntityUtil.cacheMulti(returnedArray, clazz.meta, {
-        filterSingle: (filterCondition) => {
-          entities.forEach(entity => {
-            if (entity[clazz.meta.mainIdName] === filterCondition[clazz.meta.mainIdName]) {
-              ObjectUtil.eraserAndDeepCopyForRestore(filterCondition, entity);
-            }
-          });
-          return true;
-        }
-      })
+      returnedArray => {
+        EntityUtil.cache(returnedArray, clazz.meta);
+      }
     );
   }
   updateSingle$(entity: any, meta: ClassMeta): Observable<any> {

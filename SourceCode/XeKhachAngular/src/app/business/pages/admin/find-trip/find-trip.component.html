@@ -1,0 +1,45 @@
+<xe-table *ngIf="screen.is(screens.trips)" [tableData]="bussScheduleTable">
+  <div tableHeader>
+    <div class="row">
+      <xe-input
+        [(value)]="bussScheduleCriteria.locationFrom"
+        [alwaysShowLabel]="true"
+        [label]="xeLabel.POINT_FROM"
+        [mode]="xeInputMode.input"
+        [template]="bussSchedulePointInput"
+        class="col-md-4"
+        name="locationFrom"></xe-input>
+
+      <xe-input
+        [(value)]="bussScheduleCriteria.locationTo"
+        [alwaysShowLabel]="true"
+        [label]="xeLabel.POINT_TO"
+        [mode]="xeInputMode.input"
+        [template]="bussSchedulePointInput"
+        class="col-md-4"
+        name="locationTo"></xe-input>
+
+      <xe-input
+        [(value)]="bussScheduleCriteria.launchDate"
+        [alwaysShowLabel]="true"
+        [label]="xeLabel.LAUNCH_DATE"
+        [mode]="xeInputMode.input"
+        [template]="xeInputTemplate.date"
+        class="col-md-4"
+        name="launchDate"></xe-input>
+    </div>
+  </div>
+</xe-table>
+
+<xe-table *ngIf="screen.is(screens.viewSelectedSchedulePoints)"
+          [tableData]="tripUserPointTable">
+</xe-table>
+
+<basic-buss-scheme *ngIf="screen.is(screens.orderBussScheme)"
+                   [bussType]="bussSchedule.buss.bussType"
+                   [bussSchedule]="bussSchedule"
+                   [mode]="bussSchemeMode.ordering"
+                   [screen]="screen"
+                   [tripUser]="bussSchedule.preparedTrip.preparedTripUser"
+                   [trip]="bussSchedule.preparedTrip">
+</basic-buss-scheme>

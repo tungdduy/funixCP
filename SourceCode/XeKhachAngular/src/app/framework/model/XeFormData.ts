@@ -56,6 +56,7 @@ export class XeFormData<E extends XeEntity> {
   entityIdentifier?: EntityIdentifier<E>;
   share?: ShareFormData<E>;
   display?: {
+    noButton?: boolean;
     cancelBtn?: 'close' | 'cancel';
     grid?: boolean;
     bare?: boolean;
@@ -82,6 +83,9 @@ export class XeFormData<E extends XeEntity> {
     allowDelete?: boolean;
     allowAdd?: boolean;
   };
+  mode?: {
+    uncheckChanged?: boolean;
+  };
 
   static fullFill(formData: XeFormData<any>) {
     if (!formData.share) formData.share = {};
@@ -89,6 +93,7 @@ export class XeFormData<E extends XeEntity> {
     if (!formData.display) formData.display = {};
     if (!formData.action) formData.action = {};
     if (!formData.control) formData.control = {};
+    if (!formData.mode) formData.mode = {};
   }
 }
 

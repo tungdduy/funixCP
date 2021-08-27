@@ -83,6 +83,7 @@ public class User extends User_MAPPED {
         this.deleteProfileImage();
     }
 
+
     @Override
     public void setFieldByName(Map<String, String> data) {
         super.setFieldByName(data);

@@ -10,7 +10,7 @@ import static data.entities.abstracts.DataType.*;
 public class User extends AbstractEntity {
 
     Column email = of(EMAIL).unique();
-    Column phoneNumber = of(PHONE);
+    Column phoneNumber = of(PHONE).unique();
     Column password = of(SECRET_TOKEN);
     Column username = of(DESCRIPTION).unique();
     Column fullName = of(REQUIRE_SHORT_STRING);
@@ -18,7 +18,6 @@ public class User extends AbstractEntity {
     Column nonLocked = of(FALSE);
     Column secretPasswordKey = of(SECRET_TOKEN);
 
-    MapColumn allMyTrips = map(TripUser.class);
     MapColumn employee = map (Employee.class).unique();
 
     @Override

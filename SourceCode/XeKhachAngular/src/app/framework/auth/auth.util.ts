@@ -91,6 +91,7 @@ export class AuthUtil {
   }
 
   isAllow(userRoles: Role[]): boolean {
+    if (!userRoles || userRoles.length === 0) return true;
     for (const role of userRoles) {
       if (this.flatRoles.includes(role)) {
         return true;

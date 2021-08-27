@@ -24,32 +24,16 @@ public class Trip extends Trip_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-    @Transient
-    TripUser preparedTripUser;
 
-    public static Trip prepareTrip(BussSchedule bussSchedule, Date launchDate, List<PathPoint> pathPoints, Long price) {
-        Trip trip = findOrEmulateTrip(bussSchedule, launchDate);
-        trip.launchDate = launchDate;
-        trip.tripUnitPrice = bussSchedule.getScheduleUnitPrice();
-        trip.preparedTripUser = TripUser.prepareTripUser(trip, price, pathPoints);
-        return trip;
+    public Long getTotalApprovedTripUsers() {
+        return this.getTripUsers().stream().filter(tripUser -> tripUser.isApproved()).count();
+    }
+    public Long getTotalUnApprovedTripUsers() {
+        return this.getTripUsers().stream().filter(tripUser -> !tripUser.isDeleted()).count();
     }
 
-    List<TripSeat> getTripSeats() {
-        return IntStream.range(1, this.getTotalSeats())
-                .boxed()
-                .map(seatId -> {
-                    TripSeat tripSeat = new TripSeat();
-                    tripSeat.setSeatId(seatId);
-                    tripSeat.setIsBooked(this.getBookedSeats().contains(seatId));
-                    tripSeat.setIsLocked(this.getLockedBussSeats().contains(seatId));
-                    tripSeat.setIsFree(!tripSeat.getIsBooked() && !tripSeat.getIsLocked());
-                    return tripSeat;
-                }).collect(Collectors.toList());
-    }
-
-    public Integer getTotalSeats() {
-        return this.getBussSchedule().getBuss().getBussType().getTotalSeats();
+    public Integer getTotalBookedSeats() {
+        return this.getTripUsers().stream().filter(tripUser -> !tripUser.isDeleted()).mapToInt(tripUser -> tripUser.getSeats().size()).sum();
     }
 
     public boolean isLaunched() {
@@ -58,19 +42,8 @@ public class Trip extends Trip_MAPPED {
         return currentDateTime.after(tripDateTime);
     }
 
-    public boolean isFull() {
-        return this.getAvailableSeats().isEmpty();
-    }
-
-
-    @Transient
-    List<Integer> bookedSeats;
-
-    public List<Integer> getBookedSeats() {
-        return this.getTripUsers().stream()
-                .filter(tripUser -> tripUser.isOverlapPoint(this.getPreparedTripUser()))
-                .flatMap(tripUser -> tripUser.getSeats().stream())
-                .collect(Collectors.toList());
+    public List<Integer> getLockedSeats() {
+        return XeStringUtils.commaGt0ToStream(this.lockedSeatsString).collect(Collectors.toList());
     }
 
     @Transient
@@ -83,28 +56,69 @@ public class Trip extends Trip_MAPPED {
         return lockedBussSeats;
     }
 
-    public List<Integer> getLockedSeats() {
-        return XeStringUtils.commaGt0ToStream(this.lockedSeatsString).collect(Collectors.toList());
+    // PREPARE FOR FINDING SCHEDULE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    @Transient
+    TripUser preparedTripUser;
+
+    public static Trip prepareTrip(BussSchedule bussSchedule, Date launchDate, List<PathPoint> pathPoints, Long price) {
+        Trip trip = findOrEmulateTrip(bussSchedule, launchDate);
+        trip.launchDate = launchDate;
+        trip.launchTime = bussSchedule.getLaunchTime();
+        trip.tripUnitPrice = bussSchedule.getScheduleUnitPrice();
+        trip.preparedTripUser = TripUser.prepareTripUser(trip, price, pathPoints);
+        return trip;
+    }
+
+    List<TripSeat> getPreparedTripSeats() {
+        return IntStream.range(1, this.getTotalSeats())
+                .boxed()
+                .map(seatId -> {
+                    TripSeat tripSeat = new TripSeat();
+                    tripSeat.setSeatId(seatId);
+                    tripSeat.setIsBooked(this.getPreparedBookedSeats().contains(seatId));
+                    tripSeat.setIsLocked(this.getLockedBussSeats().contains(seatId));
+                    tripSeat.setIsFree(!tripSeat.getIsBooked() && !tripSeat.getIsLocked());
+                    return tripSeat;
+                }).collect(Collectors.toList());
+    }
+
+    public Integer getTotalSeats() {
+        return this.getBussSchedule().getBuss().getBussType().getTotalSeats();
+    }
+
+    public boolean isFull() {
+        return this.getPreparedAvailableSeats().isEmpty();
+    }
+
+
+    @Transient
+    List<Integer> preparedBookedSeats;
+
+    public List<Integer> getPreparedBookedSeats() {
+        return this.getTripUsers().stream()
+                .filter(tripUser -> tripUser.isOverlapPoint(this.getPreparedTripUser()))
+                .flatMap(tripUser -> tripUser.getSeats().stream())
+                .collect(Collectors.toList());
     }
 
     @Transient
-    List<Integer> availableSeats;
+    List<Integer> preparedAvailableSeats;
 
-    public List<Integer> getAvailableSeats() {
-        if (this.availableSeats == null) {
+    public List<Integer> getPreparedAvailableSeats() {
+        if (this.preparedAvailableSeats == null) {
             List<Integer> fetchingSeats = IntStream.range(1, this.getTotalSeats() + 1)
                     .boxed()
                     .collect(Collectors.toList());
-            fetchingSeats.removeAll(this.getBookedSeats());
+            fetchingSeats.removeAll(this.getPreparedBookedSeats());
             fetchingSeats.removeAll(this.getLockedBussSeats());
             fetchingSeats.removeAll(this.getLockedSeats());
-            this.availableSeats = fetchingSeats;
+            this.preparedAvailableSeats = fetchingSeats;
         }
-        return this.availableSeats;
+        return this.preparedAvailableSeats;
     }
 
-    public Integer getTotalAvailableSeats() {
-        return this.getAvailableSeats().size();
+    public Integer getPreparedTotalAvailableSeats() {
+        return this.getPreparedAvailableSeats().size();
     }
 
     private static Trip findOrEmulateTrip(BussSchedule schedule, Date launchDate) {
@@ -112,6 +126,8 @@ public class Trip extends Trip_MAPPED {
                 .findFirstByBussScheduleIdAndLaunchDate(schedule.getBussScheduleId(), launchDate)
                 .orElse(new Trip(schedule));
     }
+
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

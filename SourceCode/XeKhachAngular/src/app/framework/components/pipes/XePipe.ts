@@ -1,6 +1,7 @@
 import {Directive} from "@angular/core";
 import {AutoInputModel} from "../../model/AutoInputModel";
 import {StringUtil} from "../../util/string.util";
+import {XeLabel} from "../../../business/i18n";
 
 export interface PipeOption {
   inline?: boolean;
@@ -15,7 +16,7 @@ export interface PipeOption {
 @Directive()
 export abstract class XePipe {
   transform(values, option: PipeOption = {html: true}, option2?: any) {
-    if (!values) return [];
+    if (!values && !option2) return [];
     const instance = option?.instance || this;
     if (!Array.isArray(values)) {
       if (option.inline) return instance.singleToInline(values, option2);
@@ -43,9 +44,9 @@ export abstract class XePipe {
   arrayToMultiPartArray = (values: [], options2?) => values.map(value => this.singleToMultiPart(value, options2));
 
   singleToHtml = (value, options?) => this.singleToInline(value, options);
-  abstract singleToInline(value, options?);
+  singleToInline = (value, options?) => value;
   singleToAppValue = (value, options?) => value;
-  abstract singleToSubmitFormat(value, options?);
+  singleToSubmitFormat = (value, options?) => value;
   singleToManualShortInput = (value, options?) => {
     if (StringUtil.isBlank(value)) return "";
     return this.singleToSubmitFormat(value, options);
@@ -56,12 +57,11 @@ export abstract class XePipe {
   singleToShortString;
 
   areEquals = (e1, e2): boolean => e1 === e2;
-  validate = (value) => {
+  singleValidate = (value) => {
     if (value !== null && value !== undefined) {
-      if (typeof value === 'object' && Object.keys(value).length !== 0) {
-        return true;
-      }
+      return undefined;
     }
-    return false;
+    return XeLabel.INVALID_INPUT;
   }
+
 }
