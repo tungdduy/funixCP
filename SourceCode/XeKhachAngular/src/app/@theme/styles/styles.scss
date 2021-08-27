@@ -78,7 +78,7 @@ nb-select.size-medium button {
   border-radius: 5px;
   border: 1px solid gray;
   width: fit-content;
-  padding: 5px 12px 0px 7px;
+  padding: 5px 12px 0 7px;
   cursor: pointer;
   color: #585858;
 }
@@ -87,7 +87,7 @@ nb-select.size-medium button {
   color: #007bff;
 }
 
-.icon-wrapper:hover, .icon-wrapper:hover nb-icon{
+.icon-wrapper:hover, .icon-wrapper:hover nb-icon {
   color: #007bff !important;
   opacity: 1;
   background: lightyellow;
