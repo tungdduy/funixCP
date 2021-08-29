@@ -5,4 +5,6 @@
  */
 export const environment = {
   production: true,
+  apiHost: 'http://209.97.165.243:8081',
+  appHost: 'http://209.97.165.243',
 };
