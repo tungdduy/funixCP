@@ -82,7 +82,6 @@ public abstract class User_MAPPED extends XeEntity {
     @Column(unique = true)
     protected String phoneNumber;
     @Size(max = 255)
-    @JsonIgnore
     protected String password;
     @Size(max = 255)
     @Column(unique = true)

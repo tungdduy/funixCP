@@ -124,8 +124,7 @@ public class SeatGroup extends SeatGroup_MAPPED {
     protected void preRemove() {
         validateThenSetGroupOrder(Collections.singletonList(this.getSeatGroupId()));
     }
-
-    // ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
 

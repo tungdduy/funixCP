@@ -82,12 +82,15 @@ public class User extends User_MAPPED {
     @Override
     public void postPersist() {
         sendEmailRegisterSuccessFully(this);
-        TripUser.getRepo()
-                .findByPhoneNumberInOrEmailIn(Collections.singletonList(this.phoneNumber), Collections.singletonList(this.email))
-                .stream()
-                .filter(tripUser -> tripUser.getUser() == null)
-                .peek(tripUser -> tripUser.setUser(this))
-        .forEach(XeEntity::save);
+        new Thread(() -> {
+            TripUser.getRepo()
+                    .findByPhoneNumberInOrEmailIn(Collections.singletonList(this.phoneNumber), Collections.singletonList(this.email))
+                    .stream()
+                    .filter(tripUser -> tripUser.getUser() == null)
+                    .peek(tripUser -> tripUser.setUser(this))
+                    .forEach(XeEntity::save);
+        }).start();
+
     }
 
     @Override
