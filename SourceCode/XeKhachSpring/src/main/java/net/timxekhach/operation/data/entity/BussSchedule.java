@@ -74,7 +74,8 @@ public class BussSchedule extends BussSchedule_MAPPED {
         Long price = this.scheduleUnitPrice;
         BussSchedulePoint schedulePointFrom = this.getSchedulePoint(pointFrom.getPathPointId());
         BussSchedulePoint schedulePointTo = this.getSchedulePoint(pointTo.getPathPointId());
-        if (schedulePointFrom.getIsDeductPrice() && schedulePointTo.getIsDeductPrice()) {
+        if (Boolean.TRUE.equals(schedulePointFrom.getIsDeductPrice())
+            && Boolean.TRUE.equals(schedulePointTo.getIsDeductPrice())) {
             price = XeNumberUtils.equal(schedulePointTo.getPathPointId(), this.endPointPathPointId)
                     ? schedulePointFrom.getPrice() : schedulePointFrom.getPrice() - schedulePointTo.getPrice();
         }
@@ -82,7 +83,8 @@ public class BussSchedule extends BussSchedule_MAPPED {
     }
     public Long getPriceBetween(BussSchedulePoint pointFrom, BussSchedulePoint pointTo) {
         Long price = this.scheduleUnitPrice;
-        if (pointFrom.getIsDeductPrice() && pointTo.getIsDeductPrice()) {
+        if (Boolean.TRUE.equals(pointFrom.getIsDeductPrice())
+            && Boolean.TRUE.equals(pointTo.getIsDeductPrice())) {
             price = XeNumberUtils.equal(pointTo.getPathPointId(), this.endPointPathPointId)
                     ? pointFrom.getPrice() : pointFrom.getPrice() - pointTo.getPrice();
         }

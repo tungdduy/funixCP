@@ -1,5 +1,6 @@
 package net.timxekhach.security.handler;
 
+import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.response.XeExceptionHandler;
 import net.timxekhach.utility.XeResponseUtils;
 import net.timxekhach.utility.model.Message;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestControllerAdvice
 @Component
+@Log4j2
 public class XeExceptionListener {
 
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -89,6 +91,7 @@ public class XeExceptionListener {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<XeHttpResponse> handleException(Exception exception) {
         exception.printStackTrace();
+        log.error(exception.getMessage(), exception);
         ResponseEntity<XeHttpResponse> handled = findAnyFeasibleResponse(exception);
         if(handled != null) {
             return handled;

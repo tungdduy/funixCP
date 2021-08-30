@@ -98,6 +98,12 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       const data = this.tableData.table.customData();
       this.updateTableData(data);
       this.tableData.table.mode.readonly = true;
+    } else if (this.tableData.table?.mode?.customObservable) {
+      this.subscriptions.push(this.tableData.table.mode.customObservable.subscribe(
+        (result: E[]) => {
+          this.updateTableData(result);
+        }
+      ));
     } else {
       this.subscriptions.push(this.commonService.findByEntityIdentifier<E>(this.tableData.formData.entityIdentifier).subscribe(
         (result: E[]) => {
@@ -391,10 +397,10 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       tableColumn.action.onSelect(entity);
     } else if (this.tableData.display.toggleOne) {
       this.toggleRow(entity);
+    } else if (this.tableData?.table?.action?.postSelect) {
+      this.postSelect(entity);
     } else if (!this.tableData.table.mode.readonly) {
       this.dialogEditEntity();
-    } else {
-      this.postSelect(entity);
     }
   }
 

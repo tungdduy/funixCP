@@ -113,7 +113,7 @@ export const Label_vi = {
   'employee.user.phoneNumber': 'Điện thoại',
   'employee.user.email': 'Email',
   'employee.user.password': 'Mật khẩu',
-  'footer_credit': 'Created with ♥ by FUNiX Team 2021',
+  'footer_credit': 'Created with ♥ by Phoenix Team 2021',
   'LOG_OUT': 'Đăng xuất',
   STEP_1: 'Bước 1',
   STEP_2: 'Bước 2',
@@ -364,6 +364,7 @@ export const Label_vi = {
   'column.preparedTrip.preparedTotalAvailableSeats': 'Tình trạng ghế',
   UNLOCK_FIRST: "Cần mở khóa trước khi chọn ghế này",
   'column.trip.bussSchedule.path': 'Tuyến đường',
+  'input.shortInput.RE_PASSWORD': 'Nhập lại mật khẩu'
 
 
 };

@@ -32,7 +32,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
 
-
   init() {
     this._originValue = this.appValue;
     if (this.name?.toLowerCase().includes('password')) {
@@ -58,7 +57,9 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   selectOneMenu: SelectItem<any>[];
   selectOneMenu$: Observable<SelectItem<any>[]>;
   isViewingBoard = false;
+
   selectItem(val) {
+    if (!this.mode.hasInput) return;
     this.isViewingBoard = false;
     this._preChange(val);
     if (this._value !== val) {
@@ -69,6 +70,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   _oldValue;
+
   _preChange(comingValue) {
     if (this.entityField?.action?.preChange) {
       this.entityField.action.preChange(this._value, comingValue);
@@ -95,6 +97,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   clickSwapItem() {
+    if (!this.mode.hasInput) return;
     if (this.template.hasBoardMenu) {
       this.isViewingBoard = true;
     } else {

@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {BussSchedule} from "./BussSchedule";
 import {Buss} from "./Buss";
@@ -10,8 +9,6 @@ import {Company} from "./Company";
 import {TripUser} from "./TripUser";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {InputTemplate} from "../../framework/model/EnumStatus";
-import {XeSubscriber} from "../../framework/model/XeSubscriber";
-import {AbstractXe} from "../../framework/model/AbstractXe";
 import {Xe} from "../../framework/model/Xe";
 import {XeLabel} from "../i18n";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //

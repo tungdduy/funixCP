@@ -30,10 +30,21 @@ export interface EntityField {
   attachInlines?: string[];
 }
 
+export interface PathParam {
+  name: string;
+  value: string;
+}
+
 export interface EntityIdentifier<E extends XeEntity> {
   entity: E;
   clazz?: XeEntityClass<E>;
   idFields?: EntityField[];
+  pathParam?: PathParam[];
+}
+
+export interface TicketInfo {
+  phone: string;
+  email: string;
 }
 
 export class ShareFormData<E extends XeEntity> {

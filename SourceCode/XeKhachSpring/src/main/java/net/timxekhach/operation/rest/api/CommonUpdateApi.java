@@ -180,7 +180,8 @@ public class CommonUpdateApi {
     }
     @GetMapping("/Company/{companyId}")
     public ResponseEntity<List<Company>> findCompany(
-        @PathVariable Long companyId) {
+        @PathVariable Long companyId,
+        @RequestParam String param) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (companyId != null && companyId > 0) data.put("CompanyId", companyId);
         return success(this.commonUpdateService.findCompany(data));
