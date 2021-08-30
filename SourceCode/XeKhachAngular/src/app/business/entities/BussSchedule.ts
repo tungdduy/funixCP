@@ -96,7 +96,7 @@ export class BussSchedule extends XeEntity {
           {
             field: {name: 'endPoint', template: InputTemplate.pathPoint},
             subColumns: [
-              {field: {name: 'startPoint.location', template: InputTemplate.location}}
+              {field: {name: 'endPoint.location', template: InputTemplate.location}}
             ]
           },
           {
