@@ -72,6 +72,7 @@ export class XeTableData<E extends XeEntity> {
     mode?: {
       hideSearchBox?: boolean;
       lazyData?: (term: string) => Observable<E[]>,
+      customObservable?: Observable<E[]>,
       selectOneOnly?: boolean,
       readonly?: boolean,
       hideSelectColumn?: boolean

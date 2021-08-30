@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
+import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.handler.SecurityConfig;
 import net.timxekhach.utility.XeStringUtils;
@@ -13,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Entity;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,6 +82,12 @@ public class User extends User_MAPPED {
     @Override
     public void postPersist() {
         sendEmailRegisterSuccessFully(this);
+        TripUser.getRepo()
+                .findByPhoneNumberInOrEmailIn(Collections.singletonList(this.phoneNumber), Collections.singletonList(this.email))
+                .stream()
+                .filter(tripUser -> tripUser.getUser() == null)
+                .peek(tripUser -> tripUser.setUser(this))
+        .forEach(XeEntity::save);
     }
 
     @Override

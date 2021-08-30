@@ -7,6 +7,7 @@ import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.PathPoint_MAPPED;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
+import net.timxekhach.operation.data.repository.TripUserRepository;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.Xe;
@@ -38,6 +39,10 @@ public class TripUser extends TripUser_MAPPED {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     @Transient
     private List<Integer> seats;
+
+    public static TripUserRepository getRepo() {
+        return CommonUpdateService.getTripUserRepository();
+    }
 
     public static TripUser prepareTripUser(Trip trip, Long price, List<PathPoint> pathPoints) {
         TripUser tripUser = new TripUser();

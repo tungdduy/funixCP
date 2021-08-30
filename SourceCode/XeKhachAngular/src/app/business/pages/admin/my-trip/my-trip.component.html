@@ -1,1 +1,5 @@
-<xe-table [tableData]="tripUserTable"></xe-table>
+<ng-container *ngIf="tripUserTable">
+  <xe-table [tableData]="tripUserTable"></xe-table>
+</ng-container>
+
+

@@ -19,6 +19,10 @@ import {BussSchedulePoint} from "../../../business/entities/BussSchedulePoint";
 import {Xe} from "../../model/Xe";
 import {XeRouter} from "../../../business/service/xe-router";
 import {Url} from "../../url/url.declare";
+import {StorageUtil} from "../../util/storage.util";
+import {configConstant} from "../../config.constant";
+import {TicketInfo} from "../../model/XeFormData";
+import {StringUtil} from "../../util/string.util";
 
 @Component({
   selector: 'basic-buss-scheme',
@@ -106,7 +110,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     minSwap.seatGroupOrder = maxSwap.seatGroupOrder;
     maxSwap.seatGroupOrder = swapOrder;
     this.bussType.seatGroups.sort((s1, s2) => s2.seatGroupOrder - s1.seatGroupOrder);
-    Xe.updateFields([minSwap, maxSwap], ['seatGroupOrder'] , SeatGroup.meta);
+    Xe.updateFields([minSwap, maxSwap], ['seatGroupOrder'], SeatGroup.meta);
   }
 
   bringDown(seatGroup: SeatGroup, groupIdx: number) {
@@ -161,9 +165,24 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     this.tripUserTable = TripUser.tableData({
       formData: {
         action: {
-          postPersist: (tripUser) => {
+          postPersist: (tripUser: TripUser) => {
             Notifier.success(this.xeLabel.ORDER_SUCCESSFULLY);
             this.screen.go(this.screens.orderSuccessfully);
+            const tickets = StorageUtil.getFromJson(configConstant.TICKET_INFOS) as TicketInfo || {
+              phone: "",
+              email: ""
+            };
+            if (tickets) {
+              if (typeof tickets.phone !== 'string') tickets.phone = "";
+              if (typeof tickets.email !== 'string') tickets.email = "";
+              if (!tickets.phone.split(",").includes(tripUser.phoneNumber)) {
+                tickets.phone += (StringUtil.isBlank(tickets.phone) ? "" : ",") + tripUser.phoneNumber;
+              }
+              if (!tickets.email.split(",").includes(tripUser.email)) {
+                tickets.email += (StringUtil.isBlank(tickets.email) ? "" : ",") + tripUser.email;
+              }
+            }
+            StorageUtil.setItem(configConstant.TICKET_INFOS, tickets);
           }
         }
       }
@@ -265,7 +284,8 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
                   Xe.updateFields(this.selectedTripUser, {
                     'status': currentValue,
                     'removeOverlapSeats': status.isDELETED,
-                    'confirmedBy': confirmedBy}, TripUser.meta, (newTripUser) => {
+                    'confirmedBy': confirmedBy
+                  }, TripUser.meta, (newTripUser) => {
                     Object.assign(this.selectedTripUser, newTripUser);
                   });
                 })
@@ -323,13 +343,13 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     }));
     this.bussSchedulePointInput._tableData(this.bussSchedulePointTable)
       ._criteria({})
-      ._postChange((currentPoint: BussSchedulePoint, oldPoint: any,  criteria) => {
-      if (criteria.inputName === 'startPoint') {
-        this.setSelectedTripUserStartPoint(currentPoint);
-      } else if (criteria.inputName === 'endPoint') {
-        this.setSelectedTripUserEndPoint(currentPoint);
-      }
-    });
+      ._postChange((currentPoint: BussSchedulePoint, oldPoint: any, criteria) => {
+        if (criteria.inputName === 'startPoint') {
+          this.setSelectedTripUserStartPoint(currentPoint);
+        } else if (criteria.inputName === 'endPoint') {
+          this.setSelectedTripUserEndPoint(currentPoint);
+        }
+      });
   }
 
   get tripUserTableComponent() {
@@ -342,6 +362,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       this.refreshTripUser(this.selectedTripUser);
     });
   }
+
   private refreshTripUser(selectedTripUser: TripUser, updateTable = true) {
     CommonUpdateService.instance.getTripWithPreparedTripUser(this.trip.tripId,
       selectedTripUser.tripUserId)
@@ -362,6 +383,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     const startPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId');
     return this.getScheduledPointByPathPointId(startPointId);
   }
+
   setSelectedTripUserStartPoint(point: BussSchedulePoint) {
     if (point && point.pathPointId !== Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId')) {
       if (point.pathPoint.pointOrder >= this.selectedTripUser?.endPoint?.pointOrder) {
@@ -372,6 +394,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       this.updateThenRefreshTripUser(this.selectedTripUser, ['startPoint']);
     }
   }
+
   get selectedTripUserEndPoint(): BussSchedulePoint {
     const endPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'endPoint.pathPointId');
     return this.getScheduledPointByPathPointId(endPointId);
@@ -497,6 +520,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   viewHistory() {
     XeRouter.navigate(Url.app.ADMIN.MY_TRIP.noHost);
   }
+
   findTrip() {
     location.reload();
   }

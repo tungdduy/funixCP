@@ -427,7 +427,7 @@ export class EntityUtil {
         });
         entity[key] = prepareColumns;
       } else if (['function', 'string', 'boolean'].includes(typeof option[key])
-        || ['xeScreen', 'editOnRow', 'action', 'screen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
+        || ['xeScreen', 'editOnRow', 'action', 'screen', 'parent', 'template', 'inputMode', 'observable', 'customObservable', 'manualColumns'].includes(key)) {
         entity[key] = option[key];
       } else if (option[key] === undefined) {
         delete entity[key];

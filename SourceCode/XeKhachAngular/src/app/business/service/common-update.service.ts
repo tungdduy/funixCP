@@ -11,6 +11,7 @@ import {XeDatePipe} from "../../framework/components/pipes/date.pipe";
 import {BussScheduleCriteria} from "../pages/admin/my-trip/my-trip.component";
 import {StringUtil} from "../../framework/util/string.util";
 import {Trip} from "../entities/Trip";
+import {TripUser} from "../entities/TripUser";
 
 @Injectable({
   providedIn: 'root'
@@ -139,4 +140,12 @@ export class CommonUpdateService {
     const url = Url.API_HOST + "/trip/getTripWithPreparedTripUser/" + tripId + "/" + tripUserId;
     return this.http.get<Trip>(url);
   }
+
+  findTripUsers(userId, phones, emails): Observable<TripUser[]> {
+    userId = !userId ? 0 : userId;
+    const url = Url.API_HOST + "/trip/getTripUsers?userId=" + userId + "&phones=" + phones + "&emails=" + emails;
+    console.log(url);
+    return this.http.get<TripUser[]>(url);
+  }
+
 }

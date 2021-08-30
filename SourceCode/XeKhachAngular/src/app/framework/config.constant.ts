@@ -3,7 +3,8 @@ export const configConstant = {
   USERS : "users",
   TOKEN : "token",
   RESPONSE: 'response',
-  API: 'API: '
+  API: 'API: ',
+  TICKET_INFOS: "TICKET_INFOS"
 };
 
 

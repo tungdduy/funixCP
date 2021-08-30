@@ -45,7 +45,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     xeScreen: this.screen,
     table: {
       selectBasicColumns: [
-        'bussType.profileImageUrl', 'bussType.bussTypeName'
+        'bussType.profileImageUrl', 'bussType.bussTypeName', 'bussLicense'
       ],
       basicColumns: [
         {field: {name: 'bussType.totalSeats'}, action: {screen: this.screens.bussScheme}},

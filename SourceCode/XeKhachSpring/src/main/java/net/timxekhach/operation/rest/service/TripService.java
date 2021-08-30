@@ -70,6 +70,15 @@ public class TripService {
 		trip.prepareTripUser(tripUser);
 		return trip;
     }
+
+    public List<TripUser> getTripUsers(Long userId, List<String> phoneList, List<String> emailList) {
+		if(userId > 0) {
+			return CommonUpdateService.getTripUserRepository().findByUserUserId(userId);
+		} else if(!phoneList.isEmpty() || !emailList.isEmpty()) {
+			return CommonUpdateService.getTripUserRepository().findByPhoneNumberInOrEmailIn(phoneList, emailList);
+		}
+		return new ArrayList<>();
+    }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

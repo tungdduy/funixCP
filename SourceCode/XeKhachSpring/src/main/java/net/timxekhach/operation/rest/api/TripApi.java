@@ -2,6 +2,7 @@ package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.data.entity.TripUser;
 import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.TripService;
 import static net.timxekhach.utility.XeResponseUtils.success;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
 import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
@@ -43,6 +46,15 @@ public class TripApi {
 	public ResponseEntity<Trip> getTripWithPreparedTripUser(@PathVariable("tripId") Long tripId,
 													@PathVariable("tripUserId") Long tripUserId) {
 		return success(tripService.getTripWithPreparedTripUser(tripId, tripUserId));
+	}
+
+	@GetMapping("/getTripUsers")
+	public ResponseEntity<List<TripUser>> getTripUsers(@RequestParam Long userId,
+													   @RequestParam String phones,
+													   @RequestParam String emails) {
+		List<String> phoneList = Arrays.asList(phones.split(","));
+		List<String> emailList = Arrays.asList(emails.split(","));
+		return success(tripService.getTripUsers(userId, phoneList, emailList));
 	}
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

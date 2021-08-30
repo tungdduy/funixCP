@@ -7,6 +7,13 @@ import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component
 import {Location} from "../../../entities/Location";
 import {XeTableComponent} from "../../../../framework/components/xe-table/xe-table.component";
 import {Xe} from "../../../../framework/model/Xe";
+import {StorageUtil} from "../../../../framework/util/storage.util";
+import {configConstant} from "../../../../framework/config.constant";
+import {TicketInfo} from "../../../../framework/model/XeFormData";
+import {tick} from "@angular/core/testing";
+import {XeTableData} from "../../../../framework/model/XeTableData";
+import {CommonUpdateService} from "../../../service/common-update.service";
+import {of} from "rxjs";
 
 export interface BussScheduleCriteria {
   locationFrom: Location;
@@ -33,23 +40,30 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   };
   screen = new XeScreen({home: this.screens.trips});
 
-  tripUserTable = TripUser.tableData({
-    xeScreen: this.screen,
-    table: {
-      selectBasicColumns: ['trip.bussSchedule.path', 'totalPrice', 'startPoint', 'endPoint', 'trip.launchDate', 'trip.bussSchedule.buss.company.companyName']
-    },
-    display: {
-      fullScreenForm: true
-    }
-  }, TripUser.new({
-    user: this.user
-  }));
+  tripUserTable: XeTableData<TripUser>;
 
   ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.init();
+    }, 0);
+  }
+  init() {
     if (AuthUtil.instance.isUserLoggedIn) {
       Xe.refresh(this.user, User.meta);
     }
+    const tickets = StorageUtil.getFromJson(configConstant.TICKET_INFOS) as TicketInfo || {phone: "", email: ""};
+    const tripUserFinder = CommonUpdateService.instance.findTripUsers(AuthUtil.instance.user?.userId, tickets.phone, tickets.email);
+    this.tripUserTable = TripUser.tableData({
+      xeScreen: this.screen,
+      table: {
+        mode: {
+          customObservable: tripUserFinder
+        },
+        selectBasicColumns: ['trip.bussSchedule.path', 'totalPrice', 'startPoint', 'endPoint', 'trip.launchDate', 'trip.bussSchedule.buss.company.companyName']
+      },
+      display: {
+        fullScreenForm: true
+      }
+    });
   }
-
-
 }
