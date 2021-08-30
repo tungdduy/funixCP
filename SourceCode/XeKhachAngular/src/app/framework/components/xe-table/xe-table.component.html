@@ -250,5 +250,6 @@
   <nb-icon *ngFor="let icon of getRoleIcons(entityUtil.getLastFieldOwner(entity, tableData?.formData.entityIdentifier.clazz.meta, asCol(tableColumn).field)['role'])"
            class="role-icon"
            icon="{{icon.icon}}"
-           pack="fa" status="{{icon.status}}"></nb-icon>
+           pack="fa" status="{{icon.status}}"
+           [nbTooltip]="icon.hint"></nb-icon>
 </ng-template>
