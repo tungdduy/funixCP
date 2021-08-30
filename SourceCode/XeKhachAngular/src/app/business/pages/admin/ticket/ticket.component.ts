@@ -25,6 +25,9 @@ export class TicketComponent extends FormAbstract {
     },
     xeScreen: this.screen,
     table: {
+      action: {
+        postSelect: () => {},
+      },
       basicColumns: [
         {
           field: {name: 'totalTripUsers'}, action: {screen: this.screens.tripUsers},
@@ -37,6 +40,11 @@ export class TicketComponent extends FormAbstract {
   }, Trip.new({company: AuthUtil.instance.user?.employee?.company}));
 
   tripUserTable = TripUser.tableData({
+    table: {
+      mode: {
+        readonly: true
+      }
+    },
     xeScreen: this.screen,
   });
 

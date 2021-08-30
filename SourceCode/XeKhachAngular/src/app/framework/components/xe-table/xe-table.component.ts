@@ -397,10 +397,10 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       tableColumn.action.onSelect(entity);
     } else if (this.tableData.display.toggleOne) {
       this.toggleRow(entity);
+    } else if (this.tableData?.table?.action?.postSelect) {
+      this.postSelect(entity);
     } else if (!this.tableData.table.mode.readonly) {
       this.dialogEditEntity();
-    } else {
-      this.postSelect(entity);
     }
   }
 
