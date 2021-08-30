@@ -15,6 +15,7 @@ import {SeatPipe} from "../components/pipes/SeatPipe";
 import {SelectItem} from "./SelectItem";
 import {XeLbl} from "../../business/i18n";
 import {TripStatusPipe} from "../components/pipes/TripStatusPipe";
+
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -90,7 +91,7 @@ export class InputMode {
 
 export class BussSchemeMode {
   readonly name;
-  constructor(private _bussSchemeMode, private _constantStatus: string, private _dynamicStatus: string) {
+  constructor(private _bussSchemeMode, private _constantStatus: string, private _edit: string, private _bussAdmin: string, private _dynamicStatus: string) {
     this.name = _bussSchemeMode;
   }
 
@@ -98,20 +99,29 @@ export class BussSchemeMode {
   toConstantStatus = () => this._constantStatus = '';
   resetConstantStatus = () => this._constantStatus = BussSchemeMode[this._bussSchemeMode].constantStatus;
   get constantStatus() {return this._constantStatus; }
+  get hasEdit() {return this._edit === ""; }
+  toEdit = () => this._edit = "";
+  resetEdit = () => this._edit = BussSchemeMode[this._bussSchemeMode].edit;
+  get edit() {return this._edit; }
+  get hasBussAdmin() {return this._bussAdmin === ""; }
+  toBussAdmin = () => this._bussAdmin = "";
+  resetBussAdmin = () => this._bussAdmin = BussSchemeMode[this._bussSchemeMode].bussAdmin;
+  get bussAdmin() {return this._bussAdmin; }
   get hasDynamicStatus() {return this._dynamicStatus === ''; }
   toDynamicStatus = () => this._dynamicStatus = '';
   resetDynamicStatus = () => this._dynamicStatus = BussSchemeMode[this._bussSchemeMode].dynamicStatus;
   get dynamicStatus() {return this._dynamicStatus; }
-  static get edit() {return new BussSchemeMode('edit', '', null); }
+  static get edit() {return new BussSchemeMode('edit', null, "", null, null); }
   get isEdit() {return this._bussSchemeMode === 'edit'; }
-  get hasEdit() {return this._bussSchemeMode === 'edit'; }
-  static get readonly() {return new BussSchemeMode('readonly', '', null); }
+  static get bussAdmin() {return new BussSchemeMode('bussAdmin', null, null, "", null); }
+  get isBussAdmin() {return this._bussSchemeMode === 'bussAdmin'; }
+  static get readonly() {return new BussSchemeMode('readonly', '', null, null, null); }
   get isReadonly() {return this._bussSchemeMode === 'readonly'; }
   get hasReadonly() {return this._bussSchemeMode === 'readonly'; }
-  static get ordering() {return new BussSchemeMode('ordering', null, ''); }
+  static get ordering() {return new BussSchemeMode('ordering', null, null, null, ''); }
   get isOrdering() {return this._bussSchemeMode === 'ordering'; }
   get hasOrdering() {return this._bussSchemeMode === 'ordering'; }
-  static get tripAdmin() {return new BussSchemeMode('tripAdmin', null, ''); }
+  static get tripAdmin() {return new BussSchemeMode('tripAdmin', null, null, null, ''); }
   get isTripAdmin() {return this._bussSchemeMode === 'tripAdmin'; }
   get hasTripAdmin() {return this._bussSchemeMode === 'tripAdmin'; }
 
@@ -125,10 +135,10 @@ export class TripUserStatus {
   }
   static readonly selectMenu: SelectItem<string>[] = [new SelectItem(XeLbl('selectItem.TripUserStatus.PENDING'), 'PENDING'), new SelectItem(XeLbl('selectItem.TripUserStatus.CONFIRMED'), 'CONFIRMED'), new SelectItem(XeLbl('selectItem.TripUserStatus.DELETED'), 'DELETED')];
 
-  get hasStatusDELETED() {return this._status === "DELETED"; }
-  toStatusDELETED = () => this._status = "DELETED";
   get hasStatusPENDING() {return this._status === "PENDING"; }
   toStatusPENDING = () => this._status = "PENDING";
+  get hasStatusDELETED() {return this._status === "DELETED"; }
+  toStatusDELETED = () => this._status = "DELETED";
   get hasStatusCONFIRMED() {return this._status === "CONFIRMED"; }
   toStatusCONFIRMED = () => this._status = "CONFIRMED";
   resetStatus = () => this._status = TripUserStatus[this._tripUserStatus].status;
@@ -184,22 +194,22 @@ export class SeatStatus {
     this.name = _seatStatus;
   }
 
-  get hasClassesSeatSelected() {return this._classes === "seat-selected"; }
-  toClassesSeatSelected = () => this._classes = "seat-selected";
+  get hasClassesSeatLockedByTrip() {return this._classes === "seat-locked-by-trip"; }
+  toClassesSeatLockedByTrip = () => this._classes = "seat-locked-by-trip";
   get hasClassesSeatHidden() {return this._classes === "seat-hidden"; }
   toClassesSeatHidden = () => this._classes = "seat-hidden";
+  get hasClassesSeatAvailable() {return this._classes === "seat-available"; }
+  toClassesSeatAvailable = () => this._classes = "seat-available";
   get hasClassesSeatBooked() {return this._classes === "seat-booked"; }
   toClassesSeatBooked = () => this._classes = "seat-booked";
   get hasClassesSeatConfirmed() {return this._classes === "seat-confirmed"; }
   toClassesSeatConfirmed = () => this._classes = "seat-confirmed";
   get hasClassesSeatLocked() {return this._classes === "seat-locked"; }
   toClassesSeatLocked = () => this._classes = "seat-locked";
-  get hasClassesSeatLockedByTrip() {return this._classes === "seat-locked-by-trip"; }
-  toClassesSeatLockedByTrip = () => this._classes = "seat-locked-by-trip";
   get hasClassesSeatLockedByBuss() {return this._classes === "seat-locked-by-buss"; }
   toClassesSeatLockedByBuss = () => this._classes = "seat-locked-by-buss";
-  get hasClassesSeatAvailable() {return this._classes === "seat-available"; }
-  toClassesSeatAvailable = () => this._classes = "seat-available";
+  get hasClassesSeatSelected() {return this._classes === "seat-selected"; }
+  toClassesSeatSelected = () => this._classes = "seat-selected";
   resetClasses = () => this._classes = SeatStatus[this._seatStatus].classes;
   get classes() {return this._classes; }
   static get locked() {return new SeatStatus('locked', "seat-locked"); }
@@ -240,10 +250,10 @@ export class InputTemplate {
   toTableOrder = () => this._tableOrder = "";
   resetTableOrder = () => this._tableOrder = InputTemplate[this._inputTemplate].tableOrder;
   get tableOrder() {return this._tableOrder; }
-  get hasSwapOff() {return this._swap === "off"; }
-  toSwapOff = () => this._swap = "off";
   get hasSwapOn() {return this._swap === "on"; }
   toSwapOn = () => this._swap = "on";
+  get hasSwapOff() {return this._swap === "off"; }
+  toSwapOff = () => this._swap = "off";
   resetSwap = () => this._swap = InputTemplate[this._inputTemplate].swap;
   get swap() {return this._swap; }
   get hasDisplayCustom() {return this._display === "custom"; }
@@ -267,22 +277,22 @@ export class InputTemplate {
   get hasDefaultSelectMenu$() {return this._defaultSelectMenu$ !== null; }
   resetDefaultSelectMenu$ = () => this._defaultSelectMenu$ = InputTemplate[this._inputTemplate].defaultSelectMenu$;
   get defaultSelectMenu$() {return this._defaultSelectMenu$; }
-  get hasTypeHtml() {return this._type === "html"; }
-  toTypeHtml = () => this._type = "html";
-  get hasTypeDate() {return this._type === "date"; }
-  toTypeDate = () => this._type = "date";
-  get hasTypeSearchTable() {return this._type === "searchTable"; }
-  toTypeSearchTable = () => this._type = "searchTable";
-  get hasTypeTime() {return this._type === "time"; }
-  toTypeTime = () => this._type = "time";
-  get hasTypeMultiOption() {return this._type === "multiOption"; }
-  toTypeMultiOption = () => this._type = "multiOption";
   get hasTypeBooleanToggle() {return this._type === "booleanToggle"; }
   toTypeBooleanToggle = () => this._type = "booleanToggle";
-  get hasTypeShortInput() {return this._type === "shortInput"; }
-  toTypeShortInput = () => this._type = "shortInput";
   get hasTypeSelectOneMenu() {return this._type === "selectOneMenu"; }
   toTypeSelectOneMenu = () => this._type = "selectOneMenu";
+  get hasTypeSearchTable() {return this._type === "searchTable"; }
+  toTypeSearchTable = () => this._type = "searchTable";
+  get hasTypeMultiOption() {return this._type === "multiOption"; }
+  toTypeMultiOption = () => this._type = "multiOption";
+  get hasTypeDate() {return this._type === "date"; }
+  toTypeDate = () => this._type = "date";
+  get hasTypeHtml() {return this._type === "html"; }
+  toTypeHtml = () => this._type = "html";
+  get hasTypeShortInput() {return this._type === "shortInput"; }
+  toTypeShortInput = () => this._type = "shortInput";
+  get hasTypeTime() {return this._type === "time"; }
+  toTypeTime = () => this._type = "time";
   resetType = () => this._type = InputTemplate[this._inputTemplate].type;
   get type() {return this._type; }
   get hasTriggerOnClick() {return this._triggerOnClick === ''; }
@@ -293,12 +303,12 @@ export class InputTemplate {
   this.postChange = postChange;
     return this;
   }
-  postChange: (currentValue, oldValue, criteria?) => any;
+  postChange: (inputValue, criteria?) => any;
   _preChange = (preChange) => {
   this.preChange = preChange;
     return this;
   }
-  preChange: (currentValue, comingValue, criteria?) => any;
+  preChange: (inputValue, criteria?) => any;
   _criteria = (criteria) => {
   this.criteria = criteria;
     return this;

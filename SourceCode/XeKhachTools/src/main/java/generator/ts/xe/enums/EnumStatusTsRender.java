@@ -38,9 +38,8 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
 
         model.enums.add(TsEnum.name("BussSchemeMode")
                 .setOptions(
-                        Option.name("edit").setProperties(
-                                Property.name("constantStatus")
-                        ),
+                        Option.name("edit"),
+                        Option.name("bussAdmin"),
                         Option.name("readonly").setProperties(
                                 Property.name("constantStatus")
                         ),

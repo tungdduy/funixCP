@@ -23,6 +23,7 @@ import {StorageUtil} from "../../util/storage.util";
 import {configConstant} from "../../config.constant";
 import {TicketInfo} from "../../model/XeFormData";
 import {StringUtil} from "../../util/string.util";
+import {Buss} from "../../../business/entities/Buss";
 
 @Component({
   selector: 'basic-buss-scheme',
@@ -40,6 +41,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     this.initOrderStatus();
   }
 
+  @Input() buss: Buss;
   @Input() bussType: BussType;
   @Input("screen") parentScreen: XeScreen;
   @Input("readMode") _readMode;
@@ -56,6 +58,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   ngOnInit(): void {
     this.initOrderStatus();
     this.initTripAdmin();
+    this.initBussAdmin();
   }
 
   seatGroupTable = SeatGroup.tableData({
@@ -144,7 +147,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   private _seatStatus: SeatStatus[] = [];
 
   seatStatus(seatNo: number): SeatStatus {
-    return this._seatStatus[seatNo] || SeatStatus.hidden;
+    return this._seatStatus[seatNo] || SeatStatus.available;
   }
 
   initOrderStatus() {
@@ -248,6 +251,13 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     this.tripUserTable.formData.share.xeForm._onSubmit();
   }
 
+  viewHistory() {
+    XeRouter.navigate(Url.app.ADMIN.MY_TRIP.noHost);
+  }
+
+  findTrip() {
+    location.reload();
+  }
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
   // ###############################################################
   // ###############################################################
@@ -446,7 +456,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
 
   private isAdminReviewing = true;
 
-  private toggleByAdmin(seatNo: number) {
+  private toggleByTripAdmin(seatNo: number) {
     const seat = this._seatStatus[seatNo];
     if (seat.hasClassesSeatLockedByBuss) return;
     if (this.preparedTripUser && !this.isAdminReviewing) {
@@ -511,17 +521,32 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF TRIP ADMIN
+
+  // ###############################################################
+  // ###############################################################
+  // ###############################################################
+
+  // BUSS ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
   toggleSeat(seatNo: number) {
     if (this.mode.hasOrdering) return this.toggleSeatOrder(seatNo);
-    if (this.mode.hasTripAdmin) return this.toggleByAdmin(seatNo);
+    if (this.mode.hasTripAdmin) return this.toggleByTripAdmin(seatNo);
+    if (this.mode.hasBussAdmin) return this.toggleByBussAdmin(seatNo);
   }
 
-
-  viewHistory() {
-    XeRouter.navigate(Url.app.ADMIN.MY_TRIP.noHost);
+  initBussAdmin() {
+    if (!this.mode.hasBussAdmin) return;
+    this.initSeatStatus(this.bussType.seats, SeatStatus.available);
+    this.initSeatStatus(this.buss.lockedSeats, SeatStatus.lockedByBuss);
   }
 
-  findTrip() {
-    location.reload();
+  private toggleByBussAdmin(seatNo: number) {
+    if (this.seatStatus(seatNo).hasClassesSeatAvailable) {
+      Buss.addLockedSeat(this.buss, seatNo);
+      this.seatStatus(seatNo).toClassesSeatLockedByBuss();
+    } else {
+      Buss.removeLockedSeat(this.buss, seatNo);
+      this.seatStatus(seatNo).toClassesSeatAvailable();
+    }
   }
 }

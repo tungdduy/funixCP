@@ -1,14 +1,7 @@
 package net.timxekhach.utility;
 
 import net.timxekhach.operation.data.entity.User;
-import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.utility.model.MailModel;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Date;
-import java.util.Properties;
 
 public class XeMailUtils {
 
@@ -18,7 +11,7 @@ public class XeMailUtils {
         mail.setToEmail(user.getEmail());
         mail.getParams().put("username", user.getPossibleLoginName());
         mail.getParams().put("fullName", user.getFullName());
-        mail.getParams().put("password", user.getPassword());
+        mail.getParams().put("password", user.getPasswordBeforeEncode());
         mail.send();
     }
 

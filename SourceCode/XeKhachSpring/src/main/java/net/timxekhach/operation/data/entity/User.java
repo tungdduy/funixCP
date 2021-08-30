@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +44,16 @@ public class User extends User_MAPPED {
                 .collect(Collectors.toList());
     }
 
-    public void encodePassword() {
-        this.password = SecurityConfig.getPasswordEncoder().encode(this.password);
-    }
+
+    @Transient
+    @JsonIgnore
+    String passwordBeforeEncode;
     public void encodePassword(String password) {
+        this.passwordBeforeEncode = password;
         this.password = SecurityConfig.getPasswordEncoder().encode(password);
+    }
+    public void encodePassword() {
+        this.encodePassword(this.password);
     }
 
     public String getPossibleLoginName() {

@@ -5,6 +5,8 @@
 
 <div *ngIf="screen.is(screens.bussScheme)">
   <basic-buss-scheme  [screen]="screen"
+                      [buss]="bussTable.formData.share.entity"
+                      [mode]="bussSchemeMode.bussAdmin"
                       [readMode]="true"
                       [bussType]="bussTable.formData.share.entity.bussType"></basic-buss-scheme>
 </div>

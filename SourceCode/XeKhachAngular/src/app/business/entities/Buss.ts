@@ -1,12 +1,12 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {InputTemplate} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
+import {Xe} from "../../framework/model/Xe";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -26,6 +26,25 @@ export class Buss extends XeEntity {
     bussDesc: string;
     lockedSeatsString: string;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+
+  lockedSeats: number[];
+  static addLockedSeat(buss: Buss, seatNo: number) {
+    if (!buss.lockedSeats) buss.lockedSeats = [seatNo];
+    else if (!buss.lockedSeats.includes(seatNo)) {
+      buss.lockedSeats.push(seatNo);
+      buss.lockedSeatsString = buss.lockedSeats.join(",");
+      Xe.updateFields(buss, ['lockedSeatsString'], Buss.meta);
+    }
+  }
+
+  static removeLockedSeat(buss: Buss, seatNo: number) {
+    if (buss.lockedSeats && buss.lockedSeats.includes(seatNo)) {
+      buss.lockedSeats.splice(buss.lockedSeats.indexOf(seatNo), 1);
+      buss.lockedSeatsString = buss.lockedSeats.join(",");
+      Xe.updateFields(buss, ['lockedSeatsString'], Buss.meta);
+    }
+  }
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (buss: Buss): EntityIdentifier<Buss> => ({
@@ -119,5 +138,6 @@ export class Buss extends XeEntity {
     };
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
   }
+
 }
 

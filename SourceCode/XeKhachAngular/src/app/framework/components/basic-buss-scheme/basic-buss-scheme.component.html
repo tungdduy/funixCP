@@ -18,7 +18,6 @@
 
 <ng-template #SchemeViewWithControls id="SchemeViewWithControls">
   <ng-container *ngIf="screen.is(screens.schemeView)">
-
     <ng-container *ngTemplateOutlet="SchemeViewWithoutSeatStatus"></ng-container>
 
     <ng-container *ngIf="mode.hasDynamicStatus">
@@ -30,7 +29,7 @@
 
 
 <ng-template #SchemeViewWithoutSeatStatus id="SchemeViewWithoutSeatStatus">
-  <ng-container *ngIf="mode.hasConstantStatus">
+  <ng-container *ngIf="mode.hasBussAdmin || mode.hasEdit">
     <ng-container *ngTemplateOutlet="BasicSchemeViewTemplate"></ng-container>
   </ng-container>
 </ng-template>
@@ -116,12 +115,7 @@
                   template="blank"></xe-btn>
         </ng-container>
         <ng-container *ngFor="let seatNo of seatGroup.seats">
-          <div *ngIf="mode.hasConstantStatus" class="seat alert alert-info border-info">
-            {{seatNo}}
-          </div>
-          <ng-container *ngIf="mode.hasDynamicStatus">
             <ng-container *ngTemplateOutlet="SeatSchemeTemplate; context: {seatNo: seatNo}"></ng-container>
-          </ng-container>
         </ng-container>
       </div>
     </div>
