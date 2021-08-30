@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Trip} from "./Trip";
 import {BussSchedule} from "./BussSchedule";
@@ -15,7 +14,6 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 import {XeDatePipe} from "../../framework/components/pipes/date.pipe";
 import {BussSchedulePoint} from './BussSchedulePoint';
-import {AbstractXe} from "../../framework/model/AbstractXe";
 import {Xe} from "../../framework/model/Xe";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
