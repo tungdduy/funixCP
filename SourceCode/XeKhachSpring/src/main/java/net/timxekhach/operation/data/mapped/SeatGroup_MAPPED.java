@@ -116,26 +116,37 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("seatGroupOrder")) {
+                if(value == null) {this.setSeatGroupOrder(null); continue;}
+                if(value.equals(this.getSeatGroupOrder())) continue;
                 this.setSeatGroupOrder(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupName")) {
+                if(value == null) {this.setSeatGroupName(null); continue;}
+                if(value.equals(this.getSeatGroupName())) continue;
                 this.setSeatGroupName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupDesc")) {
+                if(value == null) {this.setSeatGroupDesc(null); continue;}
+                if(value.equals(this.getSeatGroupDesc())) continue;
                 this.setSeatGroupDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalSeats")) {
+                if(value == null) {this.setTotalSeats(null); continue;}
+                if(value.equals(this.getTotalSeats())) continue;
                 this.setTotalSeats(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatFrom")) {
+                if(value == null) {this.setSeatFrom(null); continue;}
+                if(value.equals(this.getSeatFrom())) continue;
                 this.setSeatFrom(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussType")) {
+                if(value == null) {this.setBussType(null); continue;}
                 this.setBussType(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussTypeRepository().findByBussTypeId(Long.valueOf(value))));
                 continue;
             }

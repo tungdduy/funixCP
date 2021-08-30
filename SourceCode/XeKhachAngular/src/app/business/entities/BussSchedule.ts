@@ -20,6 +20,7 @@ import {Trip} from "./Trip";
 
 export class BussSchedule extends XeEntity {
     static meta = EntityUtil.metas.BussSchedule;
+    static mapFields = EntityUtil.mapFields['BussSchedule'];
     bussScheduleId: number;
     bussTypeId: number;
     bussId: number;

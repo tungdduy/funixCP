@@ -4,13 +4,14 @@ import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {TripUser} from "../../../entities/TripUser";
 import {EntityUtil} from "../../../../framework/util/EntityUtil";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 @Component({
   selector: 'xe-ticket',
   styles: [],
   templateUrl: 'ticket.component.html',
 })
-export class TicketComponent {
+export class TicketComponent extends FormAbstract {
 
   screens = {
     trips: 'trips',

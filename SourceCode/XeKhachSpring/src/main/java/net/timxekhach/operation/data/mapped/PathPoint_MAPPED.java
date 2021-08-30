@@ -166,22 +166,30 @@ public abstract class PathPoint_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("pointName")) {
+                if(value == null) {this.setPointName(null); continue;}
+                if(value.equals(this.getPointName())) continue;
                 this.setPointName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("pointDesc")) {
+                if(value == null) {this.setPointDesc(null); continue;}
+                if(value.equals(this.getPointDesc())) continue;
                 this.setPointDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("pointOrder")) {
+                if(value == null) {this.setPointOrder(null); continue;}
+                if(value.equals(this.getPointOrder())) continue;
                 this.setPointOrder(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("location")) {
+                if(value == null) {this.setLocation(null); continue;}
                 this.setLocation(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getLocationRepository().findByLocationId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("path")) {
+                if(value == null) {this.setPath(null); continue;}
                 this.setPath(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathRepository().findByPathId(Long.valueOf(value))));
                 continue;
             }

@@ -9,7 +9,7 @@ import {BussEmployee} from "../../../entities/BussEmployee";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {BussSchedule} from "../../../entities/BussSchedule";
 import {BussType} from "../../../entities/BussType";
-import {InputTemplate} from "../../../../framework/model/EnumStatus";
+import {EditOnRow, InputTemplate} from "../../../../framework/model/EnumStatus";
 import {Path} from "../../../entities/Path";
 import {PathPoint} from "../../../entities/PathPoint";
 import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
@@ -22,10 +22,6 @@ import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
 export class BussComponent extends FormAbstract implements AfterViewInit {
 
   @Input()  myCompany: Company = AuthUtil.instance.user?.employee?.company;
-
-  ngAfterViewInit(): void {
-    BussType.catchBussTypes();
-  }
 
   screens = {
     busses: 'busses',
@@ -94,7 +90,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
         hideSelectColumn: true
       },
       action: {
-        editOnRow: true
+        editOnRow: EditOnRow.onClick
       }
     }
   });
@@ -125,9 +121,9 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
           name: 'path', template: InputTemplate.path._tableData(this.pathTable),
           colSpan: 2,
           action: {
-            preChange: (path: Path) => {
+            preChange: (currentPath: Path, comingPath: Path) => {
               const bussSchedule = this.bussScheduleTable.formData.share.entity;
-              if (bussSchedule.path && bussSchedule.path.pathId !== path.pathId) {
+              if (currentPath && currentPath.pathId !== comingPath.pathId) {
                 bussSchedule.startPoint = undefined;
                 bussSchedule.startPointCompanyId = 0;
                 bussSchedule.startPointPathId = 0;

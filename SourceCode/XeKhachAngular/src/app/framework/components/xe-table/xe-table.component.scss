@@ -34,3 +34,46 @@ nb-layout { .scrollable-container { overflow-y: scroll !important; } }
 .d-grid {
   display: grid !important;
 }
+
+
+.xe-table {
+  border: 1px solid #dee2e6;
+}
+.xe-table th {
+  background: #8f9bb3;
+  color: white;
+  border: none;
+}
+
+.xe-table td {
+  padding: 5px;
+  border: none;
+}
+
+
+span.custom-checkbox {
+  background: white;
+}
+.xe-table tr:nth-child(even) {
+  background: #e4e4e478 !important;
+}
+.xe-table tr:hover {
+  background: white;
+  border: 1px solid gray;
+}
+
+.xe-table tr {
+  border-bottom: 1px solid #808080e3
+}
+
+.xe-table tr.active {
+  background: #ffeb3b8c !important;
+  border-color: red;
+  border-width: 2px;
+}
+
+.xe-table tr.viewing {
+  background: rgba(174, 245, 255, 0.55) !important;
+  border-color: #2196f3;
+  border-width: 2px;
+}

@@ -14,9 +14,9 @@ import static util.constants.TripUserStatus.PENDING;
 public class TripUser extends AbstractEntity {
     {
         pk(Trip.class);
-        pk(User.class);
     }
 
+    MapColumn user = map(User.class);
     Column phoneNumber = of(PHONE);
     Column fullName = of(DESCRIPTION);
     Column email = of(EMAIL);

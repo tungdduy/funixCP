@@ -14,6 +14,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 
 export class SeatGroup extends XeEntity {
     static meta = EntityUtil.metas.SeatGroup;
+    static mapFields = EntityUtil.mapFields['SeatGroup'];
     seatGroupId: number;
     bussTypeId: number;
     bussType: BussType;

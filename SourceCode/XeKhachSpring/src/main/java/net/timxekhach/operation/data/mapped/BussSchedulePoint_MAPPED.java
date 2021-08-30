@@ -228,22 +228,30 @@ public abstract class BussSchedulePoint_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("price")) {
+                if(value == null) {this.setPrice(null); continue;}
+                if(value.equals(this.getPrice())) continue;
                 this.setPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("isDeductPrice")) {
+                if(value == null) {this.setIsDeductPrice(null); continue;}
+                if(value.equals(this.getIsDeductPrice())) continue;
                 this.setIsDeductPrice(Boolean.valueOf(value));
                 continue;
             }
             if (fieldName.equals("searchText")) {
+                if(value == null) {this.setSearchText(null); continue;}
+                if(value.equals(this.getSearchText())) continue;
                 this.setSearchText(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussSchedule")) {
+                if(value == null) {this.setBussSchedule(null); continue;}
                 this.setBussSchedule(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussScheduleRepository().findByBussScheduleId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("pathPoint")) {
+                if(value == null) {this.setPathPoint(null); continue;}
                 this.setPathPoint(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathPointRepository().findByPathPointId(Long.valueOf(value))));
                 continue;
             }

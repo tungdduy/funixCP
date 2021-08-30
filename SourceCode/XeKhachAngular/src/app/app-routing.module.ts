@@ -5,8 +5,8 @@ export const routes: Routes = [
   {path: 'admin', loadChildren: () => import('./business/pages/admin/admin.module').then(m => m.AdminModule)},
   {path: 'check-in', loadChildren: () => import('app/business/pages/check-in/check-in.module').then(m => m.CheckInModule)},
 
-  {path: '', redirectTo: 'check-in/login', pathMatch: 'full' },
-  {path: '**', redirectTo: 'check-in/login' },
+  {path: '', redirectTo: 'admin/find-trip', pathMatch: 'full' },
+  {path: '**', redirectTo: 'admin/find-trip' },
 ];
 
 const config: ExtraOptions = {

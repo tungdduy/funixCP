@@ -99,14 +99,19 @@ public abstract class Location_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("locationName")) {
+                if(value == null) {this.setLocationName(null); continue;}
+                if(value.equals(this.getLocationName())) continue;
                 this.setLocationName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("searchText")) {
+                if(value == null) {this.setSearchText(null); continue;}
+                if(value.equals(this.getSearchText())) continue;
                 this.setSearchText(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("parent")) {
+                if(value == null) {this.setParent(null); continue;}
                 this.setParent(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getLocationRepository().findByLocationId(Long.valueOf(value))));
                 continue;
             }

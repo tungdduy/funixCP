@@ -11,35 +11,110 @@
     </div>
   </nb-card-header>
   <nb-card-body>
-    <ng-container *ngTemplateOutlet="schemeViewTemplate"></ng-container>
-
+    <ng-container *ngTemplateOutlet="SchemeViewWithControls"></ng-container>
     <ng-container *ngTemplateOutlet="SchemeFormEditTemplate"></ng-container>
-
   </nb-card-body>
 </nb-card>
 
-<ng-template #schemeViewTemplate>
+<ng-template #SchemeViewWithControls id="SchemeViewWithControls">
   <ng-container *ngIf="screen.is(screens.schemeView)">
+
+    <ng-container *ngTemplateOutlet="SchemeViewWithoutSeatStatus"></ng-container>
+
+    <ng-container *ngIf="mode.hasDynamicStatus">
+      <ng-container *ngTemplateOutlet="SchemeViewAdminControls"></ng-container>
+      <ng-container *ngTemplateOutlet="SchemeViewOrderControls"></ng-container>
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+
+<ng-template #SchemeViewWithoutSeatStatus id="SchemeViewWithoutSeatStatus">
+  <ng-container *ngIf="mode.hasConstantStatus">
+    <ng-container *ngTemplateOutlet="BasicSchemeViewTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #SchemeViewOrderControls id="SchemeViewOrderControls">
+  <ng-container *ngIf="mode.hasOrdering">
     <div class="row">
-      <ng-container *ngIf="!mode.hasOrdering">
-        <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
-      </ng-container>
-
-      <ng-container *ngIf="mode.hasOrdering">
-        <div class="col-md-6">
-          <ng-container *ngTemplateOutlet="TripOrderControlTemplate"></ng-container>
-        </div>
-        <div class="col-md-6">
-          <ng-container *ngTemplateOutlet="SchemeViewTemplate"></ng-container>
-        </div>
-      </ng-container>
-
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="TripOrderControlTemplate"></ng-container>
+      </div>
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="BasicSchemeViewTemplate"></ng-container>
+      </div>
     </div>
   </ng-container>
 </ng-template>
 
+<ng-template #SchemeViewAdminControls id="SchemeViewAdminControls">
+  <ng-container *ngIf="mode.hasTripAdmin">
+    <ng-container *ngTemplateOutlet="TripAdminHeader"></ng-container>
+    <div class="row">
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="TripAdminControlTemplate"></ng-container>
+      </div>
+      <div class="col-md-6">
+        <ng-container *ngTemplateOutlet="BasicSchemeViewTemplate"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #TripAdminHeader id="TripAdminHeader">
+  <ng-container *ngIf="mode.hasTripAdmin">
+    <div class="row">
+      <div class="col-md-6">
+        <ng-container *ngIf="!selectedTripUser?.tripUserId">
+          <ng-container *ngTemplateOutlet="TripUserPointTemplate"></ng-container>
+        </ng-container>
+        <ng-container *ngIf="selectedTripUser?.tripUserId">
+          <ng-container *ngTemplateOutlet="TripScheduledPointTemplate"></ng-container>
+        </ng-container>
+      </div>
+      <div class="col-md-6">
+        <div>
+          <div class="row">
+            <div class="col-md-6">
+              <ng-container *ngTemplateOutlet="launchDateTimeTemplate"></ng-container>
+            </div>
+            <div *ngIf="selectedTripUser?.confirmedBy" class="col-md-6">
+              <div [innerText]="xeLabel.confirmed_by" class="d-inline-block"></div>
+              :
+              <div [innerText]="confirmedByName" class="text-info text-bold"></div>
+              <div [innerText]="xeLabel.confirmed_date" class="d-inline-block"></div>
+              :
+              <div [innerText]="selectedTripUser.confirmedDateTime | xeDateTimePipe"
+                   class="text-primary text-bold"></div>
+            </div>
+          </div>
+          <hr/>
+        </div>
+        <ng-container *ngTemplateOutlet="seatStatusHintTemplate"></ng-container>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #seatStatusHintTemplate id="seatStatusHintTemplate">
+  <h6 [innerText]="xeLabel.SEAT_STATUS_HINT" class="text-secondary"></h6>
+  <div [innerText]="xeLabel.seat_available" class="p-1 border d-inline-block seat-available"></div>
+  <div [innerText]="xeLabel.seat_confirmed" class="p-1 border d-inline-block seat-confirmed"></div>
+  <div [innerText]="xeLabel.seat_selected" class="p-1 border d-inline-block seat-selected"></div>
+  <div [innerText]="xeLabel.seat_booked" class="p-1 border d-inline-block seat-booked"></div>
+  <ng-container *ngIf="!mode.hasTripAdmin">
+    <div [innerText]="xeLabel.seat_locked" class="p-1 border d-inline-block seat-locked"></div>
+  </ng-container>
+  <ng-container *ngIf="mode.hasTripAdmin">
+    <div [innerText]="xeLabel.seat_locked_by_buss" class="p-1 border d-inline-block seat-locked-by-buss"></div>
+    <div [innerText]="xeLabel.seat_locked_by_trip" class="p-1 border d-inline-block seat-locked-by-trip"></div>
+  </ng-container>
+</ng-template>
+
 <!-- ##############################  [SCHEME VIEW] ###################################### -->
-<ng-template #SchemeViewTemplate>
+
+<ng-template #BasicSchemeViewTemplate>
   <div>
     <div *ngFor="let seatGroup of bussType.seatGroups; first as isFirstGroup; last as isLastGroup; index as groupIdx">
       <div class="pt-3">
@@ -49,7 +124,6 @@
           <xe-btn (click)="openEditSeatGroup(seatGroup)" *ngIf="mode.hasEdit" hideText icon="pen"
                   template="blank"></xe-btn>
         </h6>
-
       </div>
       <div>
         <ng-container *ngIf="mode.hasEdit">
@@ -59,10 +133,10 @@
                   template="blank"></xe-btn>
         </ng-container>
         <ng-container *ngFor="let seatNo of seatGroup.seats">
-          <div *ngIf="!mode.hasOrdering" class="seat alert alert-info border-info">
+          <div *ngIf="mode.hasConstantStatus" class="seat alert alert-info border-info">
             {{seatNo}}
           </div>
-          <ng-container *ngIf="mode.hasOrdering">
+          <ng-container *ngIf="mode.hasDynamicStatus">
             <ng-container *ngTemplateOutlet="SeatSchemeTemplate; context: {seatNo: seatNo}"></ng-container>
           </ng-container>
         </ng-container>
@@ -71,7 +145,7 @@
   </div>
 </ng-template>
 
-<!-- ##############################  [SCHEME EDIT] ###################################### -->
+<!--  [SCHEME EDIT] ###################################### -->
 <ng-template #SchemeFormEditTemplate>
   <xe-basic-form *ngIf="screen.is(screens.schemeEdit)"
                  [formData]="seatGroupTable.formData" [readMode]="false">
@@ -83,9 +157,9 @@
 </ng-template>
 
 
-<!-- ##############################  [ORDERING CONTROL] ###################################### -->
+<!-- [DYNAMIC SEAT STATUSES] ###################################### -->
 <ng-template #SeatSchemeTemplate let-seatNo="seatNo">
-  <div (click)="toggleSeatOrder(seatNo)"
+  <div (click)="toggleSeat(seatNo)"
        class="seat alert {{seatStatus(seatNo).classes}}">
     {{seatNo}}
   </div>
@@ -99,16 +173,16 @@
         <ng-container *ngTemplateOutlet="bussInfoTemplate"></ng-container>
       </div>
       <div class="col-md-6">
-        <ng-container *ngTemplateOutlet="schedulePointInfoTemplate"></ng-container>
+        <ng-container *ngTemplateOutlet="TripUserPointTemplate"></ng-container>
       </div>
     </div>
     <hr>
     <div class="row">
       <div class="col-md-6">
-        <xe-basic-form [formData]="tripUserForm"></xe-basic-form>
+        <xe-basic-form [formData]="tripUserTable.formData"></xe-basic-form>
       </div>
       <div class="col-md-6">
-        <ng-container *ngTemplateOutlet="seatInfoTemplate"></ng-container>
+        <ng-container *ngTemplateOutlet="seatInfoTemplate; context: {tripUser: preparedTripUser}"></ng-container>
       </div>
     </div>
     <div *ngIf="errorMessage" class="text-right text-danger text-large">
@@ -120,16 +194,22 @@
         <xe-btn (click)="parentScreen.back()" template="back"></xe-btn>
       </div>
       <div class="float-right">
-        <xe-btn (click)="clearOrderInfo()" [disabled]="tripUser.totalPrice <= 0" template="eraser"></xe-btn>
+        <xe-btn (click)="clearOrderInfo()" [disabled]="preparedTripUser.totalPrice <= 0" template="eraser"></xe-btn>
         <xe-btn (click)="order()" template="orderTrip"></xe-btn>
       </div>
     </div>
   </ng-container>
 </ng-template>
 
-<!-- ##############################  [TripOrderControlTemplate] ###################################### -->
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< [TripOrderControlTemplate]  -->
 
-<ng-template #bussInfoTemplate>
+<ng-template #launchDateTimeTemplate id="launchDateTimeTemplate">
+  <lbl [icon]="{iconPre: 'calendar'}" [txt]="xeLabel.LAUNCH_DATE" class="d-block p-2">
+    : {{trip.launchDate | xeDatePipe}}</lbl>
+  <icon-wrap clazz="pb-1" iconAfter="clock">{{xeLabel.launchTime}} {{trip.launchTime | xeTimePipe}}</icon-wrap>
+</ng-template>
+
+<ng-template #bussInfoTemplate id="bussInfoTemplate">
   <lbl [icon]="{iconPre: 'building'}" [txt]="xeLabel.companyName" class="d-block p-2">
     : {{bussSchedule.buss.company.companyName}} - {{bussSchedule.buss.company.companyDesc}} </lbl>
   <lbl [icon]="{iconPre: 'pencil-ruler'}" [txt]="xeLabel.BUSS_TYPE" class="d-block p-2">
@@ -139,17 +219,15 @@
 </ng-template>
 <!-- ##############################  [bussInfoTemplate] ###################################### -->
 
-<ng-template #seatInfoTemplate>
+<ng-template #seatInfoTemplate let-tripUser="tripUser">
   <h5 [innerHTML]="xeLabel.cart_seat_info"></h5>
   <div class="cart-seat-info">
-    <lbl [icon]="{iconPre: 'money-check'}" [txt]="xeLabel.SEAT_UNIT_PRICE" class="d-block p-2">
-      : {{tripUser.unitPrice | moneyPipe}}</lbl>
-    <lbl [icon]="{iconPre: 'calendar'}" [txt]="xeLabel.LAUNCH_DATE" class="d-block p-2">
-      : {{trip.launchDate | xeDatePipe}}</lbl>
-    <icon-wrap clazz="pb-1" iconAfter="clock">{{xeLabel.launchTime}} {{trip.launchTime | xeTimePipe}}</icon-wrap>
-    <icon-wrap clazz="pb-1" iconAfter="couch"> {{tripUser.totalSeats || 0}}</icon-wrap>
-    <hr>
-    <div *ngIf="screen.is(screens.orderSuccessfully)">
+    <div>
+      <lbl [icon]="{iconPre: 'money-check'}" class="d-inline-block">
+        {{xeLabel.SEAT_UNIT_PRICE}} :
+        <div [innerHTML]="tripUser.unitPrice | moneyPipe" class="d-inline-block"></div>
+      </lbl>
+      <icon-wrap clazz="pb-1" iconAfter="couch"> {{tripUser.seats?.length || 0}}</icon-wrap>
       <div [innerText]="xeLabel.SELECTED_SEATS" class="mb-2"></div>
       <div [innerHTML]="tripUser.seatsString | seatPipe"></div>
     </div>
@@ -159,26 +237,27 @@
     </div>
     <div class="text-center">{{xeLabel.totalPayment}}:
       <h4
-        class="d-inline-block text-danger text-right pt-2">{{tripUser.totalPrice | moneyPipe : {html: true} : 'zero'}}</h4>
+        [innerHTML]="tripUser.totalPrice | moneyPipe : {html: true} : 'zero'"
+        class="d-inline-block text-danger text-right pt-2"></h4>
     </div>
   </div>
 </ng-template>
 <!-- ##############################  [seatInfoTemplate] ###################################### -->
 
-<ng-template #schedulePointInfoTemplate>
-  <div class="row">
+<ng-template #TripUserPointTemplate>
+  <div *ngIf="preparedTripUser" class="row">
     <div class="col-md-6">
       <h6 [textContent]="xeLabel.POINT_FROM"></h6>
       <div>
-        <div [innerHTML]="tripUser.startPoint | pathPointPipe"></div>
-        <div [innerHTML]="tripUser.startPoint.location | locationPipe"></div>
+        <div [innerHTML]="preparedTripUser?.startPoint | pathPointPipe"></div>
+        <div [innerHTML]="preparedTripUser?.startPoint?.location | locationPipe"></div>
       </div>
     </div>
     <div class="col-md-6">
       <h6 [textContent]="xeLabel.POINT_TO"></h6>
       <div>
-        <div [innerHTML]="tripUser.endPoint | pathPointPipe"></div>
-        <div [innerHTML]="tripUser.endPoint.location | locationPipe"></div>
+        <div [innerHTML]="preparedTripUser.endPoint | pathPointPipe"></div>
+        <div [innerHTML]="preparedTripUser.endPoint?.location | locationPipe"></div>
       </div>
     </div>
   </div>
@@ -186,49 +265,92 @@
 <!-- ##############################  [schedulePointInfoTemplate] ###################################### -->
 
 
-  <ng-container *ngIf="screen.is(screens.orderSuccessfully)">
-    <nb-card>
-      <nb-card-header>
-        <div class="text-center">
-          <h3 [innerText]="xeLabel.ORDER_SUCCESSFULLY"></h3>
-          <div [innerText]="xeLabel.BELOW_IS_YOUR_ORDER_INFO">:</div>
-        </div>
-      </nb-card-header>
-      <nb-card-body>
-        <div class="m-auto">
-          <div class="row">
-            <div class="col-md-4">
-              <h6 [textContent]="xeLabel.ORDER_PERSON_INFO"></h6>
-              <lbl [icon]="{iconPre: 'user'}" [txt]="xeLabel.fullName" class="d-block p-2">
-                : {{tripUser.fullName}} </lbl>
-              <lbl [icon]="{iconPre: 'mobile-alt'}" [txt]="xeLabel.phoneNumber" class="d-block p-2">
-                : {{tripUser.phoneNumber | phonePipe}} </lbl>
-              <div *ngIf="orderValidEmail">
-                <lbl [icon]="{iconPre: 'envelope'}" [txt]="xeLabel.email" class="d-block p-2">
-                  : {{tripUser.email}} </lbl>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <ng-container *ngTemplateOutlet="bussInfoTemplate"></ng-container>
-            </div>
-            <div class="col-md-4">
-              <ng-container *ngTemplateOutlet="schedulePointInfoTemplate"></ng-container>
-            </div>
-            <div class="col-md-6">
-              <ng-container *ngTemplateOutlet="seatInfoTemplate"></ng-container>
-            </div>
-            <div class="col-md-6 order-success-bottom-wrapper">
-              <div class="mt-2 text-center order-success-bottom-controls">
-                <xe-btn [btnText]="xeLabel.REVIEW_HISTORY" icon="history" template="cancel"></xe-btn>
-                <xe-btn [btnText]="xeLabel.GO_HOME" template="ok"></xe-btn>
-              </div>
+<ng-container *ngIf="screen.is(screens.orderSuccessfully)" id="orderSuccessFully">
+  <nb-card>
+    <nb-card-header>
+      <div class="text-center">
+        <h3 [innerText]="xeLabel.ORDER_SUCCESSFULLY"></h3>
+        <div [innerText]="xeLabel.BELOW_IS_YOUR_ORDER_INFO">:</div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="m-auto">
+        <div class="row">
+          <div class="col-md-4">
+            <h6 [textContent]="xeLabel.ORDER_PERSON_INFO"></h6>
+            <lbl [icon]="{iconPre: 'user'}" [txt]="xeLabel.fullName" class="d-block p-2">
+              : {{preparedTripUser.fullName}} </lbl>
+            <lbl [icon]="{iconPre: 'mobile-alt'}" [txt]="xeLabel.phoneNumber" class="d-block p-2">
+              : {{preparedTripUser.phoneNumber | phonePipe}} </lbl>
+            <div *ngIf="orderValidEmail">
+              <lbl [icon]="{iconPre: 'envelope'}" [txt]="xeLabel.email" class="d-block p-2">
+                : {{preparedTripUser.email}} </lbl>
             </div>
           </div>
-
+          <div class="col-md-4">
+            <ng-container *ngTemplateOutlet="bussInfoTemplate"></ng-container>
+          </div>
+          <div class="col-md-4">
+            <ng-container *ngTemplateOutlet="TripUserPointTemplate"></ng-container>
+          </div>
+          <div class="col-md-6">
+            <ng-container *ngTemplateOutlet="seatInfoTemplate; context: {tripUser: preparedTripUser}"></ng-container>
+          </div>
+          <div class="col-md-6 order-success-bottom-wrapper">
+            <div class="mt-2 text-center order-success-bottom-controls">
+              <xe-btn [btnText]="xeLabel.REVIEW_HISTORY" icon="history" template="cancel"></xe-btn>
+              <xe-btn [btnText]="xeLabel.GO_HOME" template="ok"></xe-btn>
+            </div>
+          </div>
         </div>
-      </nb-card-body>
-    </nb-card>
-  </ng-container>
+
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-container>
 <!-- ##############################  [orderSuccessfullyTemplate] ###################################### -->
 
+<!-- ADMIN CONTROL ==================================>>>>>>>>>>>>>>>>>>>>>>> -->
+<ng-template #TripAdminControlTemplate id="TripUserTable">
+  <ng-container *ngIf="mode.hasTripAdmin">
+    <xe-table [tableData]="tripUserTable">
+      <ng-container aboveBasicForm>
+        <div class="row">
+          <div class="col-md-6">
+            <ng-container *ngTemplateOutlet="seatInfoTemplate; context: {tripUser: selectedTripUser}"></ng-container>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container top-right-buttons>
+        <xe-btn (click)="tripUserTable.formData.share.tableComponent.dialogEditEntity()" *ngIf="preparedTripUser"
+                hideText
+                template="edit"></xe-btn>
+      </ng-container>
+    </xe-table>
+  </ng-container>
+</ng-template>
+
+
+<ng-template #TripScheduledPointTemplate id="TripScheduledPointTemplate">
+  <div *ngIf="preparedTripUser" class="row">
+    <div class="col-md-6">
+      <div>
+        <xe-input [mode]="xeInputMode.input"
+                  [template]="bussSchedulePointInput"
+                  [value]="selectedTripUserStartPoint"
+                  name="startPoint"></xe-input>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div>
+        <xe-input [mode]="xeInputMode.input"
+                  [template]="bussSchedulePointInput"
+                  [value]="selectedTripUserEndPoint"
+                  name="endPoint"></xe-input>
+      </div>
+    </div>
+  </div>
+
+
+</ng-template>
 

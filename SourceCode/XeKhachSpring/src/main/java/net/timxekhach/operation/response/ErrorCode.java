@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,9 @@ public enum ErrorCode {
     FIELD_EXISTED("fieldName", "tableName"),
     DATA_EXISTED,
     SEAT_RANGE_OVERLAP,
-    SEAT_RANGE_MUST_CONTINUOUS_FROM_1;
+    SEAT_RANGE_MUST_CONTINUOUS_FROM_1,
+    INVALID_DIRECTION
+    ;
 
 
     private String[] paramNames;
@@ -96,6 +99,12 @@ public enum ErrorCode {
             throwNow(paramValues);
         }
         return object;
+    }
+    public Object[] throwIfAnyNull(Object... objects) {
+        if(objects == null || Arrays.stream(objects).anyMatch(o -> o == null)) {
+            throwNow();
+        }
+        return objects;
     }
 
     public <T> List<T> throwIfNotEmpty(List<T> list, String... paramValues) {

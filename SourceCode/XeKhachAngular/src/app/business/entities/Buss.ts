@@ -14,6 +14,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 
 export class Buss extends XeEntity {
     static meta = EntityUtil.metas.Buss;
+    static mapFields = EntityUtil.mapFields['Buss'];
     bussTypeId: number;
     bussId: number;
     companyId: number;
@@ -107,10 +108,9 @@ export class Buss extends XeEntity {
         },
         fields: [
           {
-            name: "bussTypeId", template: InputTemplate.selectOneMenu,
+            name: "bussTypeId", template: InputTemplate.selectOneMenu._selectMenu$(BussType.bussTypeSelectItems$),
             required: true,
             newOnly: true,
-            selectOneMenu: () => BussType.bussTypeSelectItem
           },
           {name: "bussLicense", required: true},
           {name: "bussDesc", required: true},

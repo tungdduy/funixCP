@@ -5,7 +5,6 @@ import lombok.Setter;
 import util.StringUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Getter @Setter
 public class TsEnum {
@@ -15,6 +14,7 @@ public class TsEnum {
         return StringUtil.toCamel(this.capName);
     }
     List<Option> options = new ArrayList<>();
+    Boolean hasBuildSelectMenu;
 
     public Collection<Property> getPropertyIdentifiers() {
         Map<String, Property> propertiesMap = new HashMap<>();
@@ -25,6 +25,11 @@ public class TsEnum {
                 }
                 propertiesMap.get(prop.camelName).addPropertyChoice(prop);
             });
+        });
+        this.options.forEach(option -> {
+            if(propertiesMap.get(option.camelName) == null) {
+                option.setIsUnique(true);
+            }
         });
         return propertiesMap.values();
     }
@@ -55,6 +60,11 @@ public class TsEnum {
     public TsEnum setOptions(Option... options) {
         this.options = Arrays.asList(options);
         this.options.forEach(option -> option.setTsEnum(this));
+        return this;
+    }
+
+    public TsEnum buildSelectMenu() {
+        this.hasBuildSelectMenu = true;
         return this;
     }
 }

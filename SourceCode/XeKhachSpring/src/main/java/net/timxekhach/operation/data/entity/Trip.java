@@ -24,26 +24,32 @@ public class Trip extends Trip_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
-    public Long getTotalApprovedTripUsers() {
-        return this.getTripUsers().stream().filter(tripUser -> tripUser.isApproved()).count();
+    public List<Integer> getConfirmedSeats() {
+        return this.getTripUsers().stream().filter(TripUser::isConfirmed).flatMap(tripUser -> tripUser.getSeats().stream()).collect(Collectors.toList());
     }
-    public Long getTotalUnApprovedTripUsers() {
+    public Long getTotalConfirmedTripUsers() {
+        return this.getTripUsers().stream().filter(TripUser::isConfirmed).count();
+    }
+    public Long getTotalUnConfirmedTripUsers() {
         return this.getTripUsers().stream().filter(tripUser -> !tripUser.isDeleted()).count();
     }
-
     public Integer getTotalBookedSeats() {
         return this.getTripUsers().stream().filter(tripUser -> !tripUser.isDeleted()).mapToInt(tripUser -> tripUser.getSeats().size()).sum();
     }
+    public Integer getTotalLockedSeats() {
+        return this.getLockedSeats().size();
+    }
+
+    public List<Integer> getLockedSeats() {
+        return XeStringUtils.commaGt0ToStreamSortedAsc(this.lockedSeatsString).collect(Collectors.toList());
+    }
+
+
 
     public boolean isLaunched() {
         Date currentDateTime = new Date();
         Date tripDateTime = XeDateUtils.mergeDateAndTime(this.launchDate, this.launchTime);
         return currentDateTime.after(tripDateTime);
-    }
-
-    public List<Integer> getLockedSeats() {
-        return XeStringUtils.commaGt0ToStream(this.lockedSeatsString).collect(Collectors.toList());
     }
 
     @Transient
@@ -54,6 +60,30 @@ public class Trip extends Trip_MAPPED {
             this.lockedBussSeats = this.getBussSchedule().getBuss().getLockedSeats();
         }
         return lockedBussSeats;
+    }
+
+    public List<Integer> getBookedSeats() {
+        return this.getTripUsers().stream()
+                .filter(tripUser -> !tripUser.isDeleted())
+                .flatMap(tripUser -> tripUser.getSeats().stream())
+                .collect(Collectors.toList());
+    }
+
+    public Integer getTotalAvailableSeats() {
+        return this.getAvailableSeats().size();
+    }
+
+    @Transient
+    List<Integer> availableSeats;
+    public List<Integer> getAvailableSeats() {
+        if (this.availableSeats == null) {
+            this.availableSeats = this.bussSchedule.getBuss().getBussType().getSeats();
+            this.availableSeats.removeAll(this.getLockedBussSeats());
+            this.availableSeats.removeAll(this.getLockedSeats());
+            this.availableSeats.removeAll(this.getBookedSeats());
+            return this.availableSeats;
+        }
+       return this.availableSeats;
     }
 
     // PREPARE FOR FINDING SCHEDULE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -67,6 +97,10 @@ public class Trip extends Trip_MAPPED {
         trip.tripUnitPrice = bussSchedule.getScheduleUnitPrice();
         trip.preparedTripUser = TripUser.prepareTripUser(trip, price, pathPoints);
         return trip;
+    }
+
+    public void prepareTripUser(TripUser tripUser) {
+        this.preparedTripUser = tripUser;
     }
 
     List<TripSeat> getPreparedTripSeats() {
@@ -96,7 +130,9 @@ public class Trip extends Trip_MAPPED {
 
     public List<Integer> getPreparedBookedSeats() {
         return this.getTripUsers().stream()
+                .filter(tripUser -> !tripUser.isDeleted())
                 .filter(tripUser -> tripUser.isOverlapPoint(this.getPreparedTripUser()))
+                .filter(tripUser -> !tripUser.getTripUserId().equals(this.getPreparedTripUser().getTripUserId()))
                 .flatMap(tripUser -> tripUser.getSeats().stream())
                 .collect(Collectors.toList());
     }
@@ -125,6 +161,10 @@ public class Trip extends Trip_MAPPED {
         return CommonUpdateService.getTripRepository()
                 .findFirstByBussScheduleIdAndLaunchDate(schedule.getBussScheduleId(), launchDate)
                 .orElse(new Trip(schedule));
+    }
+
+    public List<TripUser> getTripUsers() {
+        return this.tripUsers;
     }
 
     // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE

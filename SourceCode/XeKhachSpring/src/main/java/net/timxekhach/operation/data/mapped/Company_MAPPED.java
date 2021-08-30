@@ -89,18 +89,26 @@ public abstract class Company_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("companyName")) {
+                if(value == null) {this.setCompanyName(null); continue;}
+                if(value.equals(this.getCompanyName())) continue;
                 this.setCompanyName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("companyDesc")) {
+                if(value == null) {this.setCompanyDesc(null); continue;}
+                if(value.equals(this.getCompanyDesc())) continue;
                 this.setCompanyDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("hotLine")) {
+                if(value == null) {this.setHotLine(null); continue;}
+                if(value.equals(this.getHotLine())) continue;
                 this.setHotLine(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("isLock")) {
+                if(value == null) {this.setIsLock(null); continue;}
+                if(value.equals(this.getIsLock())) continue;
                 this.setIsLock(Boolean.valueOf(value));
                 continue;
             }

@@ -16,6 +16,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 
 export class BussEmployee extends XeEntity {
     static meta = EntityUtil.metas.BussEmployee;
+    static mapFields = EntityUtil.mapFields['BussEmployee'];
     bussEmployeeId: number;
     bussTypeId: number;
     employeeId: number;

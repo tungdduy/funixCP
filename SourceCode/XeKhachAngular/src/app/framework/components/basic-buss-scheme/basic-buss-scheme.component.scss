@@ -14,14 +14,19 @@
 }
 
 .seat-booked {
-  background: lightgray;
-  color: #adb5bd;
+  background: #adb5bd;
+  color: #f8f9fa;
 }
 
-.seat-available {
+.seat-confirmed {
   background: #87e48e4f;
   border: 1px solid lightgray;
   cursor: pointer;
+}
+
+.seat-available {
+  background: white;
+  border: 1px solid gray;
 }
 
 .seat-selected {
@@ -31,6 +36,21 @@
   font-size: large;
   font-weight: bold;
   cursor: pointer;
+}
+
+.seat-locked {
+  background: #f44336;
+  color: #ffffffcf;
+}
+
+.seat-locked-by-buss {
+  background: #ff5722;
+  color: yellow;
+}
+
+.seat-locked-by-trip {
+  background: #795548;
+  color: #d8b4b4;
 }
 
 .cart-seat-info {

@@ -132,14 +132,19 @@ public abstract class Path_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("pathName")) {
+                if(value == null) {this.setPathName(null); continue;}
+                if(value.equals(this.getPathName())) continue;
                 this.setPathName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("pathDesc")) {
+                if(value == null) {this.setPathDesc(null); continue;}
+                if(value.equals(this.getPathDesc())) continue;
                 this.setPathDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("company")) {
+                if(value == null) {this.setCompany(null); continue;}
                 this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
                 continue;
             }

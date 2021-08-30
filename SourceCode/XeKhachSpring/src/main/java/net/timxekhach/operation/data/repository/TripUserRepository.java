@@ -20,14 +20,6 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     void deleteByTripId(Long tripId);
     @SuppressWarnings("unused")
     List<TripUser> findByTripId(Long tripId);
-    @SuppressWarnings("unused")
-    void deleteByTripIdAndUserId(Long tripId, Long userId);
-    @SuppressWarnings("unused")
-    List<TripUser> findByTripIdAndUserId(Long tripId, Long userId);
-    @SuppressWarnings("unused")
-    void deleteByUserId(Long userId);
-    @SuppressWarnings("unused")
-    List<TripUser> findByUserId(Long userId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

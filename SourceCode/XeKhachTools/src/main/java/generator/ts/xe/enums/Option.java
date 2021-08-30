@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class Option {
     String camelName;
     String camelValue;
+    Boolean isUnique;
     List<Property> properties = new ArrayList<>();
     List<Property> manualProperties = new ArrayList<>();
     public List<Property> getProperties() {

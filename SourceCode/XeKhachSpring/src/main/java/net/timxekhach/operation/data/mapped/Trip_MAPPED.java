@@ -179,22 +179,31 @@ public abstract class Trip_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("lockedSeatsString")) {
+                if(value == null) {this.setLockedSeatsString(null); continue;}
+                if(value.equals(this.getLockedSeatsString())) continue;
                 this.setLockedSeatsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("tripUnitPrice")) {
+                if(value == null) {this.setTripUnitPrice(null); continue;}
+                if(value.equals(this.getTripUnitPrice())) continue;
                 this.setTripUnitPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("launchTime")) {
+                if(value == null) {this.setLaunchTime(null); continue;}
+                if(value.equals(this.getLaunchTime())) continue;
                 this.setLaunchTime(XeDateUtils.timeAppToApi(value));
                 continue;
             }
             if (fieldName.equals("launchDate")) {
+                if(value == null) {this.setLaunchDate(null); continue;}
+                if(value.equals(this.getLaunchDate())) continue;
                 this.setLaunchDate(XeDateUtils.dateAppToApi(value));
                 continue;
             }
             if (fieldName.equals("bussSchedule")) {
+                if(value == null) {this.setBussSchedule(null); continue;}
                 this.setBussSchedule(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussScheduleRepository().findByBussScheduleId(Long.valueOf(value))));
                 continue;
             }

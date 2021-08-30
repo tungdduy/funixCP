@@ -1,6 +1,7 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 import lombok.RequiredArgsConstructor;
+import net.timxekhach.operation.data.entity.Trip;
 import org.springframework.web.bind.annotation.*;
 import net.timxekhach.operation.rest.service.TripService;
 import static net.timxekhach.utility.XeResponseUtils.success;
@@ -38,15 +39,12 @@ public class TripApi {
 	public ResponseEntity<List<BussSchedule>> findBussSchedules (@PathVariable("launchDate") String launchDate, @PathVariable("locationFromId") Long locationFromId, @PathVariable("locationToId") Long locationToId) {
 		return success(tripService.findBussSchedules(launchDate, locationFromId, locationToId));
 	}
-	@PostMapping("/findScheduledLocationsContains/{searchString}")
-	public ResponseEntity<List> findScheduledLocationsContains (@PathVariable("searchString") String searchString) {
-		return success(tripService.findScheduledLocationsContains(searchString));
+	@GetMapping("/getTripWithPreparedTripUser/{tripId}/{tripUserId}")
+	public ResponseEntity<Trip> getTripWithPreparedTripUser(@PathVariable("tripId") Long tripId,
+													@PathVariable("tripUserId") Long tripUserId) {
+		return success(tripService.getTripWithPreparedTripUser(tripId, tripUserId));
 	}
 
-	@PostMapping("/findLocationsHasScheduleGoThroughLocation/{searchString}/{locationId}")
-	public ResponseEntity<List> findLocationsHasScheduleGoThroughLocation (@PathVariable("searchString") String searchString, @PathVariable("locationId") Long locationId) {
-		return success(tripService.findLocationsHasScheduleGoThroughLocation(searchString, locationId));
-	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

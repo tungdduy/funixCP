@@ -90,7 +90,7 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
 
   constructor(private authService: AuthService) {
     super();
-    this.subscriptions.push(this.refresh$(this.user, User).subscribe(
+    this.subscriptions.push(this.refresh$(this.user, User.meta).subscribe(
       newUsers => this.updateUser(newUsers[0]),
       error => Notifier.httpErrorResponse(error)
     ));

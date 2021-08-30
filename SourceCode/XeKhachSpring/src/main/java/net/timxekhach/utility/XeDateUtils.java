@@ -1,6 +1,7 @@
 package net.timxekhach.utility;
 
 import net.timxekhach.operation.response.ErrorCode;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,30 +13,42 @@ public class XeDateUtils {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    public static final SimpleDateFormat YEAR_MONTH_DAY_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
 
     public static Date timeAppToApi(String time) {
+        if(StringUtils.isBlank(time)) return null;
+        if(time.length() ==5) {
+            return parse(TIME_FORMAT, time);
+        } else if (time.length() > 5) {
+            return parse(TIME_FORMAT, time.split("T")[1].split("\\.")[0].substring(0, 5));
+        }
+        return null;
+    }
+
+    private static Date parse(SimpleDateFormat format, String time) {
         try {
-            return TIME_FORMAT.parse(time);
-        } catch (ParseException e) {
-            ErrorCode.INVALID_TIME_FORMAT.throwNow();
+            return format.parse(time);
+        } catch (Exception ignored) {
         }
         return null;
     }
 
     public static Date dateAppToApi(String date) {
-        try {
-            return DATE_FORMAT.parse(date);
-        } catch (ParseException e) {
-            ErrorCode.INVALID_TIME_FORMAT.throwNow();
-        }
-        return null;
+        if(StringUtils.isBlank(date)) return null;
+        Date parsedDate = parse(DATE_FORMAT, date);
+        if(parsedDate == null) parsedDate = parse(YEAR_MONTH_DAY_FORMAT, date);
+        return parsedDate;
     }
 
-    public static Date dateTimeAppToApi(String date) {
-        try {
-            return DATE_TIME_FORMAT.parse(date);
-        } catch (ParseException e) {
-            ErrorCode.INVALID_TIME_FORMAT.throwNow();
+    public static Date dateTimeAppToApi(String dateTimeString) {
+        if(StringUtils.isBlank(dateTimeString)) return null;
+        Date dateTime = parse(DATE_TIME_FORMAT, dateTimeString);
+        if(dateTime != null) return dateTime;
+        Date dateOnly = dateAppToApi(dateTimeString);
+        Date timeOnly = timeAppToApi(dateTimeString);
+        if(dateOnly != null && timeOnly != null) {
+            return mergeDateAndTime(dateOnly, timeOnly);
         }
         return null;
     }

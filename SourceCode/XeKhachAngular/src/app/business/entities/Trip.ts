@@ -10,6 +10,9 @@ import {Company} from "./Company";
 import {TripUser} from "./TripUser";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {InputTemplate} from "../../framework/model/EnumStatus";
+import {XeSubscriber} from "../../framework/model/XeSubscriber";
+import {AbstractXe} from "../../framework/model/AbstractXe";
+import {Xe} from "../../framework/model/Xe";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -17,6 +20,7 @@ import {InputTemplate} from "../../framework/model/EnumStatus";
 
 export class Trip extends XeEntity {
     static meta = EntityUtil.metas.Trip;
+    static mapFields = EntityUtil.mapFields['Trip'];
     bussScheduleId: number;
     tripId: number;
     bussTypeId: number;
@@ -35,12 +39,35 @@ export class Trip extends XeEntity {
   preparedBookedSeats: number[];
   totalPreparedAvailableSeats: number;
 
+  availableSeats: number[];
+  bookedSeats: number[];
   totalBookedSeats: number;
+
   lockedSeats: number[];
   lockedBussSeats: number[];
+  totalLockedSeats: number;
+
   totalSeats: number;
   full: boolean;
   launched: boolean;
+  confirmedSeats: number[];
+
+  static addLockedSeat(trip: Trip, seatNo: number) {
+    if (!trip.lockedSeats) trip.lockedSeats = [seatNo];
+    else if (!trip.lockedSeats.includes(seatNo)) {
+      trip.lockedSeats.push(seatNo);
+      trip.lockedSeatsString = trip.lockedSeats.join(",");
+      Xe.updateFields(trip, ['lockedSeatsString'], Trip.meta);
+    }
+  }
+
+  static removeLockedSeat(trip: Trip, seatNo: number) {
+    if (trip.lockedSeats && trip.lockedSeats.includes(seatNo)) {
+      trip.lockedSeats.splice(trip.lockedSeats.indexOf(seatNo), 1);
+      trip.lockedSeatsString = trip.lockedSeats.join(",");
+      Xe.updateFields(trip, ['lockedSeatsString'], Trip.meta);
+    }
+  }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (trip: Trip): EntityIdentifier<Trip> => ({
@@ -97,15 +124,23 @@ export class Trip extends XeEntity {
             ]
           },
           {
-            field: {name: 'bussSchedule.startPoint', template: InputTemplate.pathPoint}, display: {header: {title: 'Điểm đầu'}},
+            field: {name: 'bussSchedule.startPoint', template: InputTemplate.pathPoint},
+            display: {header: {title: 'Điểm đầu'}},
             subColumns: [
-              {field: {name: 'bussSchedule.startPoint.location', template: InputTemplate.location}, display: {header: {silence: true}}}
+              {
+                field: {name: 'bussSchedule.startPoint.location', template: InputTemplate.location},
+                display: {header: {silence: true}}
+              }
             ]
           },
           {
-            field: {name: 'bussSchedule.endPoint', template: InputTemplate.pathPoint}, display: {header: {title: 'Điểm cuối'}},
+            field: {name: 'bussSchedule.endPoint', template: InputTemplate.pathPoint},
+            display: {header: {title: 'Điểm cuối'}},
             subColumns: [
-              {field: {name: 'bussSchedule.startPoint.location', template: InputTemplate.location}, display: {header: {silence: true}}}
+              {
+                field: {name: 'bussSchedule.startPoint.location', template: InputTemplate.location},
+                display: {header: {silence: true}}
+              }
             ]
           },
         ],

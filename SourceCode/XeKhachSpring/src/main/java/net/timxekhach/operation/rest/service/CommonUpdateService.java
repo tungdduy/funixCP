@@ -838,24 +838,15 @@ public class CommonUpdateService {
         TripUser tripUser = ErrorCode.DATA_NOT_FOUND.throwIfNull(tripUserRepository.findByTripUserId(tripUserId));
 
         Map<String, String> tripData = new HashMap<>();
-        Map<String, String> userData = new HashMap<>();
         data.forEach((fieldName, fieldValue) -> {
             if (fieldName.startsWith("trip.")) {
                 tripData.put(fieldName.substring("trip.".length()), fieldValue);
-            }
-            if (fieldName.startsWith("user.")) {
-                userData.put(fieldName.substring("user.".length()), fieldValue);
             }
         });
         if (!tripData.isEmpty()) {
             tripData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
 
             this.updateTrip(tripData);
-        }
-        if (!userData.isEmpty()) {
-            userData.forEach((fieldName, fieldValue) -> data.remove(fieldName));
-
-            this.updateUser(userData);
         }
 
         tripUser.setFieldByName(data);
@@ -887,17 +878,6 @@ public class CommonUpdateService {
             }
         } else {
             tripUser.setTrip(this.tripRepository.findByTripId(tripUser.getTripId()));
-        }
-        if (tripUser.getUserId() == null || tripUser.getUserId() <= 0) {
-            if (XeBooleanUtils.isTrue(data.get("newUserIfNull"))) {
-                Map<String, String> userData = new HashMap<>();
-                data.entrySet().stream()
-                        .filter(entry -> entry.getKey().startsWith("user."))
-                        .forEach(entry -> userData.put(entry.getKey().substring("user.".length()), entry.getValue()));
-                tripUser.setUser(this.insertUser(userData));
-            }
-        } else {
-            tripUser.setUser(this.userRepository.findByUserId(tripUser.getUserId()));
         }
         tripUser.preSaveAction();
         tripUser = tripUserRepository.save(tripUser);

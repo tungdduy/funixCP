@@ -110,8 +110,8 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     let changedInputsNumber = 0;
     const invalidNumber = this.formControls.filter(input => {
 
-      if (input.selectOneMenu && input.selectOneMenu().length === 1)
-        input.value = input.selectOneMenu()[0].value;
+      if (input.selectOneMenu && input.selectOneMenu.length === 1)
+        input.value = input.selectOneMenu[0].value;
 
       if (input.isChanged || this.uncheckChanged) {
         model[input.name] = input.submitValue;

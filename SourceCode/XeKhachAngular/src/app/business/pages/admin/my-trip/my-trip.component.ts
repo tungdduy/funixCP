@@ -42,7 +42,7 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   }));
 
   ngAfterViewInit(): void {
-    this.refresh(this.user, User);
+    this.refresh(this.user, User.meta);
   }
 
 
