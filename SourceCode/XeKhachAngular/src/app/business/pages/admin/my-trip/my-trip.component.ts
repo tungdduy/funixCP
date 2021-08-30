@@ -6,6 +6,7 @@ import {User} from "../../../entities/User";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {Location} from "../../../entities/Location";
 import {XeTableComponent} from "../../../../framework/components/xe-table/xe-table.component";
+import {Xe} from "../../../../framework/model/Xe";
 
 export interface BussScheduleCriteria {
   locationFrom: Location;
@@ -42,7 +43,7 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   }));
 
   ngAfterViewInit(): void {
-    this.refresh(this.user, User.meta);
+    Xe.refresh(this.user, User.meta);
   }
 
 

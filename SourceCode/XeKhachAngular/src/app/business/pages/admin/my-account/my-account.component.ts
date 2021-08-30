@@ -7,6 +7,7 @@ import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component
 import {RoleInfo, RoleUtil} from "../../../../framework/util/role.util";
 import {Company} from "../../../entities/Company";
 import {Notifier} from "../../../../framework/notify/notify.service";
+import {Xe} from "../../../../framework/model/Xe";
 
 @Component({
   selector: 'xe-my-account',
@@ -90,7 +91,7 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
 
   constructor(private authService: AuthService) {
     super();
-    this.subscriptions.push(this.refresh$(this.user, User.meta).subscribe(
+    this.subscriptions.push(Xe.refresh$(this.user, User.meta).subscribe(
       newUsers => this.updateUser(newUsers[0]),
       error => Notifier.httpErrorResponse(error)
     ));
