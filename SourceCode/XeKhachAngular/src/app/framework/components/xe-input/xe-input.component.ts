@@ -111,6 +111,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     const val = this.selectOneMenu[idx].value;
     this._preChange(val);
     this._value = val;
+    this.valueChange.emit(val);
     this._postChange();
   }
 
@@ -464,8 +465,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
-        this.template.criteria.inputName = this.name;
-        this.template.criteria.inputText = term;
+        if (this.template?.criteria) {
+          this.template.criteria.inputName = this.name;
+          this.template.criteria.inputText = term;
+        }
         return this.template.observable(this.template.criteria);
       })
     );
@@ -487,6 +490,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   tableSelect(value) {
     this._preChange(value);
     this._value = value;
+    this.valueChange.emit(value);
     this._postChange();
   }
 

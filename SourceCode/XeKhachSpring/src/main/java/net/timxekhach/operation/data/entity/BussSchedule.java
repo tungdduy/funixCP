@@ -1,13 +1,15 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.BussSchedule_MAPPED;
-import lombok.AccessLevel;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.XeDateUtils;
 import net.timxekhach.utility.XeNumberUtils;
+
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.ws.Holder;
 import java.util.ArrayList;
@@ -135,6 +137,9 @@ public class BussSchedule extends BussSchedule_MAPPED {
     }
 
     private void initBussSchedulePoints() {
+        if(this.bussScheduleId == null) {
+            this.bussScheduleId = CommonUpdateService.getBussScheduleRepository().save(this).getBussScheduleId();
+        }
         CommonUpdateService.getBussSchedulePointRepository().deleteByBussScheduleId(this.bussScheduleId);
         int startOrder = this.startPoint.getPointOrder();
         int endOrder = this.endPoint.getPointOrder();

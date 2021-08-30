@@ -131,6 +131,7 @@ export class BussTypeComponent extends XeSubscriber {
   });
   pathPointSelectionTable = PathPoint.tableData({
     table: {
+      selectBasicColumns: ['path', 'pointName', 'location'],
       customData: () => this.bussScheduleTable.formData.share.entity.path.pathPoints,
     },
     formData: {}
@@ -168,6 +169,9 @@ export class BussTypeComponent extends XeSubscriber {
                 bussSchedule.endPointPathPointId = 0;
                 bussSchedule.endPointLocationId = 0;
               }
+            },
+            postChange: (currentValue, oldValue) => {
+              console.log(this.bussScheduleTable.formData.share.entity);
             }
           }
         },
