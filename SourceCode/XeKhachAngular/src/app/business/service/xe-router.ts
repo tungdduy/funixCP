@@ -10,7 +10,7 @@ export class XeRouter {
     XeRouter.router = router;
   }
 
-  private static go(url: string): void {
+  public static go(url: string): void {
     XeRouter.router.navigateByUrl(url).then(r => {
 
     });

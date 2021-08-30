@@ -1,3 +1,5 @@
+import {ObjectUtil} from "./object.util";
+
 export class StorageUtil {
 
   static getString(key: string): string | null {
@@ -10,22 +12,31 @@ export class StorageUtil {
 
   static getFromJson(key: string): any {
     const jsonString = StorageUtil.getString(key);
-    if (jsonString !== null) {
-      return JSON.parse(localStorage.getItem(key));
+    if (jsonString !== null && this.isJson(jsonString)) {
+      return JSON.parse(jsonString);
     }
     return null;
   }
 
   static setItem(key: string, item: any) {
-    if (StorageUtil.isPrimitive(item)) {
+    if (ObjectUtil.isPrimitive(item)) {
       localStorage.setItem(key, String(item));
     } else {
-      localStorage.setItem(key, JSON.stringify(item));
+      const obj = ObjectUtil.trimCircularObject(item);
+      localStorage.setItem(key, JSON.stringify(obj));
     }
   }
 
-  private static isPrimitive(value) {
-    return Object(value) !== value;
-  }
+  static isJson(item) {
+    item = typeof item !== "string"
+      ? JSON.stringify(item)
+      : item;
+    try {
+      item = JSON.parse(item);
+    } catch (e) {
+      return false;
+    }
 
+    return typeof item === "object" && item !== null;
+  }
 }

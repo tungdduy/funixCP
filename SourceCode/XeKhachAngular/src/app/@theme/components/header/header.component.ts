@@ -7,13 +7,14 @@ import {AuthUtil} from "../../../framework/auth/auth.util";
 import {XeLabel} from "../../../business/i18n";
 import {NbMenuItem} from "@nebular/theme/components/menu/menu.service";
 import {Url} from "../../../framework/url/url.declare";
+import {AbstractXe} from "../../../framework/model/AbstractXe";
 
 @Component({
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
   public readonly materialTheme$: Observable<boolean>;
@@ -21,10 +22,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   user = AuthUtil.instance.user;
 
   userMenu: NbMenuItem[] = [
-    { title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
-    {title: XeLabel.LOGIN, hidden: AuthUtil.instance.isUserLoggedIn, url: Url.app.CHECK_IN.LOGIN.full},
     {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost},
-    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full}
+    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full},
+    {title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
   ];
 
   public constructor(
@@ -33,6 +33,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private themeService: NbThemeService,
     private layoutService: LayoutService,
   ) {
+    super();
     menuService.onItemClick().subscribe((menu) => {
       if (!!menu.item.data) {
         menu.item.data();
@@ -64,5 +65,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
      return false;
+  }
+
+  notLogin() {
+    return !AuthUtil.instance.isUserLoggedIn;
   }
 }

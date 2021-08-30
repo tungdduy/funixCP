@@ -1,4 +1,4 @@
-<div class="navigator" *ngIf="screen">
+<div class="navigator" *ngIf="screen && screen.config.homeIcon">
   <div class="d-inline-block">
     <xe-btn (click)="screen.goHome()" [icon]="screen.config.homeIcon" hideText></xe-btn>
     <lbl class="text-primary" prepend="/ ">{{screen.title}}</lbl>

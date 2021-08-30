@@ -454,7 +454,9 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   onAutoInputSelected(_v: any) {
+    this._preChange(_v);
     this.value = _v;
+    this._postChange();
   }
 
   private searchTerm = new Subject<string>();

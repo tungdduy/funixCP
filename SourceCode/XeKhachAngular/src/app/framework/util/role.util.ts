@@ -18,6 +18,7 @@ export class RoleUtil {
   };
 
   static getRolesInfo(rawRoles: string, exclude = ["ROLE_USER"]): RoleInfo[] {
+    if (!rawRoles) return [];
     const roles = rawRoles.split(",");
     const result: RoleInfo[] = [];
     roles.forEach(role => {

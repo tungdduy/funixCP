@@ -173,6 +173,7 @@ export class TripUser extends XeEntity {
     return {
       table: {
         basicColumns: [
+          {field: {name: 'trip.bussSchedule.path', template: InputTemplate.path}},
           {
             field: {name: 'fullName'}, subColumns: [
               {field: {name: 'phoneNumber', template: InputTemplate.phone}},

@@ -35,6 +35,9 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
 
   tripUserTable = TripUser.tableData({
     xeScreen: this.screen,
+    table: {
+      selectBasicColumns: ['trip.bussSchedule.path', 'totalPrice', 'startPoint', 'endPoint', 'trip.launchDate', 'trip.bussSchedule.buss.company.companyName']
+    },
     display: {
       fullScreenForm: true
     }
@@ -47,7 +50,6 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
       Xe.refresh(this.user, User.meta);
     }
   }
-
 
 
 }

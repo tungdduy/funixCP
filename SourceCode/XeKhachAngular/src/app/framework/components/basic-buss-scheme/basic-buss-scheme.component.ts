@@ -17,6 +17,8 @@ import {XeTableData} from "../../model/XeTableData";
 import {CommonUpdateService} from "../../../business/service/common-update.service";
 import {BussSchedulePoint} from "../../../business/entities/BussSchedulePoint";
 import {Xe} from "../../model/Xe";
+import {XeRouter} from "../../../business/service/xe-router";
+import {Url} from "../../url/url.declare";
 
 @Component({
   selector: 'basic-buss-scheme',
@@ -491,4 +493,10 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   }
 
 
+  viewHistory() {
+    XeRouter.navigate(Url.app.ADMIN.MY_TRIP.noHost);
+  }
+  findTrip() {
+    location.reload();
+  }
 }

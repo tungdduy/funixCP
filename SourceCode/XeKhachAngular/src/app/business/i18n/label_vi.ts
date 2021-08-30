@@ -362,7 +362,8 @@ export const Label_vi = {
   'input.bussSchedulePoint.startPoint': 'Điểm lên',
   'input.bussSchedulePoint.endPoint': 'Điểm xuống',
   'column.preparedTrip.preparedTotalAvailableSeats': 'Tình trạng ghế',
-  UNLOCK_FIRST: "Cần mở khóa trước khi chọn ghế này"
+  UNLOCK_FIRST: "Cần mở khóa trước khi chọn ghế này",
+  'column.trip.bussSchedule.path': 'Tuyến đường',
 
 
 };
