@@ -19,7 +19,7 @@ import {
   NbIconModule,
   NbInputModule,
   NbSelectModule,
-  NbTimepickerModule,
+  NbTimepickerModule, NbTooltipModule,
   NbUserModule
 } from "@nebular/theme";
 import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
@@ -130,7 +130,8 @@ import {XeDateTimePipe} from "./pipes/DateTimePipe";
     NbAutocompleteModule,
     MatDatepickerModule,
     NativeDateModule,
-    MatButtonModule
+    MatButtonModule,
+    NbTooltipModule
   ],
   providers: [
     {provide: MatPaginatorIntl, useValue: CustomPaginator()},
