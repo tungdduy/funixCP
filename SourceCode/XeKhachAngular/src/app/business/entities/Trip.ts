@@ -13,6 +13,7 @@ import {InputTemplate} from "../../framework/model/EnumStatus";
 import {XeSubscriber} from "../../framework/model/XeSubscriber";
 import {AbstractXe} from "../../framework/model/AbstractXe";
 import {Xe} from "../../framework/model/Xe";
+import {XeLabel} from "../i18n";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -135,10 +136,10 @@ export class Trip extends XeEntity {
           },
           {
             field: {name: 'bussSchedule.endPoint', template: InputTemplate.pathPoint},
-            display: {header: {title: 'Điểm cuối'}},
+            display: {header: {title: XeLabel.endPoint}},
             subColumns: [
               {
-                field: {name: 'bussSchedule.startPoint.location', template: InputTemplate.location},
+                field: {name: 'bussSchedule.endPoint.location', template: InputTemplate.location},
                 display: {header: {silence: true}}
               }
             ]
