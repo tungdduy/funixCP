@@ -1,5 +1,4 @@
 import {AfterViewInit, Component} from '@angular/core';
-import {User} from "../../../entities/User";
 import {BussSchedule} from "../../../entities/BussSchedule";
 import {Observable, of} from "rxjs";
 import {PathPoint} from "../../../entities/PathPoint";
@@ -26,7 +25,7 @@ export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
   screen = new XeScreen({home: this.screens.trips});
 
   ngAfterViewInit(): void {
-    this.initBussSchedule();
+    // this.initTestBussSchedule();
   }
 
   bussScheduleTable = BussSchedule.tableData({
@@ -94,7 +93,7 @@ export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
     return {countPointValid, validId};
   }
 
-  onChangeSearchScheduleInput = (inputValue: Location, criteria: BussScheduleCriteria) => {
+  postChangeSearchScheduleInput = (currentValue: Location, oldValue: Location, criteria: BussScheduleCriteria) => {
     const validResult = criteria.validator(criteria);
     if (validResult.countPointValid === 2 && !!criteria.launchDate) {
       CommonUpdateService.instance
@@ -103,7 +102,7 @@ export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
     }
   }
 
-  initBussSchedule() {
+  initTestBussSchedule() {
     const testCriteria = {
       locationFrom: {locationId: 21305},
       locationTo: {locationId: 4721},
@@ -121,7 +120,7 @@ export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
   bussSchedulePointInput = InputTemplate.scheduledLocation
     ._observable(CommonUpdateService.instance.findScheduledLocations)
     ._criteria(this.bussScheduleCriteria)
-    ._postChange(this.onChangeSearchScheduleInput);
+    ._postChange(this.postChangeSearchScheduleInput);
 
   get bussSchedule() {
     return this.bussScheduleTable.formData.share.entity;

@@ -1,22 +1,23 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
-import javax.validation.constraints.Size;
-
 import net.timxekhach.operation.data.mapped.User_MAPPED;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.security.core.GrantedAuthority;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.security.handler.SecurityConfig;
 import net.timxekhach.utility.XeStringUtils;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import javax.persistence.Entity;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import net.timxekhach.security.handler.SecurityConfig;
-import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
@@ -107,8 +108,7 @@ public class User extends User_MAPPED {
     public void setPassword(String password) {
         super.setPassword(password);
     }
-
-    // ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
 

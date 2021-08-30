@@ -19,6 +19,7 @@ import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 
 export class BussSchedulePoint extends XeEntity {
     static meta = EntityUtil.metas.BussSchedulePoint;
+    static mapFields = EntityUtil.mapFields['BussSchedulePoint'];
     pathPointId: number;
     bussScheduleId: number;
     pathId: number;

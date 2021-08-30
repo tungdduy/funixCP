@@ -18,6 +18,8 @@ import {EntityUtil} from "../../util/EntityUtil";
 import {Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {ObjectUtil} from "../../util/object.util";
+import {EditOnRow} from "../../model/EnumStatus";
+import {Xe} from "../../model/Xe";
 
 @Component({
   selector: 'xe-table',
@@ -33,7 +35,8 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild("basicFormDialogWrapper") basicFormDialogWrapper;
   @ViewChild("deleteDialogWrapper") deleteDialog;
-  selection: SelectionModel<any>;
+  selection: SelectionModel<E>;
+  viewing: SelectionModel<E>;
   isSelected = true;
   screens = {
     basicForm: "basicForm",
@@ -68,6 +71,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     setTimeout(() => {
       this.initData();
     }, 0);
+    console.log(this.editOnRow);
   }
 
 
@@ -75,6 +79,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     const initialSelection = [];
     const allowMultiSelect = !this.tableData.table.mode?.selectOneOnly;
     this.selection = new SelectionModel<any>(allowMultiSelect, initialSelection);
+    this.viewing = new SelectionModel<any>(allowMultiSelect, initialSelection);
     this.tableData.formData.share.selection = this.selection;
     this.tableData.formData.share.tableComponent = this;
   }
@@ -111,7 +116,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   private initFullScreenForm() {
-    if (this.tableData.display.fullScreenForm) {
+    if (this.tableData?.display?.fullScreenForm) {
       this.tableData.formData.display.cancelBtn = "close";
       const currentPostCancel = this.tableData.formData.action.postCancel;
       this.tableData.formData.action.postCancel = (entity) => {
@@ -324,6 +329,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return tableColumn as TableColumn;
   }
 
+
   private updateTableSource(result: E[]) {
     this.tableData.formData.share.tableSource = this.tableSource;
     this.tableData.formData.share.tableEntities = result;
@@ -336,8 +342,63 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     };
   }
 
-  onSelect(entity: E, tableColumn: TableColumn) {
-    if (tableColumn.field.template?.isTableOrder) return;
+  toggleRow(entity: E) {
+    this.prepareEntityOnSelect(entity);
+    this.viewing.clear();
+    if (this.selection.isSelected(entity)) {
+      this.selection.clear();
+      this.postDeSelect(entity);
+    } else {
+      this.selection.clear();
+      this.selection.select(entity);
+      this.postSelect(entity);
+    }
+  }
+
+  toggleRowWithoutAction(entity: E) {
+    this.prepareEntityOnSelect(entity);
+    let selectedIdx = 0;
+    this.tableSource.data.forEach((e, idx) => {
+      if (e[this.entityMeta.mainIdName] === entity[this.entityMeta.mainIdName]) {
+        selectedIdx = idx;
+      }
+    });
+    const pageIndex = Math.floor(selectedIdx / this.paginator.pageSize);
+    while (this.paginator.pageIndex !== pageIndex) {
+      if (pageIndex > this.paginator.pageIndex) {
+        this.paginator.nextPage();
+      } else {
+        this.paginator.previousPage();
+      }
+    }
+    if (this.viewing.isSelected(entity)) {
+      this.viewing.clear();
+      return false;
+    } else {
+      this.viewing.clear();
+      this.viewing.select(entity);
+      return true;
+    }
+  }
+
+
+  onSelectColumn(entity: E, tableColumn: TableColumn = null) {
+    this.prepareEntityOnSelect(entity);
+    if (tableColumn?.field.template?.isTableOrder) return;
+    if (tableColumn?.action?.screen) {
+      this.tableData?.xeScreen.go(tableColumn.action?.screen);
+    } else if (tableColumn?.action?.onSelect) {
+      tableColumn.action.onSelect(entity);
+    } else if (this.tableData.display.toggleOne) {
+      this.toggleRow(entity);
+    } else if (!this.tableData.table.mode.readonly) {
+      this.dialogEditEntity();
+    } else {
+      this.postSelect(entity);
+    }
+  }
+
+  private prepareEntityOnSelect(entity: E) {
     this.tableData.formData.share.entity = entity;
     const thisIdent = this.tableData.formData.entityIdentifier;
     if (this.tableData.external?.updateCriteriaTableOnSelect) {
@@ -346,14 +407,19 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
         this.updateCriteria(targetIdent, thisIdent, entity);
       });
     }
+  }
+
+  postSelect(entity: E) {
     if (this.tableData?.table?.action?.postSelect) {
       this.tableData.table.action.postSelect(entity);
-    } else if (tableColumn.action?.screen) {
-      this.tableData?.xeScreen.go(tableColumn.action?.screen);
-    } else if (tableColumn.action?.onSelect) {
-      tableColumn.action.onSelect(entity);
-    } else {
-      this.dialogEditEntity();
+      return true;
+    }
+    return false;
+  }
+
+  postDeSelect(entity: E) {
+    if (this.tableData?.table?.action?.postDeSelect) {
+      this.tableData.table.action.postDeSelect(entity);
     }
   }
 
@@ -426,7 +492,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     aboveSwap[fieldName] = belowSwap[fieldName];
     belowSwap[fieldName] = swapOrder;
     this.tableData.formData.share.tableSource.data = this.tableData.formData.share.tableSource.data.sort((above, below) => above[fieldName] - below[fieldName]);
-    this.update([aboveSwap, belowSwap], clazz);
+    Xe.update([aboveSwap, belowSwap], clazz.meta);
   }
 
   bringDown(entity: E, field: EntityField, columnIndex: any) {
@@ -452,12 +518,16 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return this.getRowIndexBase1(columnIndex) === this.tableSource.data?.length;
   }
 
-  editOnRow: boolean;
+  get editOnRow() {
+    return this.tableData.table.action.editOnRow || EditOnRow.disabled;
+  }
 
   updateOnRow() {
-    this.updateMulti$(this.tableSource.data, this.entityMeta).subscribe(arrayResult => {
+    Xe.update$(this.tableSource.data, this.entityMeta).subscribe(arrayResult => {
       this.updateTableData(arrayResult as any);
-      this.editOnRow = false;
+      if (this.editOnRow.hasOnClick) {
+        this.editOnRow.toEditingNo();
+      }
       Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
     });
   }
@@ -465,6 +535,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   tempLastFieldName: string;
   getLastFieldName = () => this.tempLastFieldName;
+  pageIndex: any;
 
   getLastEntity(entity: any, tableColumn: any) {
     const col = tableColumn as TableColumn;
@@ -474,6 +545,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     this.tempLastFieldName = ef.lastFieldName;
     return ef.entity;
   }
+
   get entityMeta() {
     return this.tableData.formData.entityIdentifier.clazz.meta;
   }
@@ -482,11 +554,8 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return this.tableData.external.parent.tableData.formData.entityIdentifier;
   }
 
-  getOriginValue(entity: any, column: TableColumn) {
-    return this.entityUtil.getOriginFieldValue(entity, this.entityMeta , column.field);
-  }
-
   getInlineValue(entity: any, column: TableColumn) {
     return this.entityUtil.valueAsInlineString(entity, this.entityMeta, column.field);
   }
+
 }

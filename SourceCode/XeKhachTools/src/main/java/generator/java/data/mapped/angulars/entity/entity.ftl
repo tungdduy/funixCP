@@ -4,6 +4,7 @@ ${root.separators.underImport.all}
 
 export class ${root.entityCapName} extends XeEntity {
     static meta = EntityUtil.metas.${root.entityCapName};
+    static mapFields = EntityUtil.mapFields['${root.entityCapName}'];
 <#list root.primaryKeys as primaryKey>
     ${primaryKey.fieldName}: number;
 </#list>

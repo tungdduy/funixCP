@@ -1,20 +1,21 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.BussType;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 import lombok.*;
+import net.timxekhach.operation.data.entity.BussType;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -74,7 +75,9 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
         insertable = false,
         updatable = false)
     })
-    @JsonIgnore
+    @JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "bussTypeId")
     protected BussType bussType;
 
     public BussType getBussType(){
@@ -116,26 +119,37 @@ public abstract class SeatGroup_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("seatGroupOrder")) {
+                if(value == null) {this.setSeatGroupOrder(null); continue;}
+                if(value.equals(this.getSeatGroupOrder())) continue;
                 this.setSeatGroupOrder(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupName")) {
+                if(value == null) {this.setSeatGroupName(null); continue;}
+                if(value.equals(this.getSeatGroupName())) continue;
                 this.setSeatGroupName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatGroupDesc")) {
+                if(value == null) {this.setSeatGroupDesc(null); continue;}
+                if(value.equals(this.getSeatGroupDesc())) continue;
                 this.setSeatGroupDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalSeats")) {
+                if(value == null) {this.setTotalSeats(null); continue;}
+                if(value.equals(this.getTotalSeats())) continue;
                 this.setTotalSeats(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatFrom")) {
+                if(value == null) {this.setSeatFrom(null); continue;}
+                if(value.equals(this.getSeatFrom())) continue;
                 this.setSeatFrom(Integer.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussType")) {
+                if(value == null) {this.setBussType(null); continue;}
                 this.setBussType(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussTypeRepository().findByBussTypeId(Long.valueOf(value))));
                 continue;
             }

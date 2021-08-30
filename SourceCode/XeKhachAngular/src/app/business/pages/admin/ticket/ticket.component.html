@@ -9,6 +9,9 @@
 
 <ng-container *ngIf="screen.is(screens.tripDetails)">
   <basic-buss-scheme [screen]="screen"
+                     [bussSchedule]="selectedTrip.bussSchedule"
+                     [trip]="selectedTrip"
+                     [mode]="bussSchemeMode.tripAdmin"
                      [bussType]="bussType">
   </basic-buss-scheme>
 </ng-container>

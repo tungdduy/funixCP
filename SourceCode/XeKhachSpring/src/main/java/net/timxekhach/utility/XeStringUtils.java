@@ -53,14 +53,14 @@ public class XeStringUtils {
         return StringUtils.substringBetween(source, open, end);
     }
 
-    public static Stream<Integer> commaGt0ToStream(String commaList) {
+    public static Stream<Integer> commaGt0ToStreamSortedAsc(String commaList) {
         return Arrays.stream(XeStringUtils.trimToEmpty(commaList).split(",")).map(seat -> {
             try {
                 return Integer.parseInt(seat);
             } catch (Exception ex) {
                 return 0;
             }
-        }).filter(n -> n > 0);
+        }).filter(n -> n > 0).sorted();
     }
 
 }

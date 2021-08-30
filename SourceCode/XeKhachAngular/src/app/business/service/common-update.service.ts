@@ -10,6 +10,7 @@ import {BussSchedule} from "../entities/BussSchedule";
 import {XeDatePipe} from "../../framework/components/pipes/date.pipe";
 import {BussScheduleCriteria} from "../pages/admin/my-trip/my-trip.component";
 import {StringUtil} from "../../framework/util/string.util";
+import {Trip} from "../entities/Trip";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,10 @@ export class CommonUpdateService {
   }
 
   oneParamIdValue = (entity, meta: ClassMeta) => {
+    const pkIds = meta.pkMetas().map(pk => "0");
     const idName = entity ? entity[meta.mainIdName] : "0";
-    return idName ? idName : "0";
+    const mainId = idName ? [idName] : ["0"];
+    return mainId.concat(pkIds).join("/");
   }
   commonPath = (meta: ClassMeta) => Url.API_HOST + "/common-update/" + meta.capName;
   commonMultiPath = (meta: ClassMeta) => Url.API_HOST + "/common-update/Multi" + meta.capName;
@@ -54,6 +57,7 @@ export class CommonUpdateService {
   }
 
   update<T extends XeEntity>(data, meta: ClassMeta): Observable<T> {
+    console.log(this.commonPath(meta));
     return this.http.post<T>(this.commonPath(meta), data);
   }
 
@@ -129,5 +133,10 @@ export class CommonUpdateService {
       + data.locationTo.locationId;
     console.log(url);
     return this.http.get<BussSchedule[]>(url);
+  }
+
+  getTripWithPreparedTripUser(tripId: number, tripUserId: number): Observable<Trip> {
+    const url = Url.API_HOST + "/trip/getTripWithPreparedTripUser/" + tripId + "/" + tripUserId;
+    return this.http.get<Trip>(url);
   }
 }

@@ -31,6 +31,8 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     }, 0);
   }
 
+
+
   init() {
     this._originValue = this.appValue;
     if (this.name?.toLowerCase().includes('password')) {
@@ -39,8 +41,81 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     if (this.template?.pipe?.singleToInline && this.htmlShortInput?.nativeElement) {
       this.htmlShortInput.nativeElement.value = this.template.pipe.singleToInline(this.value);
     }
+    if (this.template.hasSelectOneMenu) {
+      this.selectOneMenu$ = this.template.selectMenu$;
+    } else if (this.template.hasDefaultSelectMenu$) {
+      this.selectOneMenu$ = this.template.defaultSelectMenu$;
+    }
+    if (this.template.hasSwapOn) {
+      this.selectOneMenu$.subscribe(
+        menu => this.selectOneMenu = menu
+      );
+    }
     this.initAutoInput();
   }
+
+  // SELECT ONE MENU >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  selectOneMenu: SelectItem<any>[];
+  selectOneMenu$: Observable<SelectItem<any>[]>;
+  isViewingBoard = false;
+  selectItem(val) {
+    this.isViewingBoard = false;
+    this._preChange(val);
+    if (this._value !== val) {
+      this._value = val;
+      this.valueChange.emit(this._value);
+      this._postChange();
+    }
+  }
+
+  _oldValue;
+  _preChange(comingValue) {
+    if (this.entityField?.action?.preChange) {
+      this.entityField.action.preChange(this._value, comingValue);
+    }
+    this._oldValue = this._value;
+    if (this.template.preChange) {
+      if (this.template.criteria) {
+        this.template.criteria['inputName'] = this.getName();
+      }
+      this.template.preChange(this._value, comingValue, this.template.criteria);
+    }
+  }
+
+  _postChange() {
+    if (this.entityField?.action?.postChange) {
+      this.entityField.action.postChange(this._value, this._oldValue);
+    }
+    if (this.template.postChange) {
+      if (this.template.criteria) {
+        this.template.criteria['inputName'] = this.getName();
+      }
+      this.template.postChange(this._value, this._oldValue, this.template.criteria);
+    }
+  }
+
+  clickSwapItem() {
+    if (this.template.hasBoardMenu) {
+      this.isViewingBoard = true;
+    } else {
+      this.selectNextItem();
+    }
+  }
+
+  selectNextItem() {
+    let idx = 0;
+    this.selectOneMenu.forEach((item, index) => {
+      if (this._value === item.value) idx = index + 1;
+      if (idx === this.selectOneMenu.length) idx = 0;
+    });
+    const val = this.selectOneMenu[idx].value;
+    this._preChange(val);
+    this._value = val;
+    this.valueChange.emit(val);
+    this._postChange();
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT ONE MENU
 
   onShortInputBlur($event: any) {
     if (this.template?.pipe?.singleToInline && this.htmlShortInput?.nativeElement) {
@@ -83,7 +158,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @Input() matching?: any;
   @Input() name?: string;
   @Input() icon?;
-  @Input() selectOneMenu: () => SelectItem<any>[];
   @Input("template") _template: InputTemplate;
   @Input() converter: any;
   @Input() formMode: InputMode;
@@ -112,19 +186,9 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   set value(val) {
-    if (this.entityField?.action?.preChange) {
-      this.entityField.action.preChange(val);
-    }
-    if (this.template.preChange) {
-      this.template.preChange(val, this.template.criteria);
-    }
-    this._value = val;
-    this.valueChange.emit(this._value);
-    if (this.entityField?.action?.postChange) {
-      this.entityField.action.postChange(this._value);
-    }
-    if (this.template.postChange) {
-      this.template.postChange(val, this.template.criteria);
+    if (this._value !== val) {
+      this._value = val;
+      this.valueChange.emit(this._value);
     }
   }
 
@@ -223,6 +287,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   get asHtml() {
     return this.template?.hasPipe ? this.template.pipe.singleToHtml(this._value) : this._value;
+  }
+
+  optionAsHtml(value) {
+    return this.template?.hasPipe ? this.template.pipe.singleToHtml(value) : value;
   }
 
   get valueStringLength() {
@@ -362,7 +430,8 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Multi OPTIONS
 
-  // TIME >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  // AUTO INPUT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
   autoInputOptions$: Observable<AutoInputModel[]>;
 
   onAutoInputChange($event: any) {
@@ -385,7 +454,9 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   onAutoInputSelected(_v: any) {
+    this._preChange(_v);
     this.value = _v;
+    this._postChange();
   }
 
   private searchTerm = new Subject<string>();
@@ -396,8 +467,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap((term: string) => {
-        this.template.criteria.inputName = this.name;
-        this.template.criteria.inputText = term;
+        if (this.template?.criteria) {
+          this.template.criteria.inputName = this.name;
+          this.template.criteria.inputText = term;
+        }
         return this.template.observable(this.template.criteria);
       })
     );
@@ -409,11 +482,18 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   search() {
     const origin: any = this.preSearch();
     this.template.tableData.table.action.postSelect = (entity: any) => {
-      this.value = entity;
+      this.tableSelect(entity);
       this.isValidateSuccess();
       this.template.tableData.xeScreen.back();
       this.postSearch(origin);
     };
+  }
+
+  tableSelect(value) {
+    this._preChange(value);
+    this._value = value;
+    this.valueChange.emit(value);
+    this._postChange();
   }
 
   preSearch() {
@@ -432,7 +512,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this.template.tableData.xeScreen = this.adminContainer.screen;
     this.template.tableData.table.mode.readonly = true;
     this.template.tableData.table.mode.hideSelectColumn = true;
-    this.template.tableData.table.action.postSelect = (screen) => this.postSearch(origin);
     this.template.tableData.formData.action.postCancel = (screen) => this.postSearch(origin);
     this.adminContainer.screen.config.preGo = (screen) => screen !== this.adminContainer.screens.table ? this.postSearch(origin) : '';
     this.adminContainer.tableData = this.template.tableData;
@@ -462,10 +541,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TOGGLE BOOLEAN
 
-
-  // TIME >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
 
 }
 

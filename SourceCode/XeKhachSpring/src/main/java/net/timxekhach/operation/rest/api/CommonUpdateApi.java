@@ -367,27 +367,23 @@ public class CommonUpdateApi {
         commonUpdateService.deleteTripUserByTripUserIds(tripUserIds);
         return success();
     }
-    @DeleteMapping("/TripUser/{tripUserId}/{tripId}/{userId}")
+    @DeleteMapping("/TripUser/{tripUserId}/{tripId}")
     public ResponseEntity<Void> deleteTripUser(
         @PathVariable Long tripUserId
-        , @PathVariable Long tripId
-        , @PathVariable Long userId) {
+        , @PathVariable Long tripId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripUserId != null && tripUserId > 0) data.put("TripUserId", tripUserId);
         if (tripId != null && tripId > 0) data.put("tripId", tripId);
-        if (userId != null && userId > 0) data.put("userId", userId);
         this.commonUpdateService.deleteTripUser(data);
         return success();
     }
-    @GetMapping("/TripUser/{tripUserId}/{tripId}/{userId}")
+    @GetMapping("/TripUser/{tripUserId}/{tripId}")
     public ResponseEntity<List<TripUser>> findTripUser(
         @PathVariable Long tripUserId
-        , @PathVariable Long tripId
-        , @PathVariable Long userId) {
+        , @PathVariable Long tripId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (tripUserId != null && tripUserId > 0) data.put("TripUserId", tripUserId);
         if (tripId != null && tripId > 0) data.put("TripId", tripId);
-        if (userId != null && userId > 0) data.put("UserId", userId);
         return success(this.commonUpdateService.findTripUser(data));
     }
     //_____________ END OF TripUser __________________________            

@@ -18,12 +18,23 @@ export const DATE_FORMATS = {
 @Pipe({name: 'xeDatePipe'})
 export class XeDatePipe extends XePipe implements PipeTransform {
   singleToInline = (value: any, options?: any) => {
-    if (typeof value === 'string') return this._datePipe.transform(value, "dd-MM-yyyy");
-    if (value !== null && value !== undefined) return this._datePipe.transform(value, "dd-MM-yyyy");
-    return '';
+    if (!value) return '';
+    let dateFormat = "dd-MM-yyyy";
+    if (typeof value === 'string'
+      && (value.length === "dd-MM-yyyy".length
+      || value.length === "MM-dd-yyyy HH:mm".length)) {
+      dateFormat = "MM-dd-yyyy";
+      if (options && options.fullDateTime) {
+         dateFormat = "MM-dd-yyyy HH:mm";
+      }
+      value = value.substring(3, 5) + "-" + value.substring(0, 2) + value.substring(5);
+      return this._datePipe.transform(value, dateFormat);
+    }
+    return this._datePipe.transform(value, dateFormat);
   }
   singleToAppValue = (value: Date, options?: any) => value;
   singleToSubmitFormat = (value: Date, options?: any) => this._datePipe.transform(value, "dd-MM-yyyy");
+  singleToFullDateTime = (value: Date) => this._datePipe.transform(value, "dd-MM-yyyy HH:mm");
   private static _instance: XeDatePipe;
   static get instance(): XeDatePipe {
     if (!this._instance) {

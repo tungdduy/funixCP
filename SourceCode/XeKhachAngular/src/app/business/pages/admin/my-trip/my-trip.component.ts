@@ -6,6 +6,7 @@ import {User} from "../../../entities/User";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {Location} from "../../../entities/Location";
 import {XeTableComponent} from "../../../../framework/components/xe-table/xe-table.component";
+import {Xe} from "../../../../framework/model/Xe";
 
 export interface BussScheduleCriteria {
   locationFrom: Location;
@@ -34,6 +35,9 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
 
   tripUserTable = TripUser.tableData({
     xeScreen: this.screen,
+    table: {
+      selectBasicColumns: ['trip.bussSchedule.path', 'totalPrice', 'startPoint', 'endPoint', 'trip.launchDate', 'trip.bussSchedule.buss.company.companyName']
+    },
     display: {
       fullScreenForm: true
     }
@@ -42,9 +46,10 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   }));
 
   ngAfterViewInit(): void {
-    this.refresh(this.user, User);
+    if (AuthUtil.instance.isUserLoggedIn) {
+      Xe.refresh(this.user, User.meta);
+    }
   }
-
 
 
 }

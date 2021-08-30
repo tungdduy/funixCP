@@ -253,6 +253,8 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
             String value = entry.getValue();
         <#list root.fieldsAbleAssignByString as column>
             if (fieldName.equals("${column.fieldName}")) {
+                if(value == null) {this.set${column.fieldCapName}(null); continue;}
+                if(value.equals(this.get${column.fieldCapName}())) continue;
             <#if column.parseExpression?has_content>
                 this.set${column.fieldCapName}(${column.parseExpression});
             <#else>
@@ -265,6 +267,7 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
     <#if map.mappedBy?has_content && !map.isUnique>
     <#else>
             if (fieldName.equals("${map.fieldName}")) {
+                if(value == null) {this.set${map.fieldCapName}(null); continue;}
                 this.set${map.fieldCapName}(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.get${map.mapTo.simpleClassName}Repository().findBy${map.mapTo.simpleClassName}Id(Long.valueOf(value))));
                 continue;
             }
@@ -272,6 +275,7 @@ public abstract class ${root.entityCapName}_MAPPED extends XeEntity {
 </#list>
 <#list root.pkMaps as pkMap>
             if (fieldName.equals("${pkMap.fieldName}")) {
+                if(value == null) {this.set${pkMap.simpleClassName}(null); continue;}
                 this.set${pkMap.simpleClassName}(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.get${pkMap.simpleClassName}Repository().findBy${pkMap.simpleClassName}Id(Long.valueOf(value))));
                 continue;
             }

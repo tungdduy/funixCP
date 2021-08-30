@@ -19,6 +19,12 @@ export class MoneyPipe extends XePipe implements PipeTransform {
     return !value ? "0đ" : String(value).replace(/[^0-9]+/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "đ";
   }
 
+  singleToHtml = (value) => {
+    return `
+      <div class="text-bold text-danger pt-1">${this.singleToInline(value)}</div>
+    `;
+  }
+
   singleToSubmitFormat = (value, options?) => this.singleToAppValue(value);
 
 }

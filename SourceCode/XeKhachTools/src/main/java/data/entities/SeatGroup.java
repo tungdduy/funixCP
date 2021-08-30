@@ -6,7 +6,7 @@ import data.models.Column;
 
 public class SeatGroup extends AbstractEntity {
     {
-        pk(BussType.class).ignoreJson();
+        pk(BussType.class);
     }
     Column seatGroupOrder = of(DataType.QUANTITY);
     Column seatGroupName = of(DataType.DESCRIPTION);

@@ -14,6 +14,7 @@ import {InputTemplate} from "../../framework/model/EnumStatus";
 
 export class Path extends XeEntity {
     static meta = EntityUtil.metas.Path;
+    static mapFields = EntityUtil.mapFields['Path'];
     pathId: number;
     companyId: number;
     company: Company;

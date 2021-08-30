@@ -4,7 +4,7 @@ import {XeScreen} from "../components/xe-nav/xe-nav.component";
 import {XeEntity} from "../../business/entities/XeEntity";
 import {Entity} from "@angular/compiler-cli/src/ngtsc/file_system/testing/src/mock_file_system";
 import {Observable} from "rxjs";
-import {InputMode} from "./EnumStatus";
+import {EditOnRow, InputMode} from "./EnumStatus";
 
 export interface IconOption {
   iconOnly?: string;
@@ -62,7 +62,8 @@ export class XeTableData<E extends XeEntity> {
     }
   };
   display?: {
-    fullScreenForm: boolean;
+    toggleOne?: boolean;
+    fullScreenForm?: boolean;
   };
   formData?: XeFormData<E>;
   xeScreen?: XeScreen;
@@ -76,8 +77,9 @@ export class XeTableData<E extends XeEntity> {
       hideSelectColumn?: boolean
     },
     action?: {
-      editOnRow?: boolean,
+      editOnRow?: EditOnRow,
       postSelect?: (entity) => any,
+      postDeSelect?: (entity: E) => any,
       onClickBtnCreate?: () => any,
       filters?: EntityFilter,
       triggerUpdate?: (term) => any;

@@ -15,6 +15,7 @@ import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 
 export class PathPoint extends XeEntity {
     static meta = EntityUtil.metas.PathPoint;
+    static mapFields = EntityUtil.mapFields['PathPoint'];
     pathPointId: number;
     pathId: number;
     locationId: number;

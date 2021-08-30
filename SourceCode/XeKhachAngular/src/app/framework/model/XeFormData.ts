@@ -7,6 +7,7 @@ import {SelectItem} from './SelectItem';
 import {ServiceResult} from "../../business/service/service-result";
 import {InputMode, InputTemplate} from "./EnumStatus";
 import {XeTableComponent} from "../components/xe-table/xe-table.component";
+import {Observable} from "rxjs";
 
 export interface EntityField {
   colSpan?: number;
@@ -18,13 +19,13 @@ export interface EntityField {
   newOnly?: boolean;
   readonly?: boolean;
   clearOnSuccess?: boolean;
-  selectOneMenu?: () => SelectItem<any>[];
+  selectOneMenu?: Observable<[]>;
   newIfNull?: boolean;
   template?: InputTemplate;
   mode?: InputMode;
   action?: {
-    preChange?: (field: any, option?) => any,
-    postChange?: (field: any, option?) => any
+    preChange?: (currentValue, comingValue, options?) => any,
+    postChange?: (currentValue, oldValue, option?) => any
   };
   attachInlines?: string[];
 }

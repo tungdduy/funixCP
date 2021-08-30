@@ -196,14 +196,18 @@ public abstract class BussEmployee_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("isLock")) {
+                if(value == null) {this.setIsLock(null); continue;}
+                if(value.equals(this.getIsLock())) continue;
                 this.setIsLock(Boolean.valueOf(value));
                 continue;
             }
             if (fieldName.equals("buss")) {
+                if(value == null) {this.setBuss(null); continue;}
                 this.setBuss(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussRepository().findByBussId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("employee")) {
+                if(value == null) {this.setEmployee(null); continue;}
                 this.setEmployee(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getEmployeeRepository().findByEmployeeId(Long.valueOf(value))));
                 continue;
             }

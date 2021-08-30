@@ -1,23 +1,24 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.Company;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.ArrayList;
-import net.timxekhach.operation.data.entity.PathPoint;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 import lombok.*;
+import net.timxekhach.operation.data.entity.Company;
+import net.timxekhach.operation.data.entity.PathPoint;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -107,7 +108,6 @@ public abstract class Path_MAPPED extends XeEntity {
         fetch = FetchType.LAZY
     )
     @OrderBy("pointOrder ASC")
-    @JsonIgnore
     protected List<PathPoint> pathPoints = new ArrayList<>();
 //====================================================================//
 //==================== END of MAP COLUMN ENTITY ======================//
@@ -132,14 +132,19 @@ public abstract class Path_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("pathName")) {
+                if(value == null) {this.setPathName(null); continue;}
+                if(value.equals(this.getPathName())) continue;
                 this.setPathName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("pathDesc")) {
+                if(value == null) {this.setPathDesc(null); continue;}
+                if(value.equals(this.getPathDesc())) continue;
                 this.setPathDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("company")) {
+                if(value == null) {this.setCompany(null); continue;}
                 this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
                 continue;
             }

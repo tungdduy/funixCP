@@ -1,8 +1,8 @@
 <ng-template #inputLabel>
   <div *ngIf="isShowLabel" class="text-info pb-1 {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
-    <xe-btn *ngIf="template?.hasTypeSearchTable && mode.hasInput" (click)="search()"
-            hideText state="none" template="selectFromList"></xe-btn>
   </div>
+  <xe-btn *ngIf="template?.hasTypeSearchTable && mode.hasInput" (click)="search()"
+          hideText state="none" template="selectFromList"></xe-btn>
 </ng-template>
 
 <ng-container *ngIf="mode.hasInput">
@@ -41,7 +41,7 @@
   </ng-container>
 
   <ng-container *ngIf="!template.hasDisplayCustom">
-    {{asInlineString}}
+    <div [innerHTML]="asHtml"></div>
   </ng-container>
 </ng-container>
 <!-- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>-->
@@ -71,6 +71,7 @@
 
   <ng-container *ngIf="template.hasTypeShortInput">
     <input
+      autocomplete="off"
       #htmlShortInput
       (blur)="onShortInputBlur($event)"
       (change)="isValidateSuccess()"
@@ -96,6 +97,7 @@
 
   <ng-container *ngIf="template.hasAutoInput">
     <input
+      autocomplete="off"
       [name]="getName()"
       (click)="onClickAutoInput()"
       (input)="onAutoInputChange($event)"
@@ -107,18 +109,32 @@
       nbInput
       type="text">
     <nb-autocomplete #auto (selectedChange)="onAutoInputSelected($event);  isValidateSuccess()">
-      <nb-option *ngFor="let option of autoInputOptions$ | async | locationPipe:{instance: template.pipe, autoInputModel: true}" [value]="option.appValue">
-        {{option.inlineString}}
+      <nb-option *ngFor="let option of autoInputOptions$ | async | locationPipe:{instance: template.pipe, autoInputModel: true}" [value]="option['appValue']">
+        {{option['inlineString']}}
       </nb-option>
     </nb-autocomplete>
   </ng-container>
 
   <ng-container *ngIf="template.hasTypeSelectOneMenu">
-    <nb-select [(ngModel)]="value"
+    <div *ngIf="template.hasSwapOn && !isViewingBoard"
+         (click)="clickSwapItem()"
+      class="select-swap" [innerHtml]="asHtml">
+    </div>
+
+    <ng-container *ngIf="template.hasBoardMenu && isViewingBoard">
+      <div *ngFor="let item of selectOneMenu$ | async"
+           [innerHtml]="optionAsHtml(item.value)"
+           (click)="selectItem(item.value)">
+      </div>
+
+    </ng-container>
+
+    <nb-select *ngIf="template.hasSwapOff"
+               [(ngModel)]="value"
                [placeholder]="placeHolder"
                class="selectOneMenu w-100"
                fullWidth>
-      <nb-option *ngFor="let item of selectOneMenu()" [value]="item.value">
+      <nb-option *ngFor="let item of selectOneMenu$ | async" [value]="item.value">
         <lbl [key]="item.label"></lbl>
       </nb-option>
     </nb-select>

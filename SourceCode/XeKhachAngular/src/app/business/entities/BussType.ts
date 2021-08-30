@@ -8,6 +8,9 @@ import {SelectItem} from '../../framework/model/SelectItem';
 import {CommonUpdateService} from "../service/common-update.service";
 import {Notifier} from "../../framework/notify/notify.service";
 import {EntityUtil} from "../../framework/util/EntityUtil";
+import {TripUser} from "./TripUser";
+import {map} from "rxjs/operators";
+import {Observable} from "rxjs";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -15,6 +18,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 
 export class BussType extends XeEntity {
     static meta = EntityUtil.metas.BussType;
+    static mapFields = EntityUtil.mapFields['BussType'];
     bussTypeId: number;
     seatGroups: SeatGroup[];
     totalBusses: number;
@@ -22,30 +26,18 @@ export class BussType extends XeEntity {
     bussTypeDesc: string;
     profileImageUrl = this.initProfileImage();
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
+  // START BODY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  seats: number[];
   totalSeats: number;
   static bussTypes: BussType[] = [];
 
-  static _bussTypeSelectItem: SelectItem<number>[];
-
-  static get bussTypeSelectItem(): SelectItem<number>[] {
-    if (!BussType._bussTypeSelectItem) {
-      const allBussTypes: SelectItem<number>[] = [];
-      this.bussTypes.forEach(type => {
-        allBussTypes.push(new SelectItem(type.bussTypeName, type.bussTypeId));
-      });
-      BussType._bussTypeSelectItem = allBussTypes;
-    }
-    return BussType._bussTypeSelectItem;
+  static get bussTypeSelectItems$() {
+    return CommonUpdateService.instance.findAll<BussType>(BussType.meta)
+      .pipe(
+        map(val => val.map(type => new SelectItem(type.bussTypeName, type.bussTypeId)))
+      );
   }
-
-  static catchBussTypes() {
-    CommonUpdateService.instance.findAll<BussType>(BussType.meta).subscribe(
-      bussTypes => {
-        this.bussTypes = bussTypes;
-      },
-      error => Notifier.httpErrorResponse(error)
-    );
-  }
+ // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END BODY
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (bussType: BussType): EntityIdentifier<BussType> => ({

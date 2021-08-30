@@ -153,14 +153,18 @@ public abstract class Employee_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("isLock")) {
+                if(value == null) {this.setIsLock(null); continue;}
+                if(value.equals(this.getIsLock())) continue;
                 this.setIsLock(Boolean.valueOf(value));
                 continue;
             }
             if (fieldName.equals("company")) {
+                if(value == null) {this.setCompany(null); continue;}
                 this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("user")) {
+                if(value == null) {this.setUser(null); continue;}
                 this.setUser(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getUserRepository().findByUserId(Long.valueOf(value))));
                 continue;
             }

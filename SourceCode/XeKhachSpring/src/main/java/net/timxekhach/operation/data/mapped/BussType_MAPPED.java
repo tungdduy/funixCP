@@ -85,10 +85,14 @@ public abstract class BussType_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("bussTypeName")) {
+                if(value == null) {this.setBussTypeName(null); continue;}
+                if(value.equals(this.getBussTypeName())) continue;
                 this.setBussTypeName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussTypeDesc")) {
+                if(value == null) {this.setBussTypeDesc(null); continue;}
+                if(value.equals(this.getBussTypeDesc())) continue;
                 this.setBussTypeDesc(String.valueOf(value));
                 continue;
             }

@@ -13,6 +13,6 @@ public class Path extends AbstractEntity {
     CountMethod totalPathPoints = count(PathPoint.class);
     Column pathName = of(DataType.DESCRIPTION);
     Column pathDesc = of(DataType.DESCRIPTION);
-    MapColumn pathPoints = map(PathPoint.class).orderBy("pointOrder ASC");
+    MapColumn pathPoints = map(PathPoint.class).orderBy("pointOrder ASC").renderJson();
 
 }

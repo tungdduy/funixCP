@@ -5,10 +5,10 @@ import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import net.timxekhach.operation.data.entity.Trip;
-import net.timxekhach.operation.data.entity.User;
 import javax.validation.constraints.*;
 import net.timxekhach.utility.XeDateUtils;
 import java.util.Date;
+import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.data.entity.Employee;
 import org.apache.commons.lang3.time.DateUtils;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
@@ -64,11 +64,6 @@ public abstract class TripUser_MAPPED extends XeEntity {
     @Setter(AccessLevel.PRIVATE)
     protected Long companyId;
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @Setter(AccessLevel.PRIVATE)
-    protected Long userId;
-
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Pk extends XePk {
@@ -78,7 +73,6 @@ public abstract class TripUser_MAPPED extends XeEntity {
         protected Long tripUserId;
         protected Long bussId;
         protected Long companyId;
-        protected Long userId;
     }
 
     public static Pk pk(Map<String, String> data) {
@@ -89,21 +83,19 @@ public abstract class TripUser_MAPPED extends XeEntity {
             Long tripUserIdLong = Long.parseLong(data.get("tripUserId"));
             Long bussIdLong = Long.parseLong(data.get("bussId"));
             Long companyIdLong = Long.parseLong(data.get("companyId"));
-            Long userIdLong = Long.parseLong(data.get("userId"));
-            if(NumberUtils.min(new long[]{bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong}) < 1) {
+            if(NumberUtils.min(new long[]{bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong}) < 1) {
                 ErrorCode.DATA_NOT_FOUND.throwNow();
             }
-            return new TripUser_MAPPED.Pk(bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong, userIdLong);
+            return new TripUser_MAPPED.Pk(bussScheduleIdLong, tripIdLong, bussTypeIdLong, tripUserIdLong, bussIdLong, companyIdLong);
         } catch (Exception ex) {
             ErrorCode.DATA_NOT_FOUND.throwNow();
         }
-        return new TripUser_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L, 0L);
+        return new TripUser_MAPPED.Pk(0L, 0L, 0L, 0L, 0L, 0L);
     }
 
     protected TripUser_MAPPED(){}
-    protected TripUser_MAPPED(Trip trip, User user) {
+    protected TripUser_MAPPED(Trip trip) {
         this.setTrip(trip);
-        this.setUser(user);
     }
 //====================================================================//
 //======================== END of PRIMARY KEY ========================//
@@ -165,38 +157,31 @@ public abstract class TripUser_MAPPED extends XeEntity {
         this.bussId = trip.getBussId();
     }
 
+//====================================================================//
+//==================== END of PRIMARY MAP ENTITY =====================//
+//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
-        name = "userId",
+        name = "userUserId",
         referencedColumnName = "userId",
         insertable = false,
         updatable = false)
     })
     @JsonIdentityInfo(
-    generator = ObjectIdGenerators.PropertyGenerator.class,
-    property = "userId")
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId")
     protected User user;
-
-    public User getUser(){
-        if (this.user == null) {
-            this.user = CommonUpdateService.getUserRepository().findByUserId(this.userId);
-        }
-        return this.user;
-    }
 
     public void setUser(User user) {
         this.user = user;
         if(user == null) {
-            this.userId = null;
+            this.userUserId = null;
             return;
         }
-        this.userId = user.getUserId();
+        this.userUserId = user.getUserId();
     }
 
-//====================================================================//
-//==================== END of PRIMARY MAP ENTITY =====================//
-//====================================================================//
     @ManyToOne
     @JoinColumns({
         @JoinColumn(
@@ -238,6 +223,8 @@ public abstract class TripUser_MAPPED extends XeEntity {
 //====================================================================//
 
     @Setter(AccessLevel.PRIVATE)
+    protected Long userUserId;
+    @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByUserId;
     @Setter(AccessLevel.PRIVATE)
     protected Long confirmedByEmployeeId;
@@ -276,51 +263,72 @@ public abstract class TripUser_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("phoneNumber")) {
+                if(value == null) {this.setPhoneNumber(null); continue;}
+                if(value.equals(this.getPhoneNumber())) continue;
                 this.setPhoneNumber(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("fullName")) {
+                if(value == null) {this.setFullName(null); continue;}
+                if(value.equals(this.getFullName())) continue;
                 this.setFullName(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("email")) {
+                if(value == null) {this.setEmail(null); continue;}
+                if(value.equals(this.getEmail())) continue;
                 this.setEmail(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("status")) {
+                if(value == null) {this.setStatus(null); continue;}
+                if(value.equals(this.getStatus())) continue;
                 this.setStatus(TripUserStatus.valueOf(value));
                 continue;
             }
             if (fieldName.equals("unitPrice")) {
+                if(value == null) {this.setUnitPrice(null); continue;}
+                if(value.equals(this.getUnitPrice())) continue;
                 this.setUnitPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("totalPrice")) {
+                if(value == null) {this.setTotalPrice(null); continue;}
+                if(value.equals(this.getTotalPrice())) continue;
                 this.setTotalPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("tripUserPointsString")) {
+                if(value == null) {this.setTripUserPointsString(null); continue;}
+                if(value.equals(this.getTripUserPointsString())) continue;
                 this.setTripUserPointsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("seatsString")) {
+                if(value == null) {this.setSeatsString(null); continue;}
+                if(value.equals(this.getSeatsString())) continue;
                 this.setSeatsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("confirmedDateTime")) {
+                if(value == null) {this.setConfirmedDateTime(null); continue;}
+                if(value.equals(this.getConfirmedDateTime())) continue;
                 this.setConfirmedDateTime(XeDateUtils.dateTimeAppToApi(value));
                 continue;
             }
+            if (fieldName.equals("user")) {
+                if(value == null) {this.setUser(null); continue;}
+                this.setUser(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getUserRepository().findByUserId(Long.valueOf(value))));
+                continue;
+            }
             if (fieldName.equals("confirmedBy")) {
+                if(value == null) {this.setConfirmedBy(null); continue;}
                 this.setConfirmedBy(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getEmployeeRepository().findByEmployeeId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("trip")) {
+                if(value == null) {this.setTrip(null); continue;}
                 this.setTrip(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getTripRepository().findByTripId(Long.valueOf(value))));
-                continue;
-            }
-            if (fieldName.equals("user")) {
-                this.setUser(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getUserRepository().findByUserId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("bussScheduleId")) {
@@ -345,10 +353,6 @@ public abstract class TripUser_MAPPED extends XeEntity {
             }
             if (fieldName.equals("companyId")) {
                 this.companyId = value == null ? null : Long.valueOf(value);
-                    continue;
-            }
-            if (fieldName.equals("userId")) {
-                this.userId = value == null ? null : Long.valueOf(value);
             }
         }
     }

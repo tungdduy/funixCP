@@ -50,3 +50,6 @@ spring:
   freemarker:
     enabled: true
     check-template-location: false
+
+fcm:
+  service-account-file: /home/funix/config

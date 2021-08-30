@@ -2,7 +2,7 @@
 import {EntityField, EntityIdentifier} from "../model/XeFormData";
 import {StringUtil} from "./string.util";
 import {ObjectUtil} from "./object.util";
-import {ClassMeta} from "../../business/entities/XeEntity";
+import {ClassMeta, XeEntity} from "../../business/entities/XeEntity";
 import {TableColumn} from "../model/XeTableData";
 
 
@@ -61,7 +61,7 @@ export class EntityUtil {
     TripUser: {
         capName: 'TripUser',
         camelName: 'tripUser',
-        pkMetas: () => [EntityUtil.metas.Trip, EntityUtil.metas.User],
+        pkMetas: () => [EntityUtil.metas.Trip],
         mainIdName: 'tripUserId',
     } as ClassMeta,
     SeatGroup: {
@@ -225,7 +225,8 @@ export class EntityUtil {
     if (!entityDefine) return false;
     const idFields = entityDefine.idFields;
     for (const idField of idFields) {
-      const idNo = Number.parseInt(this.valueAsInlineString(entity, entityDefine.clazz.meta, idField), 10);
+      const lastFieldIdName = this.getLastFieldName(idField);
+      const idNo = Number.parseInt(this.valueAsInlineString(entity, entityDefine.clazz.meta, {name: lastFieldIdName}), 10);
       if (isNaN(idNo) || idNo <= 0) {
         return false;
       }
@@ -248,9 +249,29 @@ export class EntityUtil {
   }
 
   static getFromCache(className, id) {
-    return this.entityCache[className.toLowerCase() + "." + id];
+    return className && ObjectUtil.isNumberGreaterThanZero(id) ? this.entityCache[className.toLowerCase() + "." + id] : id;
   }
 
+  static fill(entity: XeEntity, meta: ClassMeta, deepLvl = 0) {
+    if (entity?.isFilled) return entity;
+    if (Array.isArray(entity)) {
+      entity.forEach(e => {
+        this.fill(e, meta, deepLvl);
+      });
+    }
+    if (deepLvl > 5) return entity;
+    deepLvl++;
+    entity = this.getFromCache(meta.capName, entity);
+    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return entity;
+    const entityMapFields = this.mapFields[meta.capName];
+    Object.keys(entityMapFields).forEach(fieldName => {
+      const fieldMeta = entityMapFields[fieldName];
+      entity[fieldName] = this.getFromCache(fieldMeta.capName, entity[fieldName]);
+      this.fill(entity[fieldName], fieldMeta, deepLvl);
+    });
+    entity.isFilled = true;
+    return entity;
+  }
 
   static getEntityWithField(rootEntity: any, rootMeta: ClassMeta, field: EntityField): { entity, lastFieldName, value, fieldMeta: ClassMeta } {
     if (!rootEntity || !field || ObjectUtil.isNumberGreaterThanZero(rootEntity)) return rootEntity;
@@ -258,11 +279,8 @@ export class EntityUtil {
     let traceEntity = rootEntity;
     let traceMeta = rootMeta;
     for (const name of subNames) {
-      traceEntity = traceEntity[name];
       traceMeta = this.mapFields[traceMeta.capName][name];
-      if (ObjectUtil.isNumberGreaterThanZero(traceEntity) && traceMeta) {
-        traceEntity = this.getFromCache(traceMeta.capName, traceEntity);
-      }
+      traceEntity = this.getFromCache(traceMeta.capName, traceEntity[name]);
     }
     const lastFieldName = field.name.split(".").pop();
     const value = this.getExistValue(traceEntity, lastFieldName);
@@ -366,7 +384,6 @@ export class EntityUtil {
     if (newIfNulls.length > 0) {
       newIfNulls.forEach(newIfNull => {
         const necessaryIds = this.getAllPossibleIdName(newIfNull.meta);
-        console.log(newIfNull.nameChainString, newIfNull.meta.camelName, necessaryIds);
         necessaryIds.forEach(newIfNullId => {
           result[newIfNull.nameChainString + newIfNull.meta.camelName + "." + newIfNullId] = result[newIfNullId];
         });
@@ -382,15 +399,21 @@ export class EntityUtil {
       addedColumns.push(column.field.name);
     }
   }
+
   static assignEntity(option: {}, entity, deepLvl = 0) {
     if (!option) return entity;
     if (deepLvl > 4) return entity;
     deepLvl++;
     Object.keys(option).forEach(key => {
-      if (['basicColumns', 'subColumns'].includes(key)) {
+      if (['basicColumns', 'subColumns', 'selectBasicColumns'].includes(key)) {
+        const choices = option[key];
+        if (key === 'selectBasicColumns') {
+          if (option['basicColumns'] || option['subColumns']) return;
+          key = 'basicColumns';
+        }
         const prepareColumns = [];
         const modifiedColumns = {};
-        option[key].forEach(col => modifiedColumns[col?.field?.name] = col);
+        choices.forEach(col => modifiedColumns[col?.field?.name] = col);
         const selectedColumns = option['selectBasicColumns'];
         const addedColumns: string[] = [];
         entity[key].forEach((column: TableColumn) => {
@@ -404,7 +427,7 @@ export class EntityUtil {
         });
         entity[key] = prepareColumns;
       } else if (['function', 'string', 'boolean'].includes(typeof option[key])
-        || ['xeScreen', 'action', 'screen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
+        || ['xeScreen', 'editOnRow', 'action', 'screen', 'parent', 'template', 'inputMode', 'observable', 'manualColumns'].includes(key)) {
         entity[key] = option[key];
       } else if (option[key] === undefined) {
         delete entity[key];
@@ -465,8 +488,7 @@ export class EntityUtil {
     } else {
       this.privateCache(entity, entityMeta);
     }
-
-    console.log(this.entityCache);
+    this.fill(entity, entityMeta);
   }
 
   private static put(obj, nameChain: string[], value) {

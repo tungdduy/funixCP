@@ -2,15 +2,19 @@ export class ObjectUtil {
   static isString(obj: any) {
     return typeof obj === 'string';
   }
+
   static isObject(obj: any) {
     return obj !== null && typeof obj === 'object';
   }
+
   static isFunction(obj: any) {
     return typeof obj === 'function';
   }
+
   static isNumberGreaterThanZero(obj: any) {
     return typeof obj === 'number' && obj > 0;
   }
+
   static eraserAndDeepCopyForRestore(source: {}, result: {}, lvl = 0) {
     if (lvl > 4) return result;
     lvl++;
@@ -28,7 +32,7 @@ export class ObjectUtil {
           } else if (Array.isArray(element)) {
             result[key][idx] = [];
             this.eraserAndDeepCopyForRestore(element, result[key][idx], lvl);
-          } else if (ObjectUtil.isObject(element))  {
+          } else if (ObjectUtil.isObject(element)) {
             result[key][idx] = {};
             this.eraserAndDeepCopyForRestore(element, result[key][idx], lvl);
           } else {
@@ -61,5 +65,23 @@ export class ObjectUtil {
     return result;
   }
 
+  public static isPrimitive(value) {
+    return Object(value) !== value;
+  }
+
+  static trimCircularObject(obj, result = {}, deepLvl = 0) {
+    if (!obj) return obj;
+    if (deepLvl > 3) return obj;
+    deepLvl++;
+    Object.keys(obj).forEach(key => {
+      if (key === 'user') return;
+      if (ObjectUtil.isPrimitive(obj[key])) {
+        result[key] = obj[key];
+      } else {
+        result[key] = this.trimCircularObject(obj[key], result[key], deepLvl);
+      }
+    });
+    return result;
+  }
 
 }

@@ -14,9 +14,9 @@ export class SeatPipe extends XePipe implements PipeTransform {
 
   singleToHtml = (seatsString) => {
     return !seatsString ? `
-      <div class="alert alert-info">${XeLabel['NO_SELECTED_SEAT']}</div>
+      <div class="p-1 rounded d-inline-block alert-secondary border border-secondary d-">${XeLabel.NO_SELECTED_SEAT}</div>
     ` : seatsString.split(",").map(seatNo => parseInt(seatNo, 10)).sort((a, b) => a - b).map(seatNo => `
-      <div class="alert alert-warning border border-warning text-large text-bold d-inline-block">${seatNo}</div>
+      <div class="p-1 mb-1 rounded alert-info border border-info text-large text-bold d-inline-block">${seatNo}</div>
     `).join("");
   }
 

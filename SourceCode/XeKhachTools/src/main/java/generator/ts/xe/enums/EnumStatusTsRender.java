@@ -38,12 +38,47 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
 
         model.enums.add(TsEnum.name("BussSchemeMode")
                 .setOptions(
-                        Option.name("edit"),
-                        Option.name("readonly"),
-                        Option.name("ordering"),
-                        Option.name("tripAdmin")
+                        Option.name("edit").setProperties(
+                                Property.name("constantStatus")
+                        ),
+                        Option.name("readonly").setProperties(
+                                Property.name("constantStatus")
+                        ),
+                        Option.name("ordering").setProperties(
+                                Property.name("dynamicStatus")
+                        ),
+                        Option.name("tripAdmin").setProperties(
+                                Property.name("dynamicStatus")
+                        )
                 )
         );
+
+        model.enums.add(TsEnum.name("TripUserStatus")
+                .setOptions(
+                        Option.name("PENDING").setProperties(
+                                Property.name("status").stringValue("PENDING")
+                        ),
+                        Option.name("CONFIRMED").setProperties(
+                                Property.name("status").stringValue("CONFIRMED")
+                        ),
+                        Option.name("DELETED").setProperties(
+                                Property.name("status").stringValue("DELETED")
+                        )
+                ).buildSelectMenu()
+        );
+
+        model.enums.add(TsEnum.name("EditOnRow")
+                .setOptions(
+                        Option.name("always").setProperties(
+                                Property.name("enabled"),
+                                Property.name("editing").stringValue("yes")
+                        ),
+                        Option.name("onClick").setProperties(
+                                Property.name("enabled"),
+                                Property.name("editing").stringValue("no")
+                        ),
+                        Option.name("disabled")
+                ));
 
         model.enums.add(TsEnum.name("SeatStatus")
                 .setOptions(
@@ -67,6 +102,9 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                         ),
                         Option.name("selected").setProperties(
                                 Property.name("classes").stringValue("seat-selected")
+                        ),
+                        Option.name("confirmed").setProperties(
+                                Property.name("classes").stringValue("seat-confirmed")
                         )
                 )
         );
@@ -80,8 +118,20 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                                 Option.name("booleanToggle").setProperties(
                                         Property.name("display").stringValue("custom"),
                                         Property.name("type").stringValue("booleanToggle")),
+                                Option.name("tripUserStatus").setProperties(
+                                        Property.name("type").stringValue("selectOneMenu"),
+                                        Property.name("display").stringValue("custom"),
+                                        Property.name("swap").stringValue("on"),
+                                        Property.name("boardMenu"),
+                                        Property.name("pipe").value("TripStatusPipe").postFix(".instance").type("XePipe"),
+                                        Property.name("defaultSelectMenu$").value("of(TripUserStatus.selectMenu)").type("Observable<SelectItem<any>[]>")
+                                ),
                                 Option.name("selectOneMenu").setProperties(
-                                        Property.name("type").stringValue("selectOneMenu")),
+                                        Property.name("swap").stringValue("off"),
+                                        Property.name("type").stringValue("selectOneMenu")
+                                ).setManualProperties(
+                                        Property.name("selectMenu$").value("Observable<SelectItem<any>[]>")
+                                ),
                                 Option.name("date").setProperties(
                                         Property.name("type").stringValue("date"),
                                         Property.name("pipe").value("XeDatePipe").postFix(".instance").type("XePipe")),

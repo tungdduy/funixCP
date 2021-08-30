@@ -1,27 +1,28 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {Component} from '@angular/core';
 import {XeTableData} from "../../../../framework/model/XeTableData";
 import {BussType} from "../../../entities/BussType";
 import {Buss} from "../../../entities/Buss";
 import {XeSubscriber} from "../../../../framework/model/XeSubscriber";
 import {Company} from "../../../entities/Company";
 import {CommonUpdateService} from "../../../service/common-update.service";
-import {Notifier} from "../../../../framework/notify/notify.service";
 import {SelectItem} from "../../../../framework/model/SelectItem";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {BussSchedule} from "../../../entities/BussSchedule";
 import {BussEmployee} from "../../../entities/BussEmployee";
 import {Employee} from "../../../entities/Employee";
-import {InputTemplate} from "../../../../framework/model/EnumStatus";
+import {EditOnRow, InputTemplate} from "../../../../framework/model/EnumStatus";
 import {PathPoint} from "../../../entities/PathPoint";
 import {Path} from "../../../entities/Path";
 import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'xe-buss-type',
   styleUrls: ['buss-type.component.scss'],
   templateUrl: 'buss-type.component.html',
 })
-export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
+export class BussTypeComponent extends XeSubscriber {
 
   screens = {
     bussTypeList: 'bussTypeList',
@@ -55,7 +56,11 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
     }
   });
 
-  companySelectItems: SelectItem<Company>[];
+  get companySelectItems$(): Observable<SelectItem<Company>[]> {
+    return CommonUpdateService.instance.findAll<Company>(Company.meta).pipe(
+      map(companies => companies.map(c => new SelectItem<Company>(c.companyName, c.companyId)))
+    );
+  }
   bussTable: XeTableData<Buss> = Buss.tableData({
     external: {
       updateCriteriaTableOnSelect: () => [this.bussEmployeeTable,
@@ -77,8 +82,7 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
         {
           name: "companyId",
           required: true,
-          template: InputTemplate.selectOneMenu,
-          selectOneMenu: () => this.companySelectItems
+          template: InputTemplate.selectOneMenu._selectMenu$(this.companySelectItems$),
         },
       ]
     }
@@ -121,12 +125,13 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
         hideSelectColumn: true
       },
       action: {
-        editOnRow: true
+        editOnRow: EditOnRow.onClick
       }
     }
   });
   pathPointSelectionTable = PathPoint.tableData({
     table: {
+      selectBasicColumns: ['path', 'pointName', 'location'],
       customData: () => this.bussScheduleTable.formData.share.entity.path.pathPoints,
     },
     formData: {}
@@ -150,9 +155,9 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
           name: 'path', template: InputTemplate.path._tableData(this.pathTable),
           colSpan: 2,
           action: {
-            preChange: (path: Path) => {
+            preChange: (currentPath: Path, comingPath: Path) => {
               const bussSchedule = this.bussScheduleTable.formData.share.entity;
-              if (bussSchedule.path && bussSchedule.path.pathId !== path.pathId) {
+              if (currentPath && currentPath.pathId !== comingPath.pathId) {
                 bussSchedule.startPoint = undefined;
                 bussSchedule.startPointCompanyId = 0;
                 bussSchedule.startPointPathId = 0;
@@ -164,6 +169,9 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
                 bussSchedule.endPointPathPointId = 0;
                 bussSchedule.endPointLocationId = 0;
               }
+            },
+            postChange: (currentValue, oldValue) => {
+              console.log(this.bussScheduleTable.formData.share.entity);
             }
           }
         },
@@ -172,15 +180,5 @@ export class BussTypeComponent extends XeSubscriber implements AfterViewInit {
       ]
     }
   });
-
-
-  ngAfterViewInit(): void {
-    this.subscriptions.push(
-      CommonUpdateService.instance.findAll<Company>(Company.meta).subscribe(
-        companies => this.companySelectItems = companies.map(c => new SelectItem<Company>(c.companyName, c.companyId)),
-        error => Notifier.httpErrorResponse(error)
-      )
-    );
-  }
 
 }

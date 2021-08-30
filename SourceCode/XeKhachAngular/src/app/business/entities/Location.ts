@@ -12,6 +12,7 @@ import {CommonUpdateService} from "../service/common-update.service";
 
 export class Location extends XeEntity {
     static meta = EntityUtil.metas.Location;
+    static mapFields = EntityUtil.mapFields['Location'];
     locationId: number;
     parent: Location ;
     parentLocationId: number;

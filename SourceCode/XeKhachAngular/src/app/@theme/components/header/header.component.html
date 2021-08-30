@@ -15,30 +15,10 @@
 </div>
 
 <div class="header-container">
+  <xe-btn *ngIf="notLogin()" routerLink="/check-in/login" [btnText]="xeLabel.LOGIN"></xe-btn>
   <nb-actions size="small">
-
-    <nb-action class="control-item">
-      <nb-search
-        type="rotate-layout"
-        matRipple
-        [matRippleUnbounded]="true"
-        [matRippleCentered]="true"
-      ></nb-search></nb-action>
     <nb-action
-      class="control-item"
-      icon="email-outline"
-      matRipple
-      [matRippleUnbounded]="true"
-      [matRippleCentered]="true"
-    ></nb-action>
-    <nb-action
-      class="control-item"
-      icon="bell-outline"
-      matRipple
-      [matRippleUnbounded]="true"
-      [matRippleCentered]="true"
-    ></nb-action>
-    <nb-action
+      [hidden]="notLogin()"
       class="user-action"
       *nbIsGranted="['view', 'user']"
       matRipple

@@ -5,7 +5,6 @@ import data.entities.abstracts.DataType;
 import data.models.Column;
 import data.models.CountMethod;
 import data.models.MapColumn;
-import util.constants.BussTypeEnum;
 
 public class BussType extends AbstractEntity {
     Column bussTypeName = of(DataType.DESCRIPTION);

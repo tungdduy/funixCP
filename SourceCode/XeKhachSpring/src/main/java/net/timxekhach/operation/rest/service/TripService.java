@@ -62,15 +62,14 @@ public class TripService {
 		Date date = XeDateUtils.dateAppToApi(launchDate);
 		return BussSchedule.findBussSchedules(locationFromId, locationToId, date);
 	}
-	public List findScheduledLocationsContains (String searchString) {
-		// TODO : service findScheduledLocationsContains method
-		return null;
-	}
 
-	public List findLocationsHasScheduleGoThroughLocation (String searchString, Long locationId) {
-		// TODO : service findLocationsHasScheduleGoThroughLocation method
-		return null;
-	}
+    public Trip getTripWithPreparedTripUser(Long tripId, Long tripUserId) {
+		Trip trip = CommonUpdateService.getTripRepository().findByTripId(tripId);
+		TripUser tripUser = CommonUpdateService.getTripUserRepository().findByTripUserId(tripUserId);
+		ErrorCode.DATA_NOT_FOUND.throwIfAnyNull(trip, tripUser);
+		trip.prepareTripUser(tripUser);
+		return trip;
+    }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

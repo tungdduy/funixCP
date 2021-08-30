@@ -161,22 +161,30 @@ public abstract class Buss_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("bussLicense")) {
+                if(value == null) {this.setBussLicense(null); continue;}
+                if(value.equals(this.getBussLicense())) continue;
                 this.setBussLicense(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussDesc")) {
+                if(value == null) {this.setBussDesc(null); continue;}
+                if(value.equals(this.getBussDesc())) continue;
                 this.setBussDesc(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("lockedSeatsString")) {
+                if(value == null) {this.setLockedSeatsString(null); continue;}
+                if(value.equals(this.getLockedSeatsString())) continue;
                 this.setLockedSeatsString(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("bussType")) {
+                if(value == null) {this.setBussType(null); continue;}
                 this.setBussType(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussTypeRepository().findByBussTypeId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("company")) {
+                if(value == null) {this.setCompany(null); continue;}
                 this.setCompany(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getCompanyRepository().findByCompanyId(Long.valueOf(value))));
                 continue;
             }

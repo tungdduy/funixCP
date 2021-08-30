@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {Url} from "../../../framework/url/url.declare";
 import {XeLabel} from "../../i18n";
+import {XeRouter} from "../../service/xe-router";
 
 @Component({
   selector: 'xe-check-in',
@@ -13,5 +14,9 @@ export class CheckInComponent {
   FORGOT_PASSWORD = Url.app.CHECK_IN.FORGOT_PASSWORD.short;
   label = XeLabel;
   constructor() {}
+
+  findTrip() {
+    XeRouter.navigate(Url.app.ADMIN.FIND_TRIP.noHost);
+  }
 }
 

@@ -17,11 +17,14 @@ export class BussSchedulePointPipe extends XePipe implements PipeTransform {
   }
 
   singleToHtml = (point: BussSchedulePoint) => {
-    if (ObjectUtil.isNumberGreaterThanZero(point.pathPoint)) {
-      const pathPointCache = EntityUtil.getFromCache('PathPoint', point.pathPoint);
-      if (pathPointCache) return PathPointPipe.instance.singleToHtml(pathPointCache) + LocationPipe.instance.singleToHtml(pathPointCache.location);
+    if (!point) return "";
+    if (ObjectUtil.isNumberGreaterThanZero(point)) {
+      point = EntityUtil.getFromCache('BussSchedulePoint', point);
     }
-    return point.searchText;
+    if (ObjectUtil.isNumberGreaterThanZero(point.pathPoint)) {
+      point.pathPoint = EntityUtil.getFromCache('PathPoint', point.pathPoint);
+    }
+    return PathPointPipe.instance.singleToHtml(point.pathPoint) + LocationPipe.instance.singleToHtml(point.pathPoint.location);
   }
 
   singleToInline = (point: BussSchedulePoint, options?) => {

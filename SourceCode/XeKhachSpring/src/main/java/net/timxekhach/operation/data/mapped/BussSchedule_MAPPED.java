@@ -306,34 +306,46 @@ public abstract class BussSchedule_MAPPED extends XeEntity {
             String fieldName = entry.getKey();
             String value = entry.getValue();
             if (fieldName.equals("scheduleUnitPrice")) {
+                if(value == null) {this.setScheduleUnitPrice(null); continue;}
+                if(value.equals(this.getScheduleUnitPrice())) continue;
                 this.setScheduleUnitPrice(Long.valueOf(value));
                 continue;
             }
             if (fieldName.equals("launchTime")) {
+                if(value == null) {this.setLaunchTime(null); continue;}
+                if(value.equals(this.getLaunchTime())) continue;
                 this.setLaunchTime(XeDateUtils.timeAppToApi(value));
                 continue;
             }
             if (fieldName.equals("effectiveDateFrom")) {
+                if(value == null) {this.setEffectiveDateFrom(null); continue;}
+                if(value.equals(this.getEffectiveDateFrom())) continue;
                 this.setEffectiveDateFrom(XeDateUtils.dateAppToApi(value));
                 continue;
             }
             if (fieldName.equals("workingDays")) {
+                if(value == null) {this.setWorkingDays(null); continue;}
+                if(value.equals(this.getWorkingDays())) continue;
                 this.setWorkingDays(String.valueOf(value));
                 continue;
             }
             if (fieldName.equals("path")) {
+                if(value == null) {this.setPath(null); continue;}
                 this.setPath(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathRepository().findByPathId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("startPoint")) {
+                if(value == null) {this.setStartPoint(null); continue;}
                 this.setStartPoint(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathPointRepository().findByPathPointId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("endPoint")) {
+                if(value == null) {this.setEndPoint(null); continue;}
                 this.setEndPoint(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getPathPointRepository().findByPathPointId(Long.valueOf(value))));
                 continue;
             }
             if (fieldName.equals("buss")) {
+                if(value == null) {this.setBuss(null); continue;}
                 this.setBuss(ErrorCode.DATA_NOT_FOUND.throwIfNull(CommonUpdateService.getBussRepository().findByBussId(Long.valueOf(value))));
                 continue;
             }

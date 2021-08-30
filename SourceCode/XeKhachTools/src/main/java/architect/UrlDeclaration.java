@@ -23,8 +23,7 @@ public class UrlDeclaration {
                 .create("trip")
                         .method("searchLocation").type(List.class).param("searchString", String.class)
                         .method("findBussSchedules").type(List.class).pathVar("searchString", String.class).pathVar("locationFromId", Long.class).pathVar("locationToId", Long.class)
-                        .method("findScheduledLocationsContains").type(List.class).pathVar("searchString", String.class)
-                        .method("findLocationsHasScheduleGoThroughLocation").type(List.class).pathVar("searchString", String.class).pathVar("locationId", Long.class)
+                        .method("findScheduledLocations").type(List.class).pathVar("searchString", String.class)
                 .create("caller-staff")
                 .create("buss-staff")
         ;
@@ -39,7 +38,7 @@ public class UrlDeclaration {
                         .child("my-account").roles(ROLE_USER)
                         .sibling("my-company").roles(ROLE_BUSS_ADMIN)
                         .sibling("all-user").roles(ROLE_SYS_ADMIN)
-                        .sibling("my-trip").roles(ROLE_USER)
+                        .sibling("my-trip")
                         .sibling("find-trip")
                         .sibling("company-manager").roles(ROLE_SYS_ADMIN)
                         .sibling("buss-type").roles(ROLE_SYS_ADMIN)
