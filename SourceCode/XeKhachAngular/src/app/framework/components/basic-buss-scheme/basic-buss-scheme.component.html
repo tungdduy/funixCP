@@ -74,23 +74,6 @@
         </ng-container>
       </div>
       <div class="col-md-6">
-        <div>
-          <div class="row">
-            <div class="col-md-6">
-              <ng-container *ngTemplateOutlet="launchDateTimeTemplate"></ng-container>
-            </div>
-            <div *ngIf="selectedTripUser?.confirmedBy" class="col-md-6">
-              <div [innerText]="xeLabel.confirmed_by" class="d-inline-block"></div>
-              :
-              <div [innerText]="confirmedByName" class="text-info text-bold"></div>
-              <div [innerText]="xeLabel.confirmed_date" class="d-inline-block"></div>
-              :
-              <div [innerText]="selectedTripUser.confirmedDateTime | xeDateTimePipe"
-                   class="text-primary text-bold"></div>
-            </div>
-          </div>
-          <hr/>
-        </div>
         <ng-container *ngTemplateOutlet="seatStatusHintTemplate"></ng-container>
       </div>
     </div>
@@ -314,6 +297,25 @@
 <ng-template #TripAdminControlTemplate id="TripUserTable">
   <ng-container *ngIf="mode.hasTripAdmin">
     <xe-table [tableData]="tripUserTable">
+      <div tableHeader>
+        <div>
+          <div class="row">
+            <div class="col-md-6">
+              <ng-container *ngTemplateOutlet="launchDateTimeTemplate"></ng-container>
+            </div>
+            <div *ngIf="selectedTripUser?.confirmedBy" class="col-md-6">
+              <div [innerText]="xeLabel.confirmed_by" class="d-inline-block"></div>
+              :
+              <div [innerText]="confirmedByName" class="text-info text-bold"></div>
+              <div [innerText]="xeLabel.confirmed_date" class="d-inline-block"></div>
+              :
+              <div [innerText]="selectedTripUser.confirmedDateTime | xeDateTimePipe"
+                   class="text-primary text-bold"></div>
+            </div>
+          </div>
+          <hr/>
+        </div>
+      </div>
       <ng-container aboveBasicForm>
         <div class="row">
           <div class="col-md-6">

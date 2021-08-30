@@ -1,13 +1,14 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.SeatGroup_MAPPED;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.Transient;
 import net.timxekhach.utility.XeNumberUtils;
 import net.timxekhach.utility.XeObjectUtils;
+
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,6 @@ public class SeatGroup extends SeatGroup_MAPPED {
     }
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-    @JsonIgnore
     public BussType getBussType() {
         return super.getBussType();
     }
@@ -42,23 +42,32 @@ public class SeatGroup extends SeatGroup_MAPPED {
 
     @Override
     public void preSaveAction() {
-        Set<Integer> allOrders = this.bussType.getSeatGroups()
+        int currentMaxGroupOrder = validateThenSetGroupOrder(null);
+        this.setSeatGroupOrder(currentMaxGroupOrder + 1);
+        this.setSeatFrom(this.getBussType().getTotalSeats() + 1);
+    }
+
+    private int validateThenSetGroupOrder(List<Long> excludeSeatGroupIds) {
+        if(excludeSeatGroupIds == null) excludeSeatGroupIds = new ArrayList<>();
+        List<Long> finalExcludeSeatGroupIds = excludeSeatGroupIds;
+        Set<Integer> allOrders = this.getBussType().getSeatGroups()
                 .stream()
+                .filter(group -> !finalExcludeSeatGroupIds.contains(group.seatGroupId))
                 .map(SeatGroup_MAPPED::getSeatGroupOrder)
                 .collect(Collectors.toSet());
         int max = allOrders.size() == 0 ? 0 : Collections.max(allOrders);
         if (allOrders.size() != this.getBussType().getSeatGroups().size()) {
-            max = updateSetGroupOrder(max);
+            max = updateSetGroupOrder(max, finalExcludeSeatGroupIds);
         }
-        this.setSeatGroupOrder(max + 1);
-        this.setSeatFrom(this.bussType.getTotalSeats() + 1);
+        return max;
     }
 
-    private int updateSetGroupOrder(int max) {
+    private int updateSetGroupOrder(int max, List<Long> excludeSeatGroupIds) {
         for (int i = 0; i < this.bussType.getSeatGroups().size(); i++) {
             SeatGroup group = this.bussType.getSeatGroups().get(i);
             if (group.getSeatGroupOrder() != i + 1) {
                 group.setSeatGroupOrder(i + 1);
+                group.updateSeatFrom(excludeSeatGroupIds);
                 group.save();
             }
             if (max < i) max = i + 1;
@@ -81,13 +90,16 @@ public class SeatGroup extends SeatGroup_MAPPED {
         if (XeObjectUtils.anyNull(this.seatFromBefore, this.seatFrom, this.totalSeatsBefore, this.totalSeats)
                 || !this.seatFromBefore.equals(this.seatFrom)
                 || !this.totalSeatsBefore.equals(this.totalSeats)) {
-            updateSeatFrom();
+            updateSeatFrom(null);
         }
     }
 
-    private void updateSeatFrom() {
+    private void updateSeatFrom(List<Long> excludeSeatGroupIds) {
+        if(excludeSeatGroupIds == null) excludeSeatGroupIds = new ArrayList<>();
+        List<Long> finalExcludeSeatGroupIds = excludeSeatGroupIds;
         List<SeatGroup> sortedBySeatFrom = this.getBussType()
                 .getSeatGroups().stream()
+                .filter(group -> !finalExcludeSeatGroupIds.contains(group.getSeatGroupId()))
                 .sorted((s1, s2) -> XeObjectUtils.anyNull(s2.seatFrom, s1.seatFrom) ? 0 : s1.seatFrom - s2.seatFrom)
                 .collect(Collectors.toList());
         int seatFrom = 1;
@@ -109,9 +121,11 @@ public class SeatGroup extends SeatGroup_MAPPED {
     }
 
     @Override
-    public void preRemoveAction() {
+    protected void preRemove() {
+        validateThenSetGroupOrder(Collections.singletonList(this.getSeatGroupId()));
     }
-// ____________________ ::BODY_SEPARATOR:: ____________________ //
+
+    // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
 

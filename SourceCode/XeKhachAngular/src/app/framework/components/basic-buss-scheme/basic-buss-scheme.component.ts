@@ -72,6 +72,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
         },
         postPersist: (seatGroup) => {
           this.bussType.seatGroups.unshift(seatGroup);
+          this.bussType.totalSeats += seatGroup.totalSeats;
           this.screen.back();
           Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
         },
