@@ -1,7 +1,10 @@
 <nb-layout center>
   <nb-layout-column class="xe-center-panel">
     <nb-card class="xe-center-inner">
-      <nb-card-header class="text-center">TimXeKhach.Net</nb-card-header>
+      <nb-card-header class="text-center">
+        <xe-btn icon="home" template="cancel" btnText="TimXeKhach.Net" (click)="findTrip()"></xe-btn>
+
+      </nb-card-header>
       <nb-card-body>
         <router-outlet></router-outlet>
         <hr/>

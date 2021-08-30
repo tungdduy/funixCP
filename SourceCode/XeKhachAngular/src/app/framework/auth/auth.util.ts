@@ -5,7 +5,6 @@ import {StorageUtil} from "../util/storage.util";
 import {configConstant} from "../config.constant";
 import {HttpResponse} from "@angular/common/http";
 import {AuthConfig} from "./auth.config";
-import {XeRouter} from "../../business/service/xe-router";
 import {Role} from "../../business/xe.role";
 import {RoleUtil} from "../util/role.util";
 import {ObjectUtil} from "../util/object.util";
@@ -100,12 +99,12 @@ export class AuthUtil {
     return false;
   }
 
-  logout(url: any = '/check-in/login') {
+  logout(url: any = '/admin/find-trips') {
     this.setRoles([]);
     this.setRepoToken(null);
     this.setRepoUser(null);
     AuthUtil._instance = undefined;
-    XeRouter.navigate(url);
+    location.reload();
   }
 
   get isUserLoggedIn(): boolean {

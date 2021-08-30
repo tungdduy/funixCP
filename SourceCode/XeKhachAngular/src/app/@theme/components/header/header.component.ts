@@ -4,7 +4,9 @@ import {NbMenuService, NbSidebarService, NbThemeService} from '@nebular/theme';
 import {LayoutService} from '../../../@core/utils';
 import {Observable, Subject} from 'rxjs';
 import {AuthUtil} from "../../../framework/auth/auth.util";
-import {XeLbl} from "../../../business/i18n";
+import {XeLabel} from "../../../business/i18n";
+import {NbMenuItem} from "@nebular/theme/components/menu/menu.service";
+import {Url} from "../../../framework/url/url.declare";
 
 @Component({
   selector: 'ngx-header',
@@ -18,7 +20,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPictureOnly: boolean = false;
   user = AuthUtil.instance.user;
 
-  userMenu = [ { title: XeLbl("LOG_OUT"), data: () => AuthUtil.instance.logout()}];
+  userMenu: NbMenuItem[] = [
+    { title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
+    {title: XeLabel.LOGIN, hidden: AuthUtil.instance.isUserLoggedIn, url: Url.app.CHECK_IN.LOGIN.full},
+    {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost},
+    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full}
+  ];
 
   public constructor(
     private sidebarService: NbSidebarService,

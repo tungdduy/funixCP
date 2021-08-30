@@ -43,7 +43,9 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
   }));
 
   ngAfterViewInit(): void {
-    Xe.refresh(this.user, User.meta);
+    if (AuthUtil.instance.isUserLoggedIn) {
+      Xe.refresh(this.user, User.meta);
+    }
   }
 
 

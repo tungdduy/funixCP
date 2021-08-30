@@ -1,12 +1,7 @@
 package net.timxekhach.firebase;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import net.timxekhach.TimxekhachApplication;
 import net.timxekhach.firebase.fcm.FcmSettings;
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.data.repository.UserRepository;
@@ -15,13 +10,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -39,16 +28,16 @@ public class FcmClient {
    */
   public FcmClient(FcmSettings settings) {
     //TODO
-    Path p = Paths.get(settings.getServiceAccountFile());
-    try (InputStream serviceAccount = Files.newInputStream(p)) {
-      FirebaseOptions options = new FirebaseOptions.Builder()
-          .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
-
-      FirebaseApp.initializeApp(options);
-    }
-    catch (IOException e) {
-      log.error("init fcm", e);
-    }
+//    Path p = Paths.get(settings.getServiceAccountFile());
+//    try (InputStream serviceAccount = Files.newInputStream(p)) {
+//      FirebaseOptions options = new FirebaseOptions.Builder()
+//          .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
+//
+//      FirebaseApp.initializeApp(options);
+//    }
+//    catch (IOException e) {
+//      log.error("init fcm", e);
+//    }
   }
 
   /**
