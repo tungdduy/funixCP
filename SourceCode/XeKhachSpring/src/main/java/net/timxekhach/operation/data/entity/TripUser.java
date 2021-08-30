@@ -11,7 +11,6 @@ import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.Xe;
 import net.timxekhach.utility.XeNumberUtils;
-import net.timxekhach.utility.XeObjectUtils;
 import net.timxekhach.utility.XeStringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -28,19 +27,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity
-@Getter
-@Setter
+@Entity @Getter @Setter
 public class TripUser extends TripUser_MAPPED {
 
-    public TripUser() {
-    }
-
+    public TripUser() {}
     public TripUser(Trip trip) {
         super(trip);
     }
 
-    // ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
     @Transient
     private List<Integer> seats;
 

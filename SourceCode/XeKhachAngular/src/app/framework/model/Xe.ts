@@ -49,27 +49,42 @@ export class Xe {
       const fieldMeta = fieldMetas[fieldName] as ClassMeta;
       const fieldValue = entity[fieldName];
       if (fieldValue && !Array.isArray(fieldValue) && !ObjectUtil.isNumberGreaterThanZero(fieldValue)) {
-        convertedEntity[fieldName] = fieldValue[fieldMeta.mainIdName];
+        convertedEntity[fieldName] = entity[fieldMeta.mainIdName];
       }
     });
     console.log('converted Entity to updating: ', convertedEntity);
     return convertedEntity;
   }
 
-  static updateFields(entity: any, fields: string[] | {}, meta: ClassMeta, callBack: (e) => any = null) {
+  static updateFields(entities: any, fields: string[] | {}, meta: ClassMeta, callBack: (e) => any = null) {
+    if (Array.isArray(entities)) {
+      if (entities.length > 0 && entities[0][meta.mainIdName] <= 0) return;
+      const content = [];
+      entities.forEach(entity => {
+        content.push(this.getEntityWithFields(meta, entity, fields));
+      });
+      this.update(content, meta, callBack);
+    } else {
+      const contentUpdate = this.getEntityWithFields(meta, entities, fields);
+      this.update(contentUpdate, meta, callBack);
+    }
+  }
+
+  private static getEntityWithFields(meta: ClassMeta, entities: any, fields: string[] | {}) {
     const contentUpdate = {};
-    contentUpdate[meta.mainIdName] = entity[meta.mainIdName];
+    contentUpdate[meta.mainIdName] = entities[meta.mainIdName];
     if (Array.isArray(fields)) {
       fields.forEach(fieldName => {
-        contentUpdate[fieldName] = entity[fieldName];
+        contentUpdate[fieldName] = entities[fieldName];
       });
     } else {
       Object.keys(fields).forEach(key => {
         contentUpdate[key] = fields[key];
       });
     }
-    this.update(contentUpdate, meta, callBack);
+    return contentUpdate;
   }
+
   static update(entities: any, meta: ClassMeta, callBack: (e) => any = null) {
     console.log('updating', entities);
     if (Array.isArray(entities)) {

@@ -1,22 +1,25 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import javax.validation.constraints.*;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import net.timxekhach.operation.data.entity.Employee;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import net.timxekhach.operation.data.entity.Employee;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 
@@ -79,6 +82,7 @@ public abstract class User_MAPPED extends XeEntity {
     @Column(unique = true)
     protected String phoneNumber;
     @Size(max = 255)
+    @JsonIgnore
     protected String password;
     @Size(max = 255)
     @Column(unique = true)

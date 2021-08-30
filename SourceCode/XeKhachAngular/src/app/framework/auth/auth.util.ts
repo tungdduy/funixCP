@@ -80,7 +80,7 @@ export class AuthUtil {
   }
 
   public setRepoUser(user: User) {
-    Object.assign(this.user, user);
+    this._user = user;
     StorageUtil.setItem(configConstant.USER, user);
   }
 

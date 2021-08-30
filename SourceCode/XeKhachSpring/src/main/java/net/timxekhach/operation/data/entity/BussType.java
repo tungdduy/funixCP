@@ -1,10 +1,12 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.BussType_MAPPED;
-import java.util.ArrayList;
+
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,6 +26,7 @@ public class BussType extends BussType_MAPPED {
         super.prePersist();
     }
 
+    @Transient
     private Integer totalSeats;
     public Integer getTotalSeats() {
         if(this.totalSeats == null) {

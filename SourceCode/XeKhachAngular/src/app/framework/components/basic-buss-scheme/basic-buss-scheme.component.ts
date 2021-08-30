@@ -103,7 +103,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     minSwap.seatGroupOrder = maxSwap.seatGroupOrder;
     maxSwap.seatGroupOrder = swapOrder;
     this.bussType.seatGroups.sort((s1, s2) => s2.seatGroupOrder - s1.seatGroupOrder);
-    Xe.update([minSwap, maxSwap], SeatGroup.meta);
+    Xe.updateFields([minSwap, maxSwap], ['seatGroupOrder'] , SeatGroup.meta);
   }
 
   bringDown(seatGroup: SeatGroup, groupIdx: number) {
