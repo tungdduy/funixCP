@@ -93,7 +93,7 @@ export class Xe {
   }
 
   static assignResult(newResult, meta: ClassMeta, originEntities: any) {
-    EntityUtil.cache(newResult, meta);
+    EntityUtil.cacheThenFill(newResult, meta);
     Xe.fill(newResult, meta);
     Object.keys(originEntities).forEach(key => {
       delete originEntities[key];
@@ -114,7 +114,7 @@ export class Xe {
         if (callback !== null) {
           callback(arrayResult[0]);
         } else {
-          EntityUtil.cache(arrayResult, meta);
+          EntityUtil.cacheThenFill(arrayResult, meta);
           Object.keys(entity).forEach(key => delete entity[key]);
           Object.assign(entity, arrayResult[0]);
         }

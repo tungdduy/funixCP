@@ -71,6 +71,10 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return this.selection?.selected?.length > 0;
   }
 
+  get isReadOnly() {
+    return this.tableData.table?.mode?.readonly;
+  }
+
   get editOnRow() {
     return this.tableData.table.action.editOnRow || EditOnRow.disabled;
   }
@@ -99,9 +103,10 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   public updateTableData(result: E[]) {
     console.time('cache table entity');
-    EntityUtil.cache(result, this.entityMeta);
+    console.log('table result before cache', result);
+    EntityUtil.cacheThenFill(result, this.entityMeta);
+    console.log('table result after cache', result);
 
-    console.log("table result to update: ", result);
     const mainIdName = this.entityMeta.mainIdName;
     const filter = (entity) => {
       const tableCondition = this.tableData.table.action.filters?.filterSingle ? this.tableData.table.action.filters.filterSingle(entity) : true;
@@ -442,22 +447,28 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     } else if (this.tableData.table?.mode?.customObservable) {
       this.subscriptions.push(this.tableData.table.mode.customObservable.subscribe(
         (result: E[]) => {
+          console.log('result from api', result);
           this.updateTableData(result);
         }
       ));
     } else {
       this.subscriptions.push(this.commonService.findByEntityIdentifier<E>(this.tableData.formData.entityIdentifier).subscribe(
         (result: E[]) => {
+          console.log('result from api', result);
           this.updateTableData(result);
         }
       ));
     }
   }
 
+  get hideSelectColumn() {
+    return this.tableData.table?.mode?.hideSelectColumn || this.isReadOnly;
+  }
+
   private initColumns() {
     this.displayedColumns = this.tableData.table.basicColumns.filter(c => c !== undefined).map(c => c.field.name);
     this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
-    if (!this.tableData.table.mode.hideSelectColumn) {
+    if (!this.hideSelectColumn) {
       this.displayedColumns.push("select");
     }
   }

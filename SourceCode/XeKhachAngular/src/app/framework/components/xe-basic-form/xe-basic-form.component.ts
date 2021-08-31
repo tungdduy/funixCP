@@ -50,7 +50,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
         call: (entity) => {
           const isUpdate = this.isIdValid;
           const isPersist = !this.isIdValid;
-          this.entityUtil.cache(entity, this.formData.entityIdentifier.clazz.meta);
+          this.entityUtil.cacheThenFill(entity, this.formData.entityIdentifier.clazz.meta);
           this.formData.fields.filter(field => field.clearOnSuccess).forEach(field => this.formData.share.entity[field.name] = undefined);
           if (isUpdate && this.formData.action?.postUpdate) {
             this.formData.action?.postUpdate(entity);

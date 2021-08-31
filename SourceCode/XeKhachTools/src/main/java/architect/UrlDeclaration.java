@@ -42,9 +42,9 @@ public class UrlDeclaration {
                         .sibling("find-trip")
                         .sibling("company-manager").roles(ROLE_SYS_ADMIN)
                         .sibling("buss-type").roles(ROLE_SYS_ADMIN)
-                        .sibling("buss").roles(ROLE_BUSS_STAFF)
+                        .sibling("buss").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
                         .sibling("employee").roles(ROLE_BUSS_ADMIN)
-                        .sibling("path").roles(ROLE_BUSS_ADMIN)
+                        .sibling("path").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
                         .sibling("ticket").roles(ROLE_BUSS_STAFF, ROLE_CALLER_STAFF)
 
         ;
