@@ -31,22 +31,11 @@ import {Buss} from "../../../business/entities/Buss";
   styleUrls: ['./basic-buss-scheme.component.scss']
 })
 export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, AfterContentInit {
-  ngAfterContentInit(): void {
-    if (ObjectUtil.isNumberGreaterThanZero(this.bussType)) {
-      this.bussType = EntityUtil.getFromCache(BussType.meta.capName, this.bussType);
-    }
-    if (!this.bussType || !this.bussType.bussTypeId) return;
-    this.seatGroupCriteria.bussType = this.bussType;
-    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
-    this.initOrderStatus();
-  }
-
   @Input() buss: Buss;
   @Input() bussType: BussType;
   @Input("screen") parentScreen: XeScreen;
   @Input("readMode") _readMode;
   @Input() mode: BussSchemeMode = BussSchemeMode.readonly;
-
   seatGroupCriteria = SeatGroup.new();
   screens = {
     schemeEdit: "schemeEdit",
@@ -54,13 +43,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     orderSuccessfully: "orderSuccessfully"
   };
   screen = new XeScreen({home: this.screens.schemeView});
-
-  ngOnInit(): void {
-    this.initOrderStatus();
-    this.initTripAdmin();
-    this.initBussAdmin();
-  }
-
   seatGroupTable = SeatGroup.tableData({
     formData: {
       display: {
@@ -92,6 +74,84 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       }
     }
   }, this.seatGroupCriteria);
+  totalPrice: number;
+  selectedSeats: number[];
+  @Input() bussSchedule: BussSchedule;
+  @Input() trip: Trip;
+  @Input() preparedTripUser: TripUser;
+  tripUserTable: XeTableData<TripUser>;
+  bussSchedulePointTable: XeTableData<BussSchedulePoint>;
+  bussSchedulePointInput = InputTemplate.bussSchedulePoint;
+  private _seatStatus: SeatStatus[] = [];
+
+  // PROCESS ORDERING ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  private isAdminReviewing = true;
+
+  get isLoggedIn() {
+    return AuthUtil.instance.isUserLoggedIn;
+  }
+
+  _errorMessage: string;
+
+  get errorMessage() {
+    return this._errorMessage;
+  }
+
+  set errorMessage(error: string) {
+    this._errorMessage = error;
+    setTimeout(() => {
+      this._errorMessage = undefined;
+    }, 5000);
+  }
+
+  get orderValidEmail() {
+    return RegexUtil.isValidEmail(this.preparedTripUser.email);
+  }
+
+  get tripUserTableComponent() {
+    return this.tripUserTable.formData?.share?.tableComponent;
+  }
+
+  get selectedTripUser() {
+    return this?.tripUserTable?.formData?.share?.entity;
+  }
+
+  get selectedTripUserStartPoint() {
+    const startPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId');
+    return this.getScheduledPointByPathPointId(startPointId);
+  }
+
+  get selectedTripUserEndPoint(): BussSchedulePoint {
+    const endPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'endPoint.pathPointId');
+    return this.getScheduledPointByPathPointId(endPointId);
+  }
+
+  get confirmedByName() {
+    return Xe.get(this.selectedTripUser, TripUser.meta, 'confirmedBy.user.fullName');
+  }
+
+  _seatToTripUser;
+
+  get seatToTripUser() {
+    if (!this._seatToTripUser) this.updateSeatToTripUser();
+    return this._seatToTripUser;
+  }
+
+  ngAfterContentInit(): void {
+    if (ObjectUtil.isNumberGreaterThanZero(this.bussType)) {
+      this.bussType = EntityUtil.getFromCache(BussType.meta.capName, this.bussType);
+    }
+    if (!this.bussType || !this.bussType.bussTypeId) return;
+    this.seatGroupCriteria.bussType = this.bussType;
+    this.bussType.seatGroups = EntityUtil.cachePkFromParent(this.bussType, BussType.meta, 'seatGroups', SeatGroup.meta);
+    this.initOrderStatus();
+  }
+
+  ngOnInit(): void {
+    this.initOrderStatus();
+    this.initTripAdmin();
+    this.initBussAdmin();
+  }
 
   openNewSeatRange() {
     this.seatGroupTable.formData.share.entity = SeatGroup.new({bussType: this.bussType});
@@ -116,6 +176,13 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     Xe.updateFields([minSwap, maxSwap], ['seatGroupOrder'], SeatGroup.meta);
   }
 
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
+  // ###############################################################
+  // ###############################################################
+  // ###############################################################
+
+  // TRIP ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
   bringDown(seatGroup: SeatGroup, groupIdx: number) {
     const swapGroup = this.bussType.seatGroups[groupIdx + 1];
     this.swapThenSort(seatGroup, swapGroup);
@@ -131,20 +198,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     const seatTo = parseInt(String(this.getCurrentSeatFrom()), 10) + parseInt(String(this.seatGroupTable.formData?.share?.entity?.totalSeats), 10) - 1;
     return isNaN(seatTo) ? this.getCurrentSeatFrom() : seatTo;
   }
-
-  // PROCESS ORDERING ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  get isLoggedIn() {
-    return AuthUtil.instance.isUserLoggedIn;
-  }
-
-  totalPrice: number;
-  selectedSeats: number[];
-  @Input() bussSchedule: BussSchedule;
-  @Input() trip: Trip;
-  @Input() preparedTripUser: TripUser;
-
-  private _seatStatus: SeatStatus[] = [];
 
   seatStatus(seatNo: number): SeatStatus {
     return this._seatStatus[seatNo] || SeatStatus.available;
@@ -192,17 +245,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     }, this.preparedTripUser);
   }
 
-  private updateTripOrderSeatStatuses() {
-    this.trip.lockedSeats.forEach(locked => {
-      this._seatStatus[locked] = SeatStatus.locked;
-    });
-    this.trip.lockedBussSeats.forEach(locked => {
-      this._seatStatus[locked] = SeatStatus.locked;
-    });
-    this.initSeatStatus(this.trip.preparedAvailableSeats, SeatStatus.available);
-    this.initSeatStatus(this.trip.preparedBookedSeats, SeatStatus.booked);
-  }
-
   toggleSeatOrder(seatNo: number) {
     if (this._seatStatus[seatNo].hasClassesSeatAvailable) {
       this._seatStatus[seatNo] = SeatStatus.selected;
@@ -216,24 +258,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   clearOrderInfo() {
     this._seatStatus.forEach((seat, index) => this._seatStatus[index] = seat.hasClassesSeatSelected ? SeatStatus.available : seat);
     TripUser.clearOrderInfo(this.preparedTripUser);
-  }
-
-
-  _errorMessage: string;
-
-  get orderValidEmail() {
-    return RegexUtil.isValidEmail(this.preparedTripUser.email);
-  }
-
-  set errorMessage(error: string) {
-    this._errorMessage = error;
-    setTimeout(() => {
-      this._errorMessage = undefined;
-    }, 5000);
-  }
-
-  get errorMessage() {
-    return this._errorMessage;
   }
 
   order() {
@@ -258,13 +282,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   findTrip() {
     location.reload();
   }
-
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF ORDER
-  // ###############################################################
-  // ###############################################################
-  // ###############################################################
-
-  // TRIP ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   initTripAdmin() {
     if (!this.mode.hasTripAdmin) return;
@@ -363,8 +380,62 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       });
   }
 
-  get tripUserTableComponent() {
-    return this.tripUserTable.formData?.share?.tableComponent;
+  setSelectedTripUserStartPoint(point: BussSchedulePoint) {
+    if (point && point.pathPointId !== Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId')) {
+      if (point.pathPoint.pointOrder >= this.selectedTripUser?.endPoint?.pointOrder) {
+        Notifier.error(XeLabel.INVALID_INPUT);
+        return;
+      }
+      this.selectedTripUser.startPoint = point.pathPoint;
+      this.updateThenRefreshTripUser(this.selectedTripUser, ['startPoint']);
+    }
+  }
+
+  setSelectedTripUserEndPoint(point: BussSchedulePoint) {
+    if (point && point.pathPointId !== Xe.get(this.selectedTripUser, TripUser.meta, 'endPoint.pathPointId')) {
+      this.selectedTripUser.endPoint = point.pathPoint;
+      this.updateThenRefreshTripUser(this.selectedTripUser, ['endPoint']);
+    }
+
+  }
+
+  initSeatStatus(seats: number[], status: SeatStatus) {
+    if (!seats) return;
+    seats.forEach(seat => {
+      this._seatStatus[seat] = SeatStatus[status.name];
+    });
+  }
+
+  updateSeatToTripUser() {
+    this._seatToTripUser = {};
+    this.tripUserTable.formData.share.tableEntities.forEach(tripUser => {
+      tripUser.seats?.forEach(seatNo => {
+        this._seatToTripUser[seatNo] = tripUser;
+      });
+    });
+  }
+
+  toggleSeat(seatNo: number) {
+    if (this.mode.hasOrdering) return this.toggleSeatOrder(seatNo);
+    if (this.mode.hasTripAdmin) return this.toggleByTripAdmin(seatNo);
+    if (this.mode.hasBussAdmin) return this.toggleByBussAdmin(seatNo);
+  }
+
+  initBussAdmin() {
+    if (!this.mode.hasBussAdmin) return;
+    this.initSeatStatus(this.bussType.seats, SeatStatus.available);
+    this.initSeatStatus(this.buss.lockedSeats, SeatStatus.lockedByBuss);
+  }
+
+  private updateTripOrderSeatStatuses() {
+    this.trip.lockedSeats.forEach(locked => {
+      this._seatStatus[locked] = SeatStatus.locked;
+    });
+    this.trip.lockedBussSeats.forEach(locked => {
+      this._seatStatus[locked] = SeatStatus.locked;
+    });
+    this.initSeatStatus(this.trip.preparedAvailableSeats, SeatStatus.available);
+    this.initSeatStatus(this.trip.preparedBookedSeats, SeatStatus.booked);
   }
 
   private updateThenRefreshTripUser(tripUser: TripUser, fields: any) {
@@ -386,49 +457,10 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       });
   }
 
-  get selectedTripUser() {
-    return this?.tripUserTable?.formData?.share?.entity;
-  }
-
-  get selectedTripUserStartPoint() {
-    const startPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId');
-    return this.getScheduledPointByPathPointId(startPointId);
-  }
-
-  setSelectedTripUserStartPoint(point: BussSchedulePoint) {
-    if (point && point.pathPointId !== Xe.get(this.selectedTripUser, TripUser.meta, 'startPoint.pathPointId')) {
-      if (point.pathPoint.pointOrder >= this.selectedTripUser?.endPoint?.pointOrder) {
-        Notifier.error(XeLabel.INVALID_INPUT);
-        return;
-      }
-      this.selectedTripUser.startPoint = point.pathPoint;
-      this.updateThenRefreshTripUser(this.selectedTripUser, ['startPoint']);
-    }
-  }
-
-  get selectedTripUserEndPoint(): BussSchedulePoint {
-    const endPointId = Xe.get(this.selectedTripUser, TripUser.meta, 'endPoint.pathPointId');
-    return this.getScheduledPointByPathPointId(endPointId);
-  }
-
   private getScheduledPointByPathPointId(pathPointId) {
     return this.bussSchedule?.sortedBussSchedulePoints
       .filter(point => point.pathPointId === pathPointId)[0];
   }
-
-  setSelectedTripUserEndPoint(point: BussSchedulePoint) {
-    if (point && point.pathPointId !== Xe.get(this.selectedTripUser, TripUser.meta, 'endPoint.pathPointId')) {
-      this.selectedTripUser.endPoint = point.pathPoint;
-      this.updateThenRefreshTripUser(this.selectedTripUser, ['endPoint']);
-    }
-
-  }
-
-  get confirmedByName() {
-    return Xe.get(this.selectedTripUser, TripUser.meta, 'confirmedBy.user.fullName');
-  }
-
-  tripUserTable: XeTableData<TripUser>;
 
   private initTripAdminSeatStatuses() {
     this.initSeatStatus(this.trip.lockedSeats, SeatStatus.lockedByTrip);
@@ -448,14 +480,14 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
 
   }
 
-  initSeatStatus(seats: number[], status: SeatStatus) {
-    if (!seats) return;
-    seats.forEach(seat => {
-      this._seatStatus[seat] = SeatStatus[status.name];
-    });
-  }
 
-  private isAdminReviewing = true;
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF TRIP ADMIN
+
+  // ###############################################################
+  // ###############################################################
+  // ###############################################################
+
+  // BUSS ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   private toggleByTripAdmin(seatNo: number) {
     const seat = this._seatStatus[seatNo];
@@ -482,9 +514,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     }
   }
 
-  bussSchedulePointTable: XeTableData<BussSchedulePoint>;
-  bussSchedulePointInput = InputTemplate.bussSchedulePoint;
-
   private updateToggledSeatForPreparedTrip(seatNo: number) {
     const status = this._seatStatus[seatNo];
     if (status.hasLocked || status.hasLockedByTrip || status.hasLockedByBuss) {
@@ -503,42 +532,6 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
         TripUser.addSeat(this.selectedTripUser, seatNo, true);
       }
     }
-  }
-
-  _seatToTripUser;
-  get seatToTripUser() {
-    if (!this._seatToTripUser) this.updateSeatToTripUser();
-    return this._seatToTripUser;
-  }
-
-  updateSeatToTripUser() {
-    this._seatToTripUser = {};
-    this.tripUserTable.formData.share.tableEntities.forEach(tripUser => {
-      tripUser.seats?.forEach(seatNo => {
-        this._seatToTripUser[seatNo] = tripUser;
-      });
-    });
-  }
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< END OF TRIP ADMIN
-
-  // ###############################################################
-  // ###############################################################
-  // ###############################################################
-
-  // BUSS ADMIN ========>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  toggleSeat(seatNo: number) {
-    if (this.mode.hasOrdering) return this.toggleSeatOrder(seatNo);
-    if (this.mode.hasTripAdmin) return this.toggleByTripAdmin(seatNo);
-    if (this.mode.hasBussAdmin) return this.toggleByBussAdmin(seatNo);
-  }
-
-  initBussAdmin() {
-    if (!this.mode.hasBussAdmin) return;
-    this.initSeatStatus(this.bussType.seats, SeatStatus.available);
-    this.initSeatStatus(this.buss.lockedSeats, SeatStatus.lockedByBuss);
   }
 
   private toggleByBussAdmin(seatNo: number) {

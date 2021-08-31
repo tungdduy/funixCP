@@ -12,17 +12,18 @@ export class AbstractXe extends Xe {
   xeInputTemplate = InputTemplate;
   entityUtil = EntityUtil;
   bussSchemeMode = BussSchemeMode;
-
-  private static _instance;
-  static get instance(): AbstractXe {
-    return AbstractXe._instance;
-  }
+  xeLbl = XeLbl;
 
   constructor() {
     super();
     AbstractXe._instance = this;
   }
-  xeLbl = XeLbl;
+
+  private static _instance;
+
+  static get instance(): AbstractXe {
+    return AbstractXe._instance;
+  }
 
   get adminContainer() {
     return AdminComponent.instance();

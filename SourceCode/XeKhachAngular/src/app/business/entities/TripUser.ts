@@ -21,6 +21,7 @@ import {Xe} from "../../framework/model/Xe";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class TripUser extends XeEntity {
+    static get = (tripUser): TripUser => EntityUtil.getFromCache("TripUser", tripUser);
     static meta = EntityUtil.metas.TripUser;
     static mapFields = EntityUtil.mapFields['TripUser'];
     bussScheduleId: number;

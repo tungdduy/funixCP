@@ -24,73 +24,8 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
   @Input("postRemove") postRemove: (data) => void;
   @Input("formData") formData: XeFormData<E>;
   @Input("hideBody") _hideBody;
-  @Input("readMode") _readMode;
-  onEdit = () => {
-    this.updateIdValidStatus();
-    this._readMode = false;
-    this.updateBody();
-    this.submitForm.unMute();
-    if (this.formData.action?.preEdit) this.formData?.action?.preEdit(this.formData.share.entity);
-  }
-  onCancel = () => {
-    this._readMode = true;
-    this.dialog?.close();
-    this.resetHideBody();
-    this.submitForm.reset();
-    this.submitForm.mute();
-    if (this.formData.action?.postCancel) this.formData.action?.postCancel(this.formData.share.entity);
-  }
-
-  get formEntity() {
-    return this.formData.share?.entity;
-  }
-
-  get formMeta() {
-    return this.formData.entityIdentifier?.clazz?.meta;
-  }
-
-  get formProfileField() {
-    return this.formData.header?.profileImage;
-  }
-
-  get readMode() {
-    return this._readMode === '' || this._readMode === true;
-  }
-
-  get editMode() {
-    return !this.readMode;
-  }
-
-  get hasDialog() {
-    return this.dialog !== undefined;
-  }
-
-
   oriHideBody;
-
-  get isHideBody() {
-    return this._hideBody === '' || this._hideBody;
-  }
-
   hideHeader = false;
-
-  updateBody() {
-    if (this.isHideBody) {
-      this.hideHeader = true;
-      this._hideBody = false;
-    }
-  }
-
-  resetHideBody() {
-    this.hideHeader = false;
-    this._hideBody = this.oriHideBody;
-  }
-
-  filteredField(): EntityField[] {
-    return this.formData?.fields?.filter(f => !!f);
-  }
-
-
   handlers = [
     {
       name: "basicFormInfo",
@@ -121,7 +56,7 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
             this.formData.action?.postUpdate(entity);
           }
           if (isPersist) {
-            if (this.formData.action?.postPersist)this.formData.action?.postPersist(entity);
+            if (this.formData.action?.postPersist) this.formData.action?.postPersist(entity);
             if (!!this.postPersist) this.postPersist(entity, isPersist);
           }
           this.updateIdValidStatus();
@@ -130,24 +65,104 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
       }
     }
   ];
+  backupEntity = {};
+  @ViewChild("form") submitForm: XeFormComponent;
+  screens = {
+    form: 'form',
+    deleteEntity: 'delete'
+  };
+  screen = new XeScreen({home: this.screens.form});
+
+  @Input("readMode") _readMode;
+
+  get readMode() {
+    return this._readMode === '' || this._readMode === true;
+  }
+
+  get formEntity() {
+    return this.formData.share?.entity;
+  }
+
+  get formMeta() {
+    return this.formData.entityIdentifier?.clazz?.meta;
+  }
+
+  get formProfileField() {
+    return this.formData.header?.profileImage;
+  }
+
+  get editMode() {
+    return !this.readMode;
+  }
+
+  get hasDialog() {
+    return this.dialog !== undefined;
+  }
+
+  get isHideBody() {
+    return this._hideBody === '' || this._hideBody;
+  }
 
   private _isIdValid: boolean;
+
   get isIdValid(): boolean {
     return this._isIdValid;
   }
+
   get isUpdate(): boolean {
     return this._isIdValid;
   }
+
   get isCreate(): boolean {
     return !this.isUpdate;
+  }
+
+  get profile(): { ownerId: number, ownerMeta: ClassMeta, owner: any } {
+    const ef = this.entityUtil.getEntityWithField(this.formData.share.entity, this.formData.entityIdentifier.clazz.meta, this.formData.header.profileImage);
+    return {
+      ownerId: ef.entity[ef.fieldMeta?.mainIdName] ? ef.entity[ef.fieldMeta?.mainIdName] : this.formData.share.entity[this.formData.entityIdentifier.clazz.meta.mainIdName],
+      ownerMeta: ef.fieldMeta ? ef.fieldMeta : this.formData.entityIdentifier.clazz.meta,
+      owner: ef.entity ? ef.entity : this.formData.share.entity
+    };
+  }
+
+  onEdit = () => {
+    this.updateIdValidStatus();
+    this._readMode = false;
+    this.updateBody();
+    this.submitForm.unMute();
+    if (this.formData.action?.preEdit) this.formData?.action?.preEdit(this.formData.share.entity);
+  }
+
+  onCancel = () => {
+    this._readMode = true;
+    this.dialog?.close();
+    this.resetHideBody();
+    this.submitForm.reset();
+    this.submitForm.mute();
+    if (this.formData.action?.postCancel) this.formData.action?.postCancel(this.formData.share.entity);
+  }
+
+  updateBody() {
+    if (this.isHideBody) {
+      this.hideHeader = true;
+      this._hideBody = false;
+    }
+  }
+
+  resetHideBody() {
+    this.hideHeader = false;
+    this._hideBody = this.oriHideBody;
+  }
+
+  filteredField(): EntityField[] {
+    return this.formData?.fields?.filter(f => !!f);
   }
 
   updateIdValidStatus() {
     Object.assign(this.idsIncludeOnSubmit(), this.formData.share.entity);
     setTimeout(() => this._isIdValid = this.entityUtil.isIdValid(this.formData.share.entity, this.formData.entityIdentifier), 0);
   }
-
-  backupEntity = {};
 
   backupShareEntity(entity) {
     this.formData.share.entity = entity;
@@ -171,7 +186,6 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     this.backupSelfEntity();
   }
 
-
   updateProfileImage(entity: XeEntity) {
     entity.profileImageUrl = entity.profileImageUrl + "?r=" + Math.random().toString(36).substring(7);
     this.profile.owner.profileImageUrl = entity.profileImageUrl;
@@ -182,16 +196,6 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     this.backupShareEntity(EntityUtil.newByEntityDefine(this.formData.entityIdentifier));
   }
 
-  get profile(): {ownerId: number, ownerMeta: ClassMeta, owner: any} {
-    const ef = this.entityUtil.getEntityWithField(this.formData.share.entity, this.formData.entityIdentifier.clazz.meta, this.formData.header.profileImage);
-    return {
-      ownerId: ef.entity[ef.fieldMeta?.mainIdName] ? ef.entity[ef.fieldMeta?.mainIdName] : this.formData.share.entity[this.formData.entityIdentifier.clazz.meta.mainIdName],
-      ownerMeta: ef.fieldMeta ? ef.fieldMeta : this.formData.entityIdentifier.clazz.meta,
-      owner: ef.entity ? ef.entity : this.formData.share.entity
-    };
-  }
-
-  @ViewChild("form") submitForm: XeFormComponent;
   onProfileImageChange = (file: File) => {
     if (!this.isIdValid) {
       return;
@@ -224,12 +228,6 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
       this.assignCtrlForForms();
     }, 0);
   }
-
-  screens = {
-    form: 'form',
-    deleteEntity: 'delete'
-  };
-  screen = new XeScreen({home: this.screens.form});
 
   colSpan(field: EntityField) {
     const colSpan = field.colSpan ? field.colSpan : 1;

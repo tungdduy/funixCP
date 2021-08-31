@@ -11,7 +11,7 @@ export const uConfig = () => {
 const r = Role;
 
 export const Url = {
-  publicApi : [],
+  publicApi: [],
   API_HOST: environment.apiHost,
   APP_HOST: environment.appHost,
   getPublicApi: (apiUrls: any[]) => {

@@ -1,6 +1,5 @@
-
-  <form [name]="name" (submit)="_onSubmit()" *ngIf="show" class="pt-3">
-    <ng-content></ng-content>
-  </form>
+<form (submit)="_onSubmit()" *ngIf="show" [name]="name" class="pt-3">
+  <ng-content></ng-content>
+</form>
 
 

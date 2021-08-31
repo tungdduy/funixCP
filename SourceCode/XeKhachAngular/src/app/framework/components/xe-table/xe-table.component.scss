@@ -21,7 +21,11 @@ table {
   overflow: inherit;
 }
 
-nb-layout { .scrollable-container { overflow-y: scroll !important; } }
+nb-layout {
+  .scrollable-container {
+    overflow-y: scroll !important;
+  }
+}
 
 .role-icon {
   border: 1px solid rgb(208, 208, 208);
@@ -39,6 +43,7 @@ nb-layout { .scrollable-container { overflow-y: scroll !important; } }
 .xe-table {
   border: 1px solid #dee2e6;
 }
+
 .xe-table th {
   background: #8f9bb3;
   color: white;
@@ -54,9 +59,11 @@ nb-layout { .scrollable-container { overflow-y: scroll !important; } }
 span.custom-checkbox {
   background: white;
 }
+
 .xe-table tr:nth-child(even) {
   background: #e4e4e478 !important;
 }
+
 .xe-table tr:hover {
   background: white;
   border: 1px solid gray;

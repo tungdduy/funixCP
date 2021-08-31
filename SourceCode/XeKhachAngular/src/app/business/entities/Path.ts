@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Company} from "./Company";
 import {PathPoint} from "./PathPoint";
@@ -13,6 +12,7 @@ import {InputTemplate} from "../../framework/model/EnumStatus";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Path extends XeEntity {
+    static get = (path): Path => EntityUtil.getFromCache("Path", path);
     static meta = EntityUtil.metas.Path;
     static mapFields = EntityUtil.mapFields['Path'];
     pathId: number;

@@ -1,13 +1,16 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.Trip_MAPPED;
 import net.timxekhach.operation.data.model.TripSeat;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.XeDateUtils;
 import net.timxekhach.utility.XeStringUtils;
+
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
@@ -167,7 +170,25 @@ public class Trip extends Trip_MAPPED {
         return this.tripUsers;
     }
 
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE
+    @Override
+    protected void prePersist() {
+        String dateSearch = XeDateUtils.buildSearchString(this.launchDate);
+        ErrorCode.PLEASE_INPUT.throwIfNull(this.launchDate, "launchDate");
+        if(!this.getBussSchedule().getWorkingDays().contains(dateSearch)) {
+            ErrorCode.INVALID_BUSS_SCHEDULE_WORKING_DAY.throwNow(this.bussSchedule.getWorkingDays());
+        }
+        if (this.getLaunchDate().before(this.getBussSchedule().getEffectiveDateFrom())) {
+           ErrorCode.INVALID_EFFECTIVE_DATE.throwNow(this.bussSchedule.getEffectiveDateFrom().toString());
+        }
+        this.tripUnitPrice = this.bussSchedule.getScheduleUnitPrice();
+        this.launchTime = this.bussSchedule.getLaunchTime();
+    }
+
+    @Override
+    public void preSetFieldAction() {
+    }
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

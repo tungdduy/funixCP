@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {BussType} from "./BussType";
 import {ServiceResult} from "../service/service-result";
@@ -13,6 +12,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class SeatGroup extends XeEntity {
+    static get = (seatGroup): SeatGroup => EntityUtil.getFromCache("SeatGroup", seatGroup);
     static meta = EntityUtil.metas.SeatGroup;
     static mapFields = EntityUtil.mapFields['SeatGroup'];
     seatGroupId: number;

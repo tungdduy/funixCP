@@ -15,6 +15,8 @@ export interface PipeOption {
 
 @Directive()
 export abstract class XePipe {
+  singleToShortString;
+
   transform(values, option: PipeOption = {html: true}, option2?: any) {
     if (!values && !option2) return [];
     const instance = option?.instance || this;
@@ -36,25 +38,37 @@ export abstract class XePipe {
     if (option.multiPart) return instance.arrayToMultiPartArray(values, option2);
     return instance.arrayToInline(values, option2);
   }
+
   arrayToInline = (values: [], options2?) => values.map(value => this.singleToInline(value, options2));
+
   arrayToHtml = (values: [], options2?) => values.map(value => this.singleToHtml(value, options2));
+
   arrayToAppValue = (values: [], options2?) => values.map(value => this.singleToAppValue(value, options2));
+
   arrayToSubmitFormat = (values: [], options2?) => values.map(value => this.singleToSubmitFormat(value, options2));
+
   arrayToAutoInputModel = (values: [], options2?): AutoInputModel[] => values.map(value => this.singleToAutoInputModel(value, options2));
+
   arrayToMultiPartArray = (values: [], options2?) => values.map(value => this.singleToMultiPart(value, options2));
 
   singleToHtml = (value, options?) => this.singleToInline(value, options);
+
   singleToInline = (value, options?) => value;
+
   singleToAppValue = (value, options?) => value;
+
   singleToSubmitFormat = (value, options?) => value;
+
   singleToManualShortInput = (value, options?) => {
     if (StringUtil.isBlank(value)) return "";
     return this.singleToSubmitFormat(value, options);
   }
-  singleToAutoInputModel(value, options?): AutoInputModel {return null; }
-  singleToMultiPart = (value, options) => [] ;
 
-  singleToShortString;
+  singleToAutoInputModel(value, options?): AutoInputModel {
+    return null;
+  }
+
+  singleToMultiPart = (value, options) => [];
 
   areEquals = (e1, e2): boolean => e1 === e2;
   singleValidate = (value) => {

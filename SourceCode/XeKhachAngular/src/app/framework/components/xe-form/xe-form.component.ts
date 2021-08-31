@@ -20,17 +20,11 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   @Input() addToSubmit: () => {};
   @Input() onSuccess: 'update' | 'reset';
   @Input() muteOnSuccess: boolean;
-
-  private get isResetOnSuccess() {
-    return this.onSuccess === 'reset';
-  }
-
   @Input() initCtrl?: () => {};
   @Input("readMode") readMode;
   @Input() class;
   @Input() name;
   @Input() uncheckChanged;
-
   @Input() hide;
   @ContentChildren(XeInputComponent, {descendants: true}) formControls: QueryList<XeInputComponent>;
   ctrl: FormAbstract;
@@ -51,17 +45,6 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   };
   @ContentChildren('msg', {descendants: true}) _msg: QueryList<XeLabelComponent>;
   msg: XeLabelComponent;
-
-  notify(message: string, state: State) {
-    const msg = {code: message, state};
-    if (this.msg) {
-      this.msg.setMessage(msg);
-    } else {
-      Notifier.notify(msg);
-    }
-  }
-
-
   private _originalMute;
 
   get show() {
@@ -98,6 +81,19 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
 
   get errorMessages(): string[] {
     return this.formControls.filter(input => input.validateFailed()).map(input => input.errorMessage);
+  }
+
+  private get isResetOnSuccess() {
+    return this.onSuccess === 'reset';
+  }
+
+  notify(message: string, state: State) {
+    const msg = {code: message, state};
+    if (this.msg) {
+      this.msg.setMessage(msg);
+    } else {
+      Notifier.notify(msg);
+    }
   }
 
   public _onSubmit() {

@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {CommonUpdateService} from "../service/common-update.service";
@@ -11,6 +10,7 @@ import {CommonUpdateService} from "../service/common-update.service";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Location extends XeEntity {
+    static get = (location): Location => EntityUtil.getFromCache("Location", location);
     static meta = EntityUtil.metas.Location;
     static mapFields = EntityUtil.mapFields['Location'];
     locationId: number;

@@ -8,7 +8,7 @@ import {BussType} from "./BussType";
 import {Company} from "./Company";
 import {TripUser} from "./TripUser";
 import {EntityUtil} from "../../framework/util/EntityUtil";
-import {InputTemplate} from "../../framework/model/EnumStatus";
+import {InputTemplate, LabelMode} from "../../framework/model/EnumStatus";
 import {Xe} from "../../framework/model/Xe";
 import {XeLabel} from "../i18n";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
@@ -17,6 +17,7 @@ import {XeLabel} from "../i18n";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Trip extends XeEntity {
+    static get = (trip): Trip => EntityUtil.getFromCache("Trip", trip);
     static meta = EntityUtil.metas.Trip;
     static mapFields = EntityUtil.mapFields['Trip'];
     bussScheduleId: number;
@@ -145,6 +146,9 @@ export class Trip extends XeEntity {
       },
       formData: {
         entityIdentifier: Trip.entityIdentifier(trip),
+        display: {
+          labelMode: LabelMode.always
+        },
         mode: {
           uncheckChanged: true
         },
@@ -152,7 +156,7 @@ export class Trip extends XeEntity {
           entity: trip,
         },
         fields: [
-          {name: 'launchDate', required: true, template: InputTemplate.date},
+          {name: 'launchDate', required: true, template: InputTemplate.date, newOnly: true},
           {name: 'bussScheduleId', required: true, template: InputTemplate.selectOneMenu._selectMenu$(BussSchedule.myCompanySchedules$)}
         ]
       }

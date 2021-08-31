@@ -10,7 +10,9 @@ export class RoleInfoComponent implements OnInit {
 
   @Input() clazz: string;
   @Input() roleInfos: RoleInfo[];
-  constructor() { }
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

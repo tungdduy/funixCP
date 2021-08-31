@@ -1,7 +1,7 @@
 <ng-template #inputLabel>
   <div *ngIf="isShowLabel" class="text-info pb-1 {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
   </div>
-  <xe-btn *ngIf="template?.hasTypeSearchTable && mode.hasInput" (click)="search()"
+  <xe-btn (click)="search()" *ngIf="template?.hasTypeSearchTable && mode.hasInput"
           hideText state="none" template="selectFromList"></xe-btn>
 </ng-template>
 
@@ -54,7 +54,7 @@
   </ng-container>
 
 
-  <div class="options-group pt-2 d-inline-block" *ngIf="template.hasTypeMultiOption">
+  <div *ngIf="template.hasTypeMultiOption" class="options-group pt-2 d-inline-block">
     <div (click)="toggleOption(option); isValidateSuccess()" *ngFor="let option of template?.options?.ALL"
          class="option-item {{!mode.hasInput ? '' : 'cursor-pointer selectable'}} {{hasOption(option) ? 'active' : ''}}">
       <lbl [key]="'shortBtnSelect.' + template.options?.NAME + '.' + option"></lbl>
@@ -62,7 +62,7 @@
   </div>
 
 
-  <div class="options-group pt-2 d-inline-block" *ngIf="template.hasTypeBooleanToggle">
+  <div *ngIf="template.hasTypeBooleanToggle" class="options-group pt-2 d-inline-block">
     <div (click)="toggleBoolean()"
          class="option-item {{!mode.hasInput ? '' : 'cursor-pointer selectable'}} {{value ? 'active' : ''}}">
       {{xeLbl('booleanToggle.' + value)}}
@@ -71,7 +71,6 @@
 
   <ng-container *ngIf="template.hasTypeShortInput">
     <input
-      autocomplete="off"
       #htmlShortInput
       (blur)="onShortInputBlur($event)"
       (change)="isValidateSuccess()"
@@ -82,49 +81,52 @@
       [name]="getName()"
       [ngModel]="_value"
       [placeholder]="placeHolder"
-      [type]="type" class="{{isDisabled ? 'disabled': ''}}"
+      [type]="type"
+      autocomplete="off" class="{{isDisabled ? 'disabled': ''}}"
       fullWidth
       nbInput>
   </ng-container>
 
   <ng-container *ngIf="template.hasTypeDate">
     <input (click)="picker.open()" (dateChange)="onDateChange($event); isValidateSuccess()" [matDatepicker]="picker"
-           [value]="value"
            [readOnly]="true"
+           [value]="value"
            fullWidth nbInput>
     <mat-datepicker #picker></mat-datepicker>
   </ng-container>
 
   <ng-container *ngIf="template.hasAutoInput">
     <input
-      autocomplete="off"
-      [name]="getName()"
       (click)="onClickAutoInput()"
       (input)="onAutoInputChange($event)"
+      [name]="getName()"
       [nbAutocomplete]="auto"
       [placeholder]="placeHolder"
       [readonly]="mode.hasReadonly"
       [value]="asInlineString"
+      autocomplete="off"
       class="{{isDisabled ? 'disabled': ''}}" fullWidth
       nbInput
       type="text">
     <nb-autocomplete #auto (selectedChange)="onAutoInputSelected($event);  isValidateSuccess()">
-      <nb-option *ngFor="let option of autoInputOptions$ | async | locationPipe:{instance: template.pipe, autoInputModel: true}" [value]="option['appValue']">
+      <nb-option
+        *ngFor="let option of autoInputOptions$ | async | locationPipe:{instance: template.pipe, autoInputModel: true}"
+        [value]="option['appValue']">
         {{option['inlineString']}}
       </nb-option>
     </nb-autocomplete>
   </ng-container>
 
   <ng-container *ngIf="template.hasTypeSelectOneMenu">
-    <div *ngIf="template.hasSwapOn && !isViewingBoard"
-         (click)="clickSwapItem()"
-      class="select-swap" [innerHtml]="asHtml">
+    <div (click)="clickSwapItem()"
+         *ngIf="template.hasSwapOn && !isViewingBoard"
+         [innerHtml]="asHtml" class="select-swap">
     </div>
 
     <ng-container *ngIf="template.hasBoardMenu && isViewingBoard">
-      <div *ngFor="let item of selectOneMenu$ | async"
-           [innerHtml]="optionAsHtml(item.value)"
-           (click)="selectItem(item.value)">
+      <div (click)="selectItem(item.value)"
+           *ngFor="let item of selectOneMenu$ | async"
+           [innerHtml]="optionAsHtml(item.value)">
       </div>
 
     </ng-container>

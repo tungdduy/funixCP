@@ -115,7 +115,7 @@
                   template="blank"></xe-btn>
         </ng-container>
         <ng-container *ngFor="let seatNo of seatGroup.seats">
-            <ng-container *ngTemplateOutlet="SeatSchemeTemplate; context: {seatNo: seatNo}"></ng-container>
+          <ng-container *ngTemplateOutlet="SeatSchemeTemplate; context: {seatNo: seatNo}"></ng-container>
         </ng-container>
       </div>
     </div>
@@ -275,8 +275,9 @@
           </div>
           <div class="col-md-6 order-success-bottom-wrapper">
             <div class="mt-2 text-center order-success-bottom-controls">
-              <xe-btn [btnText]="xeLabel.REVIEW_HISTORY" (click)="viewHistory()" icon="history" template="cancel"></xe-btn>
-              <xe-btn [btnText]="xeLabel.GO_HOME" (click)="findTrip()" template="ok"></xe-btn>
+              <xe-btn (click)="viewHistory()" [btnText]="xeLabel.REVIEW_HISTORY" icon="history"
+                      template="cancel"></xe-btn>
+              <xe-btn (click)="findTrip()" [btnText]="xeLabel.GO_HOME" template="ok"></xe-btn>
             </div>
           </div>
         </div>

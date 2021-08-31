@@ -3,6 +3,7 @@ ${root.separators.tsImport.all}
 ${root.separators.underImport.all}
 
 export class ${root.entityCapName} extends XeEntity {
+    static get = (${root.entityCamelName}): ${root.entityCapName} => EntityUtil.getFromCache("${root.entityCapName}", ${root.entityCamelName});
     static meta = EntityUtil.metas.${root.entityCapName};
     static mapFields = EntityUtil.mapFields['${root.entityCapName}'];
 <#list root.primaryKeys as primaryKey>

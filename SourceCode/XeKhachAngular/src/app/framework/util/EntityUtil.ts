@@ -11,88 +11,88 @@ export class EntityUtil {
   static metas = {
 // ____________________ ::TOP_SEPARATOR:: ____________________ //
     User: {
-        capName: 'User',
-        camelName: 'user',
-        pkMetas: () => [],
-        mainIdName: 'userId',
+      capName: 'User',
+      camelName: 'user',
+      pkMetas: () => [],
+      mainIdName: 'userId',
     } as ClassMeta,
     Employee: {
-        capName: 'Employee',
-        camelName: 'employee',
-        pkMetas: () => [EntityUtil.metas.Company, EntityUtil.metas.User],
-        mainIdName: 'employeeId',
+      capName: 'Employee',
+      camelName: 'employee',
+      pkMetas: () => [EntityUtil.metas.Company, EntityUtil.metas.User],
+      mainIdName: 'employeeId',
     } as ClassMeta,
     PathPoint: {
-        capName: 'PathPoint',
-        camelName: 'pathPoint',
-        pkMetas: () => [EntityUtil.metas.Location, EntityUtil.metas.Path],
-        mainIdName: 'pathPointId',
+      capName: 'PathPoint',
+      camelName: 'pathPoint',
+      pkMetas: () => [EntityUtil.metas.Location, EntityUtil.metas.Path],
+      mainIdName: 'pathPointId',
     } as ClassMeta,
     Company: {
-        capName: 'Company',
-        camelName: 'company',
-        pkMetas: () => [],
-        mainIdName: 'companyId',
+      capName: 'Company',
+      camelName: 'company',
+      pkMetas: () => [],
+      mainIdName: 'companyId',
     } as ClassMeta,
     BussSchedule: {
-        capName: 'BussSchedule',
-        camelName: 'bussSchedule',
-        pkMetas: () => [EntityUtil.metas.Buss],
-        mainIdName: 'bussScheduleId',
+      capName: 'BussSchedule',
+      camelName: 'bussSchedule',
+      pkMetas: () => [EntityUtil.metas.Buss],
+      mainIdName: 'bussScheduleId',
     } as ClassMeta,
     BussEmployee: {
-        capName: 'BussEmployee',
-        camelName: 'bussEmployee',
-        pkMetas: () => [EntityUtil.metas.Buss, EntityUtil.metas.Employee],
-        mainIdName: 'bussEmployeeId',
+      capName: 'BussEmployee',
+      camelName: 'bussEmployee',
+      pkMetas: () => [EntityUtil.metas.Buss, EntityUtil.metas.Employee],
+      mainIdName: 'bussEmployeeId',
     } as ClassMeta,
     Buss: {
-        capName: 'Buss',
-        camelName: 'buss',
-        pkMetas: () => [EntityUtil.metas.BussType, EntityUtil.metas.Company],
-        mainIdName: 'bussId',
+      capName: 'Buss',
+      camelName: 'buss',
+      pkMetas: () => [EntityUtil.metas.BussType, EntityUtil.metas.Company],
+      mainIdName: 'bussId',
     } as ClassMeta,
     Location: {
-        capName: 'Location',
-        camelName: 'location',
-        pkMetas: () => [],
-        mainIdName: 'locationId',
+      capName: 'Location',
+      camelName: 'location',
+      pkMetas: () => [],
+      mainIdName: 'locationId',
     } as ClassMeta,
     TripUser: {
-        capName: 'TripUser',
-        camelName: 'tripUser',
-        pkMetas: () => [EntityUtil.metas.Trip],
-        mainIdName: 'tripUserId',
+      capName: 'TripUser',
+      camelName: 'tripUser',
+      pkMetas: () => [EntityUtil.metas.Trip],
+      mainIdName: 'tripUserId',
     } as ClassMeta,
     SeatGroup: {
-        capName: 'SeatGroup',
-        camelName: 'seatGroup',
-        pkMetas: () => [EntityUtil.metas.BussType],
-        mainIdName: 'seatGroupId',
+      capName: 'SeatGroup',
+      camelName: 'seatGroup',
+      pkMetas: () => [EntityUtil.metas.BussType],
+      mainIdName: 'seatGroupId',
     } as ClassMeta,
     BussType: {
-        capName: 'BussType',
-        camelName: 'bussType',
-        pkMetas: () => [],
-        mainIdName: 'bussTypeId',
+      capName: 'BussType',
+      camelName: 'bussType',
+      pkMetas: () => [],
+      mainIdName: 'bussTypeId',
     } as ClassMeta,
     Trip: {
-        capName: 'Trip',
-        camelName: 'trip',
-        pkMetas: () => [EntityUtil.metas.BussSchedule],
-        mainIdName: 'tripId',
+      capName: 'Trip',
+      camelName: 'trip',
+      pkMetas: () => [EntityUtil.metas.BussSchedule],
+      mainIdName: 'tripId',
     } as ClassMeta,
     Path: {
-        capName: 'Path',
-        camelName: 'path',
-        pkMetas: () => [EntityUtil.metas.Company],
-        mainIdName: 'pathId',
+      capName: 'Path',
+      camelName: 'path',
+      pkMetas: () => [EntityUtil.metas.Company],
+      mainIdName: 'pathId',
     } as ClassMeta,
     BussSchedulePoint: {
-        capName: 'BussSchedulePoint',
-        camelName: 'bussSchedulePoint',
-        pkMetas: () => [EntityUtil.metas.BussSchedule, EntityUtil.metas.PathPoint],
-        mainIdName: 'bussSchedulePointId',
+      capName: 'BussSchedulePoint',
+      camelName: 'bussSchedulePoint',
+      pkMetas: () => [EntityUtil.metas.BussSchedule, EntityUtil.metas.PathPoint],
+      mainIdName: 'bussSchedulePointId',
     } as ClassMeta
   };
 
@@ -108,8 +108,7 @@ export class EntityUtil {
       location: EntityUtil.metas.Location,
       path: EntityUtil.metas.Path,
     },
-    Company: {
-    },
+    Company: {},
     BussSchedule: {
       buss: EntityUtil.metas.Buss,
       path: EntityUtil.metas.Path,
@@ -152,22 +151,6 @@ export class EntityUtil {
       pathPoint: EntityUtil.metas.PathPoint,
     }
   };
-  static getMeta(name: string) {
-    if (StringUtil.equalsIgnoreCase(name, 'User')) return this.metas.User;
-    if (StringUtil.equalsIgnoreCase(name, 'Employee')) return this.metas.Employee;
-    if (StringUtil.equalsIgnoreCase(name, 'PathPoint')) return this.metas.PathPoint;
-    if (StringUtil.equalsIgnoreCase(name, 'Company')) return this.metas.Company;
-    if (StringUtil.equalsIgnoreCase(name, 'BussSchedule')) return this.metas.BussSchedule;
-    if (StringUtil.equalsIgnoreCase(name, 'BussEmployee')) return this.metas.BussEmployee;
-    if (StringUtil.equalsIgnoreCase(name, 'Buss')) return this.metas.Buss;
-    if (StringUtil.equalsIgnoreCase(name, 'Location')) return this.metas.Location;
-    if (StringUtil.equalsIgnoreCase(name, 'TripUser')) return this.metas.TripUser;
-    if (StringUtil.equalsIgnoreCase(name, 'SeatGroup')) return this.metas.SeatGroup;
-    if (StringUtil.equalsIgnoreCase(name, 'BussType')) return this.metas.BussType;
-    if (StringUtil.equalsIgnoreCase(name, 'Trip')) return this.metas.Trip;
-    if (StringUtil.equalsIgnoreCase(name, 'Path')) return this.metas.Path;
-    if (StringUtil.equalsIgnoreCase(name, 'BussSchedulePoint')) return this.metas.BussSchedulePoint;
-  }
 // ____________________ ::BOTTOM_SEPARATOR:: ____________________ //
   static manualMapFields = {
     Path: {},
@@ -190,6 +173,7 @@ export class EntityUtil {
     Employee: {},
     User: {}
   };
+  static entityCache = []; // cache.ClassName.id = entity -- cached.className.id has Value
 
   private static _mapFields;
   static get mapFields() {
@@ -202,6 +186,23 @@ export class EntityUtil {
       });
     }
     return this._mapFields;
+  }
+
+  static getMeta(name: string) {
+    if (StringUtil.equalsIgnoreCase(name, 'User')) return this.metas.User;
+    if (StringUtil.equalsIgnoreCase(name, 'Employee')) return this.metas.Employee;
+    if (StringUtil.equalsIgnoreCase(name, 'PathPoint')) return this.metas.PathPoint;
+    if (StringUtil.equalsIgnoreCase(name, 'Company')) return this.metas.Company;
+    if (StringUtil.equalsIgnoreCase(name, 'BussSchedule')) return this.metas.BussSchedule;
+    if (StringUtil.equalsIgnoreCase(name, 'BussEmployee')) return this.metas.BussEmployee;
+    if (StringUtil.equalsIgnoreCase(name, 'Buss')) return this.metas.Buss;
+    if (StringUtil.equalsIgnoreCase(name, 'Location')) return this.metas.Location;
+    if (StringUtil.equalsIgnoreCase(name, 'TripUser')) return this.metas.TripUser;
+    if (StringUtil.equalsIgnoreCase(name, 'SeatGroup')) return this.metas.SeatGroup;
+    if (StringUtil.equalsIgnoreCase(name, 'BussType')) return this.metas.BussType;
+    if (StringUtil.equalsIgnoreCase(name, 'Trip')) return this.metas.Trip;
+    if (StringUtil.equalsIgnoreCase(name, 'Path')) return this.metas.Path;
+    if (StringUtil.equalsIgnoreCase(name, 'BussSchedulePoint')) return this.metas.BussSchedulePoint;
   }
 
   static newByEntityDefine(entityDefine: EntityIdentifier<any>): any {
@@ -393,13 +394,6 @@ export class EntityUtil {
     return result;
   }
 
-  private static addColumnIfNotExist(addedColumns: string[], column: TableColumn, prepareColumns: any[]) {
-    if (!addedColumns.includes(column.field.name)) {
-      prepareColumns.push(column);
-      addedColumns.push(column.field.name);
-    }
-  }
-
   static assignEntity(option: {}, entity, deepLvl = 0) {
     if (!option) return entity;
     if (deepLvl > 4) return entity;
@@ -452,34 +446,6 @@ export class EntityUtil {
 
 // ENTITY CACHE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  static entityCache = []; // cache.ClassName.id = entity -- cached.className.id has Value
-
-  private static privateCache(entity: any, entityMeta: ClassMeta, cached = {}) {
-    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return;
-    const eid = entityMeta.capName.toLowerCase() + "." + entity[entityMeta.mainIdName];
-    if (!cached[eid]) {
-      cached[eid] = "true";
-      this.entityCache[eid] = entity;
-      Object.keys(entity).forEach(fieldName => {
-        const fieldMeta: ClassMeta = this.mapFields[entityMeta.capName][fieldName];
-        if (fieldMeta) {
-          const fieldValue = entity[fieldName];
-          if (Array.isArray(fieldValue)) {
-            fieldValue.forEach(fieldChild => {
-              this.privateCache(fieldChild, fieldMeta, cached);
-            });
-          } else {
-            if (!ObjectUtil.isNumberGreaterThanZero(fieldValue) && !!fieldValue) {
-              const uniqueIdName = fieldMeta.capName.toLowerCase() + "." + fieldValue[fieldMeta.mainIdName];
-              this.entityCache[uniqueIdName] = fieldValue;
-              this.privateCache(fieldValue, fieldMeta, cached);
-            }
-          }
-        }
-      });
-    }
-  }
-
   public static cache(entity: any, entityMeta: ClassMeta) {
     if (Array.isArray(entity)) {
       entity.forEach(child => {
@@ -490,18 +456,6 @@ export class EntityUtil {
     }
     this.fill(entity, entityMeta);
   }
-
-  private static put(obj, nameChain: string[], value) {
-    nameChain.forEach((name, idx) => {
-      if (!obj[name]) obj[name] = {};
-      if (idx === nameChain.length - 1) {
-        obj[name] = value;
-      } else {
-        obj = obj[name];
-      }
-    });
-  }
-
 
   static cachePkEntities(entity: any, pkMapFieldNames: string[], cache: {}) {
     pkMapFieldNames.forEach(fieldName => {
@@ -529,6 +483,50 @@ export class EntityUtil {
     return parent[childrenFieldName];
   }
 
+  private static addColumnIfNotExist(addedColumns: string[], column: TableColumn, prepareColumns: any[]) {
+    if (!addedColumns.includes(column.field.name)) {
+      prepareColumns.push(column);
+      addedColumns.push(column.field.name);
+    }
+  }
+
+  private static privateCache(entity: any, entityMeta: ClassMeta, cached = {}) {
+    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return;
+    const eid = entityMeta.capName.toLowerCase() + "." + entity[entityMeta.mainIdName];
+    if (!cached[eid]) {
+      cached[eid] = "true";
+      this.entityCache[eid] = entity;
+      Object.keys(entity).forEach(fieldName => {
+        const fieldMeta: ClassMeta = this.mapFields[entityMeta.capName][fieldName];
+        if (fieldMeta) {
+          const fieldValue = entity[fieldName];
+          if (Array.isArray(fieldValue)) {
+            fieldValue.forEach(fieldChild => {
+              this.privateCache(fieldChild, fieldMeta, cached);
+            });
+          } else {
+            if (!ObjectUtil.isNumberGreaterThanZero(fieldValue) && !!fieldValue) {
+              const uniqueIdName = fieldMeta.capName.toLowerCase() + "." + fieldValue[fieldMeta.mainIdName];
+              this.entityCache[uniqueIdName] = fieldValue;
+              this.privateCache(fieldValue, fieldMeta, cached);
+            }
+          }
+        }
+      });
+    }
+  }
+
+  private static put(obj, nameChain: string[], value) {
+    nameChain.forEach((name, idx) => {
+      if (!obj[name]) obj[name] = {};
+      if (idx === nameChain.length - 1) {
+        obj[name] = value;
+      } else {
+        obj = obj[name];
+      }
+    });
+  }
+
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  ENTITY CACHE
 }
 
@@ -537,4 +535,5 @@ class EntityCacheField {
   meta: ClassMeta;
   children?: EntityCacheField[];
 }
+
 // ____________________ ::BOTTOM_SEPARATOR:: ____________________ //

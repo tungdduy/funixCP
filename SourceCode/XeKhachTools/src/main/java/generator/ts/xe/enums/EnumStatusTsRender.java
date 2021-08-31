@@ -36,6 +36,12 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                 )
         );
 
+        model.enums.add(TsEnum.name("LabelMode").setOptions(
+                Option.name("hidden"),
+                Option.name("always"),
+                Option.name("auto")
+        ));
+
         model.enums.add(TsEnum.name("BussSchemeMode")
                 .setOptions(
                         Option.name("edit"),

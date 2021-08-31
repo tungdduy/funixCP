@@ -1,10 +1,12 @@
 <div class="d-inline {{_types[type]['css']}} {{msgClass}} {{isParagraph ? 'd-block pb-3' : ''}}">{{prepend}}
   <div class="d-inline-block pr-2">
-    <nb-icon *ngIf="icon && icon.iconPre" [icon]="icon.iconPre" class="align-middle pr-1 {{_types[type]['css']}} {{msgClass}}"
+    <nb-icon *ngIf="icon && icon.iconPre" [icon]="icon.iconPre"
+             class="align-middle pr-1 {{_types[type]['css']}} {{msgClass}}"
              pack="fa"></nb-icon>
   </div>
   <div class="d-inline-block">
-    {{icon && icon.iconOnly ? '' : textValue}}<ng-content></ng-content>
+    {{icon && icon.iconOnly ? '' : textValue}}
+    <ng-content></ng-content>
   </div>
   <nb-icon *ngIf="icon && icon.iconAfter" [icon]="icon.iconAfter" class="pl-1 {{_types[type]['css']}} {{msgClass}}"
            pack="fa"></nb-icon>

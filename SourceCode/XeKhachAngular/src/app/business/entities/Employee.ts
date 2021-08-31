@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Company} from "./Company";
 import {User} from "./User";
@@ -13,6 +12,7 @@ import {EntityUtil} from "../../framework/util/EntityUtil";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Employee extends XeEntity {
+    static get = (employee): Employee => EntityUtil.getFromCache("Employee", employee);
     static meta = EntityUtil.metas.Employee;
     static mapFields = EntityUtil.mapFields['Employee'];
     employeeId: number;

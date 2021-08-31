@@ -1,19 +1,19 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {Location} from "./Location";
 import {Path} from "./Path";
 import {Company} from "./Company";
 import {EntityUtil} from "../../framework/util/EntityUtil";
-import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
+import {InputMode, InputTemplate, LabelMode} from "../../framework/model/EnumStatus";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class PathPoint extends XeEntity {
+    static get = (pathPoint): PathPoint => EntityUtil.getFromCache("PathPoint", pathPoint);
     static meta = EntityUtil.metas.PathPoint;
     static mapFields = EntityUtil.mapFields['PathPoint'];
     pathPointId: number;
@@ -78,7 +78,8 @@ export class PathPoint extends XeEntity {
       },
       formData: {
         display: {
-          columnNumber: 2
+          columnNumber: 2,
+          labelMode: LabelMode.always
         },
         entityIdentifier: PathPoint.entityIdentifier(pathPoint),
         share: {entity: PathPoint.new()},

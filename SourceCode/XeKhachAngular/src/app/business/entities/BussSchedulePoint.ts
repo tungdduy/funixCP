@@ -1,7 +1,6 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {BussSchedule} from "./BussSchedule";
 import {PathPoint} from "./PathPoint";
@@ -18,6 +17,7 @@ import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class BussSchedulePoint extends XeEntity {
+    static get = (bussSchedulePoint): BussSchedulePoint => EntityUtil.getFromCache("BussSchedulePoint", bussSchedulePoint);
     static meta = EntityUtil.metas.BussSchedulePoint;
     static mapFields = EntityUtil.mapFields['BussSchedulePoint'];
     pathPointId: number;

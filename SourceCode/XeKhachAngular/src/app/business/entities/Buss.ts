@@ -13,6 +13,7 @@ import {Xe} from "../../framework/model/Xe";
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class Buss extends XeEntity {
+    static get = (buss): Buss => EntityUtil.getFromCache("Buss", buss);
     static meta = EntityUtil.metas.Buss;
     static mapFields = EntityUtil.mapFields['Buss'];
     bussTypeId: number;
@@ -26,7 +27,6 @@ export class Buss extends XeEntity {
     bussDesc: string;
     lockedSeatsString: string;
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
-
   lockedSeats: number[];
   static addLockedSeat(buss: Buss, seatNo: number) {
     if (!buss.lockedSeats) buss.lockedSeats = [seatNo];
@@ -44,7 +44,6 @@ export class Buss extends XeEntity {
       Xe.updateFields(buss, ['lockedSeatsString'], Buss.meta);
     }
   }
-
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (buss: Buss): EntityIdentifier<Buss> => ({
@@ -138,6 +137,5 @@ export class Buss extends XeEntity {
     };
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
   }
-
 }
 

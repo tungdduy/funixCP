@@ -4,7 +4,14 @@ import {XeLbl} from "../../../business/i18n";
 
 @Pipe({name: 'tripStatusPipe'})
 export class TripStatusPipe extends XePipe implements PipeTransform {
+  static statusClasses = {
+    CONFIRMED: 'success',
+    DELETED: 'secondary',
+    PENDING: 'warning'
+  };
+
   private static _instance: TripStatusPipe;
+
   static get instance(): TripStatusPipe {
     if (!TripStatusPipe._instance) {
       TripStatusPipe._instance = new TripStatusPipe();
@@ -12,11 +19,6 @@ export class TripStatusPipe extends XePipe implements PipeTransform {
     return TripStatusPipe._instance;
   }
 
-  static statusClasses = {
-    CONFIRMED: 'success',
-    DELETED: 'secondary',
-    PENDING: 'warning'
-  };
   singleToHtml = (tripStatus) => {
     const clazz = TripStatusPipe.statusClasses[tripStatus];
     return `

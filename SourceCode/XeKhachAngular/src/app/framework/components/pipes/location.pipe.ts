@@ -18,8 +18,8 @@ export class LocationPipe extends XePipe implements PipeTransform {
   singleToAutoInputModel(location: Location): AutoInputModel {
     if (!location) return {appValue: undefined, inlineString: ''};
     return location
-        ? {appValue: location, inlineString: location.displayName}
-        : {appValue: undefined, inlineString: ''};
+      ? {appValue: location, inlineString: location.displayName}
+      : {appValue: undefined, inlineString: ''};
   }
 
   singleToInline = (location) => 'inline' + location?.displayName || '';
@@ -52,5 +52,5 @@ export class LocationPipe extends XePipe implements PipeTransform {
 
   singleToAppValue = (location, options?) => location;
   singleToMultiPart = (location: Location, options) => !location ? [] : location.displayName.split(",");
-  singleToShortString =  (location: Location) =>  location?.locationName ? location.locationName : "";
+  singleToShortString = (location: Location) => location?.locationName ? location.locationName : "";
 }

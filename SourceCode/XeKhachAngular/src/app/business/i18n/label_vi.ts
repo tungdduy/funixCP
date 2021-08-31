@@ -364,7 +364,9 @@ export const Label_vi = {
   'column.preparedTrip.preparedTotalAvailableSeats': 'Tình trạng ghế',
   UNLOCK_FIRST: "Cần mở khóa trước khi chọn ghế này",
   'column.trip.bussSchedule.path': 'Tuyến đường',
-  'input.shortInput.RE_PASSWORD': 'Nhập lại mật khẩu'
+  'input.shortInput.RE_PASSWORD': 'Nhập lại mật khẩu',
+  'input.selectOneMenu.bussScheduleId': 'Chọn lịch trình',
+  'input.date.launchDate': 'Ngày khởi hành',
 
 
 };

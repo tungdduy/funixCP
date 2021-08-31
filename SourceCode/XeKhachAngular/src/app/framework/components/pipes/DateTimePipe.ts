@@ -17,6 +17,17 @@ export const DATE_TIME_FORMATS = {
 
 @Pipe({name: 'xeDateTimePipe'})
 export class XeDateTimePipe extends XePipe implements PipeTransform {
+  private _datePipe: DatePipe = new DatePipe("en-US");
+
+  private static _instance: XeDateTimePipe;
+
+  static get instance(): XeDateTimePipe {
+    if (!this._instance) {
+      this._instance = new XeDateTimePipe();
+    }
+    return this._instance;
+  }
+
   singleToInline = (value: any, options?: any) => {
     if (!value) return '';
     const dateFormat = "dd-MM-YYYY HH:mm";
@@ -28,17 +39,12 @@ export class XeDateTimePipe extends XePipe implements PipeTransform {
     if (typeof value === 'string') return this._datePipe.transform(value, dateFormat);
     return this._datePipe.transform(value, dateFormat);
   }
+
   singleToAppValue = (value: Date, options?: any) => value;
+
   singleToSubmitFormat = (value: Date, options?: any) => this._datePipe.transform(value, "dd-MM-yyyy");
+
   singleToFullDateTime = (value: Date) => this._datePipe.transform(value, "dd-MM-yyyy HH:mm");
-  private static _instance: XeDateTimePipe;
-  static get instance(): XeDateTimePipe {
-    if (!this._instance) {
-      this._instance = new XeDateTimePipe();
-    }
-    return this._instance;
-  }
-  private _datePipe: DatePipe = new DatePipe("en-US");
 
   areEquals = (date1: Date, date2: Date): boolean => {
     if ((!date1 && date2) || (date1 && !date2)) return false;

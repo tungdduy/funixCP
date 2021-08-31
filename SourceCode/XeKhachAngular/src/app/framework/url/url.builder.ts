@@ -16,6 +16,17 @@ export class UrlBuilder {
     });
   }
 
+  static start() {
+    UrlBuilder.buildUrlConfig(UrlBuilder.root(Url.APP_HOST), Url.app);
+    UrlBuilder.buildUrlConfig(UrlBuilder.root(Url.API_HOST), Url.api);
+  }
+
+  static root(url: string) {
+    const config = new UrlConfig();
+    config.short = url;
+    return config;
+  }
+
   private static updateConfig(config: UrlConfig, parent: UrlConfig, key: string) {
     config.parent = parent;
     parent.children.push(config);
@@ -26,26 +37,15 @@ export class UrlBuilder {
       const activateProvider = {
         provide: config.keyChane,
         useValue: () => {
-           if (!AuthUtil.instance.isAllow(config.flatRoles)) {
-             Url.app.CHECK_IN.LOGIN.go();
-             return false;
-           }
-           return true;
+          if (!AuthUtil.instance.isAllow(config.flatRoles)) {
+            Url.app.CHECK_IN.LOGIN.go();
+            return false;
+          }
+          return true;
         }
 
       };
       config.parent._activateProviders.push(activateProvider);
     }
-  }
-
-  static start() {
-    UrlBuilder.buildUrlConfig(UrlBuilder.root(Url.APP_HOST), Url.app);
-    UrlBuilder.buildUrlConfig(UrlBuilder.root(Url.API_HOST), Url.api);
-  }
-
-  static root(url: string) {
-    const config = new UrlConfig();
-    config.short = url;
-    return config;
   }
 }

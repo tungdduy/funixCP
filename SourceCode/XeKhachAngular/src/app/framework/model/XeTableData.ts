@@ -53,7 +53,7 @@ export class XeTableData<E extends XeEntity> {
     lookUpScreen?: string;
     parent?: {
       tableData: XeTableData<any>;
-      syncFieldsPreCreate?: {childName: string, parentField: EntityField}[];
+      syncFieldsPreCreate?: { childName: string, parentField: EntityField }[];
     }
     updateToShareEntityField?: {
       share?: ShareFormData<any>;

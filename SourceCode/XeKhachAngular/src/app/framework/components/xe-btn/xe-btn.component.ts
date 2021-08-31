@@ -1,6 +1,4 @@
 import {AfterViewInit, Component, HostBinding, Input} from '@angular/core';
-import {XeLbl} from "../../../business/i18n";
-import {Message} from "../../model/message.model";
 import {AbstractXe} from "../../model/AbstractXe";
 
 @Component({
@@ -12,31 +10,12 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
   @Input() btnText;
 
   @Input() disabled: boolean = false;
-  @HostBinding('style.pointer-events') get pEvents(): string {
-    if (this.disabled) {
-      return 'none';
-    }
-    return 'auto';
-  }
-
   @Input() icon: string;
-  private _label: string;
-
-  @Input("state") _state: 'success' | 'primary' | 'secondary' | 'warning';
-
   @Input() center?;
   @Input() left?;
   @Input() right?;
-
   @Input() template: 'save' | 'submit' | 'cancel' | 'edit' | 'close' | 'add' | 'delete' | 'ok' | 'back' | 'dangerDelete' | 'selectFromList' | 'default' | 'blank' | 'eraser' | 'orderTrip';
-
   @Input() hideText;
-  get showText() {
-    return this.hideText === undefined
-      && (this._label !== undefined || this.btnText !== undefined);
-  }
-
-
   _types = {
     eraser: {
       state: 'secondary',
@@ -157,29 +136,45 @@ export class XeBtnComponent extends AbstractXe implements AfterViewInit {
       type: 'submit'
     }
   };
+  btnType;
+  btn;
+  private _label: string;
+
+  @HostBinding('style.pointer-events') get pEvents(): string {
+    if (this.disabled) {
+      return 'none';
+    }
+    return 'auto';
+  }
+
+  @Input("state") _state: 'success' | 'primary' | 'secondary' | 'warning';
 
   get state() {
     return this._state;
   }
 
+  get showText() {
+    return this.hideText === undefined
+      && (this._label !== undefined || this.btnText !== undefined);
+  }
+
   private _btnSize;
+
   get btnSize() {
     return this._btnSize;
   }
 
   get posClass() {
     const pos = this.center === '' ? 'center'
-        : this.left === '' ? 'left'
+      : this.left === '' ? 'left'
         : this.right === '' ? 'right' : undefined;
     return pos ? 'd-block text-' + pos : 'd-inline';
   }
 
-  btnType;
-  btn;
-
   ngAfterViewInit(): void {
     this.updateBtn();
   }
+
   updateBtn() {
     setTimeout(() => {
       this.btn = this._types[this.template] || this._types.default;

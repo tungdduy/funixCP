@@ -19,7 +19,8 @@ import {
   NbIconModule,
   NbInputModule,
   NbSelectModule,
-  NbTimepickerModule, NbTooltipModule,
+  NbTimepickerModule,
+  NbTooltipModule,
   NbUserModule
 } from "@nebular/theme";
 import {XeBasicFormComponent} from './xe-basic-form/xe-basic-form.component';
@@ -45,7 +46,7 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, NativeDateModule} from "@angular/material/core";
 import {MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {MatButtonModule} from "@angular/material/button";
-import { MultiOptionComponent } from './multi-option/multi-option.component';
+import {MultiOptionComponent} from './multi-option/multi-option.component';
 import {PathPipe} from "./pipes/Path.pipe";
 import {PathPointPipe} from "./pipes/PathPoint.pipe";
 import {BussSchedulePointPipe} from "./pipes/BussSchedulePointPipe";
