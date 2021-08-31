@@ -1,8 +1,10 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.PathPoint_MAPPED;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
@@ -11,8 +13,10 @@ import net.timxekhach.operation.data.repository.TripUserRepository;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.Xe;
+import net.timxekhach.utility.XeMailUtils;
 import net.timxekhach.utility.XeNumberUtils;
 import net.timxekhach.utility.XeStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -25,10 +29,11 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter
+@Entity @Getter @Setter @Log4j2
 public class TripUser extends TripUser_MAPPED {
 
     public TripUser() {}
@@ -39,6 +44,10 @@ public class TripUser extends TripUser_MAPPED {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     @Transient
     private List<Integer> seats;
+
+    @Transient
+    @Getter(AccessLevel.PROTECTED)
+    protected String emailBeforeSetField;
 
     public static TripUserRepository getRepo() {
         return CommonUpdateService.getTripUserRepository();
@@ -66,6 +75,18 @@ public class TripUser extends TripUser_MAPPED {
             this.endPoint = null;
             this.tripUserPoints = null;
             this.recalculatePrice();
+        }
+    }
+
+    @Override
+    public void preSetFieldAction() {
+        this.emailBeforeSetField = this.email;
+    }
+
+    @Override
+    public void postSetFieldAction() {
+        if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
+            CompletableFuture.runAsync(() -> XeMailUtils.sendEmailTicket(this));
         }
     }
 
