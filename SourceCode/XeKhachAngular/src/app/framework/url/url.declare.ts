@@ -73,9 +73,9 @@ export const Url = {
       FIND_TRIP: config(),
       COMPANY_MANAGER: config().setRoles([r.ROLE_SYS_ADMIN]),
       BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
-      BUSS: config().setRoles([r.ROLE_BUSS_STAFF]),
+      BUSS: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
       EMPLOYEE: config().setRoles([r.ROLE_BUSS_ADMIN]),
-      PATH: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      PATH: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
       TICKET: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
   }

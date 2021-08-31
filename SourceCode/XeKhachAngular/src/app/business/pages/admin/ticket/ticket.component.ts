@@ -26,6 +26,9 @@ export class TicketComponent extends FormAbstract {
     xeScreen: this.screen,
     table: {
       action: {
+        filters: {
+          filterSingle: (trip: Trip) => this.auth.hasBussAdmin ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
+        },
         postSelect: () => this.screen.go(this.screens.tripDetails),
       },
       basicColumns: [

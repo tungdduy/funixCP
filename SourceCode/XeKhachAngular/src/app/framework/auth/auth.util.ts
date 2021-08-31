@@ -124,4 +124,28 @@ export class AuthUtil {
     this._token = token;
     StorageUtil.setItem(configConstant.TOKEN, token);
   }
+
+  get employeeId() {
+    return AuthUtil.instance.user.employee.employeeId;
+  }
+
+  get employee() {
+    return AuthUtil.instance.user.employee;
+  }
+
+  get companyId() {
+    return AuthUtil.instance.user.employee.company.companyId;
+  }
+
+  get company() {
+    return AuthUtil.instance.user.employee.company;
+  }
+
+  get hasBussAdmin() {
+    return AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN]);
+  }
+
+  get hasCaller() {
+    return AuthUtil.instance.isAllow([Role.ROLE_CALLER_STAFF]);
+  }
 }

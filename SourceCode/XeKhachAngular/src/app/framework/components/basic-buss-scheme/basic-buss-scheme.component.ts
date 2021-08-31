@@ -327,7 +327,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
             tripUser['tripUserId'] = null;
             CommonUpdateService.instance.insert(tripUser as TripUser, TripUser.meta).subscribe(
               newTripUser => {
-                EntityUtil.cache(newTripUser, TripUser.meta);
+                EntityUtil.cacheThenFill(newTripUser, TripUser.meta);
                 EntityUtil.fill(newTripUser, TripUser.meta);
                 this.tripUserTable.formData.share.entity = newTripUser;
                 this.tripUserTable.formData.share.tableSource.data.unshift(newTripUser);
@@ -449,7 +449,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
     CommonUpdateService.instance.getTripWithPreparedTripUser(this.trip.tripId,
       selectedTripUser.tripUserId)
       .subscribe(trip => {
-        EntityUtil.cache(trip, Trip.meta);
+        EntityUtil.cacheThenFill(trip, Trip.meta);
         EntityUtil.fill(trip.preparedTripUser, TripUser.meta);
         this.trip = trip;
         this.preparedTripUser = trip.preparedTripUser;

@@ -4,6 +4,7 @@ import {EntityIdentifier} from "../../framework/model/XeFormData";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {BussType} from "./BussType";
 import {Company} from "./Company";
+import {BussEmployee} from "./BussEmployee";
 import {InputTemplate} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {Xe} from "../../framework/model/Xe";
@@ -21,6 +22,7 @@ export class Buss extends XeEntity {
     companyId: number;
     bussType: BussType;
     company: Company;
+    bussEmployees: BussEmployee[];
     totalBussEmployees: number;
     totalSchedules: number;
     bussLicense: string;
