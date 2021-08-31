@@ -6,7 +6,7 @@
   <div bsForm_BelowHeaderTitle>
     <div class="text-right pr-3">
       <div (click)="toggleRole(role)" *ngFor="let role of roleIcons" [hidden]="!role.icon"
-           [nbTooltip]="role.icon.hint" class="role-item {{getRoleActiveClass(role.name)}}">
+           [nbTooltip]="role.icon?.hint" class="role-item {{getRoleActiveClass(role.name)}}">
         <nb-icon *ngIf="role.icon" [icon]="role.icon?.icon" [status]="role.icon?.status" pack="fa"></nb-icon>
       </div>
     </div>
