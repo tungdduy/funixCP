@@ -3,13 +3,17 @@ package net.timxekhach.utility;
 import org.aspectj.util.FileUtil;
 import org.springframework.util.FileSystemUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class XeFileUtils extends FileSystemUtils {
 
@@ -22,4 +26,18 @@ public class XeFileUtils extends FileSystemUtils {
         return "";
     }
 
+    public static String getResourceFileAsString(String fileName) {
+        InputStream is = getResourceFileAsInputStream(fileName);
+        if (is != null) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            return (String)reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        } else {
+            throw new RuntimeException("resource not found");
+        }
+    }
+
+    public static InputStream getResourceFileAsInputStream(String fileName) {
+        ClassLoader classLoader = XeFileUtils.class.getClassLoader();
+        return classLoader.getResourceAsStream(fileName);
+    }
 }
