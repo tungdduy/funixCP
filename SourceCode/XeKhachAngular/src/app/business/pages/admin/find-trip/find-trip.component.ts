@@ -117,6 +117,7 @@ export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
       });
   }
 
+  launchDateInput = InputTemplate.date._postChange(this.postChangeSearchScheduleInput)._criteria(this.bussScheduleCriteria);
   bussSchedulePointInput = InputTemplate.scheduledLocation
     ._observable(CommonUpdateService.instance.findScheduledLocations)
     ._criteria(this.bussScheduleCriteria)

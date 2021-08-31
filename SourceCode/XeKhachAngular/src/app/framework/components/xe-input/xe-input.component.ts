@@ -74,7 +74,7 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
 
   get alwaysShowLabel(): boolean {
     return this.mode.hasShowTitle
-      || this.labelMode.hasAlways;
+      || this.lblMode.hasAlways;
   }
 
   @Input('label') _label: string;
@@ -93,10 +93,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     return this._template ? this._template : InputTemplate.shortInput;
   }
 
-  @Input("labelMode") _labelMode: LabelMode;
+  @Input("labelMode") _lblMode: LabelMode;
 
-  get labelMode() {
-    return this._labelMode || LabelMode.auto;
+  get lblMode() {
+    return this._lblMode || LabelMode.auto;
   }
 
   get isDisabled() {
@@ -159,7 +159,11 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   get asInlineString() {
-    return this.template?.hasPipe ? this.template.pipe.singleToShortString ? this.template.pipe.singleToShortString(this._value) : this.template.pipe.singleToInline(this._value) : this._value;
+    return this.template?.hasPipe
+      ? this.template.pipe.singleToShortString
+      ? this.template.pipe.singleToShortString(this._value)
+      : this.template.pipe.singleToInline(this._value)
+      : this._value;
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALUE CONVERTER
@@ -408,7 +412,10 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   }
 
   onDateChange($event: any) {
-    this.value = $event.value._d;
+    this._preChange($event.value._d);
+    this._value = $event.value._d;
+    this.valueChange.emit(this._value);
+    this._postChange();
   }
 
   // Multi OPTIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -444,9 +451,11 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     }
   }
 
-  onAutoInputSelected(_v: any) {
+  onAutoInputSelected(_v: any, autoInputTemplate: HTMLInputElement) {
     this._preChange(_v);
-    this.value = _v;
+    this._value = _v;
+    this.valueChange.emit(this._value);
+    autoInputTemplate.value = this.asInlineString;
     this._postChange();
   }
 

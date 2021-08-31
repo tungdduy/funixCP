@@ -3,7 +3,7 @@
     <div class="row">
       <xe-input
         [(value)]="bussScheduleCriteria.locationFrom"
-        [alwaysShowLabel]="true"
+        [labelMode]="labelMode.always"
         [label]="xeLabel.POINT_FROM"
         [mode]="xeInputMode.input"
         [template]="bussSchedulePointInput"
@@ -12,7 +12,7 @@
 
       <xe-input
         [(value)]="bussScheduleCriteria.locationTo"
-        [alwaysShowLabel]="true"
+        [labelMode]="labelMode.always"
         [label]="xeLabel.POINT_TO"
         [mode]="xeInputMode.input"
         [template]="bussSchedulePointInput"
@@ -21,10 +21,10 @@
 
       <xe-input
         [(value)]="bussScheduleCriteria.launchDate"
-        [alwaysShowLabel]="true"
+        [labelMode]="labelMode.always"
         [label]="xeLabel.LAUNCH_DATE"
         [mode]="xeInputMode.input"
-        [template]="xeInputTemplate.date"
+        [template]="launchDateInput"
         class="col-md-4"
         name="launchDate"></xe-input>
     </div>
