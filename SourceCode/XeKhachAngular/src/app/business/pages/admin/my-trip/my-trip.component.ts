@@ -10,10 +10,8 @@ import {Xe} from "../../../../framework/model/Xe";
 import {StorageUtil} from "../../../../framework/util/storage.util";
 import {configConstant} from "../../../../framework/config.constant";
 import {TicketInfo} from "../../../../framework/model/XeFormData";
-import {tick} from "@angular/core/testing";
 import {XeTableData} from "../../../../framework/model/XeTableData";
 import {CommonUpdateService} from "../../../service/common-update.service";
-import {of} from "rxjs";
 
 export interface BussScheduleCriteria {
   locationFrom: Location;
@@ -56,7 +54,11 @@ export class MyTripComponent extends XeSubscriber implements AfterViewInit {
     this.tripUserTable = TripUser.tableData({
       xeScreen: this.screen,
       table: {
+        action: {
+          postSelect: () => {},
+        },
         mode: {
+          denyNew: true,
           customObservable: tripUserFinder
         },
         selectBasicColumns: ['trip.bussSchedule.path', 'totalPrice', 'startPoint', 'endPoint', 'trip.launchDate', 'trip.bussSchedule.buss.company.companyName']

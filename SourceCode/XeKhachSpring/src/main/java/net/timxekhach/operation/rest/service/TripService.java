@@ -1,19 +1,21 @@
 package net.timxekhach.operation.rest.service;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.stereotype.Service;
-import net.timxekhach.operation.response.ErrorCode;
-import net.timxekhach.utility.XeStringUtils;
 import net.timxekhach.operation.data.entity.*;
 import net.timxekhach.operation.data.repository.BussSchedulePointRepository;
 import net.timxekhach.operation.data.repository.BussScheduleRepository;
-import net.timxekhach.utility.XeDateUtils;
 import net.timxekhach.operation.data.repository.LocationRepository;
+import net.timxekhach.operation.data.repository.TripRepository;
+import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.utility.XeDateUtils;
+import net.timxekhach.utility.XeStringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.Date;
-import net.timxekhach.operation.data.repository.TripRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
@@ -75,7 +77,10 @@ public class TripService {
 		if(userId > 0) {
 			return CommonUpdateService.getTripUserRepository().findByUserUserId(userId);
 		} else if(!phoneList.isEmpty() || !emailList.isEmpty()) {
-			return CommonUpdateService.getTripUserRepository().findByPhoneNumberInOrEmailIn(phoneList, emailList);
+			return CommonUpdateService.getTripUserRepository().findByPhoneNumberInOrEmailIn(phoneList, emailList)
+					.stream()
+					.filter(tripUser -> tripUser.getUser() == null)
+					.collect(Collectors.toList());
 		}
 		return new ArrayList<>();
     }

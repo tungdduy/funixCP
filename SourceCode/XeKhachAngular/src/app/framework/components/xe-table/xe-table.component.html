@@ -93,7 +93,7 @@
       </xe-btn>
 
       <span *ngIf="!tableData?.table?.mode?.readonly">
-        <xe-btn
+        <xe-btn *ngIf="!tableData.table.mode?.denyNew"
           (click)="tableData?.table?.action?.onClickBtnCreate ? tableData?.table.action.onClickBtnCreate() : newEntityDialog()"
           hideText
           template="add"></xe-btn>

@@ -151,7 +151,10 @@ export class Trip extends XeEntity {
         share: {
           entity: trip,
         },
-        fields: []
+        fields: [
+          {name: 'launchDate', required: true, template: InputTemplate.date},
+          {name: 'bussScheduleId', required: true, template: InputTemplate.selectOneMenu._selectMenu$(BussSchedule.myCompanySchedules$)}
+        ]
       }
     } as XeTableData<Trip>;
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //

@@ -12,6 +12,11 @@ import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {XeTimePipe} from "../../framework/components/pipes/time.pipe";
 import {Trip} from "./Trip";
+import {CommonUpdateService} from "../service/common-update.service";
+import {AuthUtil} from "../../framework/auth/auth.util";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import {SelectItem} from "../../framework/model/SelectItem";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
@@ -59,6 +64,14 @@ export class BussSchedule extends XeEntity {
       {name: "buss.company.companyId"}
     ]
   })
+  static get myCompanySchedules$(): Observable<SelectItem<BussSchedule>[]> {
+    const companyId = AuthUtil.instance.user?.employee?.companyId;
+    return CommonUpdateService.instance.findByEntityIdentifier(
+      BussSchedule.entityIdentifier(
+        BussSchedule.new({companyId}))).pipe(
+      map(companies => companies.map(c => new SelectItem<BussSchedule>(c.path.pathName, c.bussScheduleId)))
+    );
+  }
 
   static new(option = {}) {
     const bussSchedule = new BussSchedule();

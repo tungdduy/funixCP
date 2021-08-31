@@ -303,12 +303,12 @@ export class InputTemplate {
   this.postChange = postChange;
     return this;
   }
-  postChange: (inputValue, criteria?) => any;
+  postChange: (currentValue, oldValue, criteria?) => any;
   _preChange = (preChange) => {
   this.preChange = preChange;
     return this;
   }
-  preChange: (inputValue, criteria?) => any;
+  preChange: (currentValue, comingValue, criteria?) => any;
   _criteria = (criteria) => {
   this.criteria = criteria;
     return this;

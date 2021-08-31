@@ -148,8 +148,8 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                                         .setManualProperties(
                                                 Property.name("observable").value("(inputValue, criteria?) => Observable<any>"),
                                                 Property.name("criteria").value("any"),
-                                                Property.name("preChange").value("(inputValue, criteria?) => any"),
-                                                Property.name("postChange").value("(inputValue, criteria?) => any")),
+                                                Property.name("preChange").value("(currentValue, comingValue, criteria?) => any"),
+                                                Property.name("postChange").value("(currentValue, oldValue, criteria?) => any")),
 
                                 Option.name("phone").setProperties(
                                         Property.name("type").stringValue("shortInput"),

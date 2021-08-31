@@ -26,7 +26,7 @@ export class TicketComponent extends FormAbstract {
     xeScreen: this.screen,
     table: {
       action: {
-        postSelect: () => {},
+        postSelect: () => this.screen.go(this.screens.tripDetails),
       },
       basicColumns: [
         {
