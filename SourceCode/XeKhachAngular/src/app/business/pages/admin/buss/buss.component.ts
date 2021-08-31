@@ -8,7 +8,6 @@ import {Employee} from "../../../entities/Employee";
 import {BussEmployee} from "../../../entities/BussEmployee";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
 import {BussSchedule} from "../../../entities/BussSchedule";
-import {BussType} from "../../../entities/BussType";
 import {EditOnRow, InputTemplate} from "../../../../framework/model/EnumStatus";
 import {Path} from "../../../entities/Path";
 import {PathPoint} from "../../../entities/PathPoint";
@@ -20,6 +19,11 @@ import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
   templateUrl: 'buss.component.html',
 })
 export class BussComponent extends FormAbstract implements AfterViewInit {
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+    console.log(AuthUtil.instance.flatRoles);
+  }
 
   @Input()  myCompany: Company = AuthUtil.instance.user?.employee?.company;
 
@@ -38,12 +42,24 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     homeTitle: () => `${this.bussTable.formData.share.entity.bussLicense} (${this.bussTable.formData.share.entity.bussDesc})`
   });
 
+  filterBussCondition(buss: Buss) {
+    return this.auth.hasCaller ? true : buss.bussEmployees.filter(e => e.employeeId === this.auth.employeeId).length > 0;
+  }
+
   bussTable = Buss.tableData({
     external: {
       updateCriteriaTableOnSelect: () => [this.bussEmployeeTable, this.bussScheduleTable]
     },
     xeScreen: this.screen,
     table: {
+      mode: {
+        readonly: !this.auth.hasBussAdmin
+      },
+      action: {
+        filters: {
+          filterSingle: (buss: Buss) => this.filterBussCondition(buss)
+        }
+      },
       selectBasicColumns: [
         'bussType.profileImageUrl', 'bussType.bussTypeName', 'bussLicense'
       ],
@@ -58,6 +74,11 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
   bussEmployeeTable: XeTableData<BussEmployee> = BussEmployee.tableData({
     external: {
       lookUpScreen: this.screens.employeeSelection
+    },
+    table: {
+      mode: {
+        readonly: !this.auth.hasBussAdmin
+      }
     },
     xeScreen: this.screen,
   }, BussEmployee.new());
@@ -104,6 +125,9 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
   bussScheduleTable = BussSchedule.tableData({
     xeScreen: this.screen,
     table: {
+      mode: {
+        readonly: !this.auth.hasBussAdmin
+      },
       selectBasicColumns: [
         'scheduleUnitPrice', 'startPoint', 'endPoint', 'workingDays'
       ],

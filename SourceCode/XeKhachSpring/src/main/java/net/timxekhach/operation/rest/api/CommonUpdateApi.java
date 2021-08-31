@@ -2,13 +2,13 @@ package net.timxekhach.operation.rest.api;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.*;
-import net.timxekhach.operation.data.mapped.*;
-
+import net.timxekhach.operation.data.mapped.BussType_MAPPED;
+import net.timxekhach.operation.data.mapped.Company_MAPPED;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.io.IOException;
 import java.util.List;
@@ -180,8 +180,7 @@ public class CommonUpdateApi {
     }
     @GetMapping("/Company/{companyId}")
     public ResponseEntity<List<Company>> findCompany(
-        @PathVariable Long companyId,
-        @RequestParam String param) {
+        @PathVariable Long companyId) {
         TreeMap<String, Long> data = new TreeMap<>();
         if (companyId != null && companyId > 0) data.put("CompanyId", companyId);
         return success(this.commonUpdateService.findCompany(data));

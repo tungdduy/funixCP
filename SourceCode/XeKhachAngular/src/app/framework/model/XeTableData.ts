@@ -2,9 +2,8 @@ import {EntityField, ShareFormData, XeFormData} from "./XeFormData";
 import {TemplateRef} from "@angular/core";
 import {XeScreen} from "../components/xe-nav/xe-nav.component";
 import {XeEntity} from "../../business/entities/XeEntity";
-import {Entity} from "@angular/compiler-cli/src/ngtsc/file_system/testing/src/mock_file_system";
 import {Observable} from "rxjs";
-import {EditOnRow, InputMode} from "./EnumStatus";
+import {EditOnRow} from "./EnumStatus";
 
 export interface IconOption {
   iconOnly?: string;
@@ -54,7 +53,7 @@ export class XeTableData<E extends XeEntity> {
     lookUpScreen?: string;
     parent?: {
       tableData: XeTableData<any>;
-      syncFieldsPreCreate?: {childName: string, parentField: EntityField}[];
+      syncFieldsPreCreate?: { childName: string, parentField: EntityField }[];
     }
     updateToShareEntityField?: {
       share?: ShareFormData<any>;
@@ -70,6 +69,7 @@ export class XeTableData<E extends XeEntity> {
   table?: {
     customData?: () => E[],
     mode?: {
+      denyNew?: boolean;
       hideSearchBox?: boolean;
       lazyData?: (term: string) => Observable<E[]>,
       customObservable?: Observable<E[]>,

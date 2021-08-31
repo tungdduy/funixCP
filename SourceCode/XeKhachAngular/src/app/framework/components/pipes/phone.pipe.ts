@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {XePipe} from "./XePipe";
 import {RegexUtil} from "../../util/regex.util";
 import {XeLabel} from "../../../business/i18n";

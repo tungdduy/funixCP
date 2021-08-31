@@ -4,7 +4,7 @@ import {RegexUtil} from '../../util/regex.util';
 import {AppMessages, XeLbl} from '../../../business/i18n';
 import {StringUtil} from '../../util/string.util';
 import {SelectItem} from '../../model/SelectItem';
-import {InputMode, InputTemplate} from "../../model/EnumStatus";
+import {InputMode, InputTemplate, LabelMode} from "../../model/EnumStatus";
 import {Observable, Subject} from "rxjs";
 import {AbstractXe} from "../../model/AbstractXe";
 import {MultiOptionUtil} from "../../model/EntityEnum";
@@ -24,13 +24,180 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
   @ViewChild("htmlShortInput") htmlShortInput: ElementRef;
   @Input() entityField: EntityField;
   originalMode: InputMode;
+  // SELECT ONE MENU >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  selectOneMenu: SelectItem<any>[];
+  selectOneMenu$: Observable<SelectItem<any>[]>;
+  isViewingBoard = false;
+  _oldValue;
+  @Input() type: 'text' | 'email' | 'password' = 'text';
+  @Input() lblKey: string;
+  @Input() id: string;
+  @Input() required: any;
+  @Input() validatorMsg?: string;
+  @Input() minLength?: number;
+  @Input() maxLength?: number;
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT ONE MENU
+  @Input() matching?: any;
+  @Input() name?: string;
+  @Input() icon?;
+  @Input() converter: any;
+  @Input() formMode: InputMode;
+  @Input() grid?: any;
+  @Output() valueChange = new EventEmitter<any>();
+  public errorMessage?: string;
+  icons = {
+    email: 'envelope',
+    username: 'id-card',
+    'user.fullName': 'user',
+    'user.phoneNumber': 'mobile-alt',
+    password: 'key',
+    fullName: 'user',
+    phoneNumber: 'mobile-alt',
+  };
+  autoInputOptions$: Observable<AutoInputModel[]>;
+  private searchTerm = new Subject<string>();
+
+  get isChanged() {
+    return (!this._value && this._originValue)
+      || (this._value && !this._originValue)
+      || (this.template.hasPipe
+        ? !this.template.pipe.areEquals(this._originValue, this.appValue)
+        : this._originValue !== this.appValue);
+  }
+
+  @Input('disabledUpdate') _disabledUpdate?;
+
+  get disabledUpdate() {
+    return this._disabledUpdate === true || this._disabledUpdate === '';
+  }
+
+  get alwaysShowLabel(): boolean {
+    return this.mode.hasShowTitle
+      || this.labelMode.hasAlways;
+  }
+
+  @Input('label') _label: string;
+
+  public get label() {
+    if (!this._label) {
+      if (!this.lblKey) this.lblKey = this.getName();
+      this._label = XeLbl('input.' + this.template.name + "." + this.lblKey);
+    }
+    return this._label;
+  }
+
+  @Input("template") _template: InputTemplate;
+
+  get template() {
+    return this._template ? this._template : InputTemplate.shortInput;
+  }
+
+  @Input("labelMode") _labelMode: LabelMode;
+
+  get labelMode() {
+    return this._labelMode || LabelMode.auto;
+  }
+
+  get isDisabled() {
+    return this.formMode?.hasDisabled || this.mode.hasDisabled;
+  }
+
+  @Input("mode") _mode: InputMode;
+
+  get mode() {
+    return this._mode ? this._mode : InputMode.input;
+  }
+
+  set mode(mode: InputMode) {
+    this._mode = mode;
+  }
+
+  _value: any;
+
+  @Input() get value(): any {
+    return this._value;
+  }
+
+  set value(val) {
+    if (this._value !== val) {
+      this._value = val;
+      this.valueChange.emit(this._value);
+    }
+  }
+
+  get submitValue() {
+    return this.template.hasPipe ? this.template.pipe.singleToSubmitFormat(this._value) : this._value;
+  }
+
+  get appValue() {
+    return this._value = this.template?.hasPipe ? this.template.pipe.singleToAppValue(this._value) : this._value;
+  }
+
+  get isShowError() {
+    return this.mode?.isInput
+      && this.errorMessage;
+  }
+
+  public get hint() {
+    if (!this.mode.isInput) {
+      return XeLbl('NO_VALUE');
+    } else {
+      return XeLbl('PLEASE_INPUT');
+    }
+  }
+
+  public get placeHolder() {
+    if (this.isShowLabel) {
+      return XeLbl(this.hint);
+    }
+    return this.label;
+  }
+
+  get isGrid() {
+    return this.grid === '' || this.grid === true;
+  }
+
+  get asInlineString() {
+    return this.template?.hasPipe ? this.template.pipe.singleToShortString ? this.template.pipe.singleToShortString(this._value) : this.template.pipe.singleToInline(this._value) : this._value;
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALUE CONVERTER
+
+  get asHtml() {
+    return this.template?.hasPipe ? this.template.pipe.singleToHtml(this._value) : this._value;
+  }
+
+  get valueStringLength() {
+    return typeof this.value === 'string' ? this.value.length : 0;
+  }
+
+  get isNumberGreaterThan0() {
+    return typeof this.value === 'number' ? this.value > 0 : false;
+  }
+
+  get isObject() {
+    return typeof this.value === 'object';
+  }
+
+  get isShowLabel() {
+    return !this.mode.hasHideTitle
+      && (this.valueStringLength > 0
+        || this.isNumberGreaterThan0
+        || this.isObject
+        || this.isGrid
+        || this.alwaysShowLabel);
+  }
+
+  get isRequire() {
+    return this.required === '' || this.required === true || this.minLength || this.maxLength || this.matching;
+  }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.init();
     }, 0);
   }
-
 
   init() {
     this._originValue = this.appValue;
@@ -53,11 +220,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this.initAutoInput();
   }
 
-  // SELECT ONE MENU >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  selectOneMenu: SelectItem<any>[];
-  selectOneMenu$: Observable<SelectItem<any>[]>;
-  isViewingBoard = false;
-
   selectItem(val) {
     if (!this.mode.hasInput) return;
     this.isViewingBoard = false;
@@ -68,8 +230,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
       this._postChange();
     }
   }
-
-  _oldValue;
 
   _preChange(comingValue) {
     if (this.entityField?.action?.preChange) {
@@ -118,8 +278,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this._postChange();
   }
 
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT ONE MENU
-
   onShortInputBlur($event: any) {
     if (this.template?.pipe?.singleToInline && this.htmlShortInput?.nativeElement) {
       $event.target.value = this.template?.pipe.singleToInline(this.value);
@@ -130,132 +288,11 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     $event.target.value = this.template?.pipe?.singleToManualShortInput(this._value) || this._value || "";
   }
 
-  get isChanged() {
-    return (!this._value && this._originValue)
-      || (this._value && !this._originValue)
-      || (this.template.hasPipe
-        ? !this.template.pipe.areEquals(this._originValue, this.appValue)
-        : this._originValue !== this.appValue);
-  }
-
-  @Input('disabledUpdate') _disabledUpdate?;
-  get disabledUpdate() {
-    return this._disabledUpdate === true || this._disabledUpdate === '';
-  }
-
-  @Input("alwaysShowLabel") _alwaysShowLabel;
-  get alwaysShowLabel(): boolean {
-    return this._alwaysShowLabel === ''
-      || !!this._alwaysShowLabel
-      || this.mode.hasShowTitle;
-  }
-
-  @Input() type: 'text' | 'email' | 'password' = 'text';
-  @Input() lblKey: string;
-  @Input('label') _label: string;
-  @Input() id: string;
-  @Input() required: any;
-  @Input() validatorMsg?: string;
-  @Input() minLength?: number;
-  @Input() maxLength?: number;
-  @Input() matching?: any;
-  @Input() name?: string;
-  @Input() icon?;
-  @Input("template") _template: InputTemplate;
-  @Input() converter: any;
-  @Input() formMode: InputMode;
-
-  get isDisabled() {
-    return this.formMode?.hasDisabled || this.mode.hasDisabled;
-  }
-
-  @Input("mode") _mode: InputMode;
-  get mode() {
-    return this._mode ? this._mode : InputMode.input;
-  }
-
-  set mode(mode: InputMode) {
-    this._mode = mode;
-  }
-
-  get template() {
-    return this._template ? this._template : InputTemplate.shortInput;
-  }
-
-  @Input() grid?: any;
-
-  @Input() get value(): any {
-    return this._value;
-  }
-
-  set value(val) {
-    if (this._value !== val) {
-      this._value = val;
-      this.valueChange.emit(this._value);
-    }
-  }
-
-  _value: any;
-  @Output() valueChange = new EventEmitter<any>();
-
   // VALUE CONVERTER >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   inputToApp(val) {
     this._value = this.template.hasPipe ? this.template.pipe.singleToAppValue(val) : val;
     this.valueChange.emit(this._value);
   }
-
-  get submitValue() {
-    return this.template.hasPipe ? this.template.pipe.singleToSubmitFormat(this._value) : this._value;
-  }
-
-  get appValue() {
-    return this._value = this.template?.hasPipe ? this.template.pipe.singleToAppValue(this._value) : this._value;
-  }
-
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< VALUE CONVERTER
-
-
-  public errorMessage?: string;
-
-
-  get isShowError() {
-    return this.mode?.isInput
-      && this.errorMessage;
-  }
-
-  public get hint() {
-    if (!this.mode.isInput) {
-      return XeLbl('NO_VALUE');
-    } else {
-      return XeLbl('PLEASE_INPUT');
-    }
-  }
-
-  public get label() {
-    if (!this._label) {
-      if (!this.lblKey) this.lblKey = this.getName();
-      this._label = XeLbl('input.' + this.template.name + "." + this.lblKey);
-    }
-    return this._label;
-  }
-
-  public get placeHolder() {
-    if (this.isShowLabel) {
-      return XeLbl(this.hint);
-    }
-    return this.label;
-  }
-
-  icons = {
-    email: 'envelope',
-    username: 'id-card',
-    'user.fullName': 'user',
-    'user.phoneNumber': 'mobile-alt',
-    password: 'key',
-    fullName: 'user',
-    phoneNumber: 'mobile-alt',
-  };
-
 
   getIcon() {
     if (!this.icon) {
@@ -264,10 +301,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
           : this.fetchAnyPossibleIconFromName();
     }
     return this.icon;
-  }
-
-  get isGrid() {
-    return this.grid === '' || this.grid === true;
   }
 
   getId(): string {
@@ -284,45 +317,12 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     return this.name;
   }
 
-  get asInlineString() {
-    return this.template?.hasPipe ? this.template.pipe.singleToShortString ? this.template.pipe.singleToShortString(this._value) : this.template.pipe.singleToInline(this._value) : this._value;
-  }
-
-  get asHtml() {
-    return this.template?.hasPipe ? this.template.pipe.singleToHtml(this._value) : this._value;
-  }
-
   optionAsHtml(value) {
     return this.template?.hasPipe ? this.template.pipe.singleToHtml(value) : value;
   }
 
-  get valueStringLength() {
-    return typeof this.value === 'string' ? this.value.length : 0;
-  }
-
-  get isNumberGreaterThan0() {
-    return typeof this.value === 'number' ? this.value > 0 : false;
-  }
-
-  get isObject() {
-    return typeof this.value === 'object';
-  }
-
-  get isShowLabel() {
-    return !this.mode.hasHideTitle
-      && (this.valueStringLength > 0
-        || this.isNumberGreaterThan0
-        || this.isObject
-        || this.isGrid
-        || this.alwaysShowLabel);
-  }
-
   validateFailed() {
     return !this.isValidateSuccess();
-  }
-
-  get isRequire() {
-    return this.required === '' || this.required === true || this.minLength || this.maxLength || this.matching;
   }
 
   isValidateSuccess(): boolean {
@@ -397,15 +397,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     return true;
   }
 
-  private fetchAnyPossibleIconFromName() {
-    for (const key in this.icons) {
-      if (this.getName().toLowerCase().includes(key)) {
-        return this.icons[key];
-      }
-    }
-    return 'book-open';
-  }
-
   reset() {
     this.value = this._originValue;
   }
@@ -420,22 +411,19 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this.value = $event.value._d;
   }
 
-
   // Multi OPTIONS  >>>>>>>>>>>>>>>>>>>>>>>>>>
   toggleOption(option: string) {
     if (this.mode.hasForbidChange) return;
     this.value = MultiOptionUtil.toggle(this.template.options.ALL, this.value, option);
   }
 
-  hasOption(option: string) {
-    return MultiOptionUtil.has(this.value, option);
-  }
-
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Multi OPTIONS
 
   // AUTO INPUT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  autoInputOptions$: Observable<AutoInputModel[]>;
+  hasOption(option: string) {
+    return MultiOptionUtil.has(this.value, option);
+  }
 
   onAutoInputChange($event: any) {
     const inputValue = $event.target.value;
@@ -462,25 +450,6 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this._postChange();
   }
 
-  private searchTerm = new Subject<string>();
-
-  private initAutoInput() {
-    if (!this.template.hasAutoInput) return;
-    this.autoInputOptions$ = this.searchTerm.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap((term: string) => {
-        if (this.template?.criteria) {
-          this.template.criteria.inputName = this.name;
-          this.template.criteria.inputText = term;
-        }
-        return this.template.observable(this.template.criteria);
-      })
-    );
-  }
-
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
-
   // SEARCH >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   search() {
     const origin: any = this.preSearch();
@@ -498,6 +467,8 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this.valueChange.emit(value);
     this._postChange();
   }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TIME
 
   preSearch() {
     const origin = {
@@ -534,12 +505,36 @@ export class XeInputComponent extends AbstractXe implements AfterViewInit {
     this.adminContainer.tableData = origin.adminContainer.tableData;
   }
 
-  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SEARCH
-
   // TOGGLE BOOLEAN >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   toggleBoolean() {
     if (!this.mode.hasInput) return;
     this.value = !this.value;
+  }
+
+  private fetchAnyPossibleIconFromName() {
+    for (const key in this.icons) {
+      if (this.getName().toLowerCase().includes(key)) {
+        return this.icons[key];
+      }
+    }
+    return 'book-open';
+  }
+
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SEARCH
+
+  private initAutoInput() {
+    if (!this.template.hasAutoInput) return;
+    this.autoInputOptions$ = this.searchTerm.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((term: string) => {
+        if (this.template?.criteria) {
+          this.template.criteria.inputName = this.name;
+          this.template.criteria.inputText = term;
+        }
+        return this.template.observable(this.template.criteria);
+      })
+    );
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TOGGLE BOOLEAN

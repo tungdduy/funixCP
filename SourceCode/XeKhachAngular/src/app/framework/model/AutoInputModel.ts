@@ -1,4 +1,4 @@
-export declare interface  AutoInputModel {
+export declare interface AutoInputModel {
   inlineString: string;
   appValue: any;
 }

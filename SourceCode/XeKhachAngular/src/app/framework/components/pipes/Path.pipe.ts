@@ -1,7 +1,6 @@
 import {Pipe, PipeTransform} from "@angular/core";
 import {XePipe} from "./XePipe";
 import {Path} from "../../../business/entities/Path";
-import {ObjectUtil} from "../../util/object.util";
 import {EntityUtil} from "../../util/EntityUtil";
 
 @Pipe({name: 'Path'})
@@ -15,7 +14,7 @@ export class PathPipe extends XePipe implements PipeTransform {
   }
 
   singleToHtml = (path: Path) => {
-    if (ObjectUtil.isNumberGreaterThanZero(path)) path = EntityUtil.getFromCache("Path", path);
+    path = EntityUtil.getFromCache("Path", path);
     if (!path) return '';
     return `
     <h6 class="text-danger">${path.pathName || ''}</h6>
@@ -24,12 +23,12 @@ export class PathPipe extends XePipe implements PipeTransform {
   }
 
   singleToInline = (path, options?) => {
-    console.log(path);
-    return path ? `${path.pathName || ''}<br/>${path.pathDesc || ''}` : '';
+    path = EntityUtil.getFromCache("Path", path);
+    if (!path) return '';
+    return path ? `${path.pathName || ''} - ${path.pathDesc || ''}` : '';
   }
 
   singleToSubmitFormat = (path: Path, options?) => {
-    console.log(path);
     return !path ? 0 : path.pathId;
   }
 }

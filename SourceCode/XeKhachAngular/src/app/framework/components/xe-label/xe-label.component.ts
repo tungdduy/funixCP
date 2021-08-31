@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {XeLbl} from "../../../business/i18n";
 import {Message} from "../../model/message.model";
 import {IconOption} from "../../model/XeTableData";
+import {XeLbl} from "../../../business/i18n";
 
 @Component({
   selector: 'lbl',
@@ -55,15 +55,15 @@ export class XeLabelComponent implements OnInit {
     }
   }
 
-  setMessage(val: Message) {
-    this.msg = val;
-  }
-
   get msgClass() {
     if (this._msg !== undefined) {
       return "text-" + this._msg.state;
     }
     return "";
+  }
+
+  setMessage(val: Message) {
+    this.msg = val;
   }
 
   ngOnInit(): void {

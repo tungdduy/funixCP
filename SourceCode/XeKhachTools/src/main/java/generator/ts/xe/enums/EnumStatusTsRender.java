@@ -36,11 +36,16 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                 )
         );
 
+        model.enums.add(TsEnum.name("LabelMode").setOptions(
+                Option.name("hidden"),
+                Option.name("always"),
+                Option.name("auto")
+        ));
+
         model.enums.add(TsEnum.name("BussSchemeMode")
                 .setOptions(
-                        Option.name("edit").setProperties(
-                                Property.name("constantStatus")
-                        ),
+                        Option.name("edit"),
+                        Option.name("bussAdmin"),
                         Option.name("readonly").setProperties(
                                 Property.name("constantStatus")
                         ),
@@ -149,8 +154,8 @@ public class EnumStatusTsRender extends AbstractRender<EnumStatusTsModel> {
                                         .setManualProperties(
                                                 Property.name("observable").value("(inputValue, criteria?) => Observable<any>"),
                                                 Property.name("criteria").value("any"),
-                                                Property.name("preChange").value("(inputValue, criteria?) => any"),
-                                                Property.name("postChange").value("(inputValue, criteria?) => any")),
+                                                Property.name("preChange").value("(currentValue, comingValue, criteria?) => any"),
+                                                Property.name("postChange").value("(currentValue, oldValue, criteria?) => any")),
 
                                 Option.name("phone").setProperties(
                                         Property.name("type").stringValue("shortInput"),

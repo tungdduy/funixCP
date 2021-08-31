@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {User} from "../../business/entities/User";
 import {RegisterModel} from "../model/register.model";
@@ -10,7 +10,8 @@ import {Url} from "../url/url.declare";
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
     return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});

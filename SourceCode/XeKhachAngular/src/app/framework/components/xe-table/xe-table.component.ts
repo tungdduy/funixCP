@@ -50,6 +50,17 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       }
     }
   });
+  searchTerm = new Subject<any>();
+  @ViewChild("inputTemplate") inputTemplateColumn;
+  @ViewChild("string") stringColumn;
+  @ViewChild("avatarString") avatarStringColumn;
+  @ViewChild("avatar") avatarColumn;
+  @ViewChild("boldString") boldStringColumn;
+  @ViewChild("boldStringRole") boldStringRoleColumn;
+  @ViewChild("role") roleColumn;
+  @ViewChild("iconOption") iconOptionColumn;
+  tempLastFieldName: string;
+  pageIndex: any;
 
   constructor(private commonService: CommonUpdateService,
               private dialogService: NbDialogService) {
@@ -58,6 +69,22 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   get hasRowSelected() {
     return this.selection?.selected?.length > 0;
+  }
+
+  get isReadOnly() {
+    return this.tableData.table?.mode?.readonly;
+  }
+
+  get editOnRow() {
+    return this.tableData.table.action.editOnRow || EditOnRow.disabled;
+  }
+
+  get entityMeta() {
+    return this.tableData.formData.entityIdentifier.clazz.meta;
+  }
+
+  get entityIdentifier() {
+    return this.tableData.external.parent.tableData.formData.entityIdentifier;
   }
 
   ngOnInit(): void {
@@ -74,69 +101,12 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     console.log(this.editOnRow);
   }
 
-
-  private initSelectionAnsShare() {
-    const initialSelection = [];
-    const allowMultiSelect = !this.tableData.table.mode?.selectOneOnly;
-    this.selection = new SelectionModel<any>(allowMultiSelect, initialSelection);
-    this.viewing = new SelectionModel<any>(allowMultiSelect, initialSelection);
-    this.tableData.formData.share.selection = this.selection;
-    this.tableData.formData.share.tableComponent = this;
-  }
-
-  private initData() {
-    const previousData = this.tableData.formData.share?.tableEntities;
-    let dataEmpty = true;
-    if (previousData?.length > 0) {
-      this.updateTableData(previousData);
-      dataEmpty = false;
-    }
-    if (this.tableData.table.mode.lazyData) {
-      this.tableData.table.action.triggerUpdate = (term) => this.searchTerm.next(term);
-      if (dataEmpty) this.initLazyData();
-    } else if (this.tableData.table.customData) {
-      const data = this.tableData.table.customData();
-      this.updateTableData(data);
-      this.tableData.table.mode.readonly = true;
-    } else if (this.tableData.table?.mode?.customObservable) {
-      this.subscriptions.push(this.tableData.table.mode.customObservable.subscribe(
-        (result: E[]) => {
-          this.updateTableData(result);
-        }
-      ));
-    } else {
-      this.subscriptions.push(this.commonService.findByEntityIdentifier<E>(this.tableData.formData.entityIdentifier).subscribe(
-        (result: E[]) => {
-          this.updateTableData(result);
-        }
-      ));
-    }
-  }
-
-  private initColumns() {
-    this.displayedColumns = this.tableData.table.basicColumns.filter(c => c !== undefined).map(c => c.field.name);
-    this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
-    if (!this.tableData.table.mode.hideSelectColumn) {
-      this.displayedColumns.push("select");
-    }
-  }
-
-  private initFullScreenForm() {
-    if (this.tableData?.display?.fullScreenForm) {
-      this.tableData.formData.display.cancelBtn = "close";
-      const currentPostCancel = this.tableData.formData.action.postCancel;
-      this.tableData.formData.action.postCancel = (entity) => {
-        if (currentPostCancel) currentPostCancel(entity);
-        this.screen.back();
-      };
-    }
-  }
-
   public updateTableData(result: E[]) {
     console.time('cache table entity');
-    EntityUtil.cache(result, this.entityMeta);
+    console.log('table result before cache', result);
+    EntityUtil.cacheThenFill(result, this.entityMeta);
+    console.log('table result after cache', result);
 
-    console.log("table result to update: ", result);
     const mainIdName = this.entityMeta.mainIdName;
     const filter = (entity) => {
       const tableCondition = this.tableData.table.action.filters?.filterSingle ? this.tableData.table.action.filters.filterSingle(entity) : true;
@@ -171,26 +141,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return false;
   }
 
-  searchTerm = new Subject<any>();
-
-  private initLazyData() {
-    if (this.tableData.table.mode.lazyData) {
-      this.searchTerm.pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((term) => {
-          if (this.tableData?.table?.mode?.lazyData) {
-            return this.tableData.table.mode.lazyData(term);
-          } else {
-            if (ObjectUtil.isObject(term)) {
-              return term.triggerLazySearch;
-            }
-          }
-        })
-      ).subscribe(data => this.updateTableData(data as any as E[]));
-    }
-  }
-
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     if (this.tableData.table.mode.lazyData) {
@@ -202,28 +152,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     } else {
       this.filterDataInTable(filterValue);
     }
-  }
-
-  private filterDataInTable(filterValue: string) {
-    this.tableSource.filterPredicate = (data, inputValue) => {
-      const value = inputValue.trim().toLowerCase();
-      const manual = this.tableData.table.manualColumns?.findIndex(column => {
-        return this.isValueContains(data, column, value);
-      }) > -1;
-      if (manual) return true;
-      const basicFilter = this.tableData.table.basicColumns?.filter(column => {
-        return this.filterTableColumn(data, column, value);
-      });
-      return basicFilter && basicFilter.length > 0;
-    };
-    this.tableSource.filter = filterValue.trim().toLowerCase();
-    if (this.tableSource.paginator) {
-      this.tableSource.paginator.firstPage();
-    }
-  }
-
-  private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
-    return String(this.entityUtil.valueAsInlineString(data, this.entityMeta, column.field)).toLowerCase().includes(value);
   }
 
   postPersist = (entity) => {
@@ -303,16 +231,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     ));
   }
 
-  @ViewChild("inputTemplate") inputTemplateColumn;
-  @ViewChild("string") stringColumn;
-  @ViewChild("avatarString") avatarStringColumn;
-  @ViewChild("avatar") avatarColumn;
-  @ViewChild("boldString") boldStringColumn;
-  @ViewChild("boldStringRole") boldStringRoleColumn;
-  @ViewChild("role") roleColumn;
-  @ViewChild("iconOption") iconOptionColumn;
-
-
   getColumn(column: TableColumn) {
     if (column.field?.template) return this.inputTemplateColumn;
     if (column.type === 'string') return this.stringColumn;
@@ -333,19 +251,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   asCol(tableColumn: any): TableColumn {
     return tableColumn as TableColumn;
-  }
-
-
-  private updateTableSource(result: E[]) {
-    this.tableData.formData.share.tableSource = this.tableSource;
-    this.tableData.formData.share.tableEntities = result;
-    this.tableSource = new MatTableDataSource<any>(result);
-    this.tableData.formData.share.tableSource = this.tableSource;
-    this.tableSource.paginator = this.paginator;
-    this.tableSource.sort = this.sort;
-    this.tableSource.sortingDataAccessor = (item, property) => {
-      return this.entityUtil.valueAsInlineString(item, this.entityMeta, {name: property});
-    };
   }
 
   toggleRow(entity: E) {
@@ -387,7 +292,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
-
   onSelectColumn(entity: E, tableColumn: TableColumn = null) {
     this.prepareEntityOnSelect(entity);
     if (tableColumn?.field.template?.isTableOrder) return;
@@ -404,17 +308,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
-  private prepareEntityOnSelect(entity: E) {
-    this.tableData.formData.share.entity = entity;
-    const thisIdent = this.tableData.formData.entityIdentifier;
-    if (this.tableData.external?.updateCriteriaTableOnSelect) {
-      this.tableData.external.updateCriteriaTableOnSelect().forEach(table => {
-        const targetIdent = table.formData.entityIdentifier;
-        this.updateCriteria(targetIdent, thisIdent, entity);
-      });
-    }
-  }
-
   postSelect(entity: E) {
     if (this.tableData?.table?.action?.postSelect) {
       this.tableData.table.action.postSelect(entity);
@@ -426,27 +319,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   postDeSelect(entity: E) {
     if (this.tableData?.table?.action?.postDeSelect) {
       this.tableData.table.action.postDeSelect(entity);
-    }
-  }
-
-  private updateCriteria(targetIdent: EntityIdentifier<any>, thisIdent: EntityIdentifier<E>, entity: E) {
-    const targetEntity = targetIdent.entity;
-    if (targetIdent.clazz.meta.pkMetas().map(meta => meta.camelName).includes(thisIdent.clazz.meta.camelName)) {
-      targetEntity[thisIdent.clazz.meta.camelName] = entity;
-      targetEntity[thisIdent.clazz.meta.mainIdName] = entity[thisIdent.clazz.meta.mainIdName];
-    } else {
-      let thisFieldId;
-      let targetFieldId;
-      thisIdent.idFields.forEach(field => {
-        thisFieldId = this.entityUtil.getLastFieldName(field);
-        targetIdent.idFields.forEach(targetField => {
-          targetFieldId = this.entityUtil.getLastFieldName(targetField);
-          if (thisFieldId === targetFieldId) {
-            targetEntity[targetFieldId] = this.entityUtil.getOriginFieldValue(entity, thisIdent.clazz.meta, field);
-            targetEntity[this.entityUtil.getLastSubEntityName(targetField)] = targetEntity[targetFieldId];
-          }
-        });
-      });
     }
   }
 
@@ -524,10 +396,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return this.getRowIndexBase1(columnIndex) === this.tableSource.data?.length;
   }
 
-  get editOnRow() {
-    return this.tableData.table.action.editOnRow || EditOnRow.disabled;
-  }
-
   updateOnRow() {
     Xe.update$(this.tableSource.data, this.entityMeta).subscribe(arrayResult => {
       this.updateTableData(arrayResult as any);
@@ -538,10 +406,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     });
   }
 
-
-  tempLastFieldName: string;
   getLastFieldName = () => this.tempLastFieldName;
-  pageIndex: any;
 
   getLastEntity(entity: any, tableColumn: any) {
     const col = tableColumn as TableColumn;
@@ -552,16 +417,155 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     return ef.entity;
   }
 
-  get entityMeta() {
-    return this.tableData.formData.entityIdentifier.clazz.meta;
-  }
-
-  get entityIdentifier() {
-    return this.tableData.external.parent.tableData.formData.entityIdentifier;
-  }
-
   getInlineValue(entity: any, column: TableColumn) {
     return this.entityUtil.valueAsInlineString(entity, this.entityMeta, column.field);
+  }
+
+  private initSelectionAnsShare() {
+    const initialSelection = [];
+    const allowMultiSelect = !this.tableData.table.mode?.selectOneOnly;
+    this.selection = new SelectionModel<any>(allowMultiSelect, initialSelection);
+    this.viewing = new SelectionModel<any>(allowMultiSelect, initialSelection);
+    this.tableData.formData.share.selection = this.selection;
+    this.tableData.formData.share.tableComponent = this;
+  }
+
+  private initData() {
+    const previousData = this.tableData.formData.share?.tableEntities;
+    let dataEmpty = true;
+    if (previousData?.length > 0) {
+      this.updateTableData(previousData);
+      dataEmpty = false;
+    }
+    if (this.tableData.table.mode.lazyData) {
+      this.tableData.table.action.triggerUpdate = (term) => this.searchTerm.next(term);
+      if (dataEmpty) this.initLazyData();
+    } else if (this.tableData.table.customData) {
+      const data = this.tableData.table.customData();
+      this.updateTableData(data);
+      this.tableData.table.mode.readonly = true;
+    } else if (this.tableData.table?.mode?.customObservable) {
+      this.subscriptions.push(this.tableData.table.mode.customObservable.subscribe(
+        (result: E[]) => {
+          console.log('result from api', result);
+          this.updateTableData(result);
+        }
+      ));
+    } else {
+      this.subscriptions.push(this.commonService.findByEntityIdentifier<E>(this.tableData.formData.entityIdentifier).subscribe(
+        (result: E[]) => {
+          console.log('result from api', result);
+          this.updateTableData(result);
+        }
+      ));
+    }
+  }
+
+  get hideSelectColumn() {
+    return this.tableData.table?.mode?.hideSelectColumn || this.isReadOnly;
+  }
+
+  private initColumns() {
+    this.displayedColumns = this.tableData.table.basicColumns.filter(c => c !== undefined).map(c => c.field.name);
+    this.tableData.table.manualColumns?.map(c => c.field.name).every(columnName => this.displayedColumns.push(columnName));
+    if (!this.hideSelectColumn) {
+      this.displayedColumns.push("select");
+    }
+  }
+
+  private initFullScreenForm() {
+    if (this.tableData?.display?.fullScreenForm) {
+      this.tableData.formData.display.cancelBtn = "close";
+      const currentPostCancel = this.tableData.formData.action.postCancel;
+      this.tableData.formData.action.postCancel = (entity) => {
+        if (currentPostCancel) currentPostCancel(entity);
+        this.screen.back();
+      };
+    }
+  }
+
+  private initLazyData() {
+    if (this.tableData.table.mode.lazyData) {
+      this.searchTerm.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((term) => {
+          if (this.tableData?.table?.mode?.lazyData) {
+            return this.tableData.table.mode.lazyData(term);
+          } else {
+            if (ObjectUtil.isObject(term)) {
+              return term.triggerLazySearch;
+            }
+          }
+        })
+      ).subscribe(data => this.updateTableData(data as any as E[]));
+    }
+  }
+
+  private filterDataInTable(filterValue: string) {
+    this.tableSource.filterPredicate = (data, inputValue) => {
+      const value = inputValue.trim().toLowerCase();
+      const manual = this.tableData.table.manualColumns?.findIndex(column => {
+        return this.isValueContains(data, column, value);
+      }) > -1;
+      if (manual) return true;
+      const basicFilter = this.tableData.table.basicColumns?.filter(column => {
+        return this.filterTableColumn(data, column, value);
+      });
+      return basicFilter && basicFilter.length > 0;
+    };
+    this.tableSource.filter = filterValue.trim().toLowerCase();
+    if (this.tableSource.paginator) {
+      this.tableSource.paginator.firstPage();
+    }
+  }
+
+  private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
+    return String(this.entityUtil.valueAsInlineString(data, this.entityMeta, column.field)).toLowerCase().includes(value);
+  }
+
+  private updateTableSource(result: E[]) {
+    this.tableData.formData.share.tableSource = this.tableSource;
+    this.tableData.formData.share.tableEntities = result;
+    this.tableSource = new MatTableDataSource<any>(result);
+    this.tableData.formData.share.tableSource = this.tableSource;
+    this.tableSource.paginator = this.paginator;
+    this.tableSource.sort = this.sort;
+    this.tableSource.sortingDataAccessor = (item, property) => {
+      return this.entityUtil.valueAsInlineString(item, this.entityMeta, {name: property});
+    };
+  }
+
+  private prepareEntityOnSelect(entity: E) {
+    this.tableData.formData.share.entity = entity;
+    const thisIdent = this.tableData.formData.entityIdentifier;
+    if (this.tableData.external?.updateCriteriaTableOnSelect) {
+      this.tableData.external.updateCriteriaTableOnSelect().forEach(table => {
+        const targetIdent = table.formData.entityIdentifier;
+        this.updateCriteria(targetIdent, thisIdent, entity);
+      });
+    }
+  }
+
+  private updateCriteria(targetIdent: EntityIdentifier<any>, thisIdent: EntityIdentifier<E>, entity: E) {
+    const targetEntity = targetIdent.entity;
+    if (targetIdent.clazz.meta.pkMetas().map(meta => meta.camelName).includes(thisIdent.clazz.meta.camelName)) {
+      targetEntity[thisIdent.clazz.meta.camelName] = entity;
+      targetEntity[thisIdent.clazz.meta.mainIdName] = entity[thisIdent.clazz.meta.mainIdName];
+    } else {
+      let thisFieldId;
+      let targetFieldId;
+      thisIdent.idFields.forEach(field => {
+        thisFieldId = this.entityUtil.getLastFieldName(field);
+        targetIdent.idFields.forEach(targetField => {
+          targetFieldId = this.entityUtil.getLastFieldName(targetField);
+          if (thisFieldId === targetFieldId) {
+            targetEntity[targetFieldId] = this.entityUtil.getOriginFieldValue(entity, thisIdent.clazz.meta, field);
+            targetEntity[this.entityUtil.getLastSubEntityName(targetField)] = targetEntity[targetFieldId];
+          }
+        });
+      });
+    }
   }
 
 }

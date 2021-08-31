@@ -1,22 +1,19 @@
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 import {XeEntity} from "./XeEntity";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {ObjectUtil} from "../../framework/util/object.util";
 import {XeTableData} from "../../framework/model/XeTableData";
 import {SeatGroup} from "./SeatGroup";
 import {SelectItem} from '../../framework/model/SelectItem';
 import {CommonUpdateService} from "../service/common-update.service";
-import {Notifier} from "../../framework/notify/notify.service";
 import {EntityUtil} from "../../framework/util/EntityUtil";
-import {TripUser} from "./TripUser";
 import {map} from "rxjs/operators";
-import {Observable} from "rxjs";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class BussType extends XeEntity {
+    static get = (bussType): BussType => EntityUtil.getFromCache("BussType", bussType);
     static meta = EntityUtil.metas.BussType;
     static mapFields = EntityUtil.mapFields['BussType'];
     bussTypeId: number;

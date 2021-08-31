@@ -2,12 +2,13 @@
   text-align: right;
   font-size: small;
 }
+
 .roles-group div {
   padding: 5px 7px;
   border: 1px solid gray;
   border-radius: 12px;
-  margin: 0 2px;
-  display: inline;
+  margin: 2px;
+  display: inline-block;
 }
 
 .roles-group nb-icon {

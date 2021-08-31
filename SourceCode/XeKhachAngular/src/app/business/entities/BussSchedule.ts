@@ -8,16 +8,22 @@ import {Company} from "./Company";
 import {Path} from "./Path";
 import {BussSchedulePoint} from "./BussSchedulePoint";
 import {PathPoint} from "./PathPoint";
-import {InputMode, InputTemplate} from "../../framework/model/EnumStatus";
+import {InputMode, InputTemplate, LabelMode} from "../../framework/model/EnumStatus";
 import {EntityUtil} from "../../framework/util/EntityUtil";
 import {XeTimePipe} from "../../framework/components/pipes/time.pipe";
 import {Trip} from "./Trip";
+import {CommonUpdateService} from "../service/common-update.service";
+import {AuthUtil} from "../../framework/auth/auth.util";
+import {Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import {SelectItem} from "../../framework/model/SelectItem";
 // ____________________ ::TS_IMPORT_SEPARATOR:: ____________________ //
 
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 // ____________________ ::UNDER_IMPORT_SEPARATOR:: ____________________ //
 
 export class BussSchedule extends XeEntity {
+    static get = (bussSchedule): BussSchedule => EntityUtil.getFromCache("BussSchedule", bussSchedule);
     static meta = EntityUtil.metas.BussSchedule;
     static mapFields = EntityUtil.mapFields['BussSchedule'];
     bussScheduleId: number;
@@ -47,6 +53,15 @@ export class BussSchedule extends XeEntity {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
   preparedTrip: Trip;
   sortedBussSchedulePoints: BussSchedulePoint[];
+
+  static get myCompanySchedules$(): Observable<SelectItem<BussSchedule>[]> {
+    const companyId = AuthUtil.instance.user?.employee?.companyId;
+    return CommonUpdateService.instance.findByEntityIdentifier(
+      BussSchedule.entityIdentifier(
+        BussSchedule.new({companyId}))).pipe(
+      map(companies => companies.map(c => new SelectItem<BussSchedule>(Path.get(c.path)?.pathName + " - " + XeTimePipe.instance.singleToInline(c.launchTime), c.bussScheduleId)))
+    );
+  }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
   static entityIdentifier = (bussSchedule: BussSchedule): EntityIdentifier<BussSchedule> => ({
@@ -158,7 +173,8 @@ export class BussSchedule extends XeEntity {
         entityIdentifier: BussSchedule.entityIdentifier(bussSchedule),
         share: {entity: BussSchedule.new()},
         display: {
-          columnNumber: 3
+          columnNumber: 3,
+          labelMode: LabelMode.always
         },
         fields: [
           {name: "scheduleUnitPrice", template: InputTemplate.money, required: true},

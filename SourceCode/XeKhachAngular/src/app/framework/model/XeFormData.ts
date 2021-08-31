@@ -3,9 +3,8 @@ import {XeBasicFormComponent} from "../components/xe-basic-form/xe-basic-form.co
 import {SelectionModel} from "@angular/cdk/collections";
 import {XeEntity, XeEntityClass} from "../../business/entities/XeEntity";
 import {MatTableDataSource} from "@angular/material/table";
-import {SelectItem} from './SelectItem';
 import {ServiceResult} from "../../business/service/service-result";
-import {InputMode, InputTemplate} from "./EnumStatus";
+import {InputMode, InputTemplate, LabelMode} from "./EnumStatus";
 import {XeTableComponent} from "../components/xe-table/xe-table.component";
 import {Observable} from "rxjs";
 
@@ -73,6 +72,7 @@ export class XeFormData<E extends XeEntity> {
     grid?: boolean;
     bare?: boolean;
     columnNumber?: number;
+    labelMode?: LabelMode;
   };
   header?: {
     profileImage?: EntityField,

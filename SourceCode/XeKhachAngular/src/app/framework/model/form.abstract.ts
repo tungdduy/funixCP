@@ -5,8 +5,8 @@ import {XeSubscriber} from "./XeSubscriber";
 
 @Directive()
 export abstract class FormAbstract extends XeSubscriber implements AfterViewInit {
-  @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
   handlers: FormHandler[];
+  @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
 
   ngAfterViewInit(): void {
     this.assignCtrlForForms();
@@ -18,15 +18,6 @@ export abstract class FormAbstract extends XeSubscriber implements AfterViewInit
     });
   }
 
-  private getGroupCode = (formCode: string) => {
-    if (!formCode) return "";
-    const groups = formCode.split(".");
-    if (groups.length > 1) {
-      return groups.join(".");
-    }
-    return "";
-  }
-
   showForm(formCode: string) {
     const groupCode = this.getGroupCode(formCode);
     setTimeout(() => {
@@ -36,6 +27,15 @@ export abstract class FormAbstract extends XeSubscriber implements AfterViewInit
         }
       });
     }, 0);
+  }
+
+  private getGroupCode = (formCode: string) => {
+    if (!formCode) return "";
+    const groups = formCode.split(".");
+    if (groups.length > 1) {
+      return groups.join(".");
+    }
+    return "";
   }
 
 }

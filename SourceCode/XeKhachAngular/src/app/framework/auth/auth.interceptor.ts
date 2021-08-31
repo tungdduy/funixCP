@@ -9,16 +9,17 @@ import {AuthUtil} from "./auth.util";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor() {
+  }
+
+  private static handle(request: HttpRequest<any>): HttpRequest<any> {
+    const token = AuthUtil.instance.token;
+    return request.clone({setHeaders: {Authorization: `${AuthConfig.tokenPrefix}${token}`}});
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(this.needHandle(request) ? AuthInterceptor.handle(request) : request);
   }
 
   private needHandle = (request: HttpRequest<any>) => !Url.isPublicApi(request.url);
-
-  private static handle(request: HttpRequest<any>): HttpRequest<any> {
-    const token = AuthUtil.instance.token;
-    return request.clone({setHeaders: {Authorization: `${AuthConfig.tokenPrefix}${token}`}});
-  }
 }

@@ -7,14 +7,16 @@ import {XeLabel} from "../../../business/i18n";
 
 @Pipe({name: 'xeTimePipe'})
 export class XeTimePipe extends XePipe implements PipeTransform {
+  private _timePipe: DatePipe = new DatePipe("en-US");
+
   private static _instance: XeTimePipe;
+
   static get instance(): XeTimePipe {
     if (!XeTimePipe._instance) {
       XeTimePipe._instance = new XeTimePipe();
     }
     return XeTimePipe._instance;
   }
-  private _timePipe: DatePipe = new DatePipe("en-US");
 
   static getHourMinuteBlocks(hours: AutoInputModel[], hFormatted: string | number) {
     hours.push({appValue: this.instance.inputStringToAppValue(`${hFormatted}:00`), inlineString: `${hFormatted}:00`});
@@ -57,6 +59,7 @@ export class XeTimePipe extends XePipe implements PipeTransform {
   }
 
   singleToSubmitFormat = (time: Date): string => this._timePipe.transform(time, "HH:mm");
+
   singleToAutoInputModel(value, options?): AutoInputModel {
     return value;
   }

@@ -14,6 +14,7 @@ export class Xe {
   static get(entity, meta: ClassMeta, fieldChain) {
     return EntityUtil.getEntityWithField(entity, meta, {name: fieldChain}).value;
   }
+
   static refresh$(entity, meta: ClassMeta): Observable<any> {
     return CommonUpdateService.instance.getOne<any>(entity, meta);
   }
@@ -27,7 +28,7 @@ export class Xe {
     return CommonUpdateService.instance.updateMulti(prepareData, meta);
   }
 
-  static  getPrimitiveValues(entity, meta: ClassMeta) {
+  static getPrimitiveValues(entity, meta: ClassMeta) {
     const convertedEntity = {};
     Object.keys(entity).forEach(key => {
       switch (typeof entity[key]) {
@@ -70,21 +71,6 @@ export class Xe {
     }
   }
 
-  private static getEntityWithFields(meta: ClassMeta, entities: any, fields: string[] | {}) {
-    const contentUpdate = {};
-    contentUpdate[meta.mainIdName] = entities[meta.mainIdName];
-    if (Array.isArray(fields)) {
-      fields.forEach(fieldName => {
-        contentUpdate[fieldName] = entities[fieldName];
-      });
-    } else {
-      Object.keys(fields).forEach(key => {
-        contentUpdate[key] = fields[key];
-      });
-    }
-    return contentUpdate;
-  }
-
   static update(entities: any, meta: ClassMeta, callBack: (e) => any = null) {
     console.log('updating', entities);
     if (Array.isArray(entities)) {
@@ -107,7 +93,7 @@ export class Xe {
   }
 
   static assignResult(newResult, meta: ClassMeta, originEntities: any) {
-    EntityUtil.cache(newResult, meta);
+    EntityUtil.cacheThenFill(newResult, meta);
     Xe.fill(newResult, meta);
     Object.keys(originEntities).forEach(key => {
       delete originEntities[key];
@@ -128,12 +114,27 @@ export class Xe {
         if (callback !== null) {
           callback(arrayResult[0]);
         } else {
-          EntityUtil.cache(arrayResult, meta);
+          EntityUtil.cacheThenFill(arrayResult, meta);
           Object.keys(entity).forEach(key => delete entity[key]);
           Object.assign(entity, arrayResult[0]);
         }
       },
       httpError => Notifier.httpErrorResponse(httpError)
     );
+  }
+
+  private static getEntityWithFields(meta: ClassMeta, entities: any, fields: string[] | {}) {
+    const contentUpdate = {};
+    contentUpdate[meta.mainIdName] = entities[meta.mainIdName];
+    if (Array.isArray(fields)) {
+      fields.forEach(fieldName => {
+        contentUpdate[fieldName] = entities[fieldName];
+      });
+    } else {
+      Object.keys(fields).forEach(key => {
+        contentUpdate[key] = fields[key];
+      });
+    }
+    return contentUpdate;
   }
 }

@@ -14,6 +14,17 @@ export class UserTableComponent extends FormAbstract {
 
   @Input() xeScreen: XeScreen;
   @Input() userTable: XeTableData<any>;
+  @Input() excludeRoles: string[] = ['ROLE_SYS_ADMIN'];
+
+  private _roleIcons: RoleInfo[];
+
+  get roleIcons(): RoleInfo[] {
+    if (this._roleIcons === undefined) {
+      this._roleIcons = RoleUtil.allRolesInfo(this.excludeRoles);
+    }
+    return this._roleIcons;
+  }
+
   @Input() user: () => User = () => {
     const entity = () => this.userTable?.formData?.share?.entity;
     switch (this.userTable?.formData?.entityIdentifier?.clazz?.meta.capName) {
@@ -23,17 +34,9 @@ export class UserTableComponent extends FormAbstract {
         return entity().user;
       case 'BussEmployee':
         return entity()?.employee?.user;
-      default: return entity();
+      default:
+        return entity();
     }
-  }
-  @Input() excludeRoles: string[] = ['ROLE_SYS_ADMIN'];
-
-  private _roleIcons: RoleInfo[];
-  get roleIcons(): RoleInfo[] {
-    if (this._roleIcons === undefined) {
-      this._roleIcons = RoleUtil.allRolesInfo(this.excludeRoles);
-    }
-    return this._roleIcons;
   }
 
   getRoleActiveClass(roleName) {

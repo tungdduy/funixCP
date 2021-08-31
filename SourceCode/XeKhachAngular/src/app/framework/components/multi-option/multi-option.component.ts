@@ -9,22 +9,26 @@ import {MultiOptionUtil, Options} from "../../model/EntityEnum";
 })
 export class MultiOptionComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit(): void {  }
-
   @Input() template: InputTemplate;
   @Input() options: Options;
   action = MultiOptionUtil;
+  @Output() valueChange = new EventEmitter<string>();
+
+  constructor() {
+  }
 
   private _value: string;
-  @Output() valueChange = new EventEmitter<string>();
+
   @Input() get value(): string {
     return this._value;
   }
+
   set value(val) {
     this._value = val;
     this.valueChange.emit(this._value);
+  }
+
+  ngOnInit(): void {
   }
 
   toggleOption(option: string) {

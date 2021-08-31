@@ -124,6 +124,7 @@ export class EntityUtil {
     Buss: {
       bussType: EntityUtil.metas.BussType,
       company: EntityUtil.metas.Company,
+      bussEmployees: EntityUtil.metas.BussEmployee
     },
     Location: {
       parent: EntityUtil.metas.Location
@@ -190,6 +191,7 @@ export class EntityUtil {
     Employee: {},
     User: {}
   };
+  static entityCache = []; // cache.ClassName.id = entity -- cached.className.id has Value
 
   private static _mapFields;
   static get mapFields() {
@@ -249,7 +251,7 @@ export class EntityUtil {
   }
 
   static getFromCache(className, id) {
-    return className && ObjectUtil.isNumberGreaterThanZero(id) ? this.entityCache[className.toLowerCase() + "." + id] : id;
+    return className && ObjectUtil.isNumberGreaterThanZero(id) ? this.entityCache[className.toLowerCase() + "." + id] || id : id;
   }
 
   static fill(entity: XeEntity, meta: ClassMeta, deepLvl = 0) {
@@ -258,6 +260,7 @@ export class EntityUtil {
       entity.forEach(e => {
         this.fill(e, meta, deepLvl);
       });
+      return;
     }
     if (deepLvl > 5) return entity;
     deepLvl++;
@@ -265,9 +268,16 @@ export class EntityUtil {
     if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return entity;
     const entityMapFields = this.mapFields[meta.capName];
     Object.keys(entityMapFields).forEach(fieldName => {
+      const fieldValue = entity[fieldName];
       const fieldMeta = entityMapFields[fieldName];
-      entity[fieldName] = this.getFromCache(fieldMeta.capName, entity[fieldName]);
-      this.fill(entity[fieldName], fieldMeta, deepLvl);
+      if (Array.isArray(fieldValue)) {
+        fieldValue.forEach(fieldChild => {
+          this.fill(fieldChild, fieldMeta, deepLvl);
+        });
+      } else {
+        entity[fieldName] = this.getFromCache(fieldMeta.capName, fieldValue);
+        this.fill(entity[fieldName], fieldMeta, deepLvl);
+      }
     });
     entity.isFilled = true;
     return entity;
@@ -292,7 +302,9 @@ export class EntityUtil {
   }
 
   static valueAsInlineString(entity: any, entityMeta: ClassMeta, field: EntityField) {
-    if (!field || !entity || !entityMeta) return undefined;
+    if (!field || !entity || !entityMeta) {
+      return undefined;
+    }
     const value = this.getOriginFieldValue(entity, entityMeta, field);
     let traceValue = value === undefined ? undefined : field.template?.hasPipe ? field.template.pipe.singleToInline(value) : value;
     if (field.attachInlines?.length > 0) {
@@ -304,14 +316,16 @@ export class EntityUtil {
   }
 
   static getOriginFieldValue(entity: any, entityMeta: ClassMeta, field: EntityField) {
-    if (!field || !entity) return undefined;
+    if (!field || !entity) {
+      return undefined;
+    }
     return this.getEntityWithField(entity, entityMeta, field).value;
   }
 
   static getProfileImageUrl(oriEntity: any, entityMeta: ClassMeta, otherField: EntityField): string {
     if (!oriEntity || !otherField) return undefined;
     const entityField = this.getEntityWithField(oriEntity, entityMeta, otherField);
-    return entityField.entity.profileImageUrl;
+    return entityField.entity?.profileImageUrl;
   }
 
   /** @WARNING: return field name if not exist sub Entity */
@@ -393,13 +407,6 @@ export class EntityUtil {
     return result;
   }
 
-  private static addColumnIfNotExist(addedColumns: string[], column: TableColumn, prepareColumns: any[]) {
-    if (!addedColumns.includes(column.field.name)) {
-      prepareColumns.push(column);
-      addedColumns.push(column.field.name);
-    }
-  }
-
   static assignEntity(option: {}, entity, deepLvl = 0) {
     if (!option) return entity;
     if (deepLvl > 4) return entity;
@@ -452,35 +459,7 @@ export class EntityUtil {
 
 // ENTITY CACHE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-  static entityCache = []; // cache.ClassName.id = entity -- cached.className.id has Value
-
-  private static privateCache(entity: any, entityMeta: ClassMeta, cached = {}) {
-    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return;
-    const eid = entityMeta.capName.toLowerCase() + "." + entity[entityMeta.mainIdName];
-    if (!cached[eid]) {
-      cached[eid] = "true";
-      this.entityCache[eid] = entity;
-      Object.keys(entity).forEach(fieldName => {
-        const fieldMeta: ClassMeta = this.mapFields[entityMeta.capName][fieldName];
-        if (fieldMeta) {
-          const fieldValue = entity[fieldName];
-          if (Array.isArray(fieldValue)) {
-            fieldValue.forEach(fieldChild => {
-              this.privateCache(fieldChild, fieldMeta, cached);
-            });
-          } else {
-            if (!ObjectUtil.isNumberGreaterThanZero(fieldValue) && !!fieldValue) {
-              const uniqueIdName = fieldMeta.capName.toLowerCase() + "." + fieldValue[fieldMeta.mainIdName];
-              this.entityCache[uniqueIdName] = fieldValue;
-              this.privateCache(fieldValue, fieldMeta, cached);
-            }
-          }
-        }
-      });
-    }
-  }
-
-  public static cache(entity: any, entityMeta: ClassMeta) {
+  public static cacheThenFill(entity: any, entityMeta: ClassMeta) {
     if (Array.isArray(entity)) {
       entity.forEach(child => {
         this.privateCache(child, entityMeta);
@@ -490,18 +469,6 @@ export class EntityUtil {
     }
     this.fill(entity, entityMeta);
   }
-
-  private static put(obj, nameChain: string[], value) {
-    nameChain.forEach((name, idx) => {
-      if (!obj[name]) obj[name] = {};
-      if (idx === nameChain.length - 1) {
-        obj[name] = value;
-      } else {
-        obj = obj[name];
-      }
-    });
-  }
-
 
   static cachePkEntities(entity: any, pkMapFieldNames: string[], cache: {}) {
     pkMapFieldNames.forEach(fieldName => {
@@ -527,6 +494,51 @@ export class EntityUtil {
       this.cachePkEntities(child, [parentMeta.camelName], cache);
     });
     return parent[childrenFieldName];
+  }
+
+  private static addColumnIfNotExist(addedColumns: string[], column: TableColumn, prepareColumns: any[]) {
+    if (!addedColumns.includes(column.field.name)) {
+      prepareColumns.push(column);
+      addedColumns.push(column.field.name);
+    }
+  }
+
+  private static privateCache(entity: any, entityMeta: ClassMeta, cached = {}) {
+    if (!entity || ObjectUtil.isNumberGreaterThanZero(entity)) return;
+    const eid = entityMeta.capName.toLowerCase() + "." + entity[entityMeta.mainIdName];
+    if (!cached[eid]) {
+      this.entityCache[eid] = entity;
+      Object.keys(entity).forEach(fieldName => {
+        const fieldMeta: ClassMeta = this.mapFields[entityMeta.capName][fieldName];
+        if (fieldMeta) {
+          const fieldValue = entity[fieldName];
+          if (Array.isArray(fieldValue)) {
+            cached[eid] = "true";
+            fieldValue.forEach(fieldChild => {
+              this.privateCache(fieldChild, fieldMeta, cached);
+            });
+          } else {
+            if (!ObjectUtil.isNumberGreaterThanZero(fieldValue) && !!fieldValue) {
+              const uniqueIdName = fieldMeta.capName.toLowerCase() + "." + fieldValue[fieldMeta.mainIdName];
+              this.entityCache[uniqueIdName] = fieldValue;
+              this.privateCache(fieldValue, fieldMeta, cached);
+              cached[eid] = "true";
+            }
+          }
+        }
+      });
+    }
+  }
+
+  private static put(obj, nameChain: string[], value) {
+    nameChain.forEach((name, idx) => {
+      if (!obj[name]) obj[name] = {};
+      if (idx === nameChain.length - 1) {
+        obj[name] = value;
+      } else {
+        obj = obj[name];
+      }
+    });
   }
 
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<  ENTITY CACHE

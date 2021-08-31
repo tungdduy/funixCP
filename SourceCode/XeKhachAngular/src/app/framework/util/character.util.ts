@@ -9,6 +9,7 @@ export class CharacterUtil {
   static anyMatch(standardRepo, rawInput): boolean {
     return rawInput && standardRepo.toLowerCase().includes(CharacterUtil.removeAccents(rawInput).toLowerCase());
   }
+
   static rawAnyMatch(rawRepo, rawInput): boolean {
     return rawRepo && rawInput && CharacterUtil.removeAccents(rawRepo).includes(CharacterUtil.removeAccents(rawInput));
   }

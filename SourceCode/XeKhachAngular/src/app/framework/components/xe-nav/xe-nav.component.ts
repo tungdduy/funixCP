@@ -11,14 +11,8 @@ export interface ScreenConfig {
 
 export class XeScreen {
   config: ScreenConfig;
-
-  get isHome() {
-    return this.current === this.config.home;
-  }
-
-  isThisHome(checkHome: string) {
-    return this.config.home === checkHome;
-  }
+  current;
+  stack = [];
 
   constructor(config: ScreenConfig) {
     this.config = config;
@@ -26,12 +20,9 @@ export class XeScreen {
     if (!config.homeTitle) this.config.homeTitle = () => this.config.home;
   }
 
-  is(checkScreen: string) {
-    return this.current === checkScreen;
+  get isHome() {
+    return this.current === this.config.home;
   }
-
-  current;
-  stack = [];
 
   get home() {
     return this.config.home;
@@ -41,6 +32,39 @@ export class XeScreen {
     return this.current === this.config.home
       ? XeLbl(`screen.${this.config.home}`)
       : XeLbl(this.config.homeTitle());
+  }
+
+  isThisHome(checkHome: string) {
+    return this.config.home === checkHome;
+  }
+
+  is(checkScreen: string) {
+    return this.current === checkScreen;
+  }
+
+  back = () => {
+    if (this.stack.length === 0) {
+      this.goHome();
+    }
+    this.stack.shift();
+    let result = this.config.home;
+    if (this.stack.length > 0) {
+      result = this.stack[0];
+    }
+    if (this.config.preGo) this.config.preGo(result);
+    this.current = result;
+  }
+
+  goHome = () => {
+    if (this.config.preHome) this.config.preHome(this.config.home);
+    if (this.config.preGo) this.config.preGo(this.config.home);
+    this.stack = [];
+    this.current = this.config.home;
+  }
+
+  go = (item: any) => {
+    if (this.config.preGo) this.config.preGo(item);
+    this.current = this._move(item);
   }
 
   private _move = (item: any) => {
@@ -57,30 +81,6 @@ export class XeScreen {
       this.stack.unshift(item);
     }
     return item;
-  }
-
-  back = () => {
-    if (this.stack.length === 0) {
-      this.goHome();
-    }
-    this.stack.shift();
-    let result = this.config.home;
-    if (this.stack.length > 0) {
-      result = this.stack[0];
-    }
-    if (this.config.preGo) this.config.preGo(result);
-    this.current = result;
-  }
-  goHome = () => {
-    if (this.config.preHome) this.config.preHome(this.config.home);
-    if (this.config.preGo) this.config.preGo(this.config.home);
-    this.stack = [];
-    this.current = this.config.home;
-  }
-
-  go = (item: any) => {
-    if (this.config.preGo) this.config.preGo(item);
-    this.current = this._move(item);
   }
 }
 

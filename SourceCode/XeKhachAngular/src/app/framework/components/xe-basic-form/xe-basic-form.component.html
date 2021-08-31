@@ -35,10 +35,10 @@
 
 <ng-template #formTemplate>
   <xe-form #form
-           [uncheckChanged]="formData.mode?.uncheckChanged"
            [addToSubmit]="idsIncludeOnSubmit"
            [muteOnSuccess]="formData.control?.muteOnSuccess"
            [readMode]="readMode"
+           [uncheckChanged]="formData.mode?.uncheckChanged"
            name="basicFormInfo">
     <div class="row">
       <ng-container *ngFor="let field of filteredField()">
@@ -46,11 +46,11 @@
              class="col-md-{{colSpan(field)}} pl-4 pr-4 {{formData.display?.columnNumber > 1 ? 'pt-2 pb-2' : ''}}">
           <xe-input *ngIf="isIdValid ? !field?.newOnly : true"
                     [(value)]="entityUtil.getLastFieldOwner(formData.share?.entity, formData.entityIdentifier.clazz.meta, field)[entityUtil.getLastFieldName(field)]"
-                    [alwaysShowLabel]="formData.display?.columnNumber > 1"
                     [disabledUpdate]="field.clearOnSuccess"
                     [entityField]="field"
                     [grid]="formData.display?.grid"
                     [hidden]="field.hidden"
+                    [labelMode]="formData.display.labelMode"
                     [lblKey]="field.lblKey"
                     [mode]="field.mode"
                     [name]="field.name"

@@ -1,7 +1,10 @@
 <div class="p-2 {{posClass}}">
   <button
+    [disabled]="disabled"
     [type]="btnType"
     class="btn btn-{{state}} {{btnSize}}"
-    [disabled]="disabled"
-  ><nb-icon *ngIf="icon" [icon]="icon" pack="fa"></nb-icon><span *ngIf="showText" class="d-inline-block pl-2">{{btnText}}<ng-content></ng-content></span></button>
+  >
+    <nb-icon *ngIf="icon" [icon]="icon" pack="fa"></nb-icon>
+    <span *ngIf="showText" class="d-inline-block pl-2">{{btnText}}
+      <ng-content></ng-content></span></button>
 </div>

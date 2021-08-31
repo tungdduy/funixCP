@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="vi">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>TìmXeKhách: ${fullName} đăng ký tài khoản thành công</title>
+    <title th:text="'TìmXeKhách: ' + ${fullName} + ' đăng ký tài khoản thành công'"></title>
 </head>
 <body style="font-family: sans-serif">
-<p>Chúc mừng ${fullName} đã đăng ký thành công tài khoản tại TimXeKhach!</p>
+<p>Chúc mừng <span th:text="${fullName}" th:remove="tag"/> đã đăng ký thành công tài khoản tại TimXeKhach!</p>
 <p>Dưới đây là thông tin đăng nhập của bạn:</p>
 <ul>
-    <li>Tên đăng nhập: ${username}</li>
-    <li>Mập khẩu: ${password}</li>
+    <li>Tên đăng nhập: <span th:text="${username}"/></li>
+    <li>Mập khẩu: <span th:text="${password}"/></li>
 </ul>
 Trân trọng,
 Biệt đội Funix chờ tốt nghiệp.

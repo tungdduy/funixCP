@@ -3,7 +3,7 @@ import {NbComponentStatus, NbGlobalPhysicalPosition, NbToastrService} from "@neb
 import {XeResponseModel} from "./xe.response.model";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ObjectUtil} from "../util/object.util";
-import {ApiMessages, AppMessages, XeLabel, XeLbl} from "../../business/i18n";
+import {ApiMessages, AppMessages} from "../../business/i18n";
 import {StringUtil} from "../util/string.util";
 import {XeLabelComponent} from "../components/xe-label/xe-label.component";
 import {State} from "../model/message.model";
@@ -14,20 +14,10 @@ import {State} from "../model/message.model";
 export class Notifier {
 
   static toastService: NbToastrService;
+  static API = "API: ";
 
   constructor(private toastService: NbToastrService) {
     Notifier.toastService = toastService;
-  }
-
-  private static showToast(type: NbComponentStatus, title: string, body: string) {
-    const toastConfig = {
-      status: type,
-      destroyByClick: false,
-      duration: 5000,
-      position: NbGlobalPhysicalPosition.TOP_RIGHT,
-
-    };
-    Notifier.toastService.show(body, title, toastConfig);
   }
 
   static success(message: string) {
@@ -80,7 +70,25 @@ export class Notifier {
     return msgFinder.join(`\n`);
   }
 
-  static API = "API: ";
+  static warning(message: string) {
+    this.showToast('warning', message, new Date().toLocaleString());
+  }
+
+  static notify(msg: any) {
+    this.showToast(msg.state, msg.code, new Date().toLocaleString());
+  }
+
+  private static showToast(type: NbComponentStatus, title: string, body: string) {
+    const toastConfig = {
+      status: type,
+      destroyByClick: false,
+      duration: 5000,
+      position: NbGlobalPhysicalPosition.TOP_RIGHT,
+
+    };
+    Notifier.toastService.show(body, title, toastConfig);
+  }
+
   private static messageToString = (code: string, param?: any): string => {
 
     const message = ApiMessages[StringUtil.toUPPER_UNDERLINE(code)];
@@ -91,13 +99,5 @@ export class Notifier {
     } else {
       return code;
     }
-  }
-
-  static warning(message: string) {
-    this.showToast('warning', message, new Date().toLocaleString());
-  }
-
-  static notify(msg: any) {
-    this.showToast(msg.state, msg.code, new Date().toLocaleString());
   }
 }
