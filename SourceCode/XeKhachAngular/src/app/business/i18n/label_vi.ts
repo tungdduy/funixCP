@@ -368,6 +368,10 @@ export const Label_vi = {
   'input.shortInput.secretKey': 'Nhập mã bí mật',
   'input.selectOneMenu.bussScheduleId': 'Chọn lịch trình',
   'input.date.launchDate': 'Ngày khởi hành',
+  'input.shortInput.userId': '',
+  'input.shortInput.currentPassword': 'Mật khẩu hiện tại',
+  'input.shortInput.newPassword': 'Mật khẩu mới',
+  'input.shortInput.reNewPassword': 'Nhập lại mật khẩu mới',
 
 
 };
