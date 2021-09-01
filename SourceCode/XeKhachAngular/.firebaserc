@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "capstone-308403": {
+      "hosting": {
+        "xe-khach-net": [
+          "capstone-308403"
+        ]
+      }
+    }
+  }
+}
