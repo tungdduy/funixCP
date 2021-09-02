@@ -1,20 +1,19 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import net.timxekhach.operation.rest.service.UserService;
-import static net.timxekhach.utility.XeResponseUtils.success;
-import org.springframework.http.ResponseEntity;
-import net.timxekhach.operation.data.entity.Location;
-import org.springframework.web.multipart.MultipartFile;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
-import net.timxekhach.operation.data.repository.UserRepository;
-import java.io.IOException;
-import net.timxekhach.operation.data.entity.Buss;
+import net.timxekhach.firebase.FcmClient;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.rest.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
 import java.util.Map;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import static org.springframework.http.HttpStatus.OK;
+
+import static net.timxekhach.utility.XeResponseUtils.success;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +21,10 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserApi {
 
     private final UserService userService;
+	/**
+	 * See {@link FcmClient}
+	 */
+	private final FcmClient fcmClient;
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 	@PostMapping("/login")
@@ -62,6 +65,27 @@ public class UserApi {
 	public ResponseEntity<String> updateProfileImage(@RequestParam("username") String userId,
 												   @RequestParam(value = "profileImage") MultipartFile profileImage){
 		return success(userService.updateProfileImage(userId, profileImage));
+	}
+	@GetMapping("/subscribe")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void subscribe (@RequestParam("token") String token, @RequestParam("username") String username) {
+		username = "ddao";
+		this.fcmClient.subscribe(token, username);
+	}
+
+	@GetMapping("/unsubscribe")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void unsubscribe (@RequestParam("token") String token, @RequestParam("username") String username) {
+		username = "ddao";
+		this.fcmClient.unsubscribe(token, username);
+	}
+
+	@GetMapping("/send")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void send () {
+		Map<String, String> data = new HashMap<>();
+		data.put("bussId","51C1-123.45");
+		this.fcmClient.send("ddao", data);
 	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

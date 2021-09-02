@@ -32,7 +32,7 @@ public abstract class XeEntity implements Serializable {
         if(new File(this.buildProfileImagePath()).exists()) {
             return String.format("%s/profile.jpg", this.buildUniqueUrl());
         }
-        return String.format("http://robohash.org/xekhach/%s", this.buildRelativePath());
+        return String.format("https://robohash.org/xekhach/%s", this.buildRelativePath());
     }
 
     private String buildUniquePath() {
@@ -95,6 +95,18 @@ public abstract class XeEntity implements Serializable {
         }
     }
     protected void preUpdate() {};
+
+    @Transient
+    @JsonIgnore
+    protected boolean isPostUpdate;
+    @PostUpdate
+    private void _postUpdate(){
+        if (!this.isPostUpdate) { //avoid call twice on persist
+            this.isPostUpdate = true;
+            this.postUpdate();
+        }
+    }
+    protected void postUpdate(){};
 
     @Transient
     @JsonIgnore

@@ -49,7 +49,12 @@ public class TripService {
 							.collect(Collectors.toList());
 					return goThroughIds.contains(otherLocation(mark0ToFindStart, startLocationId, endLocationId));
 				}).map(BussSchedulePoint::getPathPoint)
-				.map(PathPoint::getLocation)
+				.map(pathPoint -> {
+					Location location = pathPoint.getLocation();
+					location.setDisplayName(pathPoint.getPointName());
+					return location;
+				})
+				.distinct()
 				.collect(Collectors.toList());
 	}
 

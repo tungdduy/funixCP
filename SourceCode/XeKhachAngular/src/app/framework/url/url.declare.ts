@@ -46,6 +46,8 @@ export const Url = {
       FORGOT_PASSWORD_SECRET_KEY: config(),
       CHANGE_PASSWORD: config(),
       UPDATE_PASSWORD: config(),
+      SUBSCRIBE: config(),
+      UNSUBSCRIBE: config(),
     },
     TRIP: {
       _self: config(),

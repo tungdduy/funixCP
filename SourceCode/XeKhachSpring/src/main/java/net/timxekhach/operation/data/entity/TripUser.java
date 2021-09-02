@@ -4,7 +4,6 @@ package net.timxekhach.operation.data.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.PathPoint_MAPPED;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
@@ -29,11 +28,10 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter @Log4j2
+@Entity @Getter @Setter
 public class TripUser extends TripUser_MAPPED {
 
     public TripUser() {}
@@ -48,6 +46,10 @@ public class TripUser extends TripUser_MAPPED {
     @Transient
     @Getter(AccessLevel.PROTECTED)
     protected String emailBeforeSetField;
+
+    @Transient
+    @Getter(AccessLevel.PROTECTED)
+    protected TripUserStatus statusBeforeSetField;
 
     public static TripUserRepository getRepo() {
         return CommonUpdateService.getTripUserRepository();
@@ -79,15 +81,25 @@ public class TripUser extends TripUser_MAPPED {
     }
 
     @Override
-    public void preSetFieldAction() {
-        this.emailBeforeSetField = this.email;
+    protected void postPersist() {
+        if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
+            XeMailUtils.sendEmailTicket(this);
+        }
     }
 
     @Override
-    public void postSetFieldAction() {
+    protected void postUpdate() {
         if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
-            CompletableFuture.runAsync(() -> XeMailUtils.sendEmailTicket(this));
+            XeMailUtils.sendEmailTicket(this);
+        }else if (this.statusBeforeSetField != this.status && this.status == TripUserStatus.CONFIRMED){
+            XeMailUtils.sendConfirmEmailTicket(this);
         }
+    }
+
+    @Override
+    public void preSetFieldAction() {
+        this.emailBeforeSetField = this.email;
+        this.statusBeforeSetField = this.status;
     }
 
     public void setTripUserPoints(List<PathPoint> pathPoints) {
@@ -319,6 +331,11 @@ public class TripUser extends TripUser_MAPPED {
                     .collect(Collectors.toList());
         }
         return this.seats;
+    }
+
+    @Override
+    public void preSaveAction() {
+
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

@@ -20,6 +20,8 @@ public class UrlDeclaration {
                         .method("forgot-password-secret-key").param("secretKeyInfo", Map.class)
                         .method("change-password").param("secretKeyInfo", Map.class)
                         .method("update-password").param("data", Map.class)
+                        .method("subscribe").param("token", String.class).type(Void.class)
+                        .method("unsubscribe").param("token", String.class).type(Void.class)
                 .create("trip")
                         .method("searchLocation").type(List.class).param("searchString", String.class)
                         .method("findBussSchedules").type(List.class).pathVar("searchString", String.class).pathVar("locationFromId", Long.class).pathVar("locationToId", Long.class)
