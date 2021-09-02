@@ -7,15 +7,15 @@ import {CommonUpdateService} from "../../../service/common-update.service";
 import {ObjectUtil} from "../../../../framework/util/object.util";
 import {InputTemplate} from "../../../../framework/model/EnumStatus";
 import {BussScheduleCriteria} from "../my-trip/my-trip.component";
-import {XeSubscriber} from "../../../../framework/model/XeSubscriber";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 @Component({
   selector: 'xe-find-trip',
   styles: [],
   templateUrl: 'find-trip.component.html',
 })
-export class FindTripComponent  extends XeSubscriber implements AfterViewInit {
+export class FindTripComponent  extends FormAbstract implements AfterViewInit {
   screens = {
     trips: 'trips',
     newTrip: 'newTrips',

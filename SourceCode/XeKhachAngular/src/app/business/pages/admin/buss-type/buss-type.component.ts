@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {XeTableData} from "../../../../framework/model/XeTableData";
 import {BussType} from "../../../entities/BussType";
 import {Buss} from "../../../entities/Buss";
-import {XeSubscriber} from "../../../../framework/model/XeSubscriber";
 import {Company} from "../../../entities/Company";
 import {CommonUpdateService} from "../../../service/common-update.service";
 import {SelectItem} from "../../../../framework/model/SelectItem";
@@ -16,13 +15,14 @@ import {Path} from "../../../entities/Path";
 import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 @Component({
   selector: 'xe-buss-type',
   styleUrls: ['buss-type.component.scss'],
   templateUrl: 'buss-type.component.html',
 })
-export class BussTypeComponent extends XeSubscriber {
+export class BussTypeComponent extends FormAbstract {
 
   screens = {
     bussTypeList: 'bussTypeList',

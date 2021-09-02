@@ -17,7 +17,6 @@ import {XeScreen} from "../xe-nav/xe-nav.component";
 import {EntityUtil} from "../../util/EntityUtil";
 import {Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
-import {ObjectUtil} from "../../util/object.util";
 import {EditOnRow} from "../../model/EnumStatus";
 import {Xe} from "../../model/Xe";
 import {StringUtil} from "../../util/string.util";
@@ -104,9 +103,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   public updateTableData(result: E[]) {
     console.time('cache table entity');
-    console.log('table result before cache', result);
     EntityUtil.cacheThenFill(result, this.entityMeta);
-    console.log('table result after cache', result);
 
     const mainIdName = this.entityMeta.mainIdName;
     const filter = (entity) => {
@@ -439,7 +436,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       dataEmpty = false;
     }
     if (this.tableData.table.mode.lazyData) {
-      this.tableData.table.action.triggerUpdate = (term) => this.searchTerm.next(term);
       if (dataEmpty) this.initLazyData();
     } else if (this.tableData.table.customData) {
       const data = this.tableData.table.customData();
@@ -491,12 +487,8 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (this.tableData?.table?.mode?.lazyData) {
+         if (this.tableData?.table?.mode?.lazyData) {
             return this.tableData.table.mode.lazyData(term);
-          } else {
-            if (ObjectUtil.isObject(term)) {
-              return term.triggerLazySearch;
-            }
           }
         })
       ).subscribe(data => this.updateTableData(data as any as E[]));
