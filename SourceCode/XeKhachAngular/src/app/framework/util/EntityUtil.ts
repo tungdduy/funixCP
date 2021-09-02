@@ -314,6 +314,18 @@ export class EntityUtil {
     }
     return traceValue;
   }
+  static valueAsSearchString(entity: any, entityMeta: ClassMeta, field: EntityField) {
+    const searchValue = field.template?.pipe
+      ? this.getInnerText(field.template.pipe.singleToHtml(this.getOriginFieldValue(entity, entityMeta, field)))
+      : this.valueAsInlineString(entity, entityMeta, field);
+    return StringUtil.toSearchString(searchValue);
+  }
+
+  static getInnerText(htmlString: string) {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = htmlString;
+    return tmp.textContent || tmp.innerText || "";
+  }
 
   static getOriginFieldValue(entity: any, entityMeta: ClassMeta, field: EntityField) {
     if (!field || !entity) {
