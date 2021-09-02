@@ -6,22 +6,22 @@ public class StandaloneRender extends AbstractRender<StandaloneModel> {
 
     @Override
     protected void handleModel(StandaloneModel model) {
-        model.addProfile(new StandaloneModel.Profile("HANS", ProfileEnum.POSTGRES)
-                .ctrlName("HANCTRL")
-                .host("172.18.0.22")
-                .port("5432")
-                .username("postgres")
-                .password("Taskhub1")
-                .mains("HANS", "HANSCC", "HANICC", "HANIFB", "HANSFB", "MTSING")
-        );
-        model.addProfile(new StandaloneModel.Profile("BUNCHA_PG", ProfileEnum.POSTGRES)
-                .ctrlName("mcd")
-                .host("172.18.5.29")
-                .port("5432")
-                .username("postgres")
-                .password("x")
-                .main("mcfries", "mainDataSource")
-        );
+//        model.addProfile(new StandaloneModel.Profile("HANS", ProfileEnum.POSTGRES)
+//                .ctrlName("HANCTRL")
+//                .host("172.18.0.22")
+//                .port("5432")
+//                .username("postgres")
+//                .password("Taskhub1")
+//                .mains("HANS", "HANSCC", "HANICC", "HANIFB", "HANSFB", "MTSING")
+//        );
+//        model.addProfile(new StandaloneModel.Profile("BUNCHA_PG", ProfileEnum.POSTGRES)
+//                .ctrlName("mcd")
+//                .host("172.18.5.29")
+//                .port("5432")
+//                .username("postgres")
+//                .password("x")
+//                .main("mcfries", "mainDataSource")
+//        );
         model.addProfile(new StandaloneModel.Profile("SA3", ProfileEnum.POSTGRES)
                 .ctrlName("sa3ctrl")
                 .host("172.16.0.70")
@@ -43,15 +43,15 @@ public class StandaloneRender extends AbstractRender<StandaloneModel> {
                 .mains("FUNNY", "HARMONY")
                 .raw()
         );
-        model.addProfile(new StandaloneModel.Profile("BUNCHA_DB2", ProfileEnum.DB2)
-                .ctrlName("MCD")
-                .host("172.18.5.29")
-                .port("50000")
-                .username("Db2admin")
-                .password("silvergoldplatinum")
-                .main("MCFRIES", "mainDataSource")
-                .main("MCFRIES2", "main2DataSource")
-        );
+//        model.addProfile(new StandaloneModel.Profile("BUNCHA_DB2", ProfileEnum.DB2)
+//                .ctrlName("MCD")
+//                .host("172.18.5.29")
+//                .port("50000")
+//                .username("Db2admin")
+//                .password("silvergoldplatinum")
+//                .main("MCFRIES", "mainDataSource")
+//                .main("MCFRIES2", "main2DataSource")
+//        );
     }
 
     @Override
@@ -64,9 +64,9 @@ public class StandaloneRender extends AbstractRender<StandaloneModel> {
         StandaloneRender render = new StandaloneRender();
         render.executeRenders();
 //
-//        render.templatePathSupplier = () -> render.thisRenderPath() + "jndiHolder.ftl";
-//        render.getModelFiles().get(0).renderFilePathSupplier = () -> "D:\\synergix-workspace\\TH6-Intel\\TH6\\src\\main\\java\\synergix\\th6\\business\\util\\persistence\\JndiDeclare.java";
-//        render.executeRenders();
+        render.templatePathSupplier = () -> render.thisRenderPath() + "jndiHolder.ftl";
+        render.getModelFiles().get(0).renderFilePathSupplier = () -> "D:\\synergix-workspace\\TH6-Intel\\TH6\\src\\main\\java\\synergix\\th6\\business\\util\\persistence\\JndiDeclare.java";
+        render.executeRenders();
 //
 //        render.templatePathSupplier = () -> render.thisRenderPath() + "dbconfig.xml.ftl";
 //        render.getModelFiles().get(0).renderFilePathSupplier = () -> "C:\\SupperModel\\dist\\dbconfig.xml";

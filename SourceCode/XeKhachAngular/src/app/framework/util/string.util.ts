@@ -1,3 +1,5 @@
+import {CharacterUtil} from "./character.util";
+
 const NONE_ALPHA_DIGIT_REGEX = /[^A-Za-z0-9]/g;
 const CAPITAL_REGEX = /(?=[A-Z][a-z]+)/g;
 
@@ -39,6 +41,9 @@ export const StringUtil = {
   upperFirstLetter: (str: string) => str.charAt(0).toUpperCase() + str.slice(1),
   classNameToIdName(className) {
     return this.lowercaseFirstLetter(className) + "Id";
+  },
+  toSearchString(value: string) {
+    return CharacterUtil.removeAccents(String(value).toLowerCase()).trim().replaceAll(/[^a-z0-9]+/g, "");
   }
 };
 

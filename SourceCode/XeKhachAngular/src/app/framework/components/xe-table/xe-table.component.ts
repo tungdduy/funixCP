@@ -20,6 +20,7 @@ import {debounceTime, distinctUntilChanged, switchMap} from "rxjs/operators";
 import {ObjectUtil} from "../../util/object.util";
 import {EditOnRow} from "../../model/EnumStatus";
 import {Xe} from "../../model/Xe";
+import {StringUtil} from "../../util/string.util";
 
 @Component({
   selector: 'xe-table',
@@ -128,12 +129,12 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   filterTableColumn(entity, column: TableColumn, value) {
-    const columnCheck = this.isValueContains(entity, column, value);
+    const columnCheck = this.isColumnValueContains(entity, column, value);
     if (columnCheck || !column.subColumns) {
       return columnCheck;
     } else {
       for (const subColumn of column.subColumns) {
-        if (this.isValueContains(entity, subColumn, value)) {
+        if (this.isColumnValueContains(entity, subColumn, value)) {
           return true;
         }
       }
@@ -506,7 +507,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     this.tableSource.filterPredicate = (data, inputValue) => {
       const value = inputValue.trim().toLowerCase();
       const manual = this.tableData.table.manualColumns?.findIndex(column => {
-        return this.isValueContains(data, column, value);
+        return this.isColumnValueContains(data, column, value);
       }) > -1;
       if (manual) return true;
       const basicFilter = this.tableData.table.basicColumns?.filter(column => {
@@ -520,8 +521,9 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
-  private isValueContains(data, column: ManualColumn | TableColumn, value: string) {
-    return String(this.entityUtil.valueAsInlineString(data, this.entityMeta, column.field)).toLowerCase().includes(value);
+  private isColumnValueContains(data, column: ManualColumn | TableColumn, value: string) {
+    return String(this.entityUtil.valueAsSearchString(data, this.entityMeta, column.field))
+      .includes(StringUtil.toSearchString(value));
   }
 
   private updateTableSource(result: E[]) {

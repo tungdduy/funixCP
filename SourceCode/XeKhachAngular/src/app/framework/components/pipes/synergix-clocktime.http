@@ -1,0 +1,16 @@
+POST http://localhost:8080/TH5Web/seam/resource/rest/faceTmsService/logInNoCompany
+Content-Type: application/json
+
+{
+  "userName": "freddie",
+  "password": "123456"
+}
+
+<> 2021-09-01T150847.200.txt
+<> 2021-09-01T145355.200.txt
+<> 2021-09-01T145145.200.json
+<> 2021-09-01T145135.200.json
+<> 2021-09-01T144830.200.txt
+<> 2021-09-01T144801.200.txt
+<> 2021-09-01T144742.200.txt
+<> 2021-09-01T144719.200.json
