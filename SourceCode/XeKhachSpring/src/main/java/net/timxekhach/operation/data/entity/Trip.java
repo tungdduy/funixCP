@@ -186,6 +186,15 @@ public class Trip extends Trip_MAPPED {
         }
         this.tripUnitPrice = this.bussSchedule.getScheduleUnitPrice();
         this.launchTime = this.bussSchedule.getLaunchTime();
+
+        if (!isValidLaunchDateTime(this))
+            ErrorCode.TRIP_NOT_FOUND.throwNow();
+    }
+
+    @Override
+    protected void preUpdate() {
+        if (!isValidLaunchDateTime(this))
+            ErrorCode.TRIP_NOT_FOUND.throwNow();
     }
 
     @Override
@@ -194,11 +203,10 @@ public class Trip extends Trip_MAPPED {
 
     @Override
     public void postSetFieldAction() {
-        if (!validateTripInfo(this))
-            ErrorCode.TRIP_NOT_FOUND.throwNow();
+
     }
 
-    protected boolean validateTripInfo(Trip trip){
+    protected boolean isValidLaunchDateTime(Trip trip){
         boolean valid = false;
         LocalDateTime currentLDT = LocalDateTime.now(ZoneId.systemDefault());
 
