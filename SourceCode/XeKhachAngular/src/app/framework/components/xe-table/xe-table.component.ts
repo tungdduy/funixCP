@@ -459,7 +459,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   get hideSelectColumn() {
-    return this.tableData.table?.mode?.hideSelectColumn || this.isReadOnly;
+    return this.tableData.table?.mode?.hideSelectColumn;
   }
 
   private initColumns() {

@@ -83,16 +83,16 @@
         </xe-btn>
       </ng-container>
 
+      <xe-btn (click)="addSelectedToParent()"
+              *ngIf="tableData?.external?.parent"
+              [btnText]="xeLabel.SELECT"
+              [disabled]="tableData?.formData?.share?.selection?.isEmpty()"
+              icon="plus">
+      </xe-btn>
       <div *ngIf="!isReadOnly" class="d-inline-block">
         <xe-btn (click)="tableData?.xeScreen?.go(tableData?.external.lookUpScreen)"
                 *ngIf="tableData?.external?.lookUpScreen"
                 hideText template="selectFromList"></xe-btn>
-        <xe-btn (click)="addSelectedToParent()"
-                *ngIf="tableData?.external?.parent"
-                [btnText]="xeLabel.SELECT"
-                [disabled]="tableData?.formData?.share?.selection?.isEmpty()"
-                icon="plus">
-        </xe-btn>
         <xe-btn
           (click)="tableData?.table?.action?.onClickBtnCreate ? tableData?.table.action.onClickBtnCreate() : newEntityDialog()"
           *ngIf="!tableData.table.mode?.denyNew"
@@ -213,6 +213,7 @@
 
   <ng-container *ngIf="!asCol(tableColumn).field.template.isTableOrder" id="columnInput">
     <xe-input [(value)]="getLastEntity(entity, tableColumn)[getLastFieldName()]"
+              [name]="asCol(tableColumn).field.name"
               [class]="asCol(tableColumn).display?.row?.css || ''"
               [mode]="editOnRow.hasEditingYes ? asCol(tableColumn).field.mode || xeInputMode.html: xeInputMode.html"
               [template]="asCol(tableColumn).field.template"
