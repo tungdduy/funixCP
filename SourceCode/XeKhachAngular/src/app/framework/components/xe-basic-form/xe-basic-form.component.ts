@@ -30,6 +30,13 @@ export class XeBasicFormComponent<E extends XeEntity> extends FormAbstract imple
     {
       name: "basicFormInfo",
       processor: (formFields) => {
+        const entityMapFields = this.formData.entityIdentifier.clazz.mapFields;
+        Object.keys(formFields).forEach(key => {
+          const mapField: ClassMeta = entityMapFields[key];
+          if (ObjectUtil.isObject(mapField) && ObjectUtil.isObject(formFields[key])) {
+            formFields[key] = formFields[key][mapField.mainIdName];
+          }
+        });
         if (this.formData.action?.preSubmit) {
           const validator = this.formData.action?.preSubmit(this.formData.share.entity);
           if (!validator.isSuccess())

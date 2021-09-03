@@ -215,6 +215,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       this.preparedTripUser.fullName = AuthUtil.instance.user.fullName;
       this.preparedTripUser.email = AuthUtil.instance.user.email;
       this.preparedTripUser.user = AuthUtil.instance.user;
+      this.preparedTripUser.user.userId = AuthUtil.instance.user.userId;
     }
     this.preparedTripUser.trip = this.trip;
     this.preparedTripUser.trip.bussSchedule = this.bussSchedule;
