@@ -28,7 +28,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/timxekhach
+    url: jdbc:mysql://timxekhach.tech:3306/timxekhach
     password: p@iGoec414100
     username: root
   jpa:
@@ -52,4 +52,11 @@ spring:
     check-template-location: false
 
 fcm:
-  service-account-file: /home/funix/config
+  service-account-file: C:\Users\ddao\IdeaProjects\funixCP\SourceCode\XeKhachSpring\src\main\resources\capstone-308403-firebase-adminsdk-sv1ag-d537cb4465.json
+
+mail:
+  host: smtp.timxekhach.tech
+  port: 587
+  username: support@timxekhach.tech
+  password: LHTaacV3
+  templates: C:\Users\ddao\IdeaProjects\funixCP\SourceCode\XeKhachSpring\src\main\resources\email-templates
