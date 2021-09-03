@@ -429,13 +429,13 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   private initData() {
-    const previousData = this.tableData.formData.share?.tableEntities;
-    let dataEmpty = true;
-    if (previousData?.length > 0) {
-      this.updateTableData(previousData);
-      dataEmpty = false;
-    }
     if (this.tableData.table.mode.lazyData) {
+      const previousData = this.tableData.formData.share?.tableEntities;
+      let dataEmpty = true;
+      if (previousData?.length > 0) {
+        this.updateTableData(previousData);
+        dataEmpty = false;
+      }
       if (dataEmpty) this.initLazyData();
     } else if (this.tableData.table.customData) {
       const data = this.tableData.table.customData();
