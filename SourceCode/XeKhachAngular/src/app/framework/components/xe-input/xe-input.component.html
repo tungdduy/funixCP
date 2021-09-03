@@ -1,5 +1,5 @@
 <ng-template #inputLabel>
-  <div *ngIf="isShowLabel" class="text-info pb-1 {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
+  <div *ngIf="isShowLabel" class="text-info pb-1 d-inline-block {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
   </div>
   <xe-btn (click)="search()" *ngIf="template?.hasTypeSearchTable && mode.hasInput"
           hideText state="none" template="selectFromList"></xe-btn>
