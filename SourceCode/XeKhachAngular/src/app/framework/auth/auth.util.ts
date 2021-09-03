@@ -88,6 +88,10 @@ export class AuthUtil {
     location.reload();
   }
 
+  isNonEmployee(): boolean {
+    return this.employee != null && this.company != null;
+  }
+
   private isExpired(): boolean {
     return this._jwtHelper.isTokenExpired(this.token);
   }
