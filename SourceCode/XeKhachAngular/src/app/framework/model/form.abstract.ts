@@ -11,7 +11,7 @@ export abstract class FormAbstract extends XeSubscriber implements AfterViewInit
   constructor() {
     super();
     setTimeout(() => {
-      this.adminContainer.screen.goHome();
+      this.adminContainer?.screen?.goHome();
     }, 0);
   }
 

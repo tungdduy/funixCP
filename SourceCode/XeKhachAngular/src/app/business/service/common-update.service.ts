@@ -12,6 +12,8 @@ import {BussScheduleCriteria} from "../pages/admin/my-trip/my-trip.component";
 import {StringUtil} from "../../framework/util/string.util";
 import {Trip} from "../entities/Trip";
 import {TripUser} from "../entities/TripUser";
+import {User} from "../entities/User";
+import {AuthUtil} from "../../framework/auth/auth.util";
 
 @Injectable({
   providedIn: 'root'
@@ -146,6 +148,14 @@ export class CommonUpdateService {
     const url = Url.API_HOST + "/trip/getTripUsers?userId=" + userId + "&phones=" + phones + "&emails=" + emails;
     console.log(url);
     return this.http.get<TripUser[]>(url);
+  }
+
+  refreshCurrentUser() {
+    this.getOne<User>(AuthUtil.instance.user, User.meta).subscribe(
+      user => {
+        AuthUtil.instance.setRepoUser(user[0]);
+      }
+    );
   }
 
 }
