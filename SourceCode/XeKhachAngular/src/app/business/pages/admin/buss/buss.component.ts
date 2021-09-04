@@ -12,6 +12,7 @@ import {EditOnRow, InputTemplate} from "../../../../framework/model/EnumStatus";
 import {Path} from "../../../entities/Path";
 import {PathPoint} from "../../../entities/PathPoint";
 import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
+import {Role} from "../../../xe.role";
 
 @Component({
   selector: 'xe-buss',
@@ -96,7 +97,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
       },
       action: {
         filters: {
-          filterSingle: (employee: Employee) => !employee.countBusses || employee.countBusses === 0
+          filterSingle: (employee: Employee) => (!employee.countBusses || employee.countBusses === 0) && employee.user.role.includes(Role.ROLE_BUSS_STAFF)
         }
       }
     },

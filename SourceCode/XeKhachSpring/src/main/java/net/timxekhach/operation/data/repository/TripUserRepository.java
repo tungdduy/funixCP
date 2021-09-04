@@ -26,6 +26,10 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     List<TripUser> findByUserUserId(Long userId);
     List<TripUser> findByPhoneNumberInOrEmailIn(List<String> phoneNumber, List<String> email);
+
+    TripUser findFirstByConfirmedByEmployeeId(Long employeeId);
+
+    TripUser findFirstByUserUserId(Long userId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

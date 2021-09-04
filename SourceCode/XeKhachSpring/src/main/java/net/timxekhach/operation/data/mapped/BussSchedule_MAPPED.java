@@ -1,28 +1,29 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.Buss;
-import net.timxekhach.utility.XeDateUtils;
-import java.util.Date;
-import javax.validation.constraints.*;
-import net.timxekhach.operation.data.entity.Path;
-import java.util.List;
-import java.util.ArrayList;
-import net.timxekhach.operation.data.entity.BussSchedulePoint;
-import net.timxekhach.operation.data.entity.PathPoint;
-import org.apache.commons.lang3.time.DateUtils;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import net.timxekhach.operation.data.entity.Buss;
+import net.timxekhach.operation.data.entity.BussSchedulePoint;
+import net.timxekhach.operation.data.entity.Path;
+import net.timxekhach.operation.data.entity.PathPoint;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.utility.XeDateUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 

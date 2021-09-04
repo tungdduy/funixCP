@@ -28,6 +28,8 @@ public interface TripRepository extends JpaRepository<Trip, Trip_MAPPED.Pk> {
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     Optional<Trip> findFirstByBussScheduleIdAndLaunchDate(Long bussScheduleId, Date launchDate);
     List<Trip> findByCompanyIdOrderByLaunchDateDesc(Long companyId);
+
+    Trip findFirstByBussScheduleId(Long bussScheduleId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

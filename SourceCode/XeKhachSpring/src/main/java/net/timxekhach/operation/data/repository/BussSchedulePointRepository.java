@@ -1,10 +1,12 @@
 package net.timxekhach.operation.data.repository;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import net.timxekhach.operation.data.entity.BussSchedulePoint;
 import net.timxekhach.operation.data.mapped.BussSchedulePoint_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
@@ -15,6 +17,7 @@ public interface BussSchedulePointRepository extends JpaRepository<BussScheduleP
     void deleteAllByBussSchedulePointIdIn(List<Long> ids);
     BussSchedulePoint findByBussSchedulePointId(Long id);
     List<BussSchedulePoint> findByBussSchedulePointIdIn(List<Long> id);
+    Integer countBussSchedulePointIdByPathPointId(Long pathPoint);
     Integer countBussSchedulePointIdByBussScheduleId(Long bussSchedule);
     @SuppressWarnings("unused")
     void deleteByBussScheduleId(Long bussScheduleId);
