@@ -54,6 +54,11 @@ export class MyAccountComponent extends FormAbstract implements AfterViewInit {
   }, this.user).formData;
   companyForm = Company.tableData({
     formData: {
+      display: {
+      },
+      mode: {
+        readonly: !this.auth.hasBussAdmin
+      },
       share: {entity: this.user?.employee?.company},
       action: {
         postCancel: () => this.cancelEdit(),

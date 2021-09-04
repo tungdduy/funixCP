@@ -83,7 +83,7 @@
             hideText
             template="add"></xe-btn>
   </div>
-  <div class="text-right">
+  <div class="text-right" *ngIf="!formData.mode?.readonly">
     <ng-content select="[bottomRightButtons]"></ng-content>
 
     <xe-btn (click)="onCancel()"

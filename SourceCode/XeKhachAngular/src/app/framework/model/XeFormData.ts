@@ -96,6 +96,7 @@ export class XeFormData<E extends XeEntity> {
     allowAdd?: boolean;
   };
   mode?: {
+    readonly?: boolean;
     uncheckChanged?: boolean;
   };
 
