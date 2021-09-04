@@ -187,15 +187,11 @@ public class Trip extends Trip_MAPPED {
         ErrorCode.DATA_EXISTED.throwIf(Trip.findOrEmulateTrip(this.getBussSchedule(), this.launchDate).tripId != null);
         this.tripUnitPrice = this.bussSchedule.getScheduleUnitPrice();
         this.launchTime = this.bussSchedule.getLaunchTime();
-
-        if (!isValidLaunchDateTime(this))
-            ErrorCode.TRIP_NOT_FOUND.throwNow();
     }
 
     @Override
     protected void preUpdate() {
-        if (!isValidLaunchDateTime(this))
-            ErrorCode.TRIP_NOT_FOUND.throwNow();
+
     }
 
     @Override

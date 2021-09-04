@@ -22,6 +22,9 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.persistence.Entity;
@@ -82,18 +85,28 @@ public class TripUser extends TripUser_MAPPED {
 
     @Override
     protected void postPersist() {
-        if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
-            XeMailUtils.sendEmailTicket(this);
-        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                if (!StringUtils.equalsIgnoreCase(emailBeforeSetField, email)){
+                    XeMailUtils.sendEmailTicket(getTripUserId());
+                }
+            }
+        });
     }
 
     @Override
     protected void postUpdate() {
-        if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
-            XeMailUtils.sendEmailTicket(this);
-        }else if (this.statusBeforeSetField != this.status && this.status == TripUserStatus.CONFIRMED){
-            XeMailUtils.sendConfirmEmailTicket(this);
-        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                if (!StringUtils.equalsIgnoreCase(emailBeforeSetField, email)){
+                    XeMailUtils.sendEmailTicket(getTripUserId());
+                }else if (statusBeforeSetField != status && status == TripUserStatus.CONFIRMED){
+                    XeMailUtils.sendConfirmEmailTicket(getTripUserId());
+                }
+            }
+        });
     }
 
     @Override
