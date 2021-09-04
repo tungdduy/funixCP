@@ -95,7 +95,7 @@ export class AuthUtil {
   }
 
   isNonEmployee(): boolean {
-    return this.employee != null && this.company != null;
+    return !this.employee || !this.company;
   }
 
   private isExpired(): boolean {
