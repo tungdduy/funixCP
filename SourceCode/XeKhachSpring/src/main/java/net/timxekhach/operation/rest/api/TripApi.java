@@ -6,6 +6,7 @@ import net.timxekhach.operation.data.entity.BussSchedule;
 import net.timxekhach.operation.data.entity.Location;
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.TripUser;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.operation.rest.service.TripService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,11 @@ public class TripApi {
 		List<String> phoneList = Arrays.asList(phones.split(","));
 		List<String> emailList = Arrays.asList(emails.split(","));
 		return success(tripService.getTripUsers(userId, phoneList, emailList));
+	}
+
+	@GetMapping("/getTripByCompanyId/{companyId}")
+	public ResponseEntity<List<Trip>> getTripByCompanyId(@PathVariable Long companyId) {
+		return success(CommonUpdateService.getTripRepository().findByCompanyIdOrderByLaunchDateDesc(companyId));
 	}
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //

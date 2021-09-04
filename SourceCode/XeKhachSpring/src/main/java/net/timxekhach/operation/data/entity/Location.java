@@ -1,15 +1,16 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.Location_MAPPED;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AccessLevel;
-import javax.persistence.Transient;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.VietNamAccentUtil;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Entity @Getter @Setter
