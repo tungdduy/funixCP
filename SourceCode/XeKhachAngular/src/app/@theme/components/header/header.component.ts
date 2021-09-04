@@ -23,8 +23,8 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   user = AuthUtil.instance.user;
 
   userMenu: NbMenuItem[] = [
-    {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost, hidden: AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN, Role.ROLE_SYS_ADMIN, Role.ROLE_BUSS_STAFF, Role.ROLE_CALLER_STAFF])},
-    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full, hidden: AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN, Role.ROLE_SYS_ADMIN, Role.ROLE_BUSS_STAFF, Role.ROLE_CALLER_STAFF])},
+    {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost, hidden: AuthUtil.instance.isStaff()},
+    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full, hidden: AuthUtil.instance.isStaff()},
     {title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
   ];
 
