@@ -158,4 +158,11 @@ export class CommonUpdateService {
     );
   }
 
+  findTripByCompanyId(companyId: number): Observable<Trip[]> {
+    companyId = !companyId ? 0 : companyId;
+    const url = Url.API_HOST + "/trip/getTripByCompanyId/" + companyId;
+    console.log(url);
+    return this.http.get<Trip[]>(url);
+  }
+
 }
