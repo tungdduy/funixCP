@@ -98,6 +98,10 @@ export class AuthUtil {
     return !this.employee || !this.company;
   }
 
+  isStaff(): boolean {
+    return AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN, Role.ROLE_SYS_ADMIN, Role.ROLE_BUSS_STAFF, Role.ROLE_CALLER_STAFF]);
+  }
+
   private isExpired(): boolean {
     return this._jwtHelper.isTokenExpired(this.token);
   }
