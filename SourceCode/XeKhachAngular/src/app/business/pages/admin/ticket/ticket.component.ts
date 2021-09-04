@@ -26,7 +26,7 @@ export class TicketComponent extends FormAbstract {
     xeScreen: this.screen,
     table: {
       mode: {
-        customObservable: CommonUpdateService.instance.findTripByCompanyId(this.auth.companyId)
+        customObservable: this.auth.hasSysAdmin ? undefined : CommonUpdateService.instance.findTripByCompanyId(this.auth.companyId)
       },
       action: {
         filters: {

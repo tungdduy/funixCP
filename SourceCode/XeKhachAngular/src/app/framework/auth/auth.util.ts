@@ -141,7 +141,7 @@ export class AuthUtil {
   }
 
   get employeeId() {
-    return AuthUtil.instance.user.employee.employeeId;
+    return AuthUtil.instance.user.employee?.employeeId;
   }
 
   get employee() {
@@ -149,11 +149,11 @@ export class AuthUtil {
   }
 
   get companyId() {
-    return AuthUtil.instance.user.employee.company.companyId;
+    return AuthUtil.instance.user.employee?.company?.companyId;
   }
 
   get company() {
-    return AuthUtil.instance.user.employee.company;
+    return AuthUtil.instance.user.employee?.company;
   }
 
   get hasBussAdmin() {
@@ -162,5 +162,9 @@ export class AuthUtil {
 
   get hasCaller() {
     return AuthUtil.instance.isAllow([Role.ROLE_CALLER_STAFF]);
+  }
+
+  get hasSysAdmin() {
+    return AuthUtil.instance.isAllow([Role.ROLE_SYS_ADMIN]);
   }
 }
