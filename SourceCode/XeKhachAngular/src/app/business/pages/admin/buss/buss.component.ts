@@ -93,6 +93,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     xeScreen: this.screen,
     table: {
       mode: {
+        hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: true
       },
       action: {
