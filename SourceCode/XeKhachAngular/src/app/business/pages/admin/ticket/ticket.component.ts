@@ -30,7 +30,7 @@ export class TicketComponent extends FormAbstract {
       },
       action: {
         filters: {
-          filterSingle: (trip: Trip) => this.auth.hasBussAdmin ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
+          filterSingle: (trip: Trip) => this.auth.hasCaller ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
         },
         postSelect: () => this.screen.go(this.screens.tripDetails),
       },
