@@ -29,6 +29,7 @@ export class PathComponent extends FormAbstract {
       },
       table: {
         mode: {
+          hideSelectColumn: !this.auth.hasBussAdmin,
           readonly: !this.auth.hasBussAdmin
         },
         selectBasicColumns: ['pathName', 'pathDesc'],

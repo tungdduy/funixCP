@@ -21,7 +21,7 @@ export abstract class XeEntity {
   profileImageUrl: string;
   isFilled = false;
   initProfileImage() {
-    return "http://robohash.org/xekhach/" + this.constructor.name + "/0";
+    return "https://robohash.org/xekhach/" + this.constructor.name + "/0";
   }
 
 }

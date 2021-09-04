@@ -12,6 +12,8 @@ import {BussScheduleCriteria} from "../pages/admin/my-trip/my-trip.component";
 import {StringUtil} from "../../framework/util/string.util";
 import {Trip} from "../entities/Trip";
 import {TripUser} from "../entities/TripUser";
+import {User} from "../entities/User";
+import {AuthUtil} from "../../framework/auth/auth.util";
 
 @Injectable({
   providedIn: 'root'
@@ -147,5 +149,28 @@ export class CommonUpdateService {
     console.log(url);
     return this.http.get<TripUser[]>(url);
   }
+
+  refreshCurrentUser() {
+    this.getOne<User>(AuthUtil.instance.user, User.meta).subscribe(
+      user => {
+        AuthUtil.instance.setRepoUser(user[0]);
+      }
+    );
+  }
+
+  findTripByCompanyId(companyId: number): Observable<Trip[]> {
+    companyId = !companyId ? 0 : companyId;
+    const url = Url.API_HOST + "/trip/getTripByCompanyId/" + companyId;
+    console.log(url);
+    return this.http.get<Trip[]>(url);
+  }
+
+  findBussSchedulesByCompanyId(companyId: number): Observable<BussSchedule[]> {
+    companyId = !companyId ? 0 : companyId;
+    const url = Url.API_HOST + "/trip/getBussSchedulesByCompanyId/" + companyId;
+    console.log(url);
+    return this.http.get<BussSchedule[]>(url);
+  }
+
 
 }

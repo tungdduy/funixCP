@@ -50,7 +50,7 @@ export class Xe {
       const fieldMeta = fieldMetas[fieldName] as ClassMeta;
       const fieldValue = entity[fieldName];
       if (fieldValue && !Array.isArray(fieldValue) && !ObjectUtil.isNumberGreaterThanZero(fieldValue)) {
-        convertedEntity[fieldName] = entity[fieldMeta.mainIdName];
+        convertedEntity[fieldName] = fieldValue[fieldMeta.mainIdName];
       }
     });
     console.log('converted Entity to updating: ', convertedEntity);

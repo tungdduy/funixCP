@@ -12,6 +12,10 @@ import net.timxekhach.utility.XeStringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,14 +184,56 @@ public class Trip extends Trip_MAPPED {
         if (this.getLaunchDate().before(this.getBussSchedule().getEffectiveDateFrom())) {
            ErrorCode.INVALID_EFFECTIVE_DATE.throwNow(this.bussSchedule.getEffectiveDateFrom().toString());
         }
+        ErrorCode.DATA_EXISTED.throwIf(Trip.findOrEmulateTrip(this.getBussSchedule(), this.launchDate).tripId != null);
         this.tripUnitPrice = this.bussSchedule.getScheduleUnitPrice();
         this.launchTime = this.bussSchedule.getLaunchTime();
+    }
+
+    @Override
+    protected void preUpdate() {
+
     }
 
     @Override
     public void preSetFieldAction() {
     }
 
+    @Override
+    public void postSetFieldAction() {
+
+    }
+
+    protected boolean isValidLaunchDateTime(Trip trip){
+        boolean valid = false;
+        LocalDateTime currentLDT = LocalDateTime.now(ZoneId.systemDefault());
+
+        //check launch date
+        LocalDateTime searchLDT = LocalDateTime.ofInstant(trip.getLaunchDate().toInstant(), ZoneId.systemDefault());
+        LocalDate searchLD = searchLDT.toLocalDate();
+        if (currentLDT.toLocalDate().isBefore(searchLD))
+            //only accept search date is after today
+            //otherwise (equal today) need to check time
+            valid = true;
+        else if (currentLDT.toLocalDate().isAfter(searchLD))
+            //not accept search in the pass
+            return false;
+
+        // check launch Time
+        LocalDateTime launchLDT = LocalDateTime.ofInstant(trip.getLaunchTime().toInstant(), ZoneId.systemDefault());
+
+        LocalTime currentLT = currentLDT.toLocalTime();
+        LocalTime launchLT = launchLDT.toLocalTime();
+
+        if ( launchLT.getHour() > currentLT.getHour() )
+            valid = true;
+        else if (launchLT.getHour() == currentLT.getHour()){
+            //if current minute less than 5 minutes then ok
+            if (launchLT.getMinute() > currentLT.getMinute() - 5 )
+                valid = true;
+        }
+
+        return valid;
+    }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

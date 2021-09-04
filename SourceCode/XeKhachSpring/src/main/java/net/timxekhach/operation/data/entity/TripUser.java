@@ -4,7 +4,6 @@ package net.timxekhach.operation.data.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.PathPoint_MAPPED;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
@@ -23,17 +22,19 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter @Log4j2
+@Entity @Getter @Setter
 public class TripUser extends TripUser_MAPPED {
 
     public TripUser() {}
@@ -48,6 +49,10 @@ public class TripUser extends TripUser_MAPPED {
     @Transient
     @Getter(AccessLevel.PROTECTED)
     protected String emailBeforeSetField;
+
+    @Transient
+    @Getter(AccessLevel.PROTECTED)
+    protected TripUserStatus statusBeforeSetField;
 
     public static TripUserRepository getRepo() {
         return CommonUpdateService.getTripUserRepository();
@@ -79,15 +84,35 @@ public class TripUser extends TripUser_MAPPED {
     }
 
     @Override
-    public void preSetFieldAction() {
-        this.emailBeforeSetField = this.email;
+    protected void postPersist() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                if (!StringUtils.equalsIgnoreCase(emailBeforeSetField, email)){
+                    XeMailUtils.sendEmailTicket(getTripUserId());
+                }
+            }
+        });
     }
 
     @Override
-    public void postSetFieldAction() {
-        if (!StringUtils.equalsIgnoreCase(this.emailBeforeSetField, this.email)){
-            CompletableFuture.runAsync(() -> XeMailUtils.sendEmailTicket(this));
-        }
+    protected void postUpdate() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                if (!StringUtils.equalsIgnoreCase(emailBeforeSetField, email)){
+                    XeMailUtils.sendEmailTicket(getTripUserId());
+                }else if (statusBeforeSetField != status && status == TripUserStatus.CONFIRMED){
+                    XeMailUtils.sendConfirmEmailTicket(getTripUserId());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void preSetFieldAction() {
+        this.emailBeforeSetField = this.email;
+        this.statusBeforeSetField = this.status;
     }
 
     public void setTripUserPoints(List<PathPoint> pathPoints) {
@@ -319,6 +344,11 @@ public class TripUser extends TripUser_MAPPED {
                     .collect(Collectors.toList());
         }
         return this.seats;
+    }
+
+    @Override
+    public void preSaveAction() {
+
     }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

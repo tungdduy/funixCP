@@ -1,6 +1,6 @@
 import {XeLabel, XeLbl} from "../../business/i18n";
 import {Directive} from "@angular/core";
-import {BussSchemeMode, InputMode, InputTemplate} from "./EnumStatus";
+import {BussSchemeMode, InputMode, InputTemplate, LabelMode} from "./EnumStatus";
 import {AdminComponent} from "../../business/pages/admin/admin.component";
 import {EntityUtil} from "../util/EntityUtil";
 import {Xe} from "./Xe";
@@ -15,6 +15,7 @@ export class AbstractXe extends Xe {
   bussSchemeMode = BussSchemeMode;
   xeLbl = XeLbl;
   auth = AuthUtil.instance;
+  labelMode = LabelMode;
 
   constructor() {
     super();

@@ -1,7 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {TripUser} from "../../../entities/TripUser";
-import {XeSubscriber} from "../../../../framework/model/XeSubscriber";
 import {User} from "../../../entities/User";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {Location} from "../../../entities/Location";
@@ -12,6 +11,7 @@ import {configConstant} from "../../../../framework/config.constant";
 import {TicketInfo} from "../../../../framework/model/XeFormData";
 import {XeTableData} from "../../../../framework/model/XeTableData";
 import {CommonUpdateService} from "../../../service/common-update.service";
+import {FormAbstract} from "../../../../framework/model/form.abstract";
 
 export interface BussScheduleCriteria {
   locationFrom: Location;
@@ -28,7 +28,7 @@ export interface BussScheduleCriteria {
   styles: [],
   templateUrl: 'my-trip.component.html',
 })
-export class MyTripComponent extends XeSubscriber implements AfterViewInit {
+export class MyTripComponent extends FormAbstract implements AfterViewInit {
   user = AuthUtil.instance.user;
   screens = {
     trips: 'trips',

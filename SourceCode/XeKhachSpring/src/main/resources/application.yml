@@ -28,7 +28,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/timxekhach
+    url: jdbc:mysql://timxekhach.tech:3306/timxekhach
     password: p@iGoec414100
     username: root
   jpa:
@@ -50,6 +50,3 @@ spring:
   freemarker:
     enabled: true
     check-template-location: false
-
-fcm:
-  service-account-file: /home/funix/config

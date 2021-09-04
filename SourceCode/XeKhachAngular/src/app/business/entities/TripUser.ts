@@ -52,6 +52,7 @@ export class TripUser extends XeEntity {
   endPoint: PathPoint;
   totalSeats: number;
   seats: number[];
+  userId: number;
 
   get bussScheduleStartPoint() {
     EntityUtil.fill(this, TripUser.meta);
@@ -246,6 +247,7 @@ export class TripUser extends XeEntity {
           {name: 'unitPrice', hidden: true},
           {name: 'seatsString', required: true, hidden: true},
           {name: 'totalPrice', hidden: true},
+          {name: 'user', hidden: true},
           {name: 'tripUserPointsString', hidden: true},
           {name: 'trip.launchTime', template: InputTemplate.time, hidden: true},
           {name: 'trip.launchDate', template: InputTemplate.date, hidden: true},

@@ -13,8 +13,8 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 
 @Log4j2
 public class EmailService {
@@ -53,36 +53,41 @@ public class EmailService {
   }
 
   public void sendMail(Context context, String template, String subject, String recipient) {
-    log.info("sendMail email running...");
-    if (StringUtils.isEmpty(recipient)){
-      log.info("Recipient >>> IS NULL >>> REJECTED sending email request");
-      return;
-    }
+    CompletableFuture.runAsync(() -> {
+      try {
+        log.info("sendMail email running...");
+        if (StringUtils.isEmpty(recipient)){
+          log.info("Recipient >>> IS NULL >>> REJECTED sending email request");
+          return;
+        }
+        log.info("Recipient: "+recipient);
+        log.info("Subject: "+subject);
 
-    Properties props = new Properties();
-    props.put("mail.smtp.host", host);
-    props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.port", port);
+        Properties props = new Properties();
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", port);
 
-    Session session = Session.getInstance(props,
-        new Authenticator() {
-          @Override
-          protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(email, password);
-          }
-        });
-    Message message = new MimeMessage(session);
-    try {
-      message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
-      message.setFrom(new InternetAddress(email, "TìmXeKhách"));
-      message.setSubject(subject);
-      String content = getContent(context, template);
-      message.setContent(content, CONTENT_TYPE_TEXT_HTML);
-      Transport.send(message);
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-      ErrorCode.SEND_EMAIL_FAILED.throwNow();
-    }
+        Session session = Session.getInstance(props,
+            new Authenticator() {
+              @Override
+              protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(email, password);
+              }
+            });
+        Message message = new MimeMessage(session);
+
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
+        message.setFrom(new InternetAddress(email, "TìmXeKhách"));
+        message.setSubject(subject);
+        String content = getContent(context, template);
+        message.setContent(content, CONTENT_TYPE_TEXT_HTML);
+        //Transport.send(message);
+      } catch (Exception e) {
+        log.error(e.getMessage(), e);
+        ErrorCode.SEND_EMAIL_FAILED.throwNow();
+      }
+    });
   }
 
   public String getContent(final Context context, final String templateName) {

@@ -1,12 +1,14 @@
 package net.timxekhach.operation.data.repository;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.mapped.Trip_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
@@ -21,10 +23,11 @@ public interface TripRepository extends JpaRepository<Trip, Trip_MAPPED.Pk> {
     @SuppressWarnings("unused")
     void deleteByBussScheduleId(Long bussScheduleId);
     @SuppressWarnings("unused")
-    List<Trip> findByBussScheduleId(Long bussScheduleId);
+    List<Trip> findByBussScheduleIdOrderByLaunchDateDesc(Long bussScheduleId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     Optional<Trip> findFirstByBussScheduleIdAndLaunchDate(Long bussScheduleId, Date launchDate);
+    List<Trip> findByCompanyIdOrderByLaunchDateDesc(Long companyId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

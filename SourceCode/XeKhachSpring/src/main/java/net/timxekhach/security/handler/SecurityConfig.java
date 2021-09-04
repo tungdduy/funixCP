@@ -82,6 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/forgot-password-secret-key/**").permitAll()
                 .antMatchers("/user/change-password/**").permitAll()
                 .antMatchers("/user/update-password/**").permitAll()
+                .antMatchers("/user/subscribe/**").permitAll()
+                .antMatchers("/user/unsubscribe/**").permitAll()
                 .antMatchers("/trip/**").permitAll()
                 .antMatchers("/trip/searchLocation/**").permitAll()
                 .antMatchers("/trip/findBussSchedules/**").permitAll()

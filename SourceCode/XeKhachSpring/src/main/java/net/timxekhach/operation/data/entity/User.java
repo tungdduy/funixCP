@@ -3,6 +3,7 @@ package net.timxekhach.operation.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
@@ -23,7 +24,9 @@ import java.util.stream.Collectors;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter
+@Entity
+@Getter
+@Setter
 public class User extends User_MAPPED {
 
     @Override
@@ -31,7 +34,7 @@ public class User extends User_MAPPED {
         return super.getProfileImageUrl();
     }
 
-// ____________________ ::BODY_SEPARATOR:: ____________________ //
+    // ____________________ ::BODY_SEPARATOR:: ____________________ //
     @JsonIgnore
     public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);
@@ -44,14 +47,22 @@ public class User extends User_MAPPED {
                 .collect(Collectors.toList());
     }
 
-
+    @Transient
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    boolean isPasswordEncoded;
     @Transient
     @JsonIgnore
     String passwordBeforeEncode;
+
     public void encodePassword(String password) {
-        this.passwordBeforeEncode = password;
-        this.password = SecurityConfig.getPasswordEncoder().encode(password);
+        if (!this.isPasswordEncoded) {
+            this.passwordBeforeEncode = password;
+            this.password = SecurityConfig.getPasswordEncoder().encode(password);
+            this.isPasswordEncoded = true;
+        }
     }
+
     public void encodePassword() {
         this.encodePassword(this.password);
     }
@@ -80,7 +91,7 @@ public class User extends User_MAPPED {
     }
 
     @Override
-    public void prePersist(){
+    public void prePersist() {
         ErrorCode.PASSWORD_MUST_MORE_THAN_3_CHARS.throwIf(this.password == null || this.password.length() < 3);
         this.encodePassword();
     }
@@ -88,14 +99,12 @@ public class User extends User_MAPPED {
     @Override
     public void postPersist() {
         sendEmailRegisterSuccessFully(this);
-        new Thread(() -> {
-            TripUser.getRepo()
-                    .findByPhoneNumberInOrEmailIn(Collections.singletonList(this.phoneNumber), Collections.singletonList(this.email))
-                    .stream()
-                    .filter(tripUser -> tripUser.getUser() == null)
-                    .peek(tripUser -> tripUser.setUser(this))
-                    .forEach(XeEntity::save);
-        }).start();
+        new Thread(() -> TripUser.getRepo()
+                .findByPhoneNumberInOrEmailIn(Collections.singletonList(this.phoneNumber), Collections.singletonList(this.email))
+                .stream()
+                .filter(tripUser -> tripUser.getUser() == null)
+                .peek(tripUser -> tripUser.setUser(this))
+                .forEach(XeEntity::save)).start();
 
     }
 
@@ -109,8 +118,8 @@ public class User extends User_MAPPED {
     public void setFieldByName(Map<String, String> data) {
         super.setFieldByName(data);
         if (data.containsKey("password")) {
-           this.password = data.get("password");
-           this.encodePassword();
+            this.password = data.get("password");
+            this.encodePassword();
         }
     }
 

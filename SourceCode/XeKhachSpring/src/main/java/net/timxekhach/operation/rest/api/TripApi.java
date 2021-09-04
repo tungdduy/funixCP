@@ -1,21 +1,20 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.RequiredArgsConstructor;
-import net.timxekhach.operation.data.entity.Trip;
-import net.timxekhach.operation.data.entity.TripUser;
-import org.springframework.web.bind.annotation.*;
-import net.timxekhach.operation.rest.service.TripService;
-import static net.timxekhach.utility.XeResponseUtils.success;
-import org.springframework.http.ResponseEntity;
 import net.timxekhach.operation.data.entity.BussSchedule;
 import net.timxekhach.operation.data.entity.Location;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.data.entity.TripUser;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.operation.rest.service.TripService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static net.timxekhach.utility.XeResponseUtils.success;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
@@ -56,6 +55,18 @@ public class TripApi {
 		List<String> emailList = Arrays.asList(emails.split(","));
 		return success(tripService.getTripUsers(userId, phoneList, emailList));
 	}
+
+	@GetMapping("/getTripByCompanyId/{companyId}")
+	public ResponseEntity<List<Trip>> getTripByCompanyId(@PathVariable Long companyId) {
+		return success(CommonUpdateService.getTripRepository().findByCompanyIdOrderByLaunchDateDesc(companyId));
+	}
+
+	@GetMapping("/getBussSchedulesByCompanyId/{companyId}")
+	public ResponseEntity<List<BussSchedule>> getBussSchedulesByCompanyId(@PathVariable Long companyId) {
+		return success(CommonUpdateService.getBussScheduleRepository().findByCompanyIdOrderByLaunchTimeDesc(companyId));
+	}
+
+
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

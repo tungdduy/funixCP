@@ -1,10 +1,16 @@
 package net.timxekhach.utility;
 
 import lombok.extern.log4j.Log4j2;
+import net.timxekhach.operation.data.entity.PathPoint;
+import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.mail.EmailService;
 import org.thymeleaf.context.Context;
+
+import java.util.Date;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class XeMailUtils {
@@ -38,23 +44,42 @@ public class XeMailUtils {
 
     }
 
-    public static void sendEmailTicket(TripUser trip){
-        Context context = new Context();
-        context.setVariable("fullName", trip.getFullName());
-        context.setVariable("orderNo", String.format("%08d", trip.getTripId()));
-        context.setVariable("tuyen", String.format("%s - %s", trip.getStartPoint().getPointName(), trip.getEndPoint().getPointName()));
-        context.setVariable("nhaxe", trip.getTrip().getBussSchedule().getBuss().getCompany().getCompanyName());
-        context.setVariable("bienso", trip.getTrip().getBussSchedule().getBuss().getBussLicense());
-        context.setVariable("unitPrice", trip.getUnitPrice());
-        context.setVariable("totalPrice", trip.getTotalPrice());
-        context.setVariable("seats", trip.getSeats());
-
-        String template = "order-confirm";
+    public static void sendEmailTicket(Long tripUserId){
+        TripUser tripUser = CommonUpdateService.getTripUserRepository().findByTripUserId(tripUserId);
+        Context context = createContext(tripUser);
+        String template = "order-info";
 
         String subject = "Thông tin chuyến đi của bạn";
 
-        emailService.sendMail(context, template, subject, trip.getEmail());
+        emailService.sendMail(context, template, subject, tripUser.getEmail());
     }
 
+    public static void sendConfirmEmailTicket(Long tripUserId){
+        TripUser tripUser = CommonUpdateService.getTripUserRepository().findByTripUserId(tripUserId);
+        Context context = createContext(tripUser);
+        String template = "order-confirm";
+
+        String subject = new StringBuilder("Nhà xe ")
+            .append(tripUser.getTrip().getBussSchedule().getBuss().getCompany().getCompanyName())
+            .append(" đã xác nhận chuyến đi của bạn").toString();
+
+        emailService.sendMail(context, template, subject, tripUser.getEmail());
+    }
+
+    private static Context createContext(TripUser tripUser){
+        Context context = new Context();
+        context.setVariable("fullName", tripUser.getFullName());
+        context.setVariable("orderNo", String.format("%08d", tripUser.getTripId()));
+        context.setVariable("tuyen", String.format("%s - %s", tripUser.getStartPoint().getPointName(), tripUser.getEndPoint().getPointName()));
+        context.setVariable("nhaxe", tripUser.getTrip().getBussSchedule().getBuss().getCompany().getCompanyName());
+        context.setVariable("bienso", tripUser.getTrip().getBussSchedule().getBuss().getBussLicense());
+        context.setVariable("seats", tripUser.getSeats().stream().collect(Collectors.toList()));
+        context.setVariable("unitPrice", tripUser.getUnitPrice().longValue());
+        context.setVariable("totalPrice", tripUser.getTotalPrice().longValue());
+        context.setVariable("launchTime", tripUser.getTrip().getLaunchTime());
+        context.setVariable("launchDate", tripUser.getTrip().getLaunchDate());
+        context.setVariable("hotline", tripUser.getTrip().getBussSchedule().getBuss().getCompany().getHotLine());
+        return context;
+    }
 
 }

@@ -12,6 +12,10 @@ import net.timxekhach.utility.XeNumberUtils;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.xml.ws.Holder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +54,36 @@ public class BussSchedule extends BussSchedule_MAPPED {
                         })
                         .count() >= 2)
                 .filter(schedule -> schedule.validateDirectionAndGetTrip(date, startPoint.value, endPoint.value))
+                .filter(bussSchedule -> {
+                    boolean valid = false;
+                    LocalDateTime currentLDT = LocalDateTime.now(ZoneId.systemDefault());
+
+                    //check launch date
+                    LocalDateTime searchLDT = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+                    LocalDate searchLD = searchLDT.toLocalDate();
+                    if (currentLDT.toLocalDate().isBefore(searchLD))
+                        //only accept search date is after today
+                        //otherwise (equal today) need to check time
+                        valid = true;
+                    else if (currentLDT.toLocalDate().isAfter(searchLD))
+                        //not accept search in the pass
+                        return false;
+
+                    // check launch Time
+                    LocalDateTime launchLDT = LocalDateTime.ofInstant(bussSchedule.getLaunchTime().toInstant(), ZoneId.systemDefault());
+                    LocalTime currentLT = currentLDT.toLocalTime();
+                    LocalTime launchLT = launchLDT.toLocalTime();
+
+                    if ( launchLT.getHour() > currentLT.getHour() )
+                        valid = true;
+                    else if (launchLT.getHour() == currentLT.getHour()){
+                        //if current minute less than 5 minutes then ok
+                        if (launchLT.getMinute() > currentLT.getMinute() - 5 )
+                            valid = true;
+                    }
+
+                    return valid;
+                })
                 .collect(Collectors.toList());
     }
 

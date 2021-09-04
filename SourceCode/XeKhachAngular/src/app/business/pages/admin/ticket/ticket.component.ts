@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {Trip} from "../../../entities/Trip";
-import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 import {TripUser} from "../../../entities/TripUser";
 import {EntityUtil} from "../../../../framework/util/EntityUtil";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
+import {CommonUpdateService} from "../../../service/common-update.service";
 
 @Component({
   selector: 'xe-ticket',
@@ -25,6 +25,9 @@ export class TicketComponent extends FormAbstract {
     },
     xeScreen: this.screen,
     table: {
+      mode: {
+        customObservable: CommonUpdateService.instance.findTripByCompanyId(this.auth.companyId)
+      },
       action: {
         filters: {
           filterSingle: (trip: Trip) => this.auth.hasBussAdmin ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
@@ -40,7 +43,7 @@ export class TicketComponent extends FormAbstract {
         },
       ]
     }
-  }, Trip.new({company: AuthUtil.instance.user?.employee?.company}));
+  }, Trip.new({company: this.auth.company}));
 
   tripUserTable = TripUser.tableData({
     table: {

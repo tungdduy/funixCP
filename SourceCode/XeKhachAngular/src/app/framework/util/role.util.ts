@@ -13,10 +13,10 @@ export interface RoleInfo {
 
 export class RoleUtil {
   static roleInfo = {
-    ROLE_BUSS_ADMIN: {icon: 'user-tie', status: 'danger', hint: XeLabel.ROLE_BUSS_STAFF},
+    ROLE_BUSS_ADMIN: {icon: 'user-tie', status: 'danger', hint: XeLabel.ROLE_BUSS_ADMIN},
     ROLE_CALLER_STAFF: {icon: 'headset', status: 'success', hint: XeLabel.ROLE_CALLER_STAFF},
     ROLE_BUSS_STAFF: {icon: 'user-friends', status: 'warning', hint: XeLabel.ROLE_BUSS_STAFF},
-    ROLE_SYS_ADMIN: {icon: 'user-cog', status: 'primary', hint: XeLabel.ROLE_BUSS_ADMIN},
+    ROLE_SYS_ADMIN: {icon: 'user-cog', status: 'primary', hint: XeLabel.ROLE_SYS_ADMIN},
   };
 
   static getRolesInfo(rawRoles: string, exclude = ["ROLE_USER"]): RoleInfo[] {

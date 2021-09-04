@@ -51,6 +51,7 @@ export class AuthUtil {
     return this._user;
   }
 
+
   // ===========================================================
   // ===========================================================
   // ============ PUBLIC STATIC METHOD BELOW HERE
@@ -66,8 +67,13 @@ export class AuthUtil {
   }
 
   public setRepoUser(user: User) {
+    const refresh = user && this._user && user.role !== this._user.role;
     this._user = user;
+    this.setRoles(user?.role?.split(",") as Role[]);
     StorageUtil.setItem(configConstant.USER, user);
+    if (refresh) {
+      location.reload();
+    }
   }
 
   isAllow(userRoles: Role[]): boolean {
@@ -86,6 +92,10 @@ export class AuthUtil {
     this.setRepoUser(null);
     AuthUtil._instance = undefined;
     location.reload();
+  }
+
+  isNonEmployee(): boolean {
+    return !this.employee || !this.company;
   }
 
   private isExpired(): boolean {
@@ -116,6 +126,7 @@ export class AuthUtil {
   }
 
   private setRoles = (roles: Role[]) => {
+    roles = roles ? roles : [];
     this._roles = roles;
     this._flatRoles = RoleUtil.flatRoles(roles);
   }

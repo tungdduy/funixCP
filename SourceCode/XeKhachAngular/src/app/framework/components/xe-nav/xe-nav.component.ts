@@ -56,6 +56,7 @@ export class XeScreen {
   }
 
   goHome = () => {
+    if (this.isHome) return;
     if (this.config.preHome) this.config.preHome(this.config.home);
     if (this.config.preGo) this.config.preGo(this.config.home);
     this.stack = [];

@@ -48,7 +48,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
 
   bussTable = Buss.tableData({
     external: {
-      updateCriteriaTableOnSelect: () => [this.bussEmployeeTable, this.bussScheduleTable]
+      updateCriteriaTableOnSelect: () => [this.bussEmployeeTable, this.bussScheduleTable, this.pathTable]
     },
     xeScreen: this.screen,
     table: {

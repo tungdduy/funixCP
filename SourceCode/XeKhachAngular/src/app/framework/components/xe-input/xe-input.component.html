@@ -1,5 +1,5 @@
 <ng-template #inputLabel>
-  <div *ngIf="isShowLabel" class="text-info pb-1 {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
+  <div *ngIf="isShowLabel" class="text-info pb-1 d-inline-block {{isGrid ? 'col-sm-3 col-form-label' : ''}}">{{label}}
   </div>
   <xe-btn (click)="search()" *ngIf="template?.hasTypeSearchTable && mode.hasInput"
           hideText state="none" template="selectFromList"></xe-btn>
@@ -97,6 +97,7 @@
 
   <ng-container *ngIf="template.hasAutoInput">
     <input
+      #autoInputTemplate
       (click)="onClickAutoInput()"
       (input)="onAutoInputChange($event)"
       [name]="getName()"
@@ -108,7 +109,7 @@
       class="{{isDisabled ? 'disabled': ''}}" fullWidth
       nbInput
       type="text">
-    <nb-autocomplete #auto (selectedChange)="onAutoInputSelected($event);  isValidateSuccess()">
+    <nb-autocomplete #auto (selectedChange)="onAutoInputSelected($event, autoInputTemplate);">
       <nb-option
         *ngFor="let option of autoInputOptions$ | async | locationPipe:{instance: template.pipe, autoInputModel: true}"
         [value]="option['appValue']">

@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -156,7 +159,7 @@ public class StandaloneModel extends AbstractModel {
     protected Supplier<String> renderFilePathSupplier;
     @Override
     public String buildRenderFilePath() {
-        return this.renderFilePathSupplier != null ? this.renderFilePathSupplier.get() : "D:\\wildfly-15.0.1.Final\\TH6-1.3\\configuration\\TOMMY_standalone_1.1.xml";
+        return this.renderFilePathSupplier != null ? this.renderFilePathSupplier.get() : "D:\\wildfly-15.0.1.Final\\TH6-1.3\\configuration\\TOMMY_standalone_1.3.xml";
     }
 
 }

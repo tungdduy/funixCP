@@ -8,6 +8,13 @@ export abstract class FormAbstract extends XeSubscriber implements AfterViewInit
   handlers: FormHandler[];
   @ViewChildren(XeFormComponent) private ___forms: QueryList<XeFormComponent>;
 
+  constructor() {
+    super();
+    setTimeout(() => {
+      this.adminContainer?.screen?.goHome();
+    }, 0);
+  }
+
   ngAfterViewInit(): void {
     this.assignCtrlForForms();
   }

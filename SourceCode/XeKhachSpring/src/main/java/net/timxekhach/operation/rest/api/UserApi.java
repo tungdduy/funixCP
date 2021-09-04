@@ -1,20 +1,16 @@
 package net.timxekhach.operation.rest.api;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import net.timxekhach.operation.rest.service.UserService;
-import static net.timxekhach.utility.XeResponseUtils.success;
-import org.springframework.http.ResponseEntity;
-import net.timxekhach.operation.data.entity.Location;
-import org.springframework.web.multipart.MultipartFile;
-import net.timxekhach.operation.data.mapped.User_MAPPED;
-import net.timxekhach.operation.data.repository.UserRepository;
-import java.io.IOException;
-import net.timxekhach.operation.data.entity.Buss;
 import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.rest.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Map;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import static org.springframework.http.HttpStatus.OK;
+
+import static net.timxekhach.utility.XeResponseUtils.success;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 @RestController
 @RequiredArgsConstructor
