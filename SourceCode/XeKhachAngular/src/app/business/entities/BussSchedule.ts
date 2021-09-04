@@ -58,8 +58,15 @@ export class BussSchedule extends XeEntity {
     const identifier = this.entityIdentifier(this.new());
     identifier.entity.buss.company = AuthUtil.instance.company;
     return CommonUpdateService.instance.findBussSchedulesByCompanyId(AuthUtil.instance.companyId).pipe(
-      map(companies => companies.map(c => new SelectItem<BussSchedule>(Path.get(c.path)?.pathName + " - " + XeTimePipe.instance.singleToInline(c.launchTime), c.bussScheduleId)))
+      map(bussSchedules => bussSchedules.filter(bussSchedule => this.myCompanyScheduleFilterCondition(bussSchedule))),
+      map(bussSchedules => bussSchedules.map(c => new SelectItem<BussSchedule>(Path.get(c.path)?.pathName + " - " + XeTimePipe.instance.singleToInline(c.launchTime), c.bussScheduleId)))
     );
+  }
+
+  static myCompanyScheduleFilterCondition = (bussSchedule: BussSchedule): boolean => {
+    return AuthUtil.instance.hasCaller
+      ? true
+      : bussSchedule.buss.bussEmployees.map(b => b.employeeId).includes(AuthUtil.instance.employeeId);
   }
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
