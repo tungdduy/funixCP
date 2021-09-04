@@ -22,6 +22,7 @@ export class PathPoint extends XeEntity {
     companyId: number;
     location: Location;
     path: Path;
+    totalBussSchedulePoints: number;
     pointName: string;
     pointDesc: string;
     pointOrder: number;

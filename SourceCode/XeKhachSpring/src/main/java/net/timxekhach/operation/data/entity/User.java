@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity
-@Getter
-@Setter
+@Entity @Getter @Setter
 public class User extends User_MAPPED {
 
     @Override
@@ -34,7 +32,7 @@ public class User extends User_MAPPED {
         return super.getProfileImageUrl();
     }
 
-    // ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
     @JsonIgnore
     public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);

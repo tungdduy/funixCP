@@ -50,7 +50,19 @@ public enum ErrorCode {
     INVALID_DIRECTION,
     PLEASE_INPUT("fieldName"),
     INVALID_BUSS_SCHEDULE_WORKING_DAY("workingDays"),
-    INVALID_EFFECTIVE_DATE("effectiveDate")
+    INVALID_EFFECTIVE_DATE("effectiveDate"),
+    REMOVE_THIS_EMPLOYEE_FROM_BUSS_FIRST("bussLicense"),
+    CANNOT_REMOVE_EMPLOYEE_HAS_CONFIRMED_TICKET,
+    CANNOT_REMOVE_USER_HAS_TICKET,
+    CANNOT_REMOVE_USER_IS_EMPLOYEE,
+    CANNOT_REMOVE_BUSS_HAS_EMPLOYEES,
+    CANNOT_REMOVE_BUSS_HAS_SCHEDULE,
+    CANNOT_REMOVE_BUSS_SCHEDULE_HAS_BUSS_SCHEDULE_POINTS,
+    CANNOT_REMOVE_BUSS_SCHEDULE_HAS_TRIP,
+    CANNOT_REMOVE_TRIP_HAS_TICKET,
+    CANNOT_REMOVE_PATH_HAS_PATH_POINT,
+    CANNOT_REMOVE_PATH_HAS_BUSS_SCHEDULES,
+    CANNOT_REMOVE_PATH_POINT_HAS_BUSS_SCHEDULE_POINT
     ;
 
 
@@ -146,5 +158,12 @@ public enum ErrorCode {
 
     public Message createConstraintMessage(ConstraintViolation<?> ex) {
         return this.createMessage(ex.getPropertyPath().toString());
+    }
+
+    public Object throwIfNotNull(Object object, String... paramValues) {
+        if (object == null) {
+            throwNow(paramValues);
+        }
+        return object;
     }
 }

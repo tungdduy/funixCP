@@ -1,9 +1,8 @@
 package net.timxekhach.operation.data.mapped.abstracts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.timxekhach.operation.data.entity.Buss;
-import net.timxekhach.operation.data.mapped.Buss_MAPPED;
-import net.timxekhach.operation.data.repository.BussRepository;
+import net.timxekhach.operation.data.entity.*;
+import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.security.model.SecurityResource;
 import org.slf4j.Logger;
@@ -15,6 +14,7 @@ import javax.persistence.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 @MappedSuperclass
@@ -131,6 +131,53 @@ public abstract class XeEntity implements Serializable {
             this.preRemove();
         }
     }
+
+    protected void _validateBeforeRemove() {
+        if (this instanceof Employee) {
+           Employee employee = (Employee) this;
+           if (employee.getCountBusses() > 0) {
+               List<BussEmployee> bussEmployees = CommonUpdateService.getBussEmployeeRepository().findByEmployeeId(employee.getEmployeeId());
+               ErrorCode.REMOVE_THIS_EMPLOYEE_FROM_BUSS_FIRST.throwNow(bussEmployees.get(0).getBuss().getBussLicense());
+           }
+           ErrorCode.CANNOT_REMOVE_EMPLOYEE_HAS_CONFIRMED_TICKET.throwIfNotNull(CommonUpdateService.getTripUserRepository().findFirstByConfirmedByEmployeeId(employee.getEmployeeId()));
+        }
+
+        if (this instanceof User) {
+            User user = (User) this;
+            ErrorCode.CANNOT_REMOVE_USER_HAS_TICKET.throwIfNotNull(CommonUpdateService.getTripUserRepository().findFirstByUserUserId(user.getUserId()));
+            ErrorCode.CANNOT_REMOVE_USER_IS_EMPLOYEE.throwIfNotNull(user.getEmployee());
+        }
+
+        if (this instanceof Buss) {
+           Buss buss = (Buss) this;
+           ErrorCode.CANNOT_REMOVE_BUSS_HAS_EMPLOYEES.throwIf(buss.getTotalBussEmployees() > 0);
+           ErrorCode.CANNOT_REMOVE_BUSS_HAS_SCHEDULE.throwIf(buss.getTotalSchedules() > 0);
+        }
+
+        if (this instanceof BussSchedule) {
+            BussSchedule bussSchedule = (BussSchedule) this;
+            ErrorCode.CANNOT_REMOVE_BUSS_SCHEDULE_HAS_BUSS_SCHEDULE_POINTS.throwIf(bussSchedule.getTotalBussSchedulePoints() > 0);
+            ErrorCode.CANNOT_REMOVE_BUSS_SCHEDULE_HAS_TRIP.throwIfNotNull(CommonUpdateService.getTripRepository().findFirstByBussScheduleId(bussSchedule.getBussScheduleId()));
+        }
+
+        if (this instanceof Trip) {
+            Trip trip = (Trip) this;
+            ErrorCode.CANNOT_REMOVE_TRIP_HAS_TICKET.throwIf(trip.getTotalTripUsers() > 0);
+        }
+
+        if (this instanceof Path) {
+            Path path = (Path) this;
+            ErrorCode.CANNOT_REMOVE_PATH_HAS_PATH_POINT.throwIf(path.getTotalPathPoints() > 0);
+            ErrorCode.CANNOT_REMOVE_PATH_HAS_BUSS_SCHEDULES.throwIf(CommonUpdateService.getBussScheduleRepository().countBussScheduleIdByPathPathId(path.getPathId()) > 0);
+        }
+
+        if (this instanceof PathPoint) {
+            PathPoint pathPoint = (PathPoint) this;
+            ErrorCode.CANNOT_REMOVE_PATH_POINT_HAS_BUSS_SCHEDULE_POINT.throwIf(pathPoint.getTotalBussSchedulePoints() > 0);
+        }
+
+    };
+
     protected void preRemove() {};
 
     @Transient
@@ -146,7 +193,9 @@ public abstract class XeEntity implements Serializable {
     protected void postRemove() {}
 
     public void preSaveAction() {}
-    public void preRemoveAction(){}
+    public void preRemoveAction(){
+        this._validateBeforeRemove();
+    }
     public void preUpdateAction(){}
     public void preSetFieldAction(){}
     public void postSetFieldAction(){}
