@@ -184,6 +184,7 @@ public class Trip extends Trip_MAPPED {
         if (this.getLaunchDate().before(this.getBussSchedule().getEffectiveDateFrom())) {
            ErrorCode.INVALID_EFFECTIVE_DATE.throwNow(this.bussSchedule.getEffectiveDateFrom().toString());
         }
+        ErrorCode.DATA_EXISTED.throwIf(Trip.findOrEmulateTrip(this.getBussSchedule(), this.launchDate).tripId != null);
         this.tripUnitPrice = this.bussSchedule.getScheduleUnitPrice();
         this.launchTime = this.bussSchedule.getLaunchTime();
 

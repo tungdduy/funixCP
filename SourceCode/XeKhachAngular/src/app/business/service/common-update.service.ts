@@ -165,4 +165,12 @@ export class CommonUpdateService {
     return this.http.get<Trip[]>(url);
   }
 
+  findBussSchedulesByCompanyId(companyId: number): Observable<BussSchedule[]> {
+    companyId = !companyId ? 0 : companyId;
+    const url = Url.API_HOST + "/trip/getBussSchedulesByCompanyId/" + companyId;
+    console.log(url);
+    return this.http.get<BussSchedule[]>(url);
+  }
+
+
 }

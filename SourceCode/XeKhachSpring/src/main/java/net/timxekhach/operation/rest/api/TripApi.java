@@ -61,6 +61,13 @@ public class TripApi {
 		return success(CommonUpdateService.getTripRepository().findByCompanyIdOrderByLaunchDateDesc(companyId));
 	}
 
+	@GetMapping("/getBussSchedulesByCompanyId/{companyId}")
+	public ResponseEntity<List<BussSchedule>> getBussSchedulesByCompanyId(@PathVariable Long companyId) {
+		return success(CommonUpdateService.getBussScheduleRepository().findByCompanyIdOrderByLaunchTimeDesc(companyId));
+	}
+
+
+
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

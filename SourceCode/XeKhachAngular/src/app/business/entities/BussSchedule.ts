@@ -55,10 +55,9 @@ export class BussSchedule extends XeEntity {
   sortedBussSchedulePoints: BussSchedulePoint[];
 
   static get myCompanySchedules$(): Observable<SelectItem<BussSchedule>[]> {
-    const companyId = AuthUtil.instance.user?.employee?.companyId;
-    return CommonUpdateService.instance.findByEntityIdentifier(
-      BussSchedule.entityIdentifier(
-        BussSchedule.new({companyId}))).pipe(
+    const identifier = this.entityIdentifier(this.new());
+    identifier.entity.buss.company = AuthUtil.instance.company;
+    return CommonUpdateService.instance.findBussSchedulesByCompanyId(AuthUtil.instance.companyId).pipe(
       map(companies => companies.map(c => new SelectItem<BussSchedule>(Path.get(c.path)?.pathName + " - " + XeTimePipe.instance.singleToInline(c.launchTime), c.bussScheduleId)))
     );
   }

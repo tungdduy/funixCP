@@ -1,12 +1,14 @@
 package net.timxekhach.operation.data.repository;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import net.timxekhach.operation.data.entity.BussSchedule;
 import net.timxekhach.operation.data.mapped.BussSchedule_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import java.util.List;
+
 import java.util.Date;
+import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 @Repository
@@ -25,6 +27,8 @@ public interface BussScheduleRepository extends JpaRepository<BussSchedule, Buss
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     List<BussSchedule> findByEffectiveDateFromLessThanEqualAndWorkingDaysContains(Date date, String dayInWeekExpression);
+
+    List<BussSchedule> findByCompanyIdOrderByLaunchTimeDesc(Long companyId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }
