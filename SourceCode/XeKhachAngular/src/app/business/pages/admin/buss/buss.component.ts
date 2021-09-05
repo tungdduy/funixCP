@@ -115,7 +115,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
         hideSelectColumn: true
       },
       action: {
-        editOnRow: EditOnRow.onClick
+        editOnRow: this.auth.hasBussAdmin ? EditOnRow.onClick : undefined
       }
     }
   });
