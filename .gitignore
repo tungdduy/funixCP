@@ -27,3 +27,6 @@ hs_err_pid*
 capstone.iml
 /SourceCode/XeKhachSpring/target
 /node_modules/
+/SourceCode/XeKhachSpring/target/classes
+target
+classes
