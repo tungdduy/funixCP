@@ -8,7 +8,6 @@ import {XeLabel} from "../../../business/i18n";
 import {NbMenuItem} from "@nebular/theme/components/menu/menu.service";
 import {Url} from "../../../framework/url/url.declare";
 import {AbstractXe} from "../../../framework/model/AbstractXe";
-import {Role} from "../../../business/xe.role";
 
 @Component({
   selector: 'ngx-header',
@@ -20,7 +19,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   public readonly materialTheme$: Observable<boolean>;
   userPictureOnly: boolean = false;
-  user = AuthUtil.instance.user;
+  currentUser = () => AuthUtil.instance.user;
 
   userMenu: NbMenuItem[] = [
     {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost, hidden: AuthUtil.instance.isStaff()},

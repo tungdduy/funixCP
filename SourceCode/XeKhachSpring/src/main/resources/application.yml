@@ -19,7 +19,7 @@ xekhach:
     allowedOrigins: ["http://localhost:4200"]
     resourcePath: "${APPDATA}/xekhach/"
     resourceUrl: "${xekhach.security.apiUrl}resource/"
-    apiUrl: "http://localhost:8081/"
+    apiUrl: "http://localhost:8081/api/"
 
 
 

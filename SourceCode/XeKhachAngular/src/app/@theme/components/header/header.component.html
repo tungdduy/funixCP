@@ -26,8 +26,8 @@
       [matRippleCentered]="true">
       <nb-user [nbContextMenu]="userMenu"
                [onlyPicture]="userPictureOnly"
-               [name]="user?.fullName"
-               [picture]="user?.profileImageUrl">
+               [name]="currentUser()?.fullName"
+               [picture]="currentUser()?.profileImageUrl">
       </nb-user>
     </nb-action>
   </nb-actions>
