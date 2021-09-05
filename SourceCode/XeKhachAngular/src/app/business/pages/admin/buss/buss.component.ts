@@ -153,19 +153,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
           colSpan: 2,
           action: {
             preChange: (currentPath: Path, comingPath: Path) => {
-              const bussSchedule = this.bussScheduleTable.formData.share.entity;
-              if (currentPath && currentPath.pathId !== comingPath.pathId) {
-                bussSchedule.startPoint = undefined;
-                bussSchedule.startPointCompanyId = 0;
-                bussSchedule.startPointPathId = 0;
-                bussSchedule.startPointPathPointId = 0;
-                bussSchedule.startPointLocationId = 0;
-                bussSchedule.endPoint = undefined;
-                bussSchedule.endPointCompanyId = 0;
-                bussSchedule.endPointPathId = 0;
-                bussSchedule.endPointPathPointId = 0;
-                bussSchedule.endPointLocationId = 0;
-              }
+              BussComponent.preChangeBussSchedule(currentPath, comingPath, this.bussScheduleTable);
             }
           }
         },
@@ -175,5 +163,20 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     }
   });
 
+  static preChangeBussSchedule(currentPath: Path, comingPath: Path, bussScheduleTable: XeTableData<BussSchedule>) {
+    const bussSchedule = bussScheduleTable.formData.share.entity;
+    if (currentPath && currentPath.pathId !== comingPath.pathId) {
+      bussSchedule.startPoint = undefined;
+      bussSchedule.startPointCompanyId = 0;
+      bussSchedule.startPointPathId = 0;
+      bussSchedule.startPointPathPointId = 0;
+      bussSchedule.startPointLocationId = 0;
+      bussSchedule.endPoint = undefined;
+      bussSchedule.endPointCompanyId = 0;
+      bussSchedule.endPointPathId = 0;
+      bussSchedule.endPointPathPointId = 0;
+      bussSchedule.endPointLocationId = 0;
+    }
+  }
 }
 
