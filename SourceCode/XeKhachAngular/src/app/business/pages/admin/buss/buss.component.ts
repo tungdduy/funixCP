@@ -115,6 +115,8 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
         hideSelectColumn: true
       },
       action: {
+        preBack: () => this.bussSchedulePointTable.formData.share.tableComponent?.editOnRow?.toEditingNo(),
+        postUpdate: (points) => this.bussScheduleTable.formData.share.entity.sortedBussSchedulePoints = points,
         editOnRow: this.auth.hasBussAdmin ? EditOnRow.onClick : undefined
       }
     }
