@@ -3,7 +3,6 @@ package net.timxekhach.utility;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class XeStringUtils {

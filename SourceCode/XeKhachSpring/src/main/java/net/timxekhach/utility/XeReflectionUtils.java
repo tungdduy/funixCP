@@ -1,6 +1,5 @@
 package net.timxekhach.utility;
 
-import net.timxekhach.operation.data.entity.User;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 

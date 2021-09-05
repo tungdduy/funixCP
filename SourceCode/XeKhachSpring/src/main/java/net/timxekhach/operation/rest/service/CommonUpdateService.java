@@ -2,7 +2,9 @@ package net.timxekhach.operation.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.*;
-import net.timxekhach.operation.data.mapped.*;
+import net.timxekhach.operation.data.mapped.BussType_MAPPED;
+import net.timxekhach.operation.data.mapped.Company_MAPPED;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.repository.*;
 import net.timxekhach.operation.response.ErrorCode;

@@ -1,15 +1,12 @@
 package net.timxekhach.utility;
 
 import lombok.extern.log4j.Log4j2;
-import net.timxekhach.operation.data.entity.PathPoint;
-import net.timxekhach.operation.data.entity.Trip;
 import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.mail.EmailService;
 import org.thymeleaf.context.Context;
 
-import java.util.Date;
 import java.util.stream.Collectors;
 
 @Log4j2

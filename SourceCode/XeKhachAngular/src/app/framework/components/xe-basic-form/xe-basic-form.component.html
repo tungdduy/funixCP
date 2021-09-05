@@ -44,15 +44,14 @@
       <ng-container *ngFor="let field of filteredField()">
         <div *ngIf="!isHideBody"
              class="col-md-{{colSpan(field)}} pl-4 pr-4 {{formData.display?.columnNumber > 1 ? 'pt-2 pb-2' : ''}}">
-          <xe-input *ngIf="isIdValid ? !field?.newOnly : true"
-                    [(value)]="entityUtil.getLastFieldOwner(formData.share?.entity, formData.entityIdentifier.clazz.meta, field)[entityUtil.getLastFieldName(field)]"
+          <xe-input [(value)]="entityUtil.getLastFieldOwner(formData.share?.entity, formData.entityIdentifier.clazz.meta, field)[entityUtil.getLastFieldName(field)]"
                     [disabledUpdate]="field.clearOnSuccess"
                     [entityField]="field"
                     [grid]="formData.display?.grid"
                     [hidden]="field.hidden"
                     [labelMode]="formData.display.labelMode"
                     [lblKey]="field.lblKey"
-                    [mode]="field.mode"
+                    [mode]="field?.newOnly && isIdValid ? xeInputMode.readonly : field.mode"
                     [name]="field.name"
                     [required]="field.required"
                     [template]="field.template">

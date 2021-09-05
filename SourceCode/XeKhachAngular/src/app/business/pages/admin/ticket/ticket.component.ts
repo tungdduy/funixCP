@@ -48,6 +48,7 @@ export class TicketComponent extends FormAbstract {
   tripUserTable = TripUser.tableData({
     table: {
       mode: {
+        hideSelectColumn: true,
         readonly: true
       }
     },

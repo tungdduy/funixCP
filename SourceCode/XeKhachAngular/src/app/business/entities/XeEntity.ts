@@ -1,6 +1,5 @@
 import {XeTableData} from "../../framework/model/XeTableData";
 import {EntityIdentifier} from "../../framework/model/XeFormData";
-import {XeSubscriber} from "../../framework/model/XeSubscriber";
 
 export declare interface ClassMeta {
   capName: string;
