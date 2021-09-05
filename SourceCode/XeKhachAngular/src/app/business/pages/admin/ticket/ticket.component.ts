@@ -43,7 +43,7 @@ export class TicketComponent extends FormAbstract {
         },
       ]
     }
-  }, Trip.new({company: this.auth.company}));
+  });
 
   tripUserTable = TripUser.tableData({
     table: {

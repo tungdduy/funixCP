@@ -921,7 +921,7 @@ public class CommonUpdateService {
         }
         String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
         Object[] findMethodParams = data.values().toArray(new Long[0]);
-        String orderExpression = "";
+        String orderExpression = "OrderByTripUserIdDesc";
         return XeReflectionUtils.invokeMethodByName(tripUserRepository, findMethodName + orderExpression, findMethodParams);
     }
 //=================== END OF TripUser ======================
@@ -1162,7 +1162,7 @@ public class CommonUpdateService {
         }
         String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
         Object[] findMethodParams = data.values().toArray(new Long[0]);
-        String orderExpression = "";
+        String orderExpression = "OrderByLaunchDateDesc";
         return XeReflectionUtils.invokeMethodByName(tripRepository, findMethodName + orderExpression, findMethodParams);
     }
 //=================== END OF Trip ======================
