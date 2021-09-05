@@ -98,7 +98,6 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     setTimeout(() => {
       this.initData();
     }, 0);
-    console.log(this.editOnRow);
   }
 
   public updateTableData(result: E[]) {
@@ -400,6 +399,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
       if (this.editOnRow.hasOnClick) {
         this.editOnRow.toEditingNo();
       }
+      this.postUpdate(arrayResult);
       Notifier.success(XeLabel.SAVED_SUCCESSFULLY);
     });
   }
@@ -556,4 +556,15 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
+  private postUpdate(result: E[]) {
+    if (this.tableData.table.action.postUpdate) {
+      this.tableData.table.action.postUpdate(result);
+    }
+  }
+
+  preBack() {
+    if (this.tableData.table.action.preBack) {
+      this.tableData.table.action?.preBack();
+    }
+  }
 }
