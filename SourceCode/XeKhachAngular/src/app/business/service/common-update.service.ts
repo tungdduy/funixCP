@@ -139,7 +139,7 @@ export class CommonUpdateService {
   }
 
   getTripWithPreparedTripUser(tripId: number, tripUserId: number): Observable<Trip> {
-    const url = Url.API_HOST + "/trip/get-trip-with-prepared-trip-users/" + tripId + "/" + tripUserId;
+    const url = Url.API_HOST + "/trip/get-trip-with-prepared-trip-user/" + tripId + "/" + tripUserId;
     return this.http.get<Trip>(url);
   }
 
