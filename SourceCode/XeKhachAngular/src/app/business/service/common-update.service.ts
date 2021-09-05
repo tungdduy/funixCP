@@ -116,7 +116,7 @@ export class CommonUpdateService {
   }
 
   searchLocation(searchTerm: string): Observable<Location[]> {
-    return this.http.get<Location[]>(Url.API_HOST + "/trip/searchLocation/" + searchTerm);
+    return this.http.get<Location[]>(Url.API_HOST + "/trip/search-location/" + searchTerm);
   }
 
   findScheduledLocations(criteria: BussScheduleCriteria): Observable<Location[]> {
@@ -124,13 +124,13 @@ export class CommonUpdateService {
     const fromId = criteria.inputName === 'locationFrom' ? 0 : criteria.locationFrom?.locationId || 0;
     const toId = criteria.inputName === 'locationTo' ? 0 : criteria.locationTo?.locationId || 0;
     const mark0ForStart = criteria.inputName === 'locationFrom' ? 0 : 1;
-    const searchLocationUrl = Url.API_HOST + "/trip/findScheduledLocations/" + mark0ForStart + "/" + fromId + "/" + toId + "/" + criteria.inputText;
+    const searchLocationUrl = Url.API_HOST + "/trip/find-scheduled-locations/" + mark0ForStart + "/" + fromId + "/" + toId + "/" + criteria.inputText;
     console.log("search location url:", searchLocationUrl);
     return CommonUpdateService.instance.http.get<Location[]>(searchLocationUrl);
   }
 
   findBussSchedules(data: BussScheduleCriteria): Observable<BussSchedule[]> {
-    const url = Url.API_HOST + "/trip/findBussSchedules/"
+    const url = Url.API_HOST + "/trip/find-buss-schedules/"
       + XeDatePipe.instance.singleToSubmitFormat(data.launchDate) + "/"
       + data.locationFrom.locationId + "/"
       + data.locationTo.locationId;
@@ -139,13 +139,13 @@ export class CommonUpdateService {
   }
 
   getTripWithPreparedTripUser(tripId: number, tripUserId: number): Observable<Trip> {
-    const url = Url.API_HOST + "/trip/getTripWithPreparedTripUser/" + tripId + "/" + tripUserId;
+    const url = Url.API_HOST + "/trip/get-trip-with-prepared-trip-users/" + tripId + "/" + tripUserId;
     return this.http.get<Trip>(url);
   }
 
   findTripUsers(userId, phones, emails): Observable<TripUser[]> {
     userId = !userId ? 0 : userId;
-    const url = Url.API_HOST + "/trip/getTripUsers?userId=" + userId + "&phones=" + phones + "&emails=" + emails;
+    const url = Url.API_HOST + "/trip/get-trip-users?userId=" + userId + "&phones=" + phones + "&emails=" + emails;
     console.log(url);
     return this.http.get<TripUser[]>(url);
   }
@@ -160,14 +160,14 @@ export class CommonUpdateService {
 
   findTripByCompanyId(companyId: number): Observable<Trip[]> {
     companyId = !companyId ? 0 : companyId;
-    const url = Url.API_HOST + "/trip/getTripByCompanyId/" + companyId;
+    const url = Url.API_HOST + "/trip/get-trip-by-company-id/" + companyId;
     console.log(url);
     return this.http.get<Trip[]>(url);
   }
 
   findBussSchedulesByCompanyId(companyId: number): Observable<BussSchedule[]> {
     companyId = !companyId ? 0 : companyId;
-    const url = Url.API_HOST + "/trip/getBussSchedulesByCompanyId/" + companyId;
+    const url = Url.API_HOST + "/trip/get-buss-schedules-by-company-id/" + companyId;
     console.log(url);
     return this.http.get<BussSchedule[]>(url);
   }

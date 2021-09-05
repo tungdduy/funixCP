@@ -3,7 +3,7 @@ import {UrlConfig} from "./url.config";
 import {Role} from "../../business/xe.role";
 
 export const config = () => {
-  return new UrlConfig();
+  return new UrlConfig().public();
 };
 export const uConfig = () => {
   return new UrlConfig().setRoles([r.ROLE_USER]);
@@ -24,13 +24,14 @@ export const Url = {
         Url.getPublicApi(Object.values(apiUrl));
       }
     });
+    Url.publicApi.sort((u1, u2) => u2.length - u1.length);
   },
   isPublicApi: (url: string) => {
-    if (!Url.publicApi) {
+    if (!Url.publicApi || Url.publicApi.length === 0) {
       Url.publicApi = [];
       Url.getPublicApi(Object.values(Url.api));
     }
-    return Url.publicApi.includes(url);
+    return Url.publicApi.findIndex(u => url.startsWith(u)) >= 0;
   },
   DEFAULT_URL_AFTER_LOGIN: () => Url.app.ADMIN.MY_ACCOUNT
   ,
@@ -46,17 +47,17 @@ export const Url = {
       FORGOT_PASSWORD_SECRET_KEY: config(),
       CHANGE_PASSWORD: config(),
       UPDATE_PASSWORD: config(),
-      SUBSCRIBE: config(),
-      UNSUBSCRIBE: config(),
     },
     TRIP: {
       _self: config(),
       SEARCH_LOCATION: config(),
       FIND_BUSS_SCHEDULES: config(),
       FIND_SCHEDULED_LOCATIONS: config(),
+      GET_TRIP_USERS: config(),
+      GET_TRIP_BY_COMPANY_ID: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
+      GET_BUSS_SCHEDULES_BY_COMPANY_ID: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
-    CALLER_STAFF: config(),
-    BUSS_STAFF: config(),
+    COMMON_UPDATE: uConfig(),
   },
   app: {
     CHECK_IN: {

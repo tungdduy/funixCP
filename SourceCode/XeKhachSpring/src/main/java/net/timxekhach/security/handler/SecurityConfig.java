@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/trip/searchLocation/**").permitAll()
                 .antMatchers("/trip/findBussSchedules/**").permitAll()
                 .antMatchers("/trip/findScheduledLocations/**").permitAll()
-                .antMatchers("/trip/getTripUsers/**").hasAnyAuthority("ROLE_USER")
+                .antMatchers("/trip/getTripUsers/**").permitAll()
                 .antMatchers("/trip/getTripByCompanyId/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
                 .antMatchers("/trip/getBussSchedulesByCompanyId/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
                 .antMatchers("/common-update/**").hasAnyAuthority("ROLE_USER")
