@@ -10,6 +10,6 @@
 
 export const environment = {
   production: false,
-  apiHost: 'http://localhost:8081',
+  apiHost: 'http://localhost:8081/api',
   appHost: 'http://localhost:4200',
 };

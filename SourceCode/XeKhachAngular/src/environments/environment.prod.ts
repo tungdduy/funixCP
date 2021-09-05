@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: true,
-  apiHost: 'https://timxekhach.tech:8443',
+  apiHost: 'https://timxekhach.tech/api',
   appHost: 'https://timxekhach.tech',
   firebase: {
     apiKey: "AIzaSyBlQMD_5JaHI_2Q45z2gNkuLStNu2U7kLA",
