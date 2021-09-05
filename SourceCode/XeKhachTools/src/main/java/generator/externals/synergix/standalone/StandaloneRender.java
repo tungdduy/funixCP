@@ -61,12 +61,12 @@ public class StandaloneRender extends AbstractRender<StandaloneModel> {
 
     public static void main(String[] args) {
 
-        StandaloneRender render = new StandaloneRender();
-        render.executeRenders();
-//
-        render.templatePathSupplier = () -> render.thisRenderPath() + "jndiHolder.ftl";
-        render.getModelFiles().get(0).renderFilePathSupplier = () -> "D:\\synergix-workspace\\TH6-Intel\\TH6\\src\\main\\java\\synergix\\th6\\business\\util\\persistence\\JndiDeclare.java";
-        render.executeRenders();
+//        StandaloneRender render = new StandaloneRender();
+//        render.executeRenders();
+////
+//        render.templatePathSupplier = () -> render.thisRenderPath() + "jndiHolder.ftl";
+//        render.getModelFiles().get(0).renderFilePathSupplier = () -> "D:\\synergix-workspace\\TH6-Intel\\TH6\\src\\main\\java\\synergix\\th6\\business\\util\\persistence\\JndiDeclare.java";
+//        render.executeRenders();
 //
 //        render.templatePathSupplier = () -> render.thisRenderPath() + "dbconfig.xml.ftl";
 //        render.getModelFiles().get(0).renderFilePathSupplier = () -> "C:\\SupperModel\\dist\\dbconfig.xml";
