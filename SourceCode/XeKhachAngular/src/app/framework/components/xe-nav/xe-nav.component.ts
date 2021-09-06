@@ -46,6 +46,9 @@ class Stack {
   get reverse() {
     return this.stack.reverse();
   }
+  get all() {
+    return this.stack;
+  }
 }
 
 export class XeScreen {
