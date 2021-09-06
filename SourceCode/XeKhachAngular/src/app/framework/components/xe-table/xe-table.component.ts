@@ -152,7 +152,11 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
   }
 
   postPersist = (entity) => {
-    this.tableSource.data.unshift(entity);
+    if (this.tableData.table.mode.newToBottom) {
+      this.tableSource.data.push(entity);
+    } else {
+      this.tableSource.data.unshift(entity);
+    }
     this.tableSource.data = this.tableSource.data;
     this.tableData.formData.share.entity = this.tableSource.data[0];
   }
