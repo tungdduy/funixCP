@@ -372,6 +372,7 @@ export const Label_vi = {
   'input.shortInput.currentPassword': 'Mật khẩu hiện tại',
   'input.shortInput.newPassword': 'Mật khẩu mới',
   'input.shortInput.reNewPassword': 'Nhập lại mật khẩu mới',
+  CLICK_TO_BLOCK_UNBLOCK_SEAT: 'Click vào từng ghế để khóa/mở khóa'
 
 
 };
