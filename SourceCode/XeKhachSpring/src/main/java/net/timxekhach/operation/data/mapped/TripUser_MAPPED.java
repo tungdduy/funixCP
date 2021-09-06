@@ -1,26 +1,28 @@
 package net.timxekhach.operation.data.mapped;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
-import net.timxekhach.operation.data.enumeration.TripUserStatus;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import net.timxekhach.operation.data.entity.Trip;
-import javax.validation.constraints.*;
-import net.timxekhach.utility.XeDateUtils;
-import java.util.Date;
-import net.timxekhach.operation.data.entity.User;
-import net.timxekhach.operation.data.entity.Employee;
-import org.apache.commons.lang3.time.DateUtils;
-import net.timxekhach.operation.rest.service.CommonUpdateService;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 import lombok.*;
+import net.timxekhach.operation.data.entity.Employee;
+import net.timxekhach.operation.data.entity.Trip;
+import net.timxekhach.operation.data.entity.User;
+import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.mapped.abstracts.XePk;
-import java.util.Map;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.utility.XeDateUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.Date;
+import java.util.Map;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 

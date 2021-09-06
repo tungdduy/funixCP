@@ -4,7 +4,6 @@ package net.timxekhach.operation.data.entity;
 import lombok.Getter;
 import lombok.Setter;
 import net.timxekhach.operation.data.mapped.Trip_MAPPED;
-import net.timxekhach.operation.data.model.TripSeat;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.XeDateUtils;
@@ -108,19 +107,6 @@ public class Trip extends Trip_MAPPED {
 
     public void prepareTripUser(TripUser tripUser) {
         this.preparedTripUser = tripUser;
-    }
-
-    List<TripSeat> getPreparedTripSeats() {
-        return IntStream.range(1, this.getTotalSeats())
-                .boxed()
-                .map(seatId -> {
-                    TripSeat tripSeat = new TripSeat();
-                    tripSeat.setSeatId(seatId);
-                    tripSeat.setIsBooked(this.getPreparedBookedSeats().contains(seatId));
-                    tripSeat.setIsLocked(this.getLockedBussSeats().contains(seatId));
-                    tripSeat.setIsFree(!tripSeat.getIsBooked() && !tripSeat.getIsLocked());
-                    return tripSeat;
-                }).collect(Collectors.toList());
     }
 
     public Integer getTotalSeats() {

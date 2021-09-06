@@ -82,14 +82,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/forgot-password-secret-key/**").permitAll()
                 .antMatchers("/user/change-password/**").permitAll()
                 .antMatchers("/user/update-password/**").permitAll()
-                .antMatchers("/user/subscribe/**").permitAll()
-                .antMatchers("/user/unsubscribe/**").permitAll()
                 .antMatchers("/trip/**").permitAll()
                 .antMatchers("/trip/searchLocation/**").permitAll()
                 .antMatchers("/trip/findBussSchedules/**").permitAll()
                 .antMatchers("/trip/findScheduledLocations/**").permitAll()
-                .antMatchers("/caller-staff/**").permitAll()
-                .antMatchers("/buss-staff/**").permitAll()
+                .antMatchers("/trip/getTripUsers/**").permitAll()
+                .antMatchers("/trip/getTripByCompanyId/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
+                .antMatchers("/trip/getBussSchedulesByCompanyId/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
+                .antMatchers("/common-update/**").hasAnyAuthority("ROLE_USER")
 
 // ____________________ ::AFTER_AUTHORIZATION_SEPARATOR:: ____________________ //
                 .anyRequest().authenticated()

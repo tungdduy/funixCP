@@ -29,6 +29,8 @@ public interface BussScheduleRepository extends JpaRepository<BussSchedule, Buss
     List<BussSchedule> findByEffectiveDateFromLessThanEqualAndWorkingDaysContains(Date date, String dayInWeekExpression);
 
     List<BussSchedule> findByCompanyIdOrderByLaunchTimeDesc(Long companyId);
+
+    Long countBussScheduleIdByPathPathId(Long pathId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

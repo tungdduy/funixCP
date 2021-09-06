@@ -8,7 +8,6 @@ import {XeLabel} from "../../../business/i18n";
 import {NbMenuItem} from "@nebular/theme/components/menu/menu.service";
 import {Url} from "../../../framework/url/url.declare";
 import {AbstractXe} from "../../../framework/model/AbstractXe";
-import {Role} from "../../../business/xe.role";
 
 @Component({
   selector: 'ngx-header',
@@ -20,11 +19,11 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   public readonly materialTheme$: Observable<boolean>;
   userPictureOnly: boolean = false;
-  user = AuthUtil.instance.user;
+  currentUser = () => AuthUtil.instance.user;
 
   userMenu: NbMenuItem[] = [
-    {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost, hidden: AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN, Role.ROLE_SYS_ADMIN, Role.ROLE_BUSS_STAFF, Role.ROLE_CALLER_STAFF])},
-    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full, hidden: AuthUtil.instance.isAllow([Role.ROLE_BUSS_ADMIN, Role.ROLE_SYS_ADMIN, Role.ROLE_BUSS_STAFF, Role.ROLE_CALLER_STAFF])},
+    {title: XeLabel.MY_TRIPS, target: Url.app.ADMIN.MY_TRIP.noHost, hidden: AuthUtil.instance.isStaff()},
+    {title: XeLabel.FIND_TRIPS, url: Url.app.ADMIN.FIND_TRIP.full, hidden: AuthUtil.instance.isStaff()},
     {title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
   ];
 

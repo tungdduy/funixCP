@@ -21,11 +21,15 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     @SuppressWarnings("unused")
     void deleteByTripId(Long tripId);
     @SuppressWarnings("unused")
-    List<TripUser> findByTripId(Long tripId);
+    List<TripUser> findByTripIdOrderByTripUserIdDesc(Long tripId);
 
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
     List<TripUser> findByUserUserId(Long userId);
     List<TripUser> findByPhoneNumberInOrEmailIn(List<String> phoneNumber, List<String> email);
+
+    TripUser findFirstByConfirmedByEmployeeId(Long employeeId);
+
+    TripUser findFirstByUserUserId(Long userId);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

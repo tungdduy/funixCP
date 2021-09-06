@@ -6,10 +6,11 @@ import generator.abstracts.render.AbstractApiUrlRender;
 import java.util.ArrayList;
 import java.util.List;
 
-import static util.FileUtil.readAsString;
-import static util.StringUtil.fetchSplitter;
-
 public class SecurityConfigRender extends AbstractApiUrlRender<SecurityConfigModel> {
+
+    public static void main(String[] args) {
+        new SecurityConfigRender().singleRender();
+    }
 
     @Override
     protected boolean isOverrideExistingFile() {

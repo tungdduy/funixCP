@@ -16,6 +16,7 @@ import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
+import {BussComponent} from "../buss/buss.component";
 
 @Component({
   selector: 'xe-buss-type',
@@ -125,6 +126,8 @@ export class BussTypeComponent extends FormAbstract {
         hideSelectColumn: true
       },
       action: {
+        preBack: () => this.bussSchedulePointTable.formData.share.tableComponent?.editOnRow?.toEditingNo(),
+        postUpdate: (points) => this.bussScheduleTable.formData.share.entity.sortedBussSchedulePoints = points,
         editOnRow: EditOnRow.onClick
       }
     }
@@ -156,19 +159,7 @@ export class BussTypeComponent extends FormAbstract {
           colSpan: 2,
           action: {
             preChange: (currentPath: Path, comingPath: Path) => {
-              const bussSchedule = this.bussScheduleTable.formData.share.entity;
-              if (currentPath && currentPath.pathId !== comingPath.pathId) {
-                bussSchedule.startPoint = undefined;
-                bussSchedule.startPointCompanyId = 0;
-                bussSchedule.startPointPathId = 0;
-                bussSchedule.startPointPathPointId = 0;
-                bussSchedule.startPointLocationId = 0;
-                bussSchedule.endPoint = undefined;
-                bussSchedule.endPointCompanyId = 0;
-                bussSchedule.endPointPathId = 0;
-                bussSchedule.endPointPathPointId = 0;
-                bussSchedule.endPointLocationId = 0;
-              }
+              BussComponent.preChangeBussSchedule(currentPath, comingPath, this.bussScheduleTable);
             },
             postChange: (currentValue, oldValue) => {
               console.log(this.bussScheduleTable.formData.share.entity);

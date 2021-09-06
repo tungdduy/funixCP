@@ -65,7 +65,7 @@
     <!-- FLOAT RIGHT BUTTONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  -->
     <div class="float-right" id="float-right-buttons">
       <ng-container *ngIf="tableData?.xeScreen && !tableData?.xeScreen?.isHome" id="back-button">
-        <xe-btn (click)="tableData?.xeScreen?.back()" hideText template="back"></xe-btn>
+        <xe-btn (click)="preBack(); tableData?.xeScreen?.back()" hideText template="back"></xe-btn>
       </ng-container>
       <ng-content id="top-right-buttons-content" select="[top-right-buttons]"></ng-content>
 

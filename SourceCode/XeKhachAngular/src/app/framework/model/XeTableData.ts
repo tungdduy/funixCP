@@ -78,6 +78,8 @@ export class XeTableData<E extends XeEntity> {
       hideSelectColumn?: boolean
     },
     action?: {
+      preBack?: () => any;
+      postUpdate?: (arrayResult: E[]) => any;
       editOnRow?: EditOnRow,
       postSelect?: (entity) => any,
       postDeSelect?: (entity: E) => any,

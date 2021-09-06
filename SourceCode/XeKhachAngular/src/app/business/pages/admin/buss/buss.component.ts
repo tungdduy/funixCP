@@ -12,6 +12,7 @@ import {EditOnRow, InputTemplate} from "../../../../framework/model/EnumStatus";
 import {Path} from "../../../entities/Path";
 import {PathPoint} from "../../../entities/PathPoint";
 import {BussSchedulePoint} from "../../../entities/BussSchedulePoint";
+import {Role} from "../../../xe.role";
 
 @Component({
   selector: 'xe-buss',
@@ -53,6 +54,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     xeScreen: this.screen,
     table: {
       mode: {
+        hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: !this.auth.hasBussAdmin
       },
       action: {
@@ -77,6 +79,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     },
     table: {
       mode: {
+        hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: !this.auth.hasBussAdmin
       }
     },
@@ -91,11 +94,12 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     xeScreen: this.screen,
     table: {
       mode: {
+        hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: true
       },
       action: {
         filters: {
-          filterSingle: (employee: Employee) => !employee.countBusses || employee.countBusses === 0
+          filterSingle: (employee: Employee) => (!employee.countBusses || employee.countBusses === 0) && employee.user.role.includes(Role.ROLE_BUSS_STAFF)
         }
       }
     },
@@ -111,7 +115,9 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
         hideSelectColumn: true
       },
       action: {
-        editOnRow: EditOnRow.onClick
+        preBack: () => this.bussSchedulePointTable.formData.share.tableComponent?.editOnRow?.toEditingNo(),
+        postUpdate: (points) => this.bussScheduleTable.formData.share.entity.sortedBussSchedulePoints = points,
+        editOnRow: this.auth.hasBussAdmin ? EditOnRow.onClick : undefined
       }
     }
   });
@@ -126,6 +132,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     xeScreen: this.screen,
     table: {
       mode: {
+        hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: !this.auth.hasBussAdmin
       },
       selectBasicColumns: [
@@ -146,19 +153,7 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
           colSpan: 2,
           action: {
             preChange: (currentPath: Path, comingPath: Path) => {
-              const bussSchedule = this.bussScheduleTable.formData.share.entity;
-              if (currentPath && currentPath.pathId !== comingPath.pathId) {
-                bussSchedule.startPoint = undefined;
-                bussSchedule.startPointCompanyId = 0;
-                bussSchedule.startPointPathId = 0;
-                bussSchedule.startPointPathPointId = 0;
-                bussSchedule.startPointLocationId = 0;
-                bussSchedule.endPoint = undefined;
-                bussSchedule.endPointCompanyId = 0;
-                bussSchedule.endPointPathId = 0;
-                bussSchedule.endPointPathPointId = 0;
-                bussSchedule.endPointLocationId = 0;
-              }
+              BussComponent.preChangeBussSchedule(currentPath, comingPath, this.bussScheduleTable);
             }
           }
         },
@@ -168,5 +163,20 @@ export class BussComponent extends FormAbstract implements AfterViewInit {
     }
   });
 
+  static preChangeBussSchedule(currentPath: Path, comingPath: Path, bussScheduleTable: XeTableData<BussSchedule>) {
+    const bussSchedule = bussScheduleTable.formData.share.entity;
+    if (currentPath && currentPath.pathId !== comingPath.pathId) {
+      bussSchedule.startPoint = undefined;
+      bussSchedule.startPointCompanyId = 0;
+      bussSchedule.startPointPathId = 0;
+      bussSchedule.startPointPathPointId = 0;
+      bussSchedule.startPointLocationId = 0;
+      bussSchedule.endPoint = undefined;
+      bussSchedule.endPointCompanyId = 0;
+      bussSchedule.endPointPathId = 0;
+      bussSchedule.endPointPathPointId = 0;
+      bussSchedule.endPointLocationId = 0;
+    }
+  }
 }
 

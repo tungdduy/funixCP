@@ -2,7 +2,9 @@ package net.timxekhach.operation.rest.service;
 
 import lombok.RequiredArgsConstructor;
 import net.timxekhach.operation.data.entity.*;
-import net.timxekhach.operation.data.mapped.*;
+import net.timxekhach.operation.data.mapped.BussType_MAPPED;
+import net.timxekhach.operation.data.mapped.Company_MAPPED;
+import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.data.repository.*;
 import net.timxekhach.operation.response.ErrorCode;
@@ -919,7 +921,7 @@ public class CommonUpdateService {
         }
         String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
         Object[] findMethodParams = data.values().toArray(new Long[0]);
-        String orderExpression = "";
+        String orderExpression = "OrderByTripUserIdDesc";
         return XeReflectionUtils.invokeMethodByName(tripUserRepository, findMethodName + orderExpression, findMethodParams);
     }
 //=================== END OF TripUser ======================
@@ -1160,7 +1162,7 @@ public class CommonUpdateService {
         }
         String findMethodName = String.format("findBy%s", String.join("And", data.keySet()));
         Object[] findMethodParams = data.values().toArray(new Long[0]);
-        String orderExpression = "";
+        String orderExpression = "OrderByLaunchDateDesc";
         return XeReflectionUtils.invokeMethodByName(tripRepository, findMethodName + orderExpression, findMethodParams);
     }
 //=================== END OF Trip ======================

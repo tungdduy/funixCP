@@ -2,11 +2,11 @@ package net.timxekhach.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import lombok.AllArgsConstructor;
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.security.model.SecurityResource;
 import net.timxekhach.security.user.UserDetailsImpl;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,23 +26,19 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static java.util.Arrays.stream;
 
 @Component
+@AllArgsConstructor
 public class JwtTokenProvider {
 
     private final SecurityResource securityResource;
 
-    @Autowired
-    public JwtTokenProvider(SecurityResource securityResource) {
-        this.securityResource = securityResource;
-    }
-
     public String generateJwtToken(UserDetails user) {
-        String[] claims = getClaimsFromUser(user);
+        String[] roles = getRolesFromUser(user);
         return JWT.create()
                 .withIssuer(securityResource.getJwtIssuer())
                 .withAudience(securityResource.getJwtAudience())
                 .withIssuedAt(new Date())
                 .withSubject(user.getUsername())
-                .withArrayClaim(securityResource.getAuthorities(), claims)
+                .withArrayClaim(securityResource.getAuthorities(), roles)
                 .withExpiresAt(new Date(System.currentTimeMillis() + securityResource.getExpirationTime()))
                 .sign(HMAC512(securityResource.getJwtSecret().getBytes()));
     }
@@ -85,7 +81,7 @@ public class JwtTokenProvider {
                 .build();
     }
 
-    private String[] getClaimsFromUser(UserDetails user) {
+    private String[] getRolesFromUser(UserDetails user) {
         List<String> authorities = new ArrayList<>();
         for (GrantedAuthority grantedAuthority : user.getAuthorities()) {
             authorities.add(grantedAuthority.getAuthority());

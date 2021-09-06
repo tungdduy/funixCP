@@ -6,7 +6,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NgModule} from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {CoreModule} from './@core/core.module';
 import {ThemeModule} from './@theme/theme.module';
 import {AppComponent} from './app.component';
@@ -23,6 +23,7 @@ import {
 } from '@nebular/theme';
 import {NativeDateModule} from "@angular/material/core";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import {AuthInterceptor} from "./framework/auth/auth.interceptor";
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,6 +48,9 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
     NativeDateModule,
   ],
   bootstrap: [AppComponent],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+  ]
 
 })
 export class AppModule {

@@ -1,10 +1,12 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Entity;
 import net.timxekhach.operation.data.mapped.Buss_MAPPED;
 import net.timxekhach.utility.XeStringUtils;
+
+import javax.persistence.Entity;
 import java.util.List;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //

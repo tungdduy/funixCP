@@ -7,8 +7,6 @@ import net.timxekhach.utility.XeStringUtils;
 import net.timxekhach.utility.model.Message;
 import net.timxekhach.utility.model.XeHttpResponse;
 import net.timxekhach.utility.model.XeRuntimeException;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.engine.jdbc.env.spi.SQLStateType;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

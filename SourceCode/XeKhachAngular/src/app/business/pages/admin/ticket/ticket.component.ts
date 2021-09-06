@@ -26,11 +26,11 @@ export class TicketComponent extends FormAbstract {
     xeScreen: this.screen,
     table: {
       mode: {
-        customObservable: CommonUpdateService.instance.findTripByCompanyId(this.auth.companyId)
+        customObservable: this.auth.hasSysAdmin ? undefined : CommonUpdateService.instance.findTripByCompanyId(this.auth.companyId)
       },
       action: {
         filters: {
-          filterSingle: (trip: Trip) => this.auth.hasBussAdmin ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
+          filterSingle: (trip: Trip) => this.auth.hasCaller ? true : trip.bussSchedule.buss.bussEmployees.filter(be => be.employeeId === this.auth.employeeId).length > 0
         },
         postSelect: () => this.screen.go(this.screens.tripDetails),
       },
@@ -43,11 +43,12 @@ export class TicketComponent extends FormAbstract {
         },
       ]
     }
-  }, Trip.new({company: this.auth.company}));
+  });
 
   tripUserTable = TripUser.tableData({
     table: {
       mode: {
+        hideSelectColumn: true,
         readonly: true
       }
     },

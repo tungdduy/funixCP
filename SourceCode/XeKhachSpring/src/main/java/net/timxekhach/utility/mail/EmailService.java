@@ -13,6 +13,9 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,10 +25,7 @@ public class EmailService {
   private static final String MAIL_TEMPLATE_SUFFIX = ".html";
   private static final String UTF_8 = "UTF-8";
 
-  private static String host = "smtp.timxekhach.tech";
-  private static String port = "587";
-  private static String email = "support@timxekhach.tech";
-  private static String password = "LHTaacV3";
+  private static Properties properties;
 
   private static TemplateEngine templateEngine;
 
@@ -44,6 +44,7 @@ public class EmailService {
         {
           // if instance is null, initialize
           instance = new EmailService();
+          loadProperties();
           templateEngine = thymeleafTemplateEngine();
         }
 
@@ -53,6 +54,16 @@ public class EmailService {
   }
 
   public void sendMail(Context context, String template, String subject, String recipient) {
+    if (properties == null){
+      log.info("No available email config, do nothing!");
+      return;
+    }
+
+    String host = properties.getProperty("host");
+    String port = properties.getProperty("port");
+    String email = properties.getProperty("email");
+    String password = properties.getProperty("password");
+
     CompletableFuture.runAsync(() -> {
       try {
         log.info("sendMail email running...");
@@ -82,7 +93,7 @@ public class EmailService {
         message.setSubject(subject);
         String content = getContent(context, template);
         message.setContent(content, CONTENT_TYPE_TEXT_HTML);
-        //Transport.send(message);
+        Transport.send(message);
       } catch (Exception e) {
         log.error(e.getMessage(), e);
         ErrorCode.SEND_EMAIL_FAILED.throwNow();
@@ -107,5 +118,22 @@ public class EmailService {
     SpringTemplateEngine templateEngine = new SpringTemplateEngine();
     templateEngine.setTemplateResolver(thymeleafTemplateResolver());
     return templateEngine;
+  }
+
+  private static void loadProperties(){
+    log.info("Parsing mail.properties");
+    try (InputStream input = new FileInputStream("/home/funix/config/mail.properties")) {
+
+      properties = new Properties();
+
+      // load a properties file
+      properties.load(input);
+
+      // get the property value and print it out
+      properties.stringPropertyNames().forEach(key -> log.info(String.format("%s : %s", key, properties.getProperty(key))));
+
+    } catch (IOException ex) {
+      log.error(ex.getMessage(), ex);
+    }
   }
 }

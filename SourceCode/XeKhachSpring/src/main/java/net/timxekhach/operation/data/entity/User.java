@@ -9,6 +9,7 @@ import lombok.Setter;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.security.constant.RoleEnum;
 import net.timxekhach.security.handler.SecurityConfig;
 import net.timxekhach.utility.XeStringUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,17 +17,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity
-@Getter
-@Setter
+@Entity @Getter @Setter
 public class User extends User_MAPPED {
 
     @Override
@@ -34,7 +31,7 @@ public class User extends User_MAPPED {
         return super.getProfileImageUrl();
     }
 
-    // ____________________ ::BODY_SEPARATOR:: ____________________ //
+// ____________________ ::BODY_SEPARATOR:: ____________________ //
     @JsonIgnore
     public List<String> getRoles() {
         return XeStringUtils.splitByComma(this.role);
@@ -42,9 +39,27 @@ public class User extends User_MAPPED {
 
     @JsonIgnore
     public List<GrantedAuthority> getGrantedAuthority() {
-        return this.getRoles().stream()
+        return this.getFlatRoles().stream()
+                .map(Enum::toString)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    Set<RoleEnum> getFlatRoles() {
+       List<RoleEnum> roles  = this.getRoles().stream()
+               .map(RoleEnum::valueOf)
+               .collect(Collectors.toList());
+       return flatRoles(roles, new HashSet<>());
+
+    }
+
+    Set<RoleEnum> flatRoles(List<RoleEnum> roles, Set<RoleEnum> result) {
+        result.addAll(roles);
+        roles.forEach(role -> {
+            flatRoles(role.getRoleList(), result);
+        });
+        return result;
     }
 
     @Transient

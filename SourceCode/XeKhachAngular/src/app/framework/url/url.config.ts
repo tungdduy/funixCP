@@ -3,6 +3,7 @@ import {XeRouter} from "../../business/service/xe-router";
 import {Role} from "../../business/xe.role";
 
 export class UrlConfig {
+
   private _public: boolean;
 
   private _short: string;

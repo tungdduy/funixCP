@@ -1,10 +1,12 @@
 package net.timxekhach.operation.data.repository;
 
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
+
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
