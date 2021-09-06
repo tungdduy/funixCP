@@ -9,10 +9,49 @@ export interface ScreenConfig {
   homeTitle?: () => string;
 }
 
+class Stack {
+  private readonly stack;
+  constructor() {
+    this.stack = [];
+  }
+
+  push(item) {
+    return this.stack.push(item);
+  }
+
+  pop() {
+    return this.length > 0 ? this.stack.pop() : undefined;
+  }
+
+  get peek() {
+    return this.length > 0 ? this.stack[this.length - 1] : undefined;
+  }
+
+  isContain(item: string) {
+    return this.stack.includes(item);
+  }
+
+  get length() {
+    return this.stack.length;
+  }
+
+  get isEmpty() {
+    return this.length === 0;
+  }
+
+  clear() {
+    this.stack.length = 0;
+  }
+
+  get reverse() {
+    return this.stack.reverse();
+  }
+}
+
 export class XeScreen {
   config: ScreenConfig;
   current;
-  stack = [];
+  stack = new Stack();
 
   constructor(config: ScreenConfig) {
     this.config = config;
@@ -43,43 +82,32 @@ export class XeScreen {
   }
 
   back = () => {
-    if (this.stack.length === 0) {
-      this.goHome();
-    }
-    this.stack.shift();
-    let result = this.config.home;
-    if (this.stack.length > 0) {
-      result = this.stack[0];
-    }
-    if (this.config.preGo) this.config.preGo(result);
-    this.current = result;
+    this.stack.pop();
+    const prev = this.stack.peek ? this.stack.peek : this.home;
+    if (this.config.preGo) this.config.preGo(prev);
+    this.current = prev;
   }
 
   goHome = () => {
     if (this.isHome) return;
     if (this.config.preHome) this.config.preHome(this.config.home);
     if (this.config.preGo) this.config.preGo(this.config.home);
-    this.stack = [];
+    this.stack.clear();
     this.current = this.config.home;
   }
 
-  go = (item: any) => {
+  go = (item: string) => {
     if (this.config.preGo) this.config.preGo(item);
     this.current = this._move(item);
   }
 
-  private _move = (item: any) => {
-    let foundItem = -1;
-    for (let i = this.stack.length - 1; i >= 0; i--) {
-      if (this.stack[i] === item) {
-        foundItem = i;
-        break;
+  private _move = (item: string) => {
+    if (this.stack.isContain(item)) {
+      while (this.stack.peek() !== item) {
+        this.stack.pop();
       }
-    }
-    if (foundItem >= 0) {
-      this.stack.splice(0, foundItem);
     } else {
-      this.stack.unshift(item);
+      this.stack.push(item);
     }
     return item;
   }

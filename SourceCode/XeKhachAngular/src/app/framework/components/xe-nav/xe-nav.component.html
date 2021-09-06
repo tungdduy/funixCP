@@ -4,7 +4,7 @@
     <lbl class="text-primary" prepend="/ ">{{screen.title}}</lbl>
   </div>
   <ng-container *ngIf="!screen.isHome">
-    <div *ngFor="let item of screen?.stack?.reverse(); index as i; last as isLast" class="d-inline-block pl-1">
+    <div *ngFor="let item of screen?.stack?.reverse; index as i; last as isLast" class="d-inline-block pl-1">
       <lbl (click)="!isLast ? screen.go(item) : ''"
            [type]="isLast ? 'text' : 'link'"
            key="screen.{{item}}"
