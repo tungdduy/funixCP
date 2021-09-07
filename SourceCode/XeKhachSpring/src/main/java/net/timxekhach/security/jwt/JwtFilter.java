@@ -58,7 +58,9 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(OK.value());
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader == null || !authorizationHeader.startsWith(securityResource.getTokenPrefix())) {
+            if (authorizationHeader == null
+                    || !authorizationHeader.startsWith(securityResource.getTokenPrefix())
+                    || authorizationHeader.split("\\.").length < 3) {
                 filterChain.doFilter(request, response);
                 return;
             }

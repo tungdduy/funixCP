@@ -17,8 +17,8 @@ export const Url = {
   getPublicApi: (apiUrls: any[]) => {
     apiUrls.forEach(apiUrl => {
       if (apiUrl instanceof UrlConfig) {
-        if (apiUrl.isPublic()) {
-          Url.publicApi.push(apiUrl.full);
+        if (apiUrl.isPublic() && apiUrl?.roles?.length === 0) {
+          Url.publicApi.push(apiUrl.full.toLowerCase());
         }
       } else {
         Url.getPublicApi(Object.values(apiUrl));
@@ -31,7 +31,7 @@ export const Url = {
       Url.publicApi = [];
       Url.getPublicApi(Object.values(Url.api));
     }
-    return Url.publicApi.findIndex(u => url.startsWith(u)) >= 0;
+    return Url.publicApi.findIndex(u => url.toLowerCase().startsWith(u)) >= 0;
   },
   DEFAULT_URL_AFTER_LOGIN: () => Url.app.ADMIN.MY_ACCOUNT
   ,
@@ -45,19 +45,34 @@ export const Url = {
       REGISTER: config(),
       FORGOT_PASSWORD: config(),
       FORGOT_PASSWORD_SECRET_KEY: config(),
-      CHANGE_PASSWORD: config(),
-      UPDATE_PASSWORD: config(),
+      CHANGE_PASSWORD: uConfig(),
+      UPDATE_PASSWORD: uConfig(),
     },
     TRIP: {
-      _self: config(),
+      _self: uConfig(),
       SEARCH_LOCATION: config(),
-      FIND_BUSS_SCHEDULES: config(),
+      FIND_BUSS_SCHEDULE: config(),
       FIND_SCHEDULED_LOCATIONS: config(),
       GET_TRIP_USERS: config(),
       GET_TRIP_BY_COMPANY_ID: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
       GET_BUSS_SCHEDULES_BY_COMPANY_ID: config().setRoles([r.ROLE_BUSS_STAFF, r.ROLE_CALLER_STAFF]),
     },
-    COMMON_UPDATE: uConfig(),
+    COMMON_UPDATE: {
+      _self: uConfig(),
+      TRIP: config().setRoles([r.ROLE_CALLER_STAFF, r.ROLE_BUSS_STAFF]),
+      TRIP_USER: config(),
+      USER: uConfig(),
+      BUSS: uConfig(),
+      BUSS_SCHEDULE: uConfig(),
+      BUSS_SCHEDULE_POINT: uConfig(),
+      BUSS_TYPE: config().setRoles([r.ROLE_SYS_ADMIN]),
+      COMPANY: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      EMPLOYEE: uConfig(),
+      LOCATION: config().setRoles([r.ROLE_SYS_ADMIN]),
+      PATH: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      PATH_POINT: config().setRoles([r.ROLE_BUSS_ADMIN]),
+      SEAT_GROUP: config().setRoles([r.ROLE_SYS_ADMIN]),
+    },
   },
   app: {
     CHECK_IN: {

@@ -12,7 +12,7 @@ xekhach:
     expirationTime: 432000000 # 5 days in milliseconds
     authorities: "authorities"
     httpMethodOption: "OPTIONS"
-    publicUrls: ["/images/**", "/resource/**", "/common-update/**"]
+    publicUrls: ["/images/**", "/resource/**"]
     maximumNumberOfLoginAttempts: 5
     jwtIssuer: "TimXeKhach"
     jwtAudience: "TimXeKhachAdministration"

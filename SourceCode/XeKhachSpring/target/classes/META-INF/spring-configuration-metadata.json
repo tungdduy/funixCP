@@ -1,11 +1,6 @@
 {
   "groups": [
     {
-      "name": "fcm",
-      "type": "net.timxekhach.firebase.fcm.FcmSettings",
-      "sourceType": "net.timxekhach.firebase.fcm.FcmSettings"
-    },
-    {
       "name": "xekhach.security",
       "type": "net.timxekhach.security.model.SecurityResource",
       "sourceType": "net.timxekhach.security.model.SecurityResource"
@@ -17,11 +12,6 @@
     }
   ],
   "properties": [
-    {
-      "name": "fcm.service-account-file",
-      "type": "java.lang.String",
-      "sourceType": "net.timxekhach.firebase.fcm.FcmSettings"
-    },
     {
       "name": "xekhach.security.allowed-headers",
       "type": "java.util.List<java.lang.String>",
