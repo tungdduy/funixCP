@@ -217,9 +217,6 @@ export class EntityUtil {
         entity[entityField.lastFieldName] = templateField.value;
       }
     });
-    entityDefine.clazz.meta.pkMetas().forEach(pkMeta => {
-      entity[pkMeta.camelName] = templateEntity[pkMeta.camelName];
-    });
     return entity;
   }
 

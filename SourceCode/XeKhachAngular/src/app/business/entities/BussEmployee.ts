@@ -64,6 +64,11 @@ export class BussEmployee extends XeEntity {
 
   private static _bussEmployeeTable = (bussEmployee: BussEmployee): XeTableData<BussEmployee> => {
 // ____________________ ::ENTITY_TABLE_SEPARATOR:: ____________________ //
+    const identifier = BussEmployee.entityIdentifier(bussEmployee);
+    identifier.idFields.forEach((field, idx) => {
+      if (field.name === "employee.user.userId") field['newIfNull'] = true;
+      if (field.name === "employee.employeeId") field['newIfNull'] = true;
+    });
     return {
       table: {
         basicColumns: [
@@ -84,7 +89,7 @@ export class BussEmployee extends XeEntity {
         ],
       },
       formData: {
-        entityIdentifier: BussEmployee.entityIdentifier(bussEmployee),
+        entityIdentifier: identifier,
         share: {},
         header: {
           profileImage: {name: 'employee.user.profileImageUrl'},

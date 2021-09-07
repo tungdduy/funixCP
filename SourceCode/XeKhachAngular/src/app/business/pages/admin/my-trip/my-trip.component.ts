@@ -58,6 +58,8 @@ export class MyTripComponent extends FormAbstract implements AfterViewInit {
           postSelect: () => {},
         },
         mode: {
+          readonly: !this.auth.isUserLoggedIn,
+          hideSelectColumn: !this.auth.isUserLoggedIn,
           denyNew: true,
           customObservable: tripUserFinder
         },

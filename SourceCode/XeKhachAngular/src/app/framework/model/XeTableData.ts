@@ -69,6 +69,7 @@ export class XeTableData<E extends XeEntity> {
   table?: {
     customData?: () => E[],
     mode?: {
+      newToBottom?: boolean;
       denyNew?: boolean;
       hideSearchBox?: boolean;
       lazyData?: (term: string) => Observable<E[]>,

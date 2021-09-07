@@ -11,6 +11,7 @@
     </div>
   </nb-card-header>
   <nb-card-body>
+    <div class="alert alert-info" *ngIf="mode.hasBussAdmin" [innerText]="xeLabel.CLICK_TO_BLOCK_UNBLOCK_SEAT"></div>
     <ng-container *ngTemplateOutlet="SchemeViewWithControls"></ng-container>
     <ng-container *ngTemplateOutlet="SchemeFormEditTemplate"></ng-container>
   </nb-card-body>

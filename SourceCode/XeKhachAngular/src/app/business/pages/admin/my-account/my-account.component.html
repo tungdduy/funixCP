@@ -25,10 +25,11 @@
     <nb-card *ngIf="screen.is(screens.password)">
       <nb-card-body>
         <xe-form #password
+                 [uncheckChanged]="true"
                  [initCtrl]="initMe"
                  name="updatePassword"
                  onSuccess="reset">
-          <xe-input [value]="user.userId" hidden name="userId"></xe-input>
+          <xe-input name="userId" [value]="user.userId" hidden></xe-input>
           <xe-input name="currentPassword" required></xe-input>
           <xe-input #newPassword name="newPassword" required></xe-input>
           <xe-input [matching]="newPassword" name="reNewPassword"></xe-input>

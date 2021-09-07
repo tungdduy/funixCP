@@ -44,6 +44,7 @@ export class PathComponent extends FormAbstract {
     xeScreen: this.screen,
     table: {
       mode: {
+        newToBottom: true,
         hideSelectColumn: !this.auth.hasBussAdmin,
         readonly: !this.auth.hasBussAdmin
       },

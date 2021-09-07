@@ -161,7 +161,7 @@ public enum ErrorCode {
     }
 
     public Object throwIfNotNull(Object object, String... paramValues) {
-        if (object == null) {
+        if (object != null) {
             throwNow(paramValues);
         }
         return object;
