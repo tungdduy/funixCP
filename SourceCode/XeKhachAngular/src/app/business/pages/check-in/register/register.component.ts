@@ -4,6 +4,7 @@ import {AppMessages} from "../../../i18n";
 import {Url} from "../../../../framework/url/url.declare";
 import {AuthUtil} from "../../../../framework/auth/auth.util";
 import {FormAbstract} from "../../../../framework/model/form.abstract";
+import {XeScreen} from "../../../../framework/components/xe-nav/xe-nav.component";
 
 
 @Component({
@@ -23,14 +24,22 @@ export class RegisterComponent extends FormAbstract implements OnInit {
     }
   }
 
+  screens = {
+    register: "register",
+    success: "success"
+  };
+  screen = new XeScreen({home: this.screens.register});
+
   successMessage;
   handlers = [{
     name: "register",
     processor: (data) => this.authService.register(data),
-    success: {call: (response) => {
-      this.successMessage = AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email);
-      this.showForm('success');
-    }}
+    success: {
+      call: (response) => {
+        this.successMessage = AppMessages.REGISTER_ACCOUNT_SUCCESS(response.email);
+        this.screen.go(this.screens.success);
+      }
+    }
   }];
 
   gotoLogin() {
