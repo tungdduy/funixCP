@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.mapped.User_MAPPED;
 import net.timxekhach.operation.data.mapped.abstracts.XeEntity;
 import net.timxekhach.operation.response.ErrorCode;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 import static net.timxekhach.utility.XeMailUtils.sendEmailRegisterSuccessFully;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter
+@Entity @Getter @Setter @Log4j2
 public class User extends User_MAPPED {
 
     @Override
@@ -88,7 +89,7 @@ public class User extends User_MAPPED {
 
     public void createSecretPasswordKey() {
         this.secretPasswordKey = XeStringUtils.randomAlphaNumerics(6);
-        logger.info("secret password key is: " + this.secretPasswordKey);
+        log.info("secret password key is: " + this.secretPasswordKey);
     }
 
     public boolean isMatchSecretPasswordKey(String secretKey) {

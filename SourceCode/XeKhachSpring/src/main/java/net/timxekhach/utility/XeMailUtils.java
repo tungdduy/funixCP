@@ -5,6 +5,7 @@ import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
 import net.timxekhach.utility.mail.EmailService;
+import org.apache.commons.collections.CollectionUtils;
 import org.thymeleaf.context.Context;
 
 import java.util.stream.Collectors;
@@ -43,6 +44,10 @@ public class XeMailUtils {
 
     public static void sendEmailTicket(Long tripUserId){
         TripUser tripUser = CommonUpdateService.getTripUserRepository().findByTripUserId(tripUserId);
+
+        if(!isValidSeat(tripUser))
+            return;
+
         Context context = createContext(tripUser);
         String template = "order-info";
 
@@ -53,6 +58,10 @@ public class XeMailUtils {
 
     public static void sendConfirmEmailTicket(Long tripUserId){
         TripUser tripUser = CommonUpdateService.getTripUserRepository().findByTripUserId(tripUserId);
+
+        if(!isValidSeat(tripUser))
+            return;
+
         Context context = createContext(tripUser);
         String template = "order-confirm";
 
@@ -77,6 +86,23 @@ public class XeMailUtils {
         context.setVariable("launchDate", tripUser.getTrip().getLaunchDate());
         context.setVariable("hotline", tripUser.getTrip().getBussSchedule().getBuss().getCompany().getHotLine());
         return context;
+    }
+
+    private static boolean isValidSeat(TripUser tripUser){
+
+        if(tripUser == null){
+            log.info("Invalid ticket");
+            return false;
+        }
+
+        if (CollectionUtils.isEmpty(tripUser.getSeats())){
+            log.info("Ticket ID {} has empty seat, email process may rejected", tripUser.getTripUserId());
+            return false;
+        }
+        else{
+            log.info("Ticket ID {} has {} seat(s), email processing...", tripUser.getTripUserId(), tripUser.getSeats().size());
+            return true;
+        }
     }
 
 }
