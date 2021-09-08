@@ -79,6 +79,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   }
 
   private stompClient = null;
+  private subscription;
   disabled = true;
   setConnected(connected: boolean) {
     this.disabled = !connected;
@@ -96,7 +97,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
       _this.setConnected(true);
       // console.log('Connected: ' + frame);
 
-      _this.stompClient.subscribe('/topic/' + AuthUtil.instance.companyId, (message) => {
+      _this.subscription = _this.stompClient.subscribe('/topic/' + AuthUtil.instance.companyId, (message) => {
         // console.log(message);
         const json = JSON.parse(message.body);
         this.toastrService.show(
@@ -105,5 +106,14 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
           { duration : 0, status : json.type === "cancel" ? "danger" : "primary" });
       }, {Authorization: `${AuthUtil.instance.token}`});
     });
+  }
+
+  @HostListener('window:unload', [ '$event' ])
+  unloadHandler(event) {
+    this.subscription.unsubscribe();
+  }
+  @HostListener('window:beforeunload', [ '$event' ])
+  beforeUnloadHandler(event) {
+    this.subscription.unsubscribe();
   }
 }
