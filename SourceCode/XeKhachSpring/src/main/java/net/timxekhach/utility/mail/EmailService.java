@@ -31,7 +31,7 @@ public class EmailService {
   private static final String MAIL_TEMPLATE_SUFFIX = ".html";
   private static final String UTF_8 = "UTF-8";
 
-  private static Properties properties;
+  private static EmailServiceConfig emailCfg;
 
   private static TemplateEngine templateEngine;
 
@@ -50,7 +50,7 @@ public class EmailService {
         {
           // if instance is null, initialize
           instance = new EmailService();
-          loadProperties();
+          emailCfg = ApplicationContextUtils.getApplicationContext().getBean(EmailServiceConfig.class);
           templateEngine = thymeleafTemplateEngine();
         }
 
@@ -60,15 +60,14 @@ public class EmailService {
   }
 
   public void sendMail(Context context, String template, String subject, String recipient) {
-    if (properties == null){
+    if (emailCfg == null
+        || StringUtils.isEmpty(emailCfg.getEmail())
+        || StringUtils.isEmpty(emailCfg.getPassword())
+        || emailCfg.getPort() == 0
+        || StringUtils.isEmpty(emailCfg.getHost())){
       log.info("No available email config, do nothing!");
       return;
     }
-
-    String host = properties.getProperty("host");
-    String port = properties.getProperty("port");
-    String email = properties.getProperty("email");
-    String password = properties.getProperty("password");
 
     CompletableFuture.runAsync(() -> {
       try {
@@ -81,21 +80,21 @@ public class EmailService {
         log.info("Subject: "+subject);
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.host", emailCfg.getHost());
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.port", emailCfg.getPort());
 
         Session session = Session.getInstance(props,
             new Authenticator() {
               @Override
               protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(email, password);
+                return new PasswordAuthentication(emailCfg.getEmail(), emailCfg.getPassword());
               }
             });
         Message message = new MimeMessage(session);
 
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient, false));
-        message.setFrom(new InternetAddress(email, "TìmXeKhách"));
+        message.setFrom(new InternetAddress(emailCfg.getEmail(), "TìmXeKhách"));
         message.setSubject(subject);
         String content = getContent(context, template);
         message.setContent(content, CONTENT_TYPE_TEXT_HTML);
@@ -126,23 +125,6 @@ public class EmailService {
     return templateEngine;
   }
 
-  private static void loadProperties(){
-    log.info("Parsing mail.properties");
-    try (InputStream input = new FileInputStream("/home/funix/config/mail.properties")) {
-
-      properties = new Properties();
-
-      // load a properties file
-      properties.load(input);
-
-      // get the property value and print it out
-      properties.stringPropertyNames().forEach(key -> log.info(String.format("%s : %s", key, properties.getProperty(key))));
-
-    } catch (IOException ex) {
-      log.error(ex.getMessage(), ex);
-    }
-  }
-
   public static void sendNotification(TripUser tripUser, boolean isCancel){
     SimpMessagingTemplate template = ApplicationContextUtils.getApplicationContext().getBean(SimpMessagingTemplate.class);
 
@@ -155,6 +137,7 @@ public class EmailService {
     Map<String, String> payload = new HashMap<>();
     payload.put("message", message);
     payload.put("type", isCancel ? "cancel" : "new");
+    payload.put("tripUserId", String.valueOf(tripUser.getTripUserId()));
 
     log.info("Notification to {}: {}", "/topic/"+tripUser.getCompanyId(), payload);
 
