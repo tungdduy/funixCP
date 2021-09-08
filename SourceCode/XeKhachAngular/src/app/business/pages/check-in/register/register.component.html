@@ -1,5 +1,5 @@
 
-<xe-form #register name="register">
+<xe-form #register name="register"  *ngIf="screen.is(screens.register)">
   <xe-input name="fullName" minLength="3" maxLength="30"></xe-input>
   <xe-input type="email"></xe-input>
   <xe-input type="password" name="password" #password></xe-input>
@@ -7,7 +7,7 @@
   <xe-btn [btnText]="xeLabel.REGISTER" [disabled]="register.isLoading" center></xe-btn>
 </xe-form>
 
-<div *ngIf="successMessage">
+<div *ngIf="screen.is(screens.success)">
   <p>{{successMessage}}</p>
   <xe-btn [btnText]="xeLabel.CLICK_TO_LOGIN" (click)="gotoLogin()" center></xe-btn>
 </div>

@@ -1,9 +1,11 @@
 package net.timxekhach.operation.data.entity;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.PathPoint_MAPPED;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
@@ -15,6 +17,7 @@ import net.timxekhach.utility.Xe;
 import net.timxekhach.utility.XeMailUtils;
 import net.timxekhach.utility.XeNumberUtils;
 import net.timxekhach.utility.XeStringUtils;
+import net.timxekhach.utility.mail.EmailService;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -33,7 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
-@Entity @Getter @Setter
+@Entity @Getter @Setter @Log4j2
 public class TripUser extends TripUser_MAPPED {
 
     public TripUser() {}
@@ -52,6 +55,10 @@ public class TripUser extends TripUser_MAPPED {
     @Transient
     @Getter(AccessLevel.PROTECTED)
     protected TripUserStatus statusBeforeSetField;
+
+    @Transient
+    @JsonIgnore
+    private ThreadLocal<TripUser> threadLocal = new ThreadLocal<>();
 
     public static TripUserRepository getRepo() {
         return CommonUpdateService.getTripUserRepository();
@@ -80,6 +87,10 @@ public class TripUser extends TripUser_MAPPED {
             this.tripUserPoints = null;
             this.recalculatePrice();
         }
+
+        log.info("Thread: {} - {}", Thread.currentThread().getName(), Thread.currentThread().getId());
+        TripUser tripUser = this;
+        threadLocal.set(tripUser);
     }
 
     @Override
@@ -87,8 +98,37 @@ public class TripUser extends TripUser_MAPPED {
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
+                log.info("Thread: {} - {}", Thread.currentThread().getName(), Thread.currentThread().getId());
                 if (!StringUtils.equalsIgnoreCase(emailBeforeSetField, email)){
                     XeMailUtils.sendEmailTicket(getTripUserId());
+                }
+                if (getSeats() != null && getSeats().size() > 0 ){
+                    TripUser tripUser = threadLocal.get();
+                    if ( tripUser != null ){
+                        EmailService.sendNotification(tripUser, false);
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void preRemove() {
+        log.info("Thread: {} - {}", Thread.currentThread().getName(), Thread.currentThread().getId());
+        TripUser tripUser = this;
+        threadLocal.set(tripUser);
+    }
+
+    @Override
+    protected void postRemove() {
+        log.info("Thread: {} - {}", Thread.currentThread().getName(), Thread.currentThread().getId());
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                log.info("Thread: {} - {}", Thread.currentThread().getName(), Thread.currentThread().getId());
+                TripUser tripUser = threadLocal.get();
+                if ( tripUser != null ){
+                    EmailService.sendNotification(tripUser, true);
                 }
             }
         });

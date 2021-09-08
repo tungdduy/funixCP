@@ -26,8 +26,8 @@ export abstract class FormAbstract extends XeSubscriber implements AfterViewInit
   }
 
   showForm(formCode: string) {
-    const groupCode = this.getGroupCode(formCode);
     setTimeout(() => {
+      const groupCode = this.getGroupCode(formCode);
       this.___forms.forEach(form => {
         if (form.name.startsWith(groupCode)) {
           form.show = form.name === formCode;

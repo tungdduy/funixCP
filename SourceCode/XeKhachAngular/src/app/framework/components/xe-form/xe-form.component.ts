@@ -51,14 +51,14 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
     if (this.hide === undefined) {
       return true;
     }
-    if (this.hide === '') {
-      return false;
-    }
-    return this.hide;
+    return !(this.hide === '' || this.hide === true);
+
   }
 
   set show(value) {
-    this.hide = value;
+    setTimeout(() => {
+      this.hide = value;
+    }, 0);
   }
 
   _handler: FormHandler;
@@ -179,6 +179,11 @@ export class XeFormComponent extends XeSubscriber implements OnDestroy, AfterVie
   }
 
   ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.init();
+    }, 0);
+  }
+  init() {
     if (this.initCtrl) {
       this.ctrl = this.initCtrl() as FormAbstract;
     }

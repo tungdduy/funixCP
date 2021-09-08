@@ -14,6 +14,7 @@ export class AuthService {
   }
 
   public login(user: User): Observable<HttpResponse<User>> | any {
+    console.log(Url.api.USER.LOGIN.full);
     return this.http.post<User>(Url.api.USER.LOGIN.full, user, {observe: 'response'});
   }
 

@@ -1,8 +1,12 @@
 package net.timxekhach.utility.mail;
 
 import lombok.extern.log4j.Log4j2;
+import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.response.ErrorCode;
+import net.timxekhach.utility.config.ApplicationContextUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -16,6 +20,8 @@ import javax.mail.internet.MimeMessage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
@@ -134,6 +140,26 @@ public class EmailService {
 
     } catch (IOException ex) {
       log.error(ex.getMessage(), ex);
+    }
+  }
+
+  public static void sendNotification(TripUser tripUser, boolean isCancel){
+    SimpMessagingTemplate template = ApplicationContextUtils.getApplicationContext().getBean(SimpMessagingTemplate.class);
+
+    String message = String.format("Khách hàng %s đã %s %d ghế cho chặng từ %s đi %s vào ngày %s lúc %s",
+        tripUser.getFullName(), isCancel ? "hủy" : "đặt", tripUser.getSeats().size(),
+        tripUser.getStartPoint().getPointName(), tripUser.getEndPoint().getPointName(),
+        DateFormatUtils.format(tripUser.getTrip().getLaunchDate(), "dd/MM/yyyy"),
+        DateFormatUtils.format(tripUser.getTrip().getLaunchTime(), "HH:mm"));
+
+    Map<String, String> payload = new HashMap<>();
+    payload.put("message", message);
+    payload.put("type", isCancel ? "cancel" : "new");
+
+    log.info("Notification to {}: {}", "/topic/"+tripUser.getCompanyId(), payload);
+
+    if (template != null){
+      template.convertAndSend("/topic/"+tripUser.getCompanyId(), payload);
     }
   }
 }
