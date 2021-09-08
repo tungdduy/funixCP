@@ -74,7 +74,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(securityResource.getPublicUrls()).permitAll()
 // ____________________ ::BEFORE_AUTHORIZATION_SEPARATOR:: ____________________ //
-
+            .antMatchers("/socket", "/socket/**").permitAll()
+                .antMatchers("/webSocket/send").permitAll()
                 .antMatchers("/user/login/**").permitAll()
                 .antMatchers("/user/register/**").permitAll()
                 .antMatchers("/user/forgot-password/**").permitAll()
