@@ -104,7 +104,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
           json.message ,
           `Bạn có thông tin đặt vé mới`,
           { duration : 0, status : json.type === "cancel" ? "danger" : "primary" });
-      }, {Authorization: `${AuthUtil.instance.token}`});
+      });
     });
   }
 

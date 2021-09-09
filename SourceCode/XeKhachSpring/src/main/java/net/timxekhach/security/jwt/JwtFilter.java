@@ -1,6 +1,7 @@
 package net.timxekhach.security.jwt;
 
 
+import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.model.SecurityResource;
 import org.springframework.beans.factory.annotation.Autowired;
