@@ -1,4 +1,4 @@
-package net.timxekhach.utility.config;
+package net.timxekhach.utility.config.websocket;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -9,6 +9,8 @@ import net.timxekhach.security.jwt.JwtTokenProvider;
 import net.timxekhach.security.model.SecurityResource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHeaders;
@@ -17,27 +19,28 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.StompWebSocketEndpointRegistration;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import java.util.List;
-import java.util.Map;
+import java.security.Principal;
 
 @Configuration
 @EnableWebSocketMessageBroker
 @EnableScheduling
 @AllArgsConstructor
 @Log4j2
+@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   private final SecurityResource securityResource;
   private final JwtTokenProvider jwtTokenProvider;
   private final UserRepository userRepository;
+  private final WebSocketAuthenticatorService authenticatorService;
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -64,46 +67,28 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         log.info("Websocket command >>> "+accessor.getCommand());
 
-        if(StompCommand.SUBSCRIBE == accessor.getCommand()){
-          checkPermission(headers, StompCommand.SUBSCRIBE);
-        }
-
         if (StompCommand.CONNECT == accessor.getCommand()) {
-          checkPermission(headers, StompCommand.CONNECT);
-        }
+          String token = accessor.getFirstNativeHeader("Authorization");
+          final UsernamePasswordAuthenticationToken user = authenticatorService.getAuthenticatedOrFail(token);
+          accessor.setUser(user);
+        }else if (StompCommand.SUBSCRIBE == accessor.getCommand()){
+          String login = accessor.getUser().getName();
+          User user = userRepository.findFirstByUsernameOrEmail(login, null);
 
-        return message;
-      }
-    });
-  }
-
-  private void checkPermission(MessageHeaders headers, StompCommand command){
-    Map<String, List> nativeHeaders = (Map<String, List>) headers.get(StompHeaderAccessor.NATIVE_HEADERS);
-
-    if (nativeHeaders.containsKey("Authorization")) {
-      List<String> token = nativeHeaders.get("Authorization");
-
-      if (token != null && token.size() > 0){
-        String username = jwtTokenProvider.getSubject(token.get(0));
-        User user = userRepository.findFirstByUsernameOrEmail(username, null);
-
-        if (command == StompCommand.CONNECT){
           long count = user.getRoles().stream().filter(role -> RoleEnum.valueOf(role) == RoleEnum.ROLE_BUSS_ADMIN || RoleEnum.valueOf(role) == RoleEnum.ROLE_CALLER_STAFF).count();
 
           if (count <= 2 && count > 0) {
-            return;
+            checkTopicSubscribe(headers, user);
+          }else{
+            log.info("Notification >> Access denied for user {}", login);
+            throw new IllegalArgumentException("No permission for this user");
           }
-          log.info("No permission grant for this user "+user.getUsername());
-        }else{
-          checkTopicSubscribe(headers, user);
-          return;
         }
 
+        logCommand(accessor);
+        return message;
       }
-
-    }
-
-    throw new IllegalArgumentException("No permission for this user");
+    });
   }
 
   private void checkTopicSubscribe(MessageHeaders headers, User user){
@@ -113,6 +98,30 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     if(!StringUtils.equalsIgnoreCase(topic, expectTopic)){
       log.info("No permission grant for this topic "+topic);
       throw new IllegalArgumentException("No permission for this topic");
+    }
+  }
+
+  private void logCommand(StompHeaderAccessor accessor){
+    Principal principal = accessor.getUser();
+    String topic = accessor.getDestination();
+    switch (accessor.getCommand()){
+      case CONNECT:
+        log.info("Connect notification successfully for user: {}", principal.getName());
+        break;
+      case SUBSCRIBE:
+        log.info("Subscribe topic {} successfully for user: {}",
+            topic,
+            principal.getName());
+        break;
+      case UNSUBSCRIBE:
+        log.info("Unsubscribe successfully for user: {}",
+            principal.getName());
+        break;
+      case DISCONNECT:
+        log.info("Disconnect notification successfully for user: {}", principal.getName());
+        break;
+      default:
+        break;
     }
   }
 }
