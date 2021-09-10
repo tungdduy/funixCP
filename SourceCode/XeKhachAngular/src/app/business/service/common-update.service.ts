@@ -150,6 +150,13 @@ export class CommonUpdateService {
     return this.http.get<TripUser[]>(url);
   }
 
+  findPendingTripUsers(managerUserId): Observable<TripUser[]> {
+    managerUserId = !managerUserId ? 0 : managerUserId;
+    const url = Url.API_HOST + "/trip/find-pending-trip-users/" + managerUserId;
+    console.log(url);
+    return this.http.get<TripUser[]>(url);
+  }
+
   refreshCurrentUser() {
     this.getOne<User>(AuthUtil.instance.user, User.meta).subscribe(
       user => {
@@ -171,6 +178,8 @@ export class CommonUpdateService {
     console.log(url);
     return this.http.get<BussSchedule[]>(url);
   }
+
+
 
 
 }

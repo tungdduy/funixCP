@@ -5,7 +5,6 @@ import {XeTableData} from "../../../framework/model/XeTableData";
 import {XeScreen} from "../../../framework/components/xe-nav/xe-nav.component";
 import {XeLabel} from "../../i18n";
 import {AuthUtil} from "../../../framework/auth/auth.util";
-import {Role} from "../../xe.role";
 
 @Component({
   selector: 'xe-admin',
@@ -29,10 +28,11 @@ export class AdminComponent {
   ];
   screens = {
     home: 'home',
-    table: 'table'
+    table: 'table',
   };
   screen = new XeScreen({home: 'home'});
   tableData: XeTableData<any>;
+  tripUserId: number;
   constructor(iconsLibrary: NbIconLibraries) {
     AdminComponent._instance = this;
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });

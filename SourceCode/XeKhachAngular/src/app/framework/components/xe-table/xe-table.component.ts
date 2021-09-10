@@ -95,9 +95,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     this.initFullScreenForm();
     this.initColumns();
     this.initSelectionAnsShare();
-    setTimeout(() => {
-      this.initData();
-    }, 0);
+    this.initData();
   }
 
   public updateTableData(result: E[]) {
@@ -122,6 +120,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     console.time('update table');
     this.updateTableSource(result);
     console.timeEnd('update table');
+    this.postInit();
   }
 
   filterTableColumn(entity, column: TableColumn, value) {
@@ -252,6 +251,13 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
 
   asCol(tableColumn: any): TableColumn {
     return tableColumn as TableColumn;
+  }
+
+  toggleRowByEntityId(id: number) {
+    const entity = this.tableSource.data.find(e => e[this.entityMeta.mainIdName] === id);
+    if (entity) {
+      this.toggleRow(entity);
+    }
   }
 
   toggleRow(entity: E) {
@@ -456,6 +462,17 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
     }
   }
 
+  firstInit = true;
+
+  postInit() {
+    if (this.firstInit) {
+      this.firstInit = false;
+      if (this.tableData.table?.action?.postInit) {
+        this.tableData.table?.action?.postInit(this.tableSource.data);
+      }
+    }
+  }
+
   get hideSelectColumn() {
     return this.tableData.table?.mode?.hideSelectColumn;
   }
@@ -485,7 +502,7 @@ export class XeTableComponent<E extends XeEntity> extends XeSubscriber implement
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-         if (this.tableData?.table?.mode?.lazyData) {
+          if (this.tableData?.table?.mode?.lazyData) {
             return this.tableData.table.mode.lazyData(term);
           }
         })

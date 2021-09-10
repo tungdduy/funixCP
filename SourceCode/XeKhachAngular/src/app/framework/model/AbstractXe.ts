@@ -19,14 +19,10 @@ export class AbstractXe extends Xe {
 
   constructor() {
     super();
-    AbstractXe._instance = this;
+    AbstractXe.instance = this;
   }
 
-  private static _instance;
-
-  static get instance(): AbstractXe {
-    return AbstractXe._instance;
-  }
+  static instance;
 
   get adminContainer() {
     return AdminComponent.instance();

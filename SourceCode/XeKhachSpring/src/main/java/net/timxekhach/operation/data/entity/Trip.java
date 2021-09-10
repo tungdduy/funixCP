@@ -220,6 +220,10 @@ public class Trip extends Trip_MAPPED {
 
         return valid;
     }
+
+    public Date getLaunchDateTime() {
+        return XeDateUtils.mergeDateAndTime(this.launchDate, this.launchTime);
+    }
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<      PREPARE FOR FINDING SCHEDULE
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 

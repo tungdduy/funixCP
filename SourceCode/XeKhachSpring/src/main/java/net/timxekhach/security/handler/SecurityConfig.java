@@ -88,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/trip/get-trip-users/**").permitAll()
                 .antMatchers("/trip/get-trip-by-company-id/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
                 .antMatchers("/trip/get-buss-schedules-by-company-id/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
+                .antMatchers("/trip/find-pending-trip-users/**").hasAnyAuthority("ROLE_BUSS_STAFF", "ROLE_CALLER_STAFF")
                 .antMatchers("/common-update/Trip/**").hasAnyAuthority("ROLE_CALLER_STAFF", "ROLE_BUSS_STAFF")
                 .antMatchers("/common-update/TripUser").permitAll()
                 .antMatchers("/common-update/TripUser/**").hasAnyAuthority("ROLE_USER")

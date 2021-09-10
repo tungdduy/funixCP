@@ -44,7 +44,15 @@ export class UrlConfig {
       }
       this._full = urls.reverse().join("/");
     }
-    return this._full;
+    let result = this._full;
+    if (this.params.length > 0) {
+      result += "?";
+      this.params.forEach((param, index) => {
+        result += param.name + "=" + param.value;
+        if (index < this.params.length - 1) result += "&";
+      });
+    }
+    return result;
   }
 
   private _noHost: string;
@@ -140,6 +148,12 @@ export class UrlConfig {
       iter = iter.parent;
       this._flatRoles = this._flatRoles.concat(iter.roles);
     }
+  }
+
+  params: {name: string, value: number}[] = [];
+  param(params: {name: string, value: number}[]) {
+    this.params = params;
+    return this;
   }
 }
 

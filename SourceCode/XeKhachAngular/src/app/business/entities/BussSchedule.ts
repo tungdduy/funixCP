@@ -138,6 +138,7 @@ export class BussSchedule extends XeEntity {
           {
             field: {name: 'buss.company.companyName', template: InputTemplate.shortInput},
             subColumns: [
+              {field: {name: 'buss.company.hotLine', template: InputTemplate.phone}},
               {
                 field: {name: 'preparedTrip.preparedTripUser.unitPrice', template: InputTemplate.money},
                 display: {row: {css: 'text-x-large text-danger d-block p-2'}}
