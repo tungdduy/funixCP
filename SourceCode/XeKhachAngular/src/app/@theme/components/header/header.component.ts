@@ -1,5 +1,5 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {NbMenuService, NbSidebarService, NbThemeService} from '@nebular/theme';
+import {NbMenuService, NbSidebarService, NbThemeService, NbToastrService} from '@nebular/theme';
 
 import {LayoutService} from '../../../@core/utils';
 import {Observable, Subject} from 'rxjs';
@@ -11,14 +11,6 @@ import {AbstractXe} from "../../../framework/model/AbstractXe";
 import * as Stomp from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import {environment} from "../../../../environments/environment";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {CommonUpdateService} from "../../../business/service/common-update.service";
-import {XeDatePipe} from "../../../framework/components/pipes/date.pipe";
-import {XeTimePipe} from "../../../framework/components/pipes/time.pipe";
-import {PhonePipe} from "../../../framework/components/pipes/phone.pipe";
-import {EntityUtil} from "../../../framework/util/EntityUtil";
-import {TripUser} from "../../../business/entities/TripUser";
-import {MoneyPipe} from "../../../framework/components/pipes/money.pipe";
 
 @Component({
   selector: 'ngx-header',
@@ -38,67 +30,12 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     {title: XeLabel.LOG_OUT, hidden: !AuthUtil.instance.isUserLoggedIn, data: () => AuthUtil.instance.logout()},
   ];
 
-  pendingTripUsers: NbMenuItem[] = [{title: 'Không có vé nào chờ duyệt'}];
-
-  updatePendingTripUsers() {
-    CommonUpdateService.instance.findPendingTripUsers(AuthUtil.instance.user?.userId).subscribe(tripUsers => {
-      EntityUtil.cacheThenFill(tripUsers, TripUser.meta);
-      if (tripUsers && tripUsers.length > 0) {
-        this.pendingTripUsers = tripUsers.map(tripUser => this.tripUserToMenu(tripUser));
-      } else {
-        this.initPendingTripUser();
-      }
-    });
-  }
-
-  initPendingTripUser() {
-    this.pendingTripUsers = [{title: 'Không có vé nào chờ duyệt'}];
-  }
-
-  get numberOfPendingTripUsers(): number {
-    return this.pendingTripUsers.filter(tripUserMenu => tripUserMenu.data).length;
-  }
-
-  tripUserToMenu(tripUser: TripUser): NbMenuItem {
-    return {
-      title: `${tripUser.fullName} -
-          ${PhonePipe.instance.singleToInline(tripUser.phoneNumber)} -
-          ${XeDatePipe.instance.singleToInline(tripUser.trip.launchDate)} -
-          ${XeTimePipe.instance.singleToInline(tripUser.trip.launchTime)} -
-          ${tripUser.seats} -
-          ${MoneyPipe.instance.singleToInline(tripUser.totalPrice)}
-           `,
-      url: Url.app.ADMIN.TICKET.param([{name: "tripUserId", value: tripUser.tripUserId}, {
-        name: "tripId",
-        value: tripUser.tripId
-      }]).full,
-      data: {tripUserId: tripUser.tripUserId}
-    };
-  }
-
-  addPendingTripUser(tripUser: TripUser) {
-    if (this.numberOfPendingTripUsers === 0) {
-      this.pendingTripUsers = [];
-    }
-    this.pendingTripUsers.unshift(this.tripUserToMenu(tripUser));
-  }
-
-  removePendingTripUser(tripUser: TripUser) {
-    const removeIdx = this.pendingTripUsers.findIndex((value) => value.data.tripUserId === tripUser.tripUserId);
-    this.pendingTripUsers.splice(removeIdx, 1);
-    if (this.pendingTripUsers.length === 0) {
-      this.initPendingTripUser();
-    }
-  }
-
-  static instance: HeaderComponent;
-
   public constructor(
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private layoutService: LayoutService,
-    private _snackBar: MatSnackBar,
+    private toastrService: NbToastrService
   ) {
     super();
     menuService.onItemClick().subscribe((menu) => {
@@ -116,10 +53,8 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   ngOnInit() {
     this.userPictureOnly = window.innerWidth < 500;
     if (AuthUtil.instance.hasBussAdmin || AuthUtil.instance.hasCaller) {
-      this.listenToNewTripUser();
+      this.connect();
     }
-    this.updatePendingTripUsers();
-    HeaderComponent.instance = this;
   }
 
   ngOnDestroy() {
@@ -134,6 +69,11 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     return false;
   }
 
+  navigateHome() {
+    this.menuService.navigateHome();
+     return false;
+  }
+
   notLogin() {
     return !AuthUtil.instance.isUserLoggedIn;
   }
@@ -141,15 +81,11 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   private stompClient = null;
   private subscription;
   disabled = true;
-  get isStaff() {
-    return this.auth.isStaff();
-  }
-
   setConnected(connected: boolean) {
     this.disabled = !connected;
   }
 
-  listenToNewTripUser() {
+  connect() {
     const socket = new SockJS(environment.apiHost + "/socket");
     this.stompClient = Stomp.over(socket);
 
@@ -159,7 +95,10 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
       Authorization: `${AuthUtil.instance.token}`
     }, (frame) => {
       _this.setConnected(true);
+      // console.log('Connected: ' + frame);
+
       _this.subscription = _this.stompClient.subscribe('/topic/' + AuthUtil.instance.companyId, (message) => {
+        // console.log(message);
         const json = JSON.parse(message.body);
         const tripUserId = json.tripUserId;
         const tripId = json.tripId;
@@ -180,13 +119,11 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     });
   }
 
-
-  @HostListener('window:unload', ['$event'])
+  @HostListener('window:unload', [ '$event' ])
   unloadHandler(event) {
     this.subscription.unsubscribe();
   }
-
-  @HostListener('window:beforeunload', ['$event'])
+  @HostListener('window:beforeunload', [ '$event' ])
   beforeUnloadHandler(event) {
     this.subscription.unsubscribe();
   }

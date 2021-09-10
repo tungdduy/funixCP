@@ -20,6 +20,11 @@ xekhach:
     resourcePath: "${APPDATA}/xekhach/"
     resourceUrl: "${xekhach.security.apiUrl}resource/"
     apiUrl: "http://localhost:8081/api/"
+  email:
+    host: ~
+    port: 578
+    email: ~
+    password: ~
 
 
 
@@ -30,7 +35,8 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://timxekhach.tech:3306/timxekhach?useUnicode=yes&characterEncoding=UTF-8
+    #url: jdbc:mysql://timxekhach.tech:3306/timxekhach?useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/timxekhach?useUnicode=yes&characterEncoding=UTF-8
     password: p@iGoec414100
     username: root
   jpa:
