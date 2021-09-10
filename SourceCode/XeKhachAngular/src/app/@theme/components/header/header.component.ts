@@ -1,5 +1,5 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
-import {NbMenuService, NbSidebarService, NbThemeService, NbToastrService} from '@nebular/theme';
+import {NbMenuService, NbSidebarService, NbThemeService} from '@nebular/theme';
 
 import {LayoutService} from '../../../@core/utils';
 import {Observable, Subject} from 'rxjs';
@@ -11,6 +11,7 @@ import {AbstractXe} from "../../../framework/model/AbstractXe";
 import * as Stomp from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
 import {environment} from "../../../../environments/environment";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'ngx-header',
@@ -35,7 +36,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private layoutService: LayoutService,
-    private toastrService: NbToastrService
+    private _snackbar: MatSnackBar
   ) {
     super();
     menuService.onItemClick().subscribe((menu) => {
@@ -71,7 +72,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
 
   navigateHome() {
     this.menuService.navigateHome();
-     return false;
+    return false;
   }
 
   notLogin() {
@@ -81,6 +82,7 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
   private stompClient = null;
   private subscription;
   disabled = true;
+
   setConnected(connected: boolean) {
     this.disabled = !connected;
   }
@@ -96,13 +98,13 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     }, (frame) => {
       _this.setConnected(true);
       // console.log('Connected: ' + frame);
-
+      const snackbar = this._snackbar;
       _this.subscription = _this.stompClient.subscribe('/topic/' + AuthUtil.instance.companyId, (message) => {
         // console.log(message);
         const json = JSON.parse(message.body);
         const tripUserId = json.tripUserId;
         const tripId = json.tripId;
-        const snackBarRef = this._snackBar.open(json.message, 'Xem', {
+        const snackBarRef = snackbar.open(json.message, 'Xem', {
           horizontalPosition: "end",
           verticalPosition: "bottom",
           panelClass: "trip-user-inform-wrapper"
@@ -119,11 +121,12 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
     });
   }
 
-  @HostListener('window:unload', [ '$event' ])
+  @HostListener('window:unload', ['$event'])
   unloadHandler(event) {
     this.subscription.unsubscribe();
   }
-  @HostListener('window:beforeunload', [ '$event' ])
+
+  @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler(event) {
     this.subscription.unsubscribe();
   }
