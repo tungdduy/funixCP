@@ -24,6 +24,7 @@ import {configConstant} from "../../config.constant";
 import {TicketInfo} from "../../model/XeFormData";
 import {StringUtil} from "../../util/string.util";
 import {Buss} from "../../../business/entities/Buss";
+import {HeaderComponent} from "../../../@theme/components";
 
 @Component({
   selector: 'basic-buss-scheme',
@@ -36,6 +37,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
   @Input("screen") parentScreen: XeScreen;
   @Input("readMode") _readMode;
   @Input() mode: BussSchemeMode = BussSchemeMode.readonly;
+  @Input() viewingTripUserId: number;
   seatGroupCriteria = SeatGroup.new();
   screens = {
     schemeEdit: "schemeEdit",
@@ -309,12 +311,16 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
                   let confirmedBy = AuthUtil.instance.user.employee.employeeId;
                   if (currentStatus && currentStatus.isPENDING) {
                     confirmedBy = null;
+                    HeaderComponent.instance.addPendingTripUser(this.selectedTripUser);
+                  } else {
+                    HeaderComponent.instance.removePendingTripUser(this.selectedTripUser);
                   }
                   Xe.updateFields(this.selectedTripUser, {
                     'status': currentValue,
                     'removeOverlapSeats': status.isDELETED,
                     'confirmedBy': confirmedBy
                   }, TripUser.meta, (newTripUser) => {
+                    this.refreshTripUser(newTripUser);
                     Object.assign(this.selectedTripUser, newTripUser);
                   });
                 })
@@ -322,8 +328,8 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
           }
         ],
         action: {
+          postInit: (tripUsers) => this.viewTripUserIdParam(tripUsers),
           onClickBtnCreate: () => {
-            console.log(this.selectedTripUser);
             const tripUser = EntityUtil.getAllPossibleId(this.selectedTripUser, this.tripUserTable.formData.entityIdentifier);
             tripUser['tripUserId'] = null;
             CommonUpdateService.instance.insert(tripUser as TripUser, TripUser.meta).subscribe(
@@ -341,7 +347,7 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
             if (this.isAdminReviewing) {
               this.isAdminReviewing = false;
             }
-            this.refreshTripUser(selectedTripUser, false);
+            this.refreshTripUser(selectedTripUser, true);
           },
           postDeSelect: () => {
             this.preparedTripUser = null;
@@ -379,6 +385,16 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
           this.setSelectedTripUserEndPoint(currentPoint);
         }
       });
+  }
+  @Input() tripUserIdParam: number;
+
+  private viewTripUserIdParam(tripUsers: TripUser[]) {
+    if (ObjectUtil.isNumberGreaterThanZero(this.tripUserIdParam)) {
+      const tripUser = tripUsers.find(tu => tu.tripUserId === this.tripUserIdParam);
+      if (tripUser) {
+         this.tripUserTable.formData.share.tableComponent.toggleRow(tripUser);
+      }
+    }
   }
 
   setSelectedTripUserStartPoint(point: BussSchedulePoint) {
@@ -544,4 +560,5 @@ export class BasicBussSchemeComponent extends XeSubscriber implements OnInit, Af
       this.seatStatus(seatNo).toClassesSeatAvailable();
     }
   }
+
 }

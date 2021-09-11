@@ -17,9 +17,6 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -101,7 +98,7 @@ public class EmailService {
         Transport.send(message);
       } catch (Exception e) {
         log.error(e.getMessage(), e);
-        ErrorCode.SEND_EMAIL_FAILED.throwNow();
+        //ErrorCode.SEND_EMAIL_FAILED.throwNow();
       }
     });
   }
@@ -138,6 +135,7 @@ public class EmailService {
     payload.put("message", message);
     payload.put("type", isCancel ? "cancel" : "new");
     payload.put("tripUserId", String.valueOf(tripUser.getTripUserId()));
+    payload.put("tripId", String.valueOf(tripUser.getTripId()));
 
     log.info("Notification to {}: {}", "/topic/"+tripUser.getCompanyId(), payload);
 

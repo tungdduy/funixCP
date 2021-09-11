@@ -1,9 +1,10 @@
 package net.timxekhach.security.jwt;
 
 
-import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.response.ErrorCode;
 import net.timxekhach.security.model.SecurityResource;
+import net.timxekhach.utility.geo.GeoIPLocationService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.OK;
@@ -46,11 +48,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final SecurityResource securityResource;
     private final JwtTokenProvider jwtTokenProvider;
+    private final GeoIPLocationService geoIPLocationService;
 
     @Autowired
-    public JwtFilter(SecurityResource securityResource, JwtTokenProvider jwtTokenProvider) {
+    public JwtFilter(SecurityResource securityResource, JwtTokenProvider jwtTokenProvider, GeoIPLocationService geoIPLocationService) {
         this.securityResource = securityResource;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.geoIPLocationService = geoIPLocationService;
     }
 
     @Override
@@ -71,10 +75,31 @@ public class JwtFilter extends OncePerRequestFilter {
                 List<GrantedAuthority> authorities = jwtTokenProvider.getAuthorities(token);
                 Authentication authentication = jwtTokenProvider.getAuthentication(username, authorities, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                loginNotification(username, request);
             } else {
                 SecurityContextHolder.clearContext();
             }
         }
         filterChain.doFilter(request, response);
     }
+
+    private void loginNotification(String username, HttpServletRequest request) {
+        String userAgent = request.getHeader("user-agent");
+        String ip = request.getHeader("X-FORWARDED-FOR");
+        if (ip == null || StringUtils.isEmpty(ip)){
+            ip = request.getRemoteAddr();
+        }
+
+        String finalIp = ip;
+        CompletableFuture.runAsync(() -> {
+            try {
+                geoIPLocationService.verifyDevice(username, finalIp, userAgent);
+            } catch (Exception e) {
+                logger.error(String.format("An error occurred while verifying device or location [%s]", e.getMessage()));
+            }
+        });
+
+
+    }
+
 }

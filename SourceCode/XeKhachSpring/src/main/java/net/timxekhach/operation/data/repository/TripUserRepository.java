@@ -3,6 +3,7 @@ package net.timxekhach.operation.data.repository;
 // ____________________ ::IMPORT_SEPARATOR:: ____________________ //
 
 import net.timxekhach.operation.data.entity.TripUser;
+import net.timxekhach.operation.data.enumeration.TripUserStatus;
 import net.timxekhach.operation.data.mapped.TripUser_MAPPED;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -30,6 +31,8 @@ public interface TripUserRepository extends JpaRepository<TripUser, TripUser_MAP
     TripUser findFirstByConfirmedByEmployeeId(Long employeeId);
 
     TripUser findFirstByUserUserId(Long userId);
+
+    List<TripUser> findByCompanyIdAndStatusOrderByTripUserIdDesc(Long companyId, TripUserStatus pending);
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

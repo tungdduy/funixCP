@@ -65,6 +65,11 @@ public class TripApi {
 	public ResponseEntity<List<BussSchedule>> getBussSchedulesByCompanyId(@PathVariable Long companyId) {
 		return success(CommonUpdateService.getBussScheduleRepository().findByCompanyIdOrderByLaunchTimeDesc(companyId));
 	}
+
+	@GetMapping("/find-pending-trip-users/{managerUserId}")
+	public ResponseEntity<List<TripUser>> findPendingTripUsers(@PathVariable Long managerUserId) {
+		return success(tripService.findPendingTripUsers(managerUserId));
+	}
 // ____________________ ::BODY_SEPARATOR:: ____________________ //
 
 }

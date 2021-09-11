@@ -16,7 +16,15 @@
 
 <div class="header-container">
   <xe-btn *ngIf="notLogin()" routerLink="/check-in/login" [btnText]="xeLabel.LOGIN"></xe-btn>
-  <nb-actions size="small">
+  <nb-actions size="medium">
+    <nb-action [hidden]="!isStaff"
+      icon="email-outline"
+               nbContextMenuClass="quick-show-trip-user"
+               [nbContextMenu]="pendingTripUsers"
+               [badgeText]="numberOfPendingTripUsers"
+               badgePosition="bottom right"
+               badgeStatus="success">
+    </nb-action>
     <nb-action
       [hidden]="notLogin()"
       class="user-action"

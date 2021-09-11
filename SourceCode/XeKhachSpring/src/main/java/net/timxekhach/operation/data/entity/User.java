@@ -47,7 +47,7 @@ public class User extends User_MAPPED {
     }
 
     @JsonIgnore
-    Set<RoleEnum> getFlatRoles() {
+    public Set<RoleEnum> getFlatRoles() {
        List<RoleEnum> roles  = this.getRoles().stream()
                .map(RoleEnum::valueOf)
                .collect(Collectors.toList());

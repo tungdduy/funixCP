@@ -23,7 +23,8 @@ public class LoggingService {
     Object requestId = request.getAttribute(REQUEST_ID);
     StringBuilder data = new StringBuilder("\n");
     data.append("LOGGING REQUEST BODY\n")
-        .append("\t[X-FORWARD-FOR]: ").append(request.getRemoteAddr()).append("\n")
+        .append("\t[Remote-IP-Address]: ").append(request.getRemoteAddr()).append("\n")
+        .append("\t[X-FORWARD-FOR]: ").append(request.getHeader("X-Forwarded-For")).append("\n")
         .append("\t[USER-INFO]: ").append(getUsername()).append("\n")
         .append("\t[REQUEST-SERVICE]: ").append(request.getRequestURI().substring(request.getContextPath().length())).append("\n")
         .append("\t[REQUEST-METHOD]: ").append(request.getMethod()).append("\n")
@@ -42,7 +43,8 @@ public class LoggingService {
     Object requestId = request.getAttribute(REQUEST_ID);
     StringBuilder data = new StringBuilder("\n");
     data.append("\tLOGGING RESPONSE\n")
-        .append("\t[X-FORWARD-FOR]: ").append(request.getRemoteAddr()).append("\n")
+        .append("\t[Remote-IP-Address]: ").append(request.getRemoteAddr()).append("\n")
+        .append("\t[X-FORWARD-FOR]: ").append(request.getHeader("X-Forwarded-For")).append("\n")
         .append("\t[USER-INFO]: ").append(getUsername()).append("\n")
         .append("\t[REQUEST-SERVICE]: ").append(request.getRequestURI().substring(request.getContextPath().length())).append("\n")
         .append("\t[REQUEST-METHOD]: ").append(request.getMethod()).append("\n")

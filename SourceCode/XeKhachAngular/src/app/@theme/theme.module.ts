@@ -31,6 +31,7 @@ import {MATERIAL_DARK_THEME} from './styles/material/theme.material-dark';
 import {FormsModule} from "@angular/forms";
 import {RouterModule} from "@angular/router";
 import {CommonComponentsModule} from "../framework/components/common-components.module";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -72,7 +73,8 @@ const PIPES = [
         NbCheckboxModule,
         FormsModule,
         RouterModule,
-        CommonComponentsModule
+        CommonComponentsModule,
+        MatSnackBarModule
     ],
   exports: [
     CommonModule,
