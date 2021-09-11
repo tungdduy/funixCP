@@ -98,7 +98,7 @@ public class EmailService {
         Transport.send(message);
       } catch (Exception e) {
         log.error(e.getMessage(), e);
-        ErrorCode.SEND_EMAIL_FAILED.throwNow();
+        //ErrorCode.SEND_EMAIL_FAILED.throwNow();
       }
     });
   }

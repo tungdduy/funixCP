@@ -176,18 +176,18 @@ export class HeaderComponent extends AbstractXe implements OnInit, OnDestroy {
             {name: "tripId", value: tripId}]
           ).full;
         });
-      }, {Authorization: `${AuthUtil.instance.token}`});
+      });
     });
   }
 
 
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(event) {
-    this.subscription.unsubscribe();
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  beforeUnloadHandler(event) {
-    this.subscription.unsubscribe();
-  }
+  // @HostListener('window:unload', ['$event'])
+  // unloadHandler(event) {
+  //   this.subscription.unsubscribe();
+  // }
+  //
+  // @HostListener('window:beforeunload', ['$event'])
+  // beforeUnloadHandler(event) {
+  //   this.subscription.unsubscribe();
+  // }
 }

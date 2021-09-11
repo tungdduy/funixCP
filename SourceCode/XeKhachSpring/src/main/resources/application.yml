@@ -25,6 +25,8 @@ xekhach:
     port: 578
     email: ~
     password: ~
+  maxmind:
+    db-path: C:\Users\ddao\IdeaProjects\funixCP\SourceCode\XeKhachSpring\src\main\resources\GeoLite2-City_20210908\GeoLite2-City.mmdb
 
 
 

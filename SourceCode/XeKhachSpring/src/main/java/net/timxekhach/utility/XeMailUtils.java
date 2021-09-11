@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import net.timxekhach.operation.data.entity.TripUser;
 import net.timxekhach.operation.data.entity.User;
 import net.timxekhach.operation.rest.service.CommonUpdateService;
+import net.timxekhach.utility.geo.model.DeviceMetadata;
 import net.timxekhach.utility.mail.EmailService;
 import org.apache.commons.collections.CollectionUtils;
 import org.thymeleaf.context.Context;
@@ -105,4 +106,21 @@ public class XeMailUtils {
         }
     }
 
+
+    public static void sendUnknownLocationEmail(DeviceMetadata deviceMetadata){
+        User user = CommonUpdateService.getUserRepository().findFirstByUsernameOrEmail(deviceMetadata.getUsername(), null);
+
+        Context context = new Context();
+        context.setVariable("fullName", user.getFullName());
+        context.setVariable("username", user.getUsername());
+        context.setVariable("location", deviceMetadata.getLocation());
+        context.setVariable("device", deviceMetadata.getDeviceDetails());
+
+        String template = "unknown-login";
+
+        String subject = "Cảnh báo: Hoạt động đăng nhập bất thường";
+
+        emailService.sendMail(context, template, subject, user.getEmail());
+
+    }
 }
